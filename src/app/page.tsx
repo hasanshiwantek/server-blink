@@ -1,4 +1,8 @@
 import type { Metadata } from "next";
+import CategoriesSidebar from "./components/Home/CategoriesSidebar";
+import BrandsSidebar from "./components/Home/BrandsSidebar";
+import Banner from "./components/Home/Banner";
+import CategoryGrid from "./components/Home/CategoriyGrid";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://nts-ecommerce.vercel.app"),
@@ -16,7 +20,7 @@ export const metadata: Metadata = {
     siteName: "New Town Spares",
     images: [
       {
-        url: "/navlogo.png", // ✅ apna OG image yaha dalna
+        url: "/navlogo.png",
         width: 1200,
         height: 630,
         alt: "New Town Spares Homepage",
@@ -28,7 +32,7 @@ export const metadata: Metadata = {
     title: "New Town Spares – Home",
     description:
       "Buy electronics, connectors, cables, and computer parts at New Town Spares.",
-    images: ["/navlogo.png"], // ✅ same ya custom image
+    images: ["/navlogo.png"],
   },
   robots: {
     index: true,
@@ -40,19 +44,31 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1,
-    },},
+    },
+  },
 };
 
 const Page = async () => {
-
   return (
-    <>
-      <main className="flex flex-col gap-30" role="main">
-<div className="h-96">
-
-</div>
-      </main>
-    </>
+    <main className="flex flex-col gap-30" role="main">
+      {/* Container: max-width 1170px, centered */}
+      <div className="w-full max-w-[1170px] mx-auto mt-5 lg:px-6 xl:px-0">
+        <div className="py-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Left Sidebar */}
+            <aside className="lg:block hidden lg:col-span-3">
+              <CategoriesSidebar />
+              <BrandsSidebar />
+            </aside>
+            {/* Main Content */}
+            <div className="lg:col-span-9">
+              <Banner />
+              <CategoryGrid />
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 };
 

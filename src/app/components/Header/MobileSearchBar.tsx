@@ -90,15 +90,15 @@ const MobileSearchBar: React.FC = () => {
     <div ref={containerRef} className="relative">
       {/* Input Box */}
       <div className="relative">
-        <div>
+        <div className="mt-4">
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             type="text"
             placeholder="Search products..."
-            className="w-full px-4 py-2 pr-10  rounded-full text-white border border-white focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
+            className="w-full px-4 py-3 pr-10  rounded-full text-[var(--font-color)] border border- focus:outline-none focus:ring-2 focus:ring-[var(--bg-color)] text-sm sm:text-base mt-4"
           />
-          <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white cursor-pointer" />
+          <Search className="absolute right-3 top-[60%] -translate-y-1/2 w-5 h-5 text-[var(--font-color)] cursor-pointer" />
         </div>
       </div>
 

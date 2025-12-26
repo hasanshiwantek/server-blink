@@ -4,7 +4,7 @@ import GlobalSupplier from "../components/about/GlobalSupplier";
 import AboutStats from "../components/about/AboutStats";
 import AboutBrandSection from "../components/about/AboutBrandSection";
 import SocialResponsibilitySection from "../components/about/SocialResponsibiltySection";
-import GetInTouch from "../components/Home/GetInTouch";
+// import GetInTouch from "../components/Home/GetInTouch";
 import dynamic from "next/dynamic";
 import ProductServicesSection from "../components/about/ProductServicesSection";
 import { Metadata } from "next";
@@ -81,7 +81,7 @@ const page = () => {
         <SocialResponsibilitySection />
       {/* </AOSWrapper> */}
       {/* <AOSWrapper animation="fade-up" delay={600}> */}
-        <GetInTouch />
+        {/* <GetInTouch /> */}
       {/* </AOSWrapper> */}
       {/* <AOSWrapper animation="fade-up" delay={700}> */}
         <ProductServicesSection />
