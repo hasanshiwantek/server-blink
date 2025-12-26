@@ -5,7 +5,7 @@ import { Star } from "lucide-react";
 import Image from "next/image";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Review, Stats } from "../Home/Testimonials";
+// import { Review, Stats } from "../Home/Testimonials";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { fetchReviews, fetchStats } from "@/redux/slices/homeSlice";
 
