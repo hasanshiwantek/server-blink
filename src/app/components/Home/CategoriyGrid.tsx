@@ -1,9 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { fetchCategories } from "@/lib/api/category";
 import Link from "next/link";
+
+import memoryImg from "@/assets/categories/memory.jpg";
+import motherboardImg from "@/assets/categories/motherboard.jpg";
+import gpuImg from "@/assets/categories/gpu.jpg";
+import hddImg from "@/assets/categories/hdd.jpg";
+import psuImg from "@/assets/categories/psu.jpg";
 
 interface Category {
   id: number;
@@ -18,14 +24,13 @@ interface Category {
 }
 
 // Category images mapping - Add your actual category images here
-const categoryImages: { [key: string]: any } = {
-  "server-memory": require("@/assets/categories/memory.jpg"),
-  motherboards: require("@/assets/categories/motherboard.jpg"),
-  "graphic-cards": require("@/assets/categories/gpu.jpg"),
-  "hard-drives": require("@/assets/categories/hdd.jpg"),
-  "power-supplies": require("@/assets/categories/psu.jpg"),
+const categoryImages: { [key: string]: StaticImageData } = {
+  "server-memory": memoryImg,
+  motherboards: motherboardImg,
+  "graphic-cards": gpuImg,
+  "hard-drives": hddImg,
+  "power-supplies": psuImg,
 };
-
 const CategoryGrid = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
