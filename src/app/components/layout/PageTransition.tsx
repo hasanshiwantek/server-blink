@@ -17,14 +17,13 @@ export default function PageTransition({
     <AnimatePresence mode="wait" initial={false}>
       <motion.div
         key={pathname}
-        className={`flex-grow 
-           "py-6 md:px-[7%] lg:px-[5.2%] xl:px-[5.2%] 2xl:px-[5.2%] px-[7%]"
-        
-           
-           `}
+        className="
+    flex-grow
+    max-w-[1170px] mx-auto
+    lg:max-w-full lg:mx-0
+  "
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        // exit={{}} // You can customize exit transition if needed
         transition={{ duration: 0.4, ease: "easeOut" }}
       >
         {children}

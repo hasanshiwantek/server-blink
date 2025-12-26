@@ -54,7 +54,7 @@
 :root {
   --primary-color: #d42020;
   --bg-color:#eaeaea;
-  --font-color: #323232;
+  --font-color: #545454;
   --border-color: #f2f2f2;
   --header-bg: rgb(3, 16, 51);
   --store-bg: #fafafa;
@@ -318,62 +318,63 @@ img {
 
 /* ================= H1 (36px final) ================= */
 .h1-secondary,
-.h1-secondary-medium,
+.h1-bold,
 .h1-lg {
   font-size: 20px; /* mobile */
   font-weight: 500;
 }
 .h1-secondary {
-  color: #d9d9d9;
+  color: white;
 }
-.h1-secondary-medium {
-  color: #4a4a4a;
+.h1-bold {
+  color: white;
+  font-weight: bold;
 }
 .h1-lg {
-  color: #2a2a2a;
+  color: white;
 }
 
 @media (min-width: 640px) {
   .h1-secondary,
-  .h1-secondary-medium {
+  .h1-bold {
     font-size: 24px;
   }
   .h1-lg {
     font-size: 30px;
-    line-height: 54px;
+    line-height: 39px;
     letter-spacing: 0.01em;
   }
 }
 @media (min-width: 1024px) {
   .h1-secondary,
-  .h1-secondary-medium {
-    font-size: 28px;
+  .h1-bold {
+    font-size: 32px;
   }
   .h1-lg {
-    font-size: 35px;
-    line-height: 54px;
+    font-size: 32px;
+    line-height: 39px;
     letter-spacing: 0.01em;
   }
 }
 @media (min-width: 1280px) {
   .h1-secondary,
-  .h1-secondary-medium {
+  .h1-bold {
     font-size: 32px;
   }
   .h1-lg {
-    font-size: 40px;
-    line-height: 54px;
+    font-size: 32px;
+    line-height: 39px;
     letter-spacing: 0.01em;
   }
 }
 @media (min-width: 1440px) {
   .h1-secondary,
-  .h1-secondary-medium {
-    font-size: 36px;
+  .h1-bold {
+    font-size: 32px;
   }
   .h1-lg {
-    font-size: 48px;
-    line-height: 54px;
+    font-size: 42px;
+    line-height: 39px;
     letter-spacing: 0.01em;
   }
 }
@@ -383,40 +384,38 @@ img {
 .h2-medium,
 .h2-bold,
 .h2-32px-medium {
-  font-size: 18px;
+  font-size: 15px;
+  line-height: 30px;
 }
 
 .h2-secondary {
   font-weight: 600;
-  color: #4a4a4a;
+  color: white;
 }
 
 .h2-bold {
   font-weight: 700;
-  color: #4a4a4a;
+  color: white;
 }
 
 .h2-medium {
   font-weight: 500;
-  color: #4a4a4a;
+  color: white;
 }
-.h2-32px-medium {
-  font-weight: 500;
-  color: #2a2a2a;
-}
+
 @media (min-width: 640px) {
   .h2-secondary,
   .h2-medium,
   .h2-bold,
   .h2-32px-medium {
-    font-size: 20px;
+    font-size: 12px;
   }
 }
 @media (min-width: 1024px) {
   .h2-secondary,
   .h2-medium,
   .h2-bold {
-    font-size: 24px;
+    font-size: 12px;
   }
 }
 @media (min-width: 1280px) {
@@ -424,7 +423,7 @@ img {
   .h2-medium,
   .h2-bold,
   .h2-32px-medium {
-    font-size: 24px;
+    font-size: 15px;
   }
 }
 @media (min-width: 1440px) {
@@ -432,7 +431,7 @@ img {
   .h2-medium,
   .h2-bold,
   .h2-32px-medium {
-    font-size: 32px;
+    font-size: 15px;
   }
 }
 

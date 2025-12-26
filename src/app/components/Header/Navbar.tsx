@@ -75,7 +75,7 @@ const Navbar: React.FC = () => {
           {/* Mobile Right: Cart + Hamburger */}
           <div className="flex lg:hidden items-center gap-3">
             {/* Cart */}
-            <Link
+            {/* <Link
               href="/cart"
               className="relative text-gray-800 hover:text-red-600 transition"
             >
@@ -87,7 +87,7 @@ const Navbar: React.FC = () => {
                   </span>
                 )}
               </button>
-            </Link>
+            </Link> */}
             {/* Hamburger */}
             <button
               aria-label="hamburger"
@@ -106,7 +106,7 @@ const Navbar: React.FC = () => {
         {/* Text Banner */}
         <div className="w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto">
           <div className="bg-white p-4 text-center mb-4">
-            <p className="text-[14px] font-medium">
+            <p className="md:text-[14px] text-[12px] font-medium">
               We Accept POs from Fortune 1000 Companies, Government Agencies
               (Federal, State, Local), Defense (Military, Air Force, Navy),
               Universities, Schools and Colleges.
