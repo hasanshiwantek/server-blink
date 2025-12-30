@@ -53,6 +53,21 @@ export const fetchPopularProducts = createAsyncThunk(
   }
 );
 
+export const fetchProductsData = createAsyncThunk(
+  "home/fetchProductsData",
+  async (endpoint: string, thunkAPI) => {
+    try {
+      const res = await axiosInstance.get(endpoint);
+      console.log(`Products from ${endpoint}:`, res.data);
+      return res.data;
+    } catch (err: any) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to fetch products"
+      );
+    }
+  }
+);
+
 export const fetchReviews = createAsyncThunk(
   "home/fetchReviews",
   async (_, thunkAPI) => {
@@ -144,6 +159,7 @@ const initialState = {
   searchData: [],
   getBrand: [],
   popularProducts: [],
+  products: [],
   reviews: [] as any[],
   reviewsLoading: false,
   reviewsError: null as string | null,
@@ -194,7 +210,18 @@ const homeSlice = createSlice({
       })
       .addCase(fetchPopularProducts.rejected, (state, action) => {
         state.popularProductsLoading = false;
-        state.error = action.error.message || "Failed to fetch getBrand data";
+        state.error = action.error.message || "Failed to fetch popular products data";
+      })
+      .addCase(fetchProductsData.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchProductsData.fulfilled, (state, action) => {
+        state.loading = false;
+        state.products = action.payload;
+      })
+      .addCase(fetchProductsData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch products data";
       })
       // REVIEWS
       .addCase(fetchReviews.pending, (state) => {

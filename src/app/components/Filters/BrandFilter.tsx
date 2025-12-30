@@ -1,3 +1,5 @@
+"use client";
+
 interface BrandFilterProps {
   brands: any[];
   handleBrandClick: (brandId: number, brandName: string, slug?: string) => void;
@@ -10,21 +12,22 @@ export default function BrandFilter({
   activeBrandId,
 }: BrandFilterProps) {
   return (
-    <ul className="space-y-1 mt-2">
+    <ul className="space-y-1 bg-white">
       {brands.map((b: any) => {
-        const isActive = activeBrandId === b.brand.id; // ✅ Check if brand is active
+        const isActive = activeBrandId === b.brand.id;
         return (
-          <li
-            key={b.brand.id}
-            onClick={() => handleBrandClick(b.brand.id, b.brand.name, b.brand.slug)}
-            className={`2xl:px-[11px] 2xl:py-[11px] xl:px-[8.25px] xl:py-[6px] p-2 rounded-md cursor-pointer h5-20px-regular transition-all duration-200
-              ${
-                isActive
-                  ? "bg-[#F15939] !text-white hover:bg-[#d94d30]"
-                  : "hover:bg-gray-100 text-[#333333]"
-              }`}
-          >
-            {b.brand.name}
+          <li key={b.brand.id}>
+            <button
+              onClick={() =>
+                handleBrandClick(b.brand.id, b.brand.name, b.brand.slug)
+              }
+              className={`
+                w-full text-left px-3 py-1 text-[15px] font-normal transition-colors flex items-center 
+                ${isActive ? "text-[#D42020] font-medium" : "text-[#545454] hover:text-[var(--primary-color)]"}
+              `}
+            >
+              {b.brand.name}
+            </button>
           </li>
         );
       })}
