@@ -115,8 +115,7 @@ const GlobalSearchBar: React.FC = () => {
   return (
     <div ref={containerRef} className="relative">
       {/* Input Box */}
-      <div className="relative">
-        <div>
+      <div className="relative   w-full xl:max-w-[394px] 2xl:max-w-[394px] 2xl:ml-30 xl:ml-10 ml-0">
           <input
             type="search"
             placeholder="SEARCH"
@@ -131,9 +130,10 @@ const GlobalSearchBar: React.FC = () => {
       h-10 sm:h-12 md:h-12 lg:h-14 xl:h-[32px] 2xl:h-[32px]
       pr-12 sm:pr-16 md:pr-20 lg:pr-27 2xl:pr-56
     h6-medium-color border-1 border-[#cac9c9]
+
     "
           />
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
+          <div className="absolute right-2  top-1/2 -translate-y-1/2 flex items-center">
             <button
             aria-label="search"
             name="search"
@@ -167,7 +167,6 @@ const GlobalSearchBar: React.FC = () => {
               />
             </button>
           </div>
-        </div>
       </div>
 
       {/* Dropdown Results */}

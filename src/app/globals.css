@@ -52,8 +52,8 @@
 }
 
 :root {
-  --primary-color: #d42020;
-  --bg-color:#eaeaea;
+  --primary-color: #e62424;
+  --bg-color: #eaeaea;
   --font-color: #545454;
   --border-color: #f2f2f2;
   --header-bg: rgb(3, 16, 51);
@@ -179,14 +179,47 @@ button {
   @apply bg-[white] text-[#d42020] border-[#d42020];
 }
 
-.btn-primary {
-  @apply text-white border border-[#d42020]  font-medium rounded-md px-4 py-[6px] text-xl transition-all my-1 duration-200 cursor-pointer;
-  background-color: #d42020;
-}
 
-.btn-primary:hover {
-  @apply border-[#d42020] bg-white text-[#d42020];
-}
+
+ .btn-primary {
+    /* Font styling */
+    font-family: "Roboto Condensed", "Roboto", Arial, Helvetica, sans-serif;
+    @apply font-bold text-[18px] leading-4 uppercase;
+    
+    /* Colors */
+    @apply bg-[#d42020] text-white;
+    
+    /* Border styling - no left, right, top borders, bottom border with darker color */
+    @apply border-0 border-b-[3px] border-b-[#860109] rounded-none;
+    
+    /* Spacing */
+    @apply px-[2.28571rem] py-[0.85714rem] my-0 ;
+    
+    /* Display & Layout */
+    @apply inline-block text-center no-underline align-middle relative;
+    
+    /* Interaction */
+    @apply cursor-pointer outline-none;
+    
+    /* Animation */
+    @apply transition-all duration-150 ease-in-out;
+  }
+
+  .btn-primary:hover {
+    @apply bg-[#b81818] border-b-[#6b0107];
+  }
+
+  .btn-primary:active {
+    @apply bg-[#9e1414] translate-y-[1px];
+  }
+
+  .btn-primary:focus {
+    @apply outline-2 outline-[#d42020] outline-offset-2;
+  }
+
+
+
+
 
 /* Input & Text */
 input {
@@ -318,8 +351,7 @@ img {
 
 /* ================= H1 (36px final) ================= */
 .h1-secondary,
-.h1-bold,
-.h1-lg {
+.h1-bold {
   font-size: 20px; /* mobile */
   font-weight: 500;
 }
@@ -331,16 +363,18 @@ img {
   font-weight: bold;
 }
 .h1-lg {
-  color: white;
+  color: #545454;
+  font-weight: 300;
+  font-size: 28px;
 }
 
 @media (min-width: 640px) {
   .h1-secondary,
   .h1-bold {
-    font-size: 24px;
+    font-size: 28px;
   }
   .h1-lg {
-    font-size: 30px;
+    font-size: 28px;
     line-height: 39px;
     letter-spacing: 0.01em;
   }
@@ -348,10 +382,10 @@ img {
 @media (min-width: 1024px) {
   .h1-secondary,
   .h1-bold {
-    font-size: 32px;
+    font-size: 28px;
   }
   .h1-lg {
-    font-size: 32px;
+    font-size: 28px;
     line-height: 39px;
     letter-spacing: 0.01em;
   }
@@ -359,10 +393,10 @@ img {
 @media (min-width: 1280px) {
   .h1-secondary,
   .h1-bold {
-    font-size: 32px;
+    font-size: 28px;
   }
   .h1-lg {
-    font-size: 32px;
+    font-size: 28px;
     line-height: 39px;
     letter-spacing: 0.01em;
   }
@@ -370,10 +404,10 @@ img {
 @media (min-width: 1440px) {
   .h1-secondary,
   .h1-bold {
-    font-size: 32px;
+    font-size: 28px;
   }
   .h1-lg {
-    font-size: 42px;
+    font-size: 28px;
     line-height: 39px;
     letter-spacing: 0.01em;
   }
@@ -399,8 +433,8 @@ img {
 }
 
 .h2-medium {
-  font-weight: 500;
-  color: white;
+  font-weight: 300;
+  color: #545454;
 }
 
 @media (min-width: 640px) {
@@ -408,14 +442,14 @@ img {
   .h2-medium,
   .h2-bold,
   .h2-32px-medium {
-    font-size: 12px;
+    font-size: 15px;
   }
 }
 @media (min-width: 1024px) {
   .h2-secondary,
   .h2-medium,
   .h2-bold {
-    font-size: 12px;
+    font-size: 20px;
   }
 }
 @media (min-width: 1280px) {
@@ -423,7 +457,7 @@ img {
   .h2-medium,
   .h2-bold,
   .h2-32px-medium {
-    font-size: 15px;
+    font-size: 20px;
   }
 }
 @media (min-width: 1440px) {
@@ -431,7 +465,7 @@ img {
   .h2-medium,
   .h2-bold,
   .h2-32px-medium {
-    font-size: 15px;
+    font-size: 20px;
   }
 }
 
@@ -809,14 +843,8 @@ img {
   }
 }
 
-
-
-
-
-
 /* 
 overview description */
-
 
 .description-content {
   color: #4a4a4a; /* text color */
@@ -925,4 +953,3 @@ overview description */
     line-height: 26px;
   }
 }
-

@@ -45,10 +45,10 @@ function SelectTrigger({
       className={cn(
         "w-full max-w-md", // ✅ Matches Input field size
         "text-xl border border-gray-400 data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground font-medium",
-        "focus:border-orange-400 focus:ring-orange-300 focus:ring-2 focus:border-1",
-        "focus-visible:border-orange-300 focus-visible:ring-orange-300 focus-visible:ring-1 focus-visible:border-1",
+        "focus:border-red-400 focus:ring-red-300 focus:ring-2 focus:border-1",
+        "focus-visible:border-red-300 focus-visible:ring-red-300 focus-visible:ring-1 focus-visible:border-1",
         "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-        "dark:bg-input/30 dark:hover:bg-input/50 flex items-center justify-between gap-2 rounded-sm bg-transparent px-3 py-2 whitespace-nowrap  transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-13 data-[size=sm]:h-8",
+        "dark:bg-input/30 dark:hover:bg-input/50 flex items-center justify-between gap-2 rounded-sm bg-white px-3 py-2 whitespace-nowrap  transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-13 data-[size=sm]:h-8",
         "*:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2",
         className
       )}
