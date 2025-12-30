@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { getBrands } from "@/redux/slices/homeSlice";
 import { CategoriesSidebarSkeleton } from "../reuseable/CategoryUtils";
+import Link from "next/link";
 
 const BrandsSidebar = () => {
   const dispatch = useAppDispatch();
@@ -33,12 +34,14 @@ const BrandsSidebar = () => {
           </div>
         ) : (
           data?.map((brand: any) => (
+           <Link href={`/brand/${brand?.slug}`} key={brand.id}>
             <button
               key={brand.id}
               className="w-full px-3 py-1 text-left text-[15px] font-normal text-[#545454] hover:text-[var(--primary-color)] transition-colors flex items-center gap-3"
             >
               <span>{brand.name}</span>
             </button>
+           </Link>
           ))
         )}
 

@@ -39,9 +39,6 @@ export default function Sidebar({
   isBrandPage?: boolean;
   isCategoryPage?: boolean;
 }) {
-  const [expandedSection, setExpandedSection] = useState<string | null>(
-    "Top Brands"
-  );
   // const [expandedCategorySection, setExpandedCategorySection] = useState<
   //   string | null
   // >(null);
@@ -63,10 +60,6 @@ export default function Sidebar({
       }
       return newSet;
     });
-  };
-
-  const toggleSection = (section: string) => {
-    setExpandedSection((prev) => (prev === section ? null : section));
   };
 
   // ✅ Category click: update filter + URL (only if not on brand page)
@@ -132,42 +125,40 @@ export default function Sidebar({
   return (
     <aside
       className="
-      flex flex-col gap-5 w-full bg-white rounded-xl
-      2xl:px-2 p-0
+      flex flex-col gap-5 w-full  rounded-xl
       transition-all duration-300
     "
     >
-      <div className="border rounded-xl  ">
-        {/* Category Section */}
-        <div className="border-b 2xl:p-6  xl:p-[18px] p-4  bg-gray-100 rounded-t-lg">
-          <h2 className="h3-secondary">Category</h2>
-        </div>
+      <div className="border rounded-xl">
+           {/* Header */}
+      <div className="bg-[#393939] px-3 py-1 uppercase tracking-wide border-b-3 border-[#8b8b8b]">
+        <h2 className="h2-bold">SHOP BY CATEGORY</h2>
+      </div>
 
-        <ul className="px-3 py-2 space-y-2">
-          {/* Top Brands */}
+        <ul className="py-2 space-y-2">
           <li>
-            <div
-              onClick={() => toggleSection("Top Brands")}
-              className="flex justify-between items-center cursor-pointer transition-all mt-5 px-2"
-            >
-              <span className="h5-20px-regular">Top Brands</span>
-              <span
-                className={`transform transition-transform duration-300 ${
-                  expandedSection === "Top Brands" ? "rotate-180" : "rotate-0"
-                }`}
-              >
-                <ChevronDown size={18} className="!text-[#4A4A4A]" />
-              </span>
-            </div>
+            <CategoryFilter
+            categories={categories}
+            handleCategoryClick={handleCategoryClick}
+            activeCategoryId={filters?.categoryIds?.[0]}
+            expandedCategories={expandedCategories}
+            onToggleExpand={handleToggleExpand}
+          />
+          </li>
+        </ul>
+      <div className="bg-[#393939] px-3 py-1 uppercase tracking-wide border-b-3 border-[#8b8b8b] mt-8">
+        <h2 className="h2-bold">SHOP BY BRAND</h2>
+      </div>
 
+        <ul className="py-2 space-y-2">
+          <li>  
             <AnimatePresence initial={false}>
-              {expandedSection === "Top Brands" && (
                 <MotionDiv
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="mt-2 ml-6 border-l overflow-hidden"
+                  className="overflow-hidden"
                 >
                   <BrandFilter
                     brands={brands}
@@ -175,84 +166,11 @@ export default function Sidebar({
                     activeBrandId={filters?.brandId}
                   />
                 </MotionDiv>
-              )}
             </AnimatePresence>
           </li>
-
-          {/* Dynamic Categories */}
-          {/* {categories.map((cat: any) => (
-            <li key={cat.id}>
-              <div
-                onClick={() => {
-                  toggleCategorySection(cat.name);
-                  // ✅ trigger filter/API
-                }}
-                className="flex justify-between items-center cursor-pointer p-1"
-              >
-                <span
-                  className="h5-regular hover:bg-gray-50 2xl:px-[7px] 2xl:py-[8px] xl:px-[5px] xl:py-[6px] p-2  py-1"
-                  onClick={() =>
-                    handleCategoryClick(cat.id, cat.name, cat.slug)
-                  }
-                >
-                  {cat.name}
-                </span>
-                <span
-                  className={`transform transition-transform duration-300 ${
-                    expandedCategorySection === cat.name
-                      ? "rotate-180"
-                      : "rotate-0"
-                  }`}
-                >
-                  <ChevronDown size={18} className="!text-[#4A4A4A]" />
-                </span>
-              </div>
-
-              <AnimatePresence initial={false}>
-                {expandedCategorySection[cat.name] && (
-                  <MotionDiv
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="mt-2 ml-6 border-l overflow-hidden"
-                  >
-                    <CategoryFilter
-                      categories={cat.subcategories || []}
-                      handleCategoryClick={handleCategoryClick}
-                      activeCategoryId={filters?.categoryIds?.[0]} // ✅ pass current active ID
-                    />
-                  </MotionDiv>
-                )}
-              </AnimatePresence>
-            </li>
-          ))} */}
-           <CategoryFilter
-            categories={categories}
-            handleCategoryClick={handleCategoryClick}
-            activeCategoryId={filters?.categoryIds?.[0]}
-            expandedCategories={expandedCategories}
-            onToggleExpand={handleToggleExpand}
-          />
         </ul>
       </div>
 
-      {/* Price Filter */}
-      <div className="border rounded-xl ">
-        <div className="">
-          <div className="border-t bg-gray-100 2xl:p-6 rounded-xl  xl:p-[18px] p-4 ">
-            <h2 className="h3-secondary ">Shop by price</h2>
-          </div>
-          <div className="p-4">
-            <PriceFilter filters={filters} setFilters={setFilters} />
-          </div>
-        </div>
-
-        {/* Footer Info */}
-        <div className="px-4 py-2 h5-20px-regular border-t">
-          {products?.length} products
-        </div>
-      </div>
     </aside>
   );
 }

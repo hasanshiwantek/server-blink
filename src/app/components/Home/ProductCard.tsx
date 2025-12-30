@@ -3,14 +3,22 @@
 import React from "react";
 import Image from "next/image";
 
+interface Brand {
+  id: number;
+  name: string;
+  slug: string;
+  logo?: string;
+}
+
 interface Product {
   id: number;
-  brand: string;
+  brand: Brand | string; // brand object ya string dono aa sakta hai
   sku: string;
-  name: string;
-  price: number;
-  oldPrice?: number;
-  imgSrc: string;
+  name: string | { name?: string }; // sometimes object, sometimes string
+  price: number | string;
+  msrp?: number;
+  image?: { path?: string }[]; // image array from API
+  slug: string;
 }
 
 interface ProductCardProps {
@@ -18,31 +26,44 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  // safe brand name
+  const brandName =
+    typeof product.brand === "string"
+      ? product.brand
+      : product.brand?.name || "Unknown Brand";
+
+  // safe product name
+  const productName =
+    typeof product.name === "string"
+      ? product.name
+      : product.name?.name || "Unnamed Product";
+
+  // safe image src
+  const imageSrc =
+    product.image?.[1]?.path ||
+    product.image?.[0]?.path ||
+    "/default-product-image.svg";
+
   return (
     <div className="bg-[#F2F2F2] rounded shadow hover:shadow-md transition flex flex-col h-full">
       {/* Image */}
       <div className="relative w-full h-72 mb-2 bg-white">
-        <Image
-          src={product.imgSrc}
-          alt={product.name}
-          fill
-          className="object-contain"
-        />
+        <Image src={imageSrc} alt={productName} fill className="object-contain" />
       </div>
 
       {/* Info Wrapper */}
       <div className="px-3 pb-3 flex flex-col flex-1">
-        <p className="text-[1rem] text-gray-500">{product.brand}</p>
+        <p className="text-[1rem] text-gray-500">{brandName}</p>
         <p className="text-[1rem] text-gray-400 mb-1">Sku: {product.sku}</p>
-        <p className="text-[14px] font-medium mb-1 line-clamp-2">{product.name}</p>
+        <p className="text-[14px] font-medium mb-1 line-clamp-2">{productName}</p>
 
         <div className="flex flex-col items-start gap-2 mb-2">
-          {product.oldPrice && (
+          {product.msrp && Number(product.msrp) > 0 && (
             <span className="text-gray-400 text-[1rem]">
-              Price $<span className="line-through">{product.oldPrice.toFixed(2)}</span>
+              Price $<span className="line-through">{product.msrp}</span>
             </span>
           )}
-          <span className="text-[16px] font-bold">${product.price.toFixed(2)}</span>
+          <span className="text-[16px] font-bold">${product.price}</span>
         </div>
 
         {/* Button pushed to bottom */}

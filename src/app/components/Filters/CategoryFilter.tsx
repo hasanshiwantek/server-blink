@@ -1,14 +1,16 @@
-import { ChevronDown } from "lucide-react";
+"use client";
+
+import { ChevronDown, ChevronUp } from "lucide-react";
 import dynamic from "next/dynamic";
 
-// Dynamically import only the motion.div wrapper
 const MotionDiv = dynamic(
-  () => import("framer-motion").then((mod) => mod.motion.div),
+  () => import("framer-motion").then((m) => m.motion.div),
   { ssr: false }
 );
 const AnimatePresence = dynamic(
-  () => import("framer-motion").then((mod) => mod.AnimatePresence),
-  { ssr: false })
+  () => import("framer-motion").then((m) => m.AnimatePresence),
+  { ssr: false }
+);
 
 interface CategoryFilterProps {
   categories: any[];
@@ -18,8 +20,9 @@ interface CategoryFilterProps {
     catSlug: string
   ) => void;
   activeCategoryId?: number;
-  expandedCategories?: Set<number>; // ✅ track expanded categories
-  onToggleExpand?: (categoryId: number) => void; // ✅ toggle handler
+  expandedCategories?: Set<number>;
+  onToggleExpand?: (categoryId: number) => void;
+  level?: number;
 }
 
 export default function CategoryFilter({
@@ -28,69 +31,76 @@ export default function CategoryFilter({
   activeCategoryId,
   expandedCategories = new Set(),
   onToggleExpand,
+  level = 0,
 }: CategoryFilterProps) {
   return (
-    <ul className="space-y-1">
+    <ul>
       {categories.map((cat: any) => {
         const isActive = activeCategoryId === cat.id;
         const isExpanded = expandedCategories.has(cat.id);
-        const hasSubcategories = cat.subcategories && cat.subcategories.length > 0;
+        const hasChildren = cat.subcategories?.length > 0;
 
         return (
-          <li key={cat.id} className="h5-regular">
-            <div className="flex justify-between items-center">
-              {/* Category Name - Clickable */}
-              <div
-                onClick={() => handleCategoryClick(cat.id, cat.name, cat.slug)}
-                className={`cursor-pointer px-3 py-2 rounded-md transition-all duration-200 flex-1 ${
-                  isActive
-                    ? "bg-[#F15939] text-white"
-                    : "hover:bg-gray-100 text-[#333333]"
-                }`}
+          <li key={cat.id}>
+            {/* Row */}
+            <div
+               className={`
+    flex items-center justify-between text-[15px] transition-colors bg-white hover:bg-[#f9f9f9]
+    ${
+      isActive
+        ? "text-[#D42020] font-medium"   // ✅ ACTIVE
+        : "text-[#545454] hover:text-[var(--primary-color)]"
+    }
+  `}
+              style={{ paddingLeft: `${level * 12 + 12}px` }}
+            >
+              {/* Name */}
+              <button
+                onClick={() =>
+                  handleCategoryClick(cat.id, cat.name, cat.slug)
+                }
+                className="py-1 text-left flex-1"
               >
                 {cat.name}
-              </div>
+              </button>
 
-              {/* Expand/Collapse Button - Only show if has subcategories */}
-              {hasSubcategories && onToggleExpand && (
+              {/* Chevron */}
+              {hasChildren && onToggleExpand && (
                 <button
                   onClick={(e) => {
-                    e.stopPropagation(); // prevent triggering parent click
+                    e.stopPropagation();
                     onToggleExpand(cat.id);
                   }}
-                  className="p-2 hover:bg-gray-100 rounded-md transition-colors"
-                  aria-label={isExpanded ? "Collapse" : "Expand"}
+                  className="p-1"
                 >
-                  <ChevronDown
-                    size={18}
-                    className={`text-[#4A4A4A] transform transition-transform duration-300 ${
-                      isExpanded ? "rotate-180" : "rotate-0"
-                    }`}
-                  />
+                  {isExpanded ? (
+                    <ChevronUp className="w-5 h-5" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5" />
+                  )}
                 </button>
               )}
             </div>
 
-            {/* Nested Subcategories with Animation */}
-            {hasSubcategories && (
+            {/* Children */}
+            {hasChildren && (
               <AnimatePresence initial={false}>
                 {isExpanded && (
                   <MotionDiv
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="overflow-hidden"
+                    transition={{ duration: 0.25 }}
+                    className="overflow-hidden bg-[#f2f2f2]"
                   >
-                    <div className="ml-4 mt-1 border-l border-gray-300 pl-2">
-                      <CategoryFilter
-                        categories={cat.subcategories}
-                        handleCategoryClick={handleCategoryClick}
-                        activeCategoryId={activeCategoryId}
-                        expandedCategories={expandedCategories} // ✅ pass down
-                        onToggleExpand={onToggleExpand} // ✅ pass down
-                      />
-                    </div>
+                    <CategoryFilter
+                      categories={cat.subcategories}
+                      handleCategoryClick={handleCategoryClick}
+                      activeCategoryId={activeCategoryId}
+                      expandedCategories={expandedCategories}
+                      onToggleExpand={onToggleExpand}
+                      level={level + 1}
+                    />
                   </MotionDiv>
                 )}
               </AnimatePresence>
