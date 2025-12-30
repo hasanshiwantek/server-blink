@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { getBrands } from "@/redux/slices/homeSlice";
+import { CategoriesSidebarSkeleton } from "../reuseable/CategoryUtils";
 
 const BrandsSidebar = () => {
   const dispatch = useAppDispatch();
@@ -25,7 +26,7 @@ const BrandsSidebar = () => {
       {/* Body */}
       <div className="py-2 bg-white text-[#545454]">
         {loading ? (
-          <div className="px-2 py-4 text-center text-gray-400">Loading...</div>
+          <CategoriesSidebarSkeleton />
         ) : error ? (
           <div className="px-2 py-4 text-center text-red-400">
             Failed to load brands

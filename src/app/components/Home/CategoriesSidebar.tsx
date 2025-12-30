@@ -2,13 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import { fetchCategories } from "@/lib/api/category";
-import { ChevronDown, ChevronRight, ChevronUp } from "lucide-react";
+import { CategoriesSidebarSkeleton, CategoryItem } from "../reuseable/CategoryUtils";
+
 
 interface Category {
   id: number;
   name: string;
   slug: string;
-  subcategories: Category[];
+  subcategories?: Category[];
 }
 
 const CategoriesSidebar = () => {
@@ -16,61 +17,102 @@ const CategoriesSidebar = () => {
   const [expandedCategories, setExpandedCategories] = useState<Set<number>>(
     new Set()
   );
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchCategories().then((data) => setCategories(data));
+    let isMounted = true;
+
+    const loadCategories = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const data = await fetchCategories();
+
+        if (!isMounted) return;
+
+        if (!Array.isArray(data) || data.length === 0) {
+          setCategories([]);
+          return;
+        }
+
+        setCategories(data);
+      } catch (err) {
+        if (!isMounted) return;
+
+        console.error(err);
+        setError("Failed to load categories. Please try again.");
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    loadCategories();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const toggleCategory = (id: number) => {
     setExpandedCategories((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
-      } else {
-        newSet.add(id);
-      }
-      return newSet;
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
     });
   };
 
-  return (
-    <div className="  rounded-xs overflow-hidden mb-5">
-      <div className="bg-[#393939] px-3 py-2  uppercase tracking-wide border-b-3 border-[#8b8b8b]">
-        <h2 className="h2-bold">
-        SHOP BY CATEGORY
-        </h2>
+  /* -------------------- STATES -------------------- */
+
+  // 1️⃣ Loading
+  if (loading) {
+    return <CategoriesSidebarSkeleton />;
+  }
+
+  // 2️⃣ Error
+  if (error) {
+    return (
+      <div className="rounded-xs overflow-hidden mb-5">
+        <div className="bg-[#393939] px-3 py-2 border-b-3 border-[#8b8b8b]">
+          <h2 className="h2-bold">SHOP BY CATEGORY</h2>
+        </div>
+        <div className="bg-white px-3 py-4 text-sm text-red-600">
+          {error}
+        </div>
       </div>
-      <div className="py-2 bg-white text-[#545454] ">
+    );
+  }
+
+  // 3️⃣ Empty response
+  if (categories.length === 0) {
+    return (
+      <div className="rounded-xs overflow-hidden mb-5">
+        <div className="bg-[#393939] px-3 py-2 border-b-3 border-[#8b8b8b]">
+          <h2 className="h2-bold">SHOP BY CATEGORY</h2>
+        </div>
+        <div className="bg-white px-3 py-4 text-sm text-gray-500">
+          No categories available.
+        </div>
+      </div>
+    );
+  }
+
+  // 4️⃣ Success
+  return (
+    <div className="rounded-xs overflow-hidden mb-5">
+      <div className="bg-[#393939] px-3 py-2 uppercase tracking-wide border-b-3 border-[#8b8b8b]">
+        <h2 className="h2-bold">SHOP BY CATEGORY</h2>
+      </div>
+
+      <div className="py-2 bg-white text-[#545454]">
         {categories.map((category) => (
-          <div key={category.id}>
-            <button
-              onClick={() => toggleCategory(category.id)}
-              className="w-full px-3 py-1 flex items-center justify-between hover:text-[var(--primary-color)] transition-colors text-[15px] font-normal text-[#545454]"
-            >
-              <span>{category.name}</span>
-              {category.subcategories && category.subcategories.length > 0 && (
-                expandedCategories.has(category.id) ? (
-                  <ChevronUp className="w-6 h-6" />
-                ) : (
-                  <ChevronDown className="w-6 h-6" />
-                )
-              )}
-            </button>
-            {expandedCategories.has(category.id) &&
-              category.subcategories &&
-              category.subcategories.length > 0 && (
-                <div className="bg-[#f2f2f2]">
-                  {category.subcategories.map((sub) => (
-                    <button
-                      key={sub.id}
-                      className="w-full px-3 py-1  text-left font-normal hover:text-[var(--primary-color)] transition-colors text-[15px] text-[#545454]"
-                    >
-                      {sub.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-          </div>
+          <CategoryItem
+            key={category.id}
+            category={category}
+            expanded={expandedCategories}
+            toggle={toggleCategory}
+          />
         ))}
       </div>
     </div>
