@@ -40,19 +40,9 @@ const shippingLabel = `FedEx priority $${shipping.toFixed(2)}`;
   return (
     <div className="border rounded-lg 2xl:w-full">
       {/* Header */}
-      <div className="flex items-center gap-5 py-4 px-8 bg-[#F6F6F6]">
-        <div className="xl:w-[20px] 2xl:w-[28px] xl:h-[20px] 2xl:h-[28px] flex items-center justify-center rounded-full bg-[#F15939] text-white">
-          <Package size={18} />
-        </div>
-        <h2 className="h1-secondary !text-[#4A4A4A]">Order Summary</h2>
-      </div>
 
       {/* Estimate Shipping */}
       <div className="px-6 py-6">
-        <p className="h5-medium mb-3">Estimate Shipping and Tax</p>
-
-        {/* Divider */}
-        <div className="w-full h-[1px] bg-gray-300 mb-3"></div>
 
         {/* Subtotal + Shipping */}
         <div className="text-sm text-gray-700 space-y-2 mb-2">
@@ -102,9 +92,9 @@ const shippingLabel = `FedEx priority $${shipping.toFixed(2)}`;
           <button
             type="button"
             onClick={handleProceedToCheckout}
-            className="w-full bg-[#F15939] hover:bg-[#e04f33] !text-white py-5 h4-medium font-semibold rounded-lg mb-3 transition"
+            className="w-full bg-[#D42020] hover:bg-[#e04f33] !text-white py-5 h4-medium font-semibold rounded-lg mb-3 transition"
           >
-            Proceed to Checkout
+          Checkout
           </button>
 
           <button className="w-full bg-black hover:bg-gray-900 !text-white py-5 h4-medium font-semibold rounded-lg mb-3 flex items-center justify-center gap-2 transition">
@@ -113,15 +103,6 @@ const shippingLabel = `FedEx priority $${shipping.toFixed(2)}`;
               alt="Google"
               className="w-20 h-8"
             />
-          </button>
-
-          <button className="w-full bg-[#3B5BFF] hover:bg-[#2f48d8] !text-white py-5 h4-medium font-semibold rounded-lg mb-3 transition">
-            Pay over time with
-          </button>
-
-          <button className="w-full border border-[#4A4A4A] hover:bg-gray-50 py-5 h4-medium font-semibold rounded-lg transition flex items-center justify-center gap-2">
-            <img src="/card-icon.svg" alt="Card" className="w-5 h-5" />
-            Debit or Credit Card
           </button>
         </div>
       </div>
