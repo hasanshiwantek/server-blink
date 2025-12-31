@@ -51,7 +51,7 @@ const Breadcrumb = ({ items }: BreadcrumbProps) => {
         {items.map((item, index) => (
           <React.Fragment key={index}>
             {index > 0 && (
-            <span className="mt-2 text-gray-400 text-xl" aria-hidden="true">/</span>
+            <span className="mt-2 text-gray-400 text-[11px]" aria-hidden="true">/</span>
             )}
             <span
               itemProp="itemListElement"
@@ -60,7 +60,7 @@ const Breadcrumb = ({ items }: BreadcrumbProps) => {
             >
               {index === items.length - 1 ? (
                 <span
-                  className="!text-[#D42020] text-xl"
+                  className="!text-[#D42020] text-[11px]"
                   itemProp="name"
                 >
                   {item.name}
@@ -68,7 +68,7 @@ const Breadcrumb = ({ items }: BreadcrumbProps) => {
               ) : (
                 <Link
                   href={item.href}
-                  className="text-xl text-[#666666] hover:text-[#f15939] transition-colors"
+                  className="text-[11px] text-[#666666] hover:text-[#f15939] transition-colors"
                   itemProp="item"
                 >
                   <span itemProp="name">{item.name}</span>
