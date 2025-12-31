@@ -22,7 +22,12 @@ const AnimatePresence = dynamic(
   { ssr: false }
 );
 
+interface BreadcrumbItem {
+  name: string;
+  href: string;
+}
 interface ProductListProps {
+  items?: BreadcrumbItem[];
   filters: any;
   setFilters: any;
   products: any[];
@@ -34,6 +39,7 @@ interface ProductListProps {
 }
 
 export default function ProductList({
+  items,
   filters,
   setFilters,
   products,
@@ -43,7 +49,7 @@ export default function ProductList({
   filterMeta,
 initialCategorydescription,
 }: ProductListProps) {
-  const [view, setView] = useState<"list" | "grid">("list");
+  const [view, setView] = useState<"list" | "grid">("grid");
   const [page, setPage] = useState(1);
   const total = pagination?.total || 0;
   // ✅ Scroll to top when filters.page changes
@@ -52,31 +58,35 @@ initialCategorydescription,
   }, [filters.page]);
   return (
     <section
-      className="
-         px-4 sm:px-6 md:px-8
-w-full
+      className="w-full
         transition-all duration-300
       "
     >
       {/* Headings */}
-      <div className="mb-4">
-        <h1 className="h2-medium ">
-  {initialCategorydescription?.name || "Product Category"}
-</h1>
-        <p className="h4-regular ">
-          {/* Do you need to fix your computer or make it work better? At
-          NewTownSpares, we have all the IT Accessories you need! It doesn’t
-          matter if it’s for your home, work, or even an old computer. We are
-          here to help you. We have parts from popular brands like Intel, Dell,
-          and HP. */}
-          <p className="h4-regular ">
-  {initialCategorydescription?.description ||
-    "Discover quality products available in this category, curated to meet your needs."}
-</p>
-        </p>
-      </div>
+      <div className="flex items-center justify-between bg-[#393939] border-b border-gray-400">
+  {items?.slice(-1).map((item, index) => (
+        <h2 key={index} className="font-bold text-xl text-white py-2 px-4 flex-1">
+{item.name}
+</h2>
+  ))}
+         </div>
 
-      {/* <div className="mb-4">
+          <div className="grid grid-cols-4 gap-4 px-4 py-6">
+    <span className="text-xl font-bold text-center  text-[#545454] cursor-pointer hover:text-[#f15939]">
+      Battery Chargers
+    </span>
+    <span className="text-xl font-bold text-center  text-[#545454] cursor-pointer hover:text-[#f15939]">
+      Other
+    </span>
+    <span className="text-xl font-bold text-center  text-[#545454] cursor-pointer hover:text-[#f15939]">
+      Power Distribution Unit PDU
+    </span>
+    <span className="text-xl font-bold text-center  text-[#545454] cursor-pointer hover:text-[#f15939]">
+      Power Supplies
+    </span>
+  </div>
+
+      {/* <div className="mb-4
         <h2 className="h2-medium ">Heading Text</h2>
         <p className="h4-regular ">
           Do you need to fix your computer or make it work better? At

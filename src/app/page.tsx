@@ -191,9 +191,9 @@ const products: Product[] = [
             <div className="lg:col-span-9">
               <Banner />
               <CategoryGrid />
-              <FeaturedProducts products={products} isSlider={true} title="Featured Products" />
-              <FeaturedProducts products={products?.slice(0, 8)} isSlider={false} title="Current Top Sellers" />
-              <FeaturedProducts products={products} isSlider={true} title="New Products" />
+              <FeaturedProducts endpoint="web/products/featured-products" isSlider={true} title="Featured Products" />
+              <FeaturedProducts endpoint="web/products/popular-products" isSlider={false} title="Current Top Sellers" />
+              <FeaturedProducts endpoint="web/products/featured-products" isSlider={true} title="New Products"  />
               <Testimonials/>
               <Brands/>
               <ShopNow/>

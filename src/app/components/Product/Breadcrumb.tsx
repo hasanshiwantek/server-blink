@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import Script from "next/script";
+import { FaTintSlash } from "react-icons/fa";
 
 interface BreadcrumbItem {
   name: string;
@@ -50,7 +51,7 @@ const Breadcrumb = ({ items }: BreadcrumbProps) => {
         {items.map((item, index) => (
           <React.Fragment key={index}>
             {index > 0 && (
-              <ChevronRight className="mx-2 w-4 h-4 text-gray-400" aria-hidden="true" />
+            <span className="mt-2 text-gray-400 text-[11px]" aria-hidden="true">/</span>
             )}
             <span
               itemProp="itemListElement"
@@ -59,7 +60,7 @@ const Breadcrumb = ({ items }: BreadcrumbProps) => {
             >
               {index === items.length - 1 ? (
                 <span
-                  className="h5-regular text-[#2a2a2a]"
+                  className="!text-[#D42020] text-[11px]"
                   itemProp="name"
                 >
                   {item.name}
@@ -67,7 +68,7 @@ const Breadcrumb = ({ items }: BreadcrumbProps) => {
               ) : (
                 <Link
                   href={item.href}
-                  className="h5-20px-regular text-[#666666] hover:text-[#f15939] transition-colors"
+                  className="text-[11px] text-[#666666] hover:text-[#f15939] transition-colors"
                   itemProp="item"
                 >
                   <span itemProp="name">{item.name}</span>

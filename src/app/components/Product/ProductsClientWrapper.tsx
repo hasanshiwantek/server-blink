@@ -122,43 +122,82 @@ export default function ProductsClientWrapper({
   }, [isCategoryPage, isBrandPage, filterMeta.categoryName, filterMeta.brandName, params?.slug]);
 
   return (
-      <div className="flex flex-col lg:flex-row gap-4 py-4 w-full xl:max-w-[100%] 2xl:max-w-[119.5%]">
-        {/* Sidebar: Filters */}
-        <aside
-          className="w-full lg:w-[27%] xl:w-[24%] 2xl:w-[24.1%] bg-white rounded
-"
-        >
-          <Sidebar
-            categories={categories}
-            brands={brands}
-            filters={filters}
-            setFilters={setFilters}
-            products={products}
-            filterMeta={filterMeta}
-            setFilterMeta={setFilterMeta}
-            isBrandPage={isBrandPage}
-            isCategoryPage={isCategoryPage}
-          />
-        </aside>
-
-        {/* Product Listing */}
-        <main className="w-full lg:w-[72%] xl:w-[73.3%] 2xl:w-[73.8%]">
-          {(isCategoryPage || isBrandPage) && (
-            <div className="mb-4 px-4 md:px-0">
-              <Breadcrumb items={breadcrumbItems} />
+          <div className="w-full max-w-[1170px] mx-auto mt-5 lg:px-6 xl:px-0">
+        <div className="py-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Left Sidebar */}
+            <aside className="lg:block hidden lg:col-span-3">
+             <Sidebar
+             categories={categories}
+             brands={brands}
+             filters={filters}
+             setFilters={setFilters}
+             products={products}
+             filterMeta={filterMeta}
+             setFilterMeta={setFilterMeta}
+             isBrandPage={isBrandPage}
+         isCategoryPage={isCategoryPage}
+         />
+            </aside>
+            {/* Main Content */}
+            <div className="lg:col-span-9">
+               {(isCategoryPage || isBrandPage) && (
+           <div className="mb-4 px-4 md:px-0">
+             <Breadcrumb items={breadcrumbItems} />
             </div>
           )}
-          <ProductList
-            filters={filters}
-            setFilters={setFilters}
-            products={products}
-            pagination={pagination}
-            isLoading={isLoading}
-            error={error}
-            filterMeta={filterMeta}
-            initialCategorydescription={initialCategorydescription}
+           <ProductList
+           items={breadcrumbItems}
+          filters={filters}
+             setFilters={setFilters}
+             products={products}
+             pagination={pagination}
+               isLoading={isLoading}
+             error={error}
+             filterMeta={filterMeta}
+             initialCategorydescription={initialCategorydescription}
           />
-        </main>
+            </div>
+          </div>
+        </div>
       </div>
+//       <div className="flex flex-col lg:flex-row gap-4 py-4 w-full xl:max-w-[100%] 2xl:max-w-[119.5%]">
+//         {/* Sidebar: Filters */}
+//         <aside
+//           className="w-full lg:w-[27%] xl:w-[24%] 2xl:w-[24.1%] bg-white rounded
+// "
+//         >
+//           <Sidebar
+//             categories={categories}
+//             brands={brands}
+//             filters={filters}
+//             setFilters={setFilters}
+//             products={products}
+//             filterMeta={filterMeta}
+//             setFilterMeta={setFilterMeta}
+//             isBrandPage={isBrandPage}
+//             isCategoryPage={isCategoryPage}
+//           />
+//         </aside>
+
+//         {/* Product Listing */}
+//         <main className="w-full lg:w-[72%] xl:w-[73.3%] 2xl:w-[73.8%]">
+//           {(isCategoryPage || isBrandPage) && (
+//             <div className="mb-4 px-4 md:px-0">
+//               <Breadcrumb items={breadcrumbItems} />
+//             </div>
+//           )}
+//           <ProductList
+//             filters={filters}
+//             setFilters={setFilters}
+//             products={products}
+//             pagination={pagination}
+//             isLoading={isLoading}
+//             error={error}
+//             filterMeta={filterMeta}
+//             initialCategorydescription={initialCategorydescription}
+//           />
+//         </main>
+//       </div>
   );
 }
