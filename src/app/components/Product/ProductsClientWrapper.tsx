@@ -147,6 +147,7 @@ export default function ProductsClientWrapper({
             </div>
           )}
            <ProductList
+           items={breadcrumbItems}
           filters={filters}
              setFilters={setFilters}
              products={products}
