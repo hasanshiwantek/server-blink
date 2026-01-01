@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useAppDispatch } from "@/hooks/useReduxHooks";
 import { addToCart } from "@/redux/slices/cartSlice";
 import { toast } from "sonner";
-
+import Link from "next/link";
 interface Brand {
   id: number;
   name: string;
@@ -64,7 +64,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div className="px-3 pb-3 flex flex-col flex-1">
         <p className="text-[1rem] text-gray-500 hover:text-[#D42020]">{brandName}</p>
         <p className="text-[1rem] text-gray-400 mb-1 hover:text-[#D42020]">Sku: {product.sku}</p>
+        <Link href={`/${product?.sku}`}>
         <p className="text-[14px] font-medium mb-1 line-clamp-2 hover:text-[#D42020]">{productName}</p>
+        </Link>
 
         <div className="flex flex-col items-start gap-2 mb-2">
         {product?.msrp && Number(product.msrp) > 0 ? (
