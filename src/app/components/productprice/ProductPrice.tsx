@@ -4,7 +4,7 @@ import { RootState } from "@/redux/store";
 const ProductPrice: React.FC<{ price: number; showWas?: boolean; inline?: boolean; textColor?: string; className?: string }> = ({ price, showWas = false, inline = false, textColor, className }) => {
   const { selectedCurrency, currencies } = useAppSelector((state: RootState) => state.currency);
 
-  const rate = currencies.find((c) => c.code === selectedCurrency)?.rate || 1;
+  const rate = currencies.find((c:any) => c.code === selectedCurrency)?.rate || 1;
 
 const currencySymbols: Record<string, string> = {
   AED: "د.إ", AFN: "؋", ALL: "L", AMD: "֏", ANG: "ƒ", AOA: "Kz",

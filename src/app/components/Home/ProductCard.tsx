@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-
+import Link from "next/link";
 interface Brand {
   id: number;
   name: string;
@@ -48,14 +48,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     <div className="bg-[#F2F2F2] rounded shadow hover:shadow-md transition flex flex-col h-full">
       {/* Image */}
       <div className="relative w-full h-72 mb-2 bg-white">
-        <Image src={imageSrc} alt={productName} fill className="object-contain" />
+        <Image
+          src={imageSrc}
+          alt={productName}
+          fill
+          className="object-contain"
+        />
       </div>
 
       {/* Info Wrapper */}
       <div className="px-3 pb-3 flex flex-col flex-1">
         <p className="text-[1rem] text-gray-500">{brandName}</p>
         <p className="text-[1rem] text-gray-400 mb-1">Sku: {product.sku}</p>
-        <p className="text-[14px] font-medium mb-1 line-clamp-2">{productName}</p>
+        <Link href={`/${product.sku}`}>
+          <p className="text-[14px] font-medium mb-1 line-clamp-2">
+            {productName}
+          </p>
+        </Link>
 
         <div className="flex flex-col items-start gap-2 mb-2">
           {product.msrp && Number(product.msrp) > 0 && (

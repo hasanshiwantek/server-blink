@@ -6,7 +6,7 @@ import React from "react";
 const ProductOverview = ({ product }: { product: any }) => {
   return (
     <section className="my-8" aria-labelledby="product-overview-heading">
-      <div className="w-full max-w-[1719px] flex flex-col">
+      <div className="w-full  flex flex-col">
         <div className="flex flex-col gap-8">
           {/* Main Overview Heading */}
           <h2 className="h1-secondary-medium ">Overview</h2>
