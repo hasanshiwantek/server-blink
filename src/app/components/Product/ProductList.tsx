@@ -4,11 +4,12 @@
 
 import { useState, useEffect } from "react";
 import ProductCategoryCard from "./ProductCategoryCard";
-import ProductGridCard from "./ProductGridCard";
+// import ProductGridCard from "./ProductGridCard";
 import SortingBar from "./SortingBar";
 import ProductSkeleton from "../loader/ProductSkeleton";
 import Pagination from "@/components/ui/pagination";
 import dynamic from "next/dynamic";
+import ProductCard from "../../components/Home/ProductCard";
 
 
 // Dynamically import motion.div and AnimatePresence (client only)
@@ -70,21 +71,12 @@ initialCategorydescription,
 </h2>
   ))}
          </div>
-
-          <div className="grid grid-cols-4 gap-4 px-4 py-6">
+{/* 
+          <div className="grid grid-col-1 md:grid-col-2 lg:grid-cols-4 gap-4 px-4 py-6">
     <span className="text-xl font-bold text-center  text-[#545454] cursor-pointer hover:text-[#f15939]">
       Battery Chargers
     </span>
-    <span className="text-xl font-bold text-center  text-[#545454] cursor-pointer hover:text-[#f15939]">
-      Other
-    </span>
-    <span className="text-xl font-bold text-center  text-[#545454] cursor-pointer hover:text-[#f15939]">
-      Power Distribution Unit PDU
-    </span>
-    <span className="text-xl font-bold text-center  text-[#545454] cursor-pointer hover:text-[#f15939]">
-      Power Supplies
-    </span>
-  </div>
+  </div> */}
 
       {/* <div className="mb-4
         <h2 className="h2-medium ">Heading Text</h2>
@@ -153,7 +145,7 @@ initialCategorydescription,
           transition={{ duration: 0.3, ease: "easeInOut" }}
           className={`mt-4 ${
             view === "grid"
-              ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4  "
+              ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
               : "space-y-4"
           }`}
         >
@@ -179,7 +171,7 @@ initialCategorydescription,
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.3, delay: idx * 0.05 }}
                 >
-                  <ProductGridCard product={product} />
+              <ProductCard key={product.id} product={product} />
                 </MotionDiv>
               )
             )}
@@ -189,7 +181,7 @@ initialCategorydescription,
 
       {/* Pagination */}
       {!isLoading && !error && (
-        <div className="mt-6 flex justify-end">
+        <div className="mt-6 flex justify-start">
           <Pagination
             currentPage={filters.page}
             totalPages={pagination?.lastPage || 1}
