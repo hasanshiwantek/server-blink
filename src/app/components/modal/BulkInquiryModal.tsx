@@ -70,7 +70,7 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="!max-w-[70rem] w-full max-h-[90vh] overflow-y-auto p-0 rounded-lg shadow-sm">
+      <DialogContent className="!max-w-[65rem] w-full max-h-[100vh] overflow-y-auto p-0 rounded-lg shadow-sm">
         {/* Header with Close */}
         {/* <DialogHeader className="flex justify-end p-4"> */}
         {/* <DialogClose className="text-gray-500 hover:text-gray-700">
@@ -95,77 +95,80 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
               </div>
             )}
             {product?.name && (
-              <p className="mt-4 text-base text-gray-700 text-center font-medium">
+              <p className="mt-4 text-base lg:text-xl text-[#545454] text-left font-medium">
                 {product.name}
               </p>
             )}
           </div>
 
-          {/* Right Side - Form */}
-          <div className="md:w-3/5 p-8 bg-[#f7f7f7]">
-            <DialogTitle className="text-2xl font-semibold text-gray-800 mb-6">
-              Request A Bulk Quote
-            </DialogTitle>
+      {/* Right Side - Form */}
+<div className="md:w-3/5 p-8 bg-white relative flex flex-col items-center">
+  {/* Red Banner with Title + Close */}
+  <div style={{borderRadius:"49% 51% 51% 49% / 0% 0% 50% 50%"}} className="absolute top-0 right-0 bg-[#d40511] text-white px-6 py-5 w-full flex justify-center items-center">
+    <h2 className="text-3xl">Request A Bulk Quote</h2>
+  </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <Input
-                type="text"
-                name="fullName"
-                placeholder="Full Name"
-                value={formData.fullName}
-                onChange={handleChange}
-                required
-                className="w-full !max-w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939]"
-              />
+  {/* Push the form down so it doesn't overlap banner */}
+  <form onSubmit={handleSubmit} className="mt-16 w-full space-y-4">
+    <Input
+      type="text"
+      name="fullName"
+      placeholder="Full Name"
+      value={formData.fullName}
+      onChange={handleChange}
+      required
+      className="w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939]"
+    />
 
-              <Input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="w-full !max-w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939]"
-              />
+    <Input
+      type="email"
+      name="email"
+      placeholder="Email"
+      value={formData.email}
+      onChange={handleChange}
+      required
+      className="w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939]"
+    />
 
-              <Input
-                type="tel"
-                name="phone"
-                placeholder="Phone"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-                className="w-full !max-w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939]"
-              />
+    <Input
+      type="tel"
+      name="phone"
+      placeholder="Phone"
+      value={formData.phone}
+      onChange={handleChange}
+      required
+      className="w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939]"
+    />
 
-              <Input
-                type="number"
-                name="quantity"
-                placeholder="Quantity"
-                value={formData.quantity}
-                onChange={handleChange}
-                required
-                min={1}
-                className="w-full !max-w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939]"
-              />
+    <Input
+      type="number"
+      name="quantity"
+      placeholder="Quantity"
+      value={formData.quantity}
+      onChange={handleChange}
+      required
+      min={1}
+      className="w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939]"
+    />
 
-              <Textarea
-                name="comments"
-                placeholder="Comments"
-                value={formData.comments}
-                onChange={handleChange}
-                rows={4}
-                className="w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939] resize-none"
-              />
+    <Textarea
+      name="comments"
+      placeholder="Comments"
+      value={formData.comments}
+      onChange={handleChange}
+      rows={4}
+      className="w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939] resize-none"
+    />
 
-              <Button
-                type="submit"
-                className="w-full bg-[#F15939] text-white !p-5 !text-lg rounded-md font-medium hover:bg-[#d94d30] transition-colors duration-200"
-              >
-                Submit Form
-              </Button>
-            </form>
-          </div>
+    <Button
+      type="submit"
+      className="w-full bg-[#d40511] border-b border-black text-white px-6 py-5 text-2xl rounded-md font-medium hover:bg-[#d94d30] transition-colors duration-200"
+    >
+      Submit Form
+    </Button>
+  </form>
+</div>
+
         </div>
       </DialogContent>
     </Dialog>
