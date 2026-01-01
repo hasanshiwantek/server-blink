@@ -44,7 +44,7 @@ const scrollRight = () => {
   if (!items.length) return null;
 
   return (
-   <div className="relative w-full">
+   <div className="relative w-full overflow-hidden">
   {/* Navigation Buttons */}
   <button
     onClick={scrollLeft}

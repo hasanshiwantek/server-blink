@@ -195,7 +195,7 @@ const products: Product[] = [
               <FeaturedProducts endpoint="web/products/popular-products" isSlider={false} title="Current Top Sellers" />
               <FeaturedProducts endpoint="web/products/featured-products" isSlider={true} title="New Products"  />
               <Testimonials/>
-              {/* <Brands/> */}
+              <Brands/>
               <ShopNow/>
             </div>
           </div>

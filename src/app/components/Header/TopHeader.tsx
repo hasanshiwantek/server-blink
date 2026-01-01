@@ -109,11 +109,9 @@ const TopHeader = () => {
               <Link href="/cart" className="transition block">
                 <div className="bg-red-600 p-2 rounded hover:bg-red-700 transition">
                   <FaShoppingCart className="w-5 h-5 text-white" />
-                  {cart?.length > 0 && (
                     <span className="absolute -top-1 -right-1 bg-white text-red-600 text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                      {cart?.length}
+                      {cart?.length || "0"}
                     </span>
-                  )}
                 </div>
               </Link>
             </div>
