@@ -21,7 +21,7 @@ function Input({
         "hover:border-[#86848c]",
 
         // Focus
-        "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-orange-300 focus-visible:border-orange-500",
+        "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400 focus-visible:border-[var(--primary-color)]",
 
         // Dark mode & placeholder
         "dark:bg-input/30 placeholder:text-gray-400 file:text-foreground !font-[520]",

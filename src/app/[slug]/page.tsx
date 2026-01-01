@@ -6,6 +6,8 @@ import ProductCard from "@/app/components/Product/ProductCard";
 import ProductOverview from "@/app/components/Product/ProductOverview";
 import ProductExtras from "@/app/components/Product/ProductExtras";
 import { Suspense } from "react";
+import CategoriesSidebar from "../components/Home/CategoriesSidebar";
+import BrandsSidebar from "../components/Home/BrandsSidebar";
 // ✅ Dynamic metadata for SEO
 export async function generateMetadata({
   params,
@@ -102,19 +104,34 @@ export default async function ProductPage({
         />
       )}
 
-      <main role="main">
-        <article>
-          <ProductCard product={product} />
-          <ProductOverview product={product} />
+      <main
+        role="main"
+     className="w-full max-w-[1170px] mx-auto mt-8 lg:px-6 xl:px-0"
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-12  gap-6">
+          {/* Left Sidebar */}
+          <aside className="hidden lg:block lg:col-span-3 w-full lg:w-[85%]">
+            <CategoriesSidebar />
+            <BrandsSidebar />
+          </aside>
 
-          {/* Client-side component */}
-        <Suspense fallback={<div className="py-10 text-center text-sm text-gray-500">
-      Loading...
-    </div>}>
-  <ProductExtras products={products} />
-       </Suspense>
+          {/* Main Product Content - ✅ Added lg:col-span-9 */}
+          <article className="lg:col-span-9 w-full">
+            <ProductCard product={product} />
+            <ProductOverview product={product} />
 
-        </article>
+            {/* Client-side component */}
+            <Suspense
+              fallback={
+                <div className="py-10 text-center text-sm text-gray-500">
+                  Loading...
+                </div>
+              }
+            >
+              <ProductExtras products={products} />
+            </Suspense>
+          </article>
+        </div>
       </main>
     </>
   );

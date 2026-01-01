@@ -179,7 +179,7 @@ const products: Product[] = [
   return (
     <main className="flex flex-col gap-30" role="main">
       {/* Container: max-width 1170px, centered */}
-      <div className="w-full max-w-[1170px] mx-auto mt-5 lg:px-6 xl:px-0">
+      <div className="w-full max-w-[1170px] mx-auto  lg:px-6 xl:px-0">
         <div className="py-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Left Sidebar */}

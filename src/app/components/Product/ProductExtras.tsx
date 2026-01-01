@@ -17,6 +17,11 @@ const RelatedProduct = dynamic(
   { ssr: false, loading: () => <p>Loading Related Products...</p> }
 );
 
+const FeaturedProducts = dynamic(
+  () => import("@/app/components/Home/FeaturedProducts"),
+  { ssr: false, loading: () => <p>Loading Recommended Products...</p> }
+);
+
 interface Props {
   products: any[];
 }
@@ -24,9 +29,9 @@ interface Props {
 export default function ProductExtras({ products }: Props) {
   return (
     <>
-      <ProductFAQs />
-      <ProductReview />
-      <RelatedProduct products={products} />
+      {/* <ProductFAQs /> */}
+      {/* <ProductReview /> */}
+       <FeaturedProducts endpoint="web/products/featured-products" isSlider={true} title="RECOMMENDED"  />
     </>
   );
 }

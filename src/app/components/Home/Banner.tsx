@@ -134,7 +134,7 @@ const Banner = () => {
               onClick={() => api?.scrollTo(index)}
               className={`w-3 h-3 rounded-full transition-all duration-300 ${
                 current === index
-                  ? "bg-red-600 w-8"
+                  ? "bg-red-600 w-3"
                   : "bg-white/60 hover:bg-white/90"
               }`}
               aria-label={`Go to slide ${index + 1}`}

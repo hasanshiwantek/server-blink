@@ -4,13 +4,13 @@ import { Metadata } from 'next';
 import React from 'react'
 
 export const metadata: Metadata = {
-  title: "Sign In - New Town Spares",
+  title: "Sign In - ServerBlink",
   description:
-    "Login to your New Town Spares account to manage orders, track purchases, and access exclusive member features.",
+    "Login to your ServerBlink account to manage orders, track purchases, and access exclusive member features.",
   keywords: [
     "signin",
     "login",
-    "new town spares",
+    "server blink",
     "customer login",
     "account access",
     "order tracking"

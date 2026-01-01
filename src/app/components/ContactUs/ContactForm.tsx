@@ -1,136 +1,212 @@
 "use client";
 
 import React from "react";
+import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import Link from "next/link";
+type ContactFormData = {
+  fullName: string;
+  phoneNumber: string;
+  email: string;
+  orderNumber: string;
+  companyName: string;
+  rmaNumber: string;
+  message: string;
+};
 
 const ContactForm = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<ContactFormData>();
+
+  const onSubmit = (data: ContactFormData) => {
+    console.log("Form Data:", data);
+    // You can also log it in a more formatted way
+    console.table(data);
+
+    // Optionally reset the form after submission
+    // reset();
+  };
+
   return (
-    <div className="w-full max-w-full mx-auto py-16 md:px-[7%] lg:px-[5.2%] xl:px-[5.2%] 2xl:px-[5.2%] px-[7%] bg-[#FAFAFA]">
- <div className="w-full xl:max-w-[53.6%] 2xl:max-w-[53.6%] mx-auto">
-        <h1 className="h1-lg mb-4 text-center">
-          Let's Get In Touch with Us
-        </h1>
-        <p className="h4-regular !text-[#666666] text-center mx-auto">
-          Have questions about our products, need expert advice, or want a custom IT hardware solution? Our team is here to help you make the right choice.
+    <div className="w-[80%]  max-w-full lg:max-w-[1170px]  mx-0 lg:mx-auto  lg:px-[0%] px-[7%] ">
+      {/* Breadcrumb */}
+      <nav className="mb-6">
+        <div className="flex items-center gap-2 text-sm">
+          <Link href="/" className="text-[#D40511] hover:underline">
+            Home
+          </Link>
+          <span className="text-gray-600">/</span>
+          <span className="text-gray-600">Contact Form</span>
+        </div>
+      </nav>
+
+      {/* Page Title */}
+      <div className="mb-8">
+        <h1 className="h1-lg mb-4">Contact Form</h1>
+        <h2 className="h1-lg ">Server Blink, LLC</h2>
+      </div>
+
+      {/* Intro Text */}
+      <div className="mb-8">
+        <p className="text-[1rem] text-[#545454] font-normal mb-2">
+          We're happy to answer questions or help you with returns.
+        </p>
+        <p className="text-[1rem] text-[#545454] font-normal">
+          Please fill out the form below if you need assistance.
         </p>
       </div>
-<div className="w-full xl:w-[58.7%] 2xl:w-[58.6%] mx-auto">
-        <form className="space-y-6 p-8">
-          {/* Full Name */}
+
+      {/* Form */}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* Full Name & Phone Number - Two Column */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label htmlFor="fullName" className="block h5-regular mb-2">
+            <label
+              htmlFor="fullName"
+              className="block text-[1rem] text-[#545454] font-normal mb-2"
+            >
               Full Name
             </label>
             <Input
               type="text"
               id="fullName"
-              name="fullName"
-              placeholder="Enter your full name"
-              className="mt-1 block !max-w-full h-[60px] px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+              {...register("fullName")}
+              className="mt-1 block w-full max-w-full h- max-w-full h-[40px] px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-red-500 focus:border-red-500"
             />
           </div>
 
-          {/* Phone Number */}
           <div>
-            <label htmlFor="phoneNumber" className="block h5-regular mb-2">
-              Phone number
+            <label
+              htmlFor="phoneNumber"
+              className="block text-[1rem] text-[#545454] font-normal mb-2"
+            >
+              Phone Number
             </label>
             <Input
               type="tel"
               id="phoneNumber"
-              name="phoneNumber"
-              placeholder="Enter your phone number"
-              className="mt-1 block !max-w-full h-[60px] px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+              {...register("phoneNumber")}
+              className="mt-1 block w-full h- max-w-full h-[40px] px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-red-500 focus:border-red-500"
             />
           </div>
+        </div>
 
-          {/* Email */}
+        {/* Email Address & Order Number - Two Column */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label htmlFor="email" className="block h5-regular mb-2">
-              Email <span className="text-[#F15939]">*</span>
+            <label
+              htmlFor="email"
+              className="block text-[1rem] text-[#545454] font-normal mb-2"
+            >
+              Email Address
+              <span className="text-[#D40511] ml-1">*</span>
             </label>
             <Input
               type="email"
               id="email"
-              name="email"
-              required
-              placeholder="Enter your email"
-              className="mt-1 block !max-w-full h-[60px] px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "Invalid email address",
+                },
+              })}
+              className="mt-1 block w-full h- max-w-full h-[40px] px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-red-500 focus:border-red-500"
             />
+            {errors.email && (
+              <p className="text-[#D40511] text-sm mt-1">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
-          {/* Order Number */}
           <div>
-            <label htmlFor="orderNumber" className="block h5-regular mb-2">
+            <label
+              htmlFor="orderNumber"
+              className="block text-[1rem] text-[#545454] font-normal mb-2"
+            >
               Order Number
             </label>
             <Input
               type="text"
               id="orderNumber"
-              name="orderNumber"
-              placeholder="Enter your order number"
-              className="mt-1 block !max-w-full h-[60px] px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+              {...register("orderNumber")}
+              className="mt-1 block w-full h- max-w-full h-[40px] px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-red-500 focus:border-red-500"
             />
           </div>
+        </div>
 
-          {/* Company Name & RMA Number - Two Column */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="companyName" className="block h5-regular mb-2">
-                Company Name
-              </label>
-              <Input
-                type="text"
-                id="companyName"
-                name="companyName"
-                placeholder="Confirm your company name"
-                className="mt-1 block !max-w-full h-[60px] px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
-              />
-            </div>
-            <div>
-              <label htmlFor="rmaNumber" className="block h5-regular mb-2">
-                RMA Number
-              </label>
-              <Input
-                type="text"
-                id="rmaNumber"
-                name="rmaNumber"
-                placeholder="Confirm your RMA Number"
-                className="mt-1 block !max-w-full h-[60px] px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
-              />
-            </div>
-          </div>
-
-          {/* Message / Inquiry */}
+        {/* Company Name & RMA Number - Two Column */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label htmlFor="message" className="block h5-regular mb-2">
-              Message / Inquiry <span className="text-[#F15939]">*</span>
+            <label
+              htmlFor="companyName"
+              className="block text-[1rem] text-[#545454] font-normal mb-2"
+            >
+              Company Name
             </label>
-            <Textarea
-              id="message"
-              name="message"
-              required
-              placeholder="Write your message here..."
-              rows={6}
-              className="mt-1 block !max-w-full h-[160px] px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 resize-none"
+            <Input
+              type="text"
+              id="companyName"
+              {...register("companyName")}
+              className="mt-1 block w-full h- max-w-full h-[40px] px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-red-500 focus:border-red-500"
             />
           </div>
 
-          {/* Submit Button */}
-          <div className="flex justify-center pt-2">
-            <button
-              type="submit"
-              className="w-full xl:w-[42.1%] 2xl:w-[42.1%] px-12 py-4 rounded-full h4-medium !text-white bg-[#F15939] border border-transparent hover:!border-[#F15939] hover:!bg-white hover:!text-[#F15939] transition-colors duration-200"
+          <div>
+            <label
+              htmlFor="rmaNumber"
+              className="block text-[1rem] text-[#545454] font-normal mb-2"
             >
-              Submit
-            </button>
+              RMA Number
+            </label>
+            <Input
+              type="text"
+              id="rmaNumber"
+              {...register("rmaNumber")}
+              className="mt-1 block w-full h- max-w-full h-[40px] px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-red-500 focus:border-red-500"
+            />
           </div>
-        </form>
-      </div>
+        </div>
+
+        {/* Comments/Questions */}
+        <div>
+          <label
+            htmlFor="message"
+            className="block text-[1rem] text-[#545454] font-normalmb-2"
+          >
+            Comments/Questions
+            <span className="text-[#D40511] ml-1">*</span>
+          </label>
+          <Textarea
+            id="message"
+            {...register("message", {
+              required: "Message is required",
+            })}
+            rows={6}
+            className="mt-1 block  max-w-full h-50 px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-red-500 focus:border-red-500 resize-none"
+          />
+          {errors.message && (
+            <p className="text-[#D40511] text-sm mt-1">
+              {errors.message.message}
+            </p>
+          )}
+        </div>
+
+        {/* Submit Button */}
+        <div className="pt-2">
+          <button type="submit" className="btn-primary">
+            SUBMIT FORM
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
 
 export default ContactForm;
-

@@ -23,7 +23,7 @@ const ContactUs = () => {
     <div className="w-full">
       {/* Row 1: Banner */}
       {/* <AOSWrapper animation="zoom-in" delay={100}> */}
-        <ContactBanner />
+        {/* <ContactBanner /> */}
       {/* </AOSWrapper> */}
 
       {/* Row 2: Contact Form */}
@@ -33,12 +33,12 @@ const ContactUs = () => {
 
       {/* Reach Out to Us Section */}
       {/* <AOSWrapper animation="fade-up" delay={300}> */}
-        <ReachOutSection />
+        {/* <ReachOutSection /> */}
       {/* </AOSWrapper> */}
 
       {/* Frequently Asked Question Section */}
       {/* <AOSWrapper animation="fade-up" delay={400}> */}
-        <FAQSection />
+        {/* <FAQSection /> */}
       {/* </AOSWrapper> */}
     </div>
   );

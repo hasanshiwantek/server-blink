@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 import ContactUs from '../components/ContactUs/ContactUs'
 
 export const metadata: Metadata = {
-  title: 'Contact Us | New Town Spares',
+  title: 'Contact Us | ServerBlink',
   description:
     'Get in touch with New Town Spares for product inquiries, customer support, sales questions, and technical assistance. Contact us via phone, email, or visit our website.',
   keywords: [
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     canonical: 'https://newtownspares.advertsedge.com/contact-us',
   },
   openGraph: {
-    title: 'Contact Us | New Town Spares',
+    title: 'Contact Us | Server Blink',
     description:
       'Get in touch with New Town Spares for product inquiries, customer support, and sales questions.',
     url: 'https://newtownspares.advertsedge.com/contact-us',
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
 
 const page = () => {
   return (
-    <div>
+    <div className="">
       <ContactUs/>
     </div>
   )

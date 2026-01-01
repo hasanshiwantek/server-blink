@@ -1,4 +1,5 @@
 "use client";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import countries from "world-countries";
@@ -11,17 +12,11 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
-import Image from "next/image";
 import Link from "next/link";
-import SignUpBG from "@/assets/auth/Signup-bg.png";
-import styles from "@/styles/auth/Auth.module.css";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import { registerUser } from "@/redux/slices/authSlice";
-import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
 
 interface SignupFormValues {
   firstName: string;
@@ -52,13 +47,14 @@ const SignupPage = () => {
     handleSubmit,
     watch,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<SignupFormValues>();
+  
   const dispatch = useAppDispatch();
   const { registerLoading } = useAppSelector((state: RootState) => state?.auth);
   const router = useRouter();
-    const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const onSubmit = async (data: SignupFormValues) => {
     try {
       const result = await dispatch(registerUser(data));
@@ -79,206 +75,190 @@ const SignupPage = () => {
   const password = watch("password");
 
   return (
-    <section
-      className={`relative flex items-center justify-center min-h-screen !bg-cover !bg-center p-4 ${styles.signUpBG}`}
-    >
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/10" />
+    <div className="">
+      {/* Header/Navigation - Dark gray bar at top */}
+      <div className=" w-full" />
 
-      {/* Form Container */}
-      <div
-        className="relative z-10 w-full 
-                   max-w-[95%] sm:max-w-[90%] lg:max-w-[80%] 2xl:max-w-[1000px]
-                   bg-white rounded-lg shadow-md 
-                   p-6 sm:p-8 lg:px-[40px] 
-                   h-auto  flex flex-col justify-center"
-      >
-        <div className="flex flex-col justify-center items-center">
-          <h1 className="h2-medium text-center">Signup</h1>
-          <p className="h5-regular text-center mb-4">
-            Create an account to get started.
-          </p>
+      {/* Breadcrumb */}
+      <div className=" w-full  xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-7xl mx-auto py-4">
+        <div className="flex items-center gap-2 text-sm">
+          <Link href="/" className="text-gray-600 hover:text-gray-900">
+            Home
+          </Link>
+          <span className="text-gray-400">/</span>
+          <span className="text-red-600">Create Account</span>
         </div>
+      </div>
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-5 !w-full !max-w-full sm:!max-w-none mt-5 max-[642px]:max-w-sm max-[642px]:mx-auto"
-        >
-          {/* Name Fields */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <Label className="h5-regular" htmlFor="firstName">
-                First Name <span className="text-red-600">*</span>
-              </Label>
-              <Input
-                id="firstName"
-                className="!w-full !max-w-full h-[60px]"
-                {...register("firstName", { required: true })}
-              />
-              {errors.firstName && (
-                <p className="text-sm text-red-500">Required</p>
-              )}
-            </div>
-            <div>
-              <Label className="h5-regular" htmlFor="lastName">
-                Last Name <span className="text-red-600">*</span>
-              </Label>
-              <Input
-                id="lastName"
-                className="!w-full !max-w-full h-[60px]"
-                {...register("lastName", { required: true })}
-              />
-              {errors.lastName && (
-                <p className="text-sm text-red-500">Required</p>
-              )}
-            </div>
-          </div>
+      {/* Main Content */}
+      <div className=" w-full  xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-7xl mx-auto  py-8 pb-16">
+        <h1 className="h1-lg mb-12">New Account</h1>
 
-          {/* Email / Phone */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Two Column Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
+            {/* Left Column */}
+            
+            {/* Email Address */}
             <div>
-              <Label className="h5-regular" htmlFor="email">
-                Email <span className="text-red-600">*</span>
-              </Label>
+              <label htmlFor="email" className="block text-[1rem] font-normal text-[#545454] mb-2">
+                Email Address
+              </label>
               <Input
                 id="email"
                 type="email"
-                className="!w-full !max-w-full h-[60px]"
-                {...register("email", { required: true })}
+                className="w-full h-12 max-w-full"
+                {...register("email", { required: "Email is required" })}
               />
-              {errors.email && <p className="text-sm text-red-500">Required</p>}
+              {errors.email && (
+                <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>
+              )}
             </div>
+
+            {/* Password */}
             <div>
-              <Label className="h5-regular" htmlFor="phone">
-                Phone Number
-              </Label>
+              <label htmlFor="password" className="block text-[1rem] font-normal text-[#545454] mb-2">
+                Password
+              </label>
               <Input
-                id="phone"
+                id="password"
+                type="password"
+                className="w-full h-12 
+                max-w-full"
+                {...register("password", { required: "Password is required" })}
+              />
+              {errors.password && (
+                <p className="text-sm text-red-500 mt-1">{errors.password.message}</p>
+              )}
+            </div>
+
+            {/* Confirm Password */}
+            <div>
+              <label htmlFor="confirmPassword" className="block text-[1rem] font-normal text-[#545454] mb-2">
+                Confirm Password
+              </label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                className="w-full h-12 max-w-full"
+                {...register("password_confirmation", {
+                  required: "Please confirm your password",
+                  validate: (value) => value === password || "Passwords do not match",
+                })}
+              />
+              {errors.password_confirmation && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.password_confirmation.message}
+                </p>
+              )}
+            </div>
+
+            {/* First Name */}
+            <div>
+              <label htmlFor="firstName" className="block text-[1rem] font-normal text-[#545454] mb-2">
+                First Name
+              </label>
+              <Input
+                id="firstName"
+                className="w-full h-12 max-w-full"
+                {...register("firstName", { required: "First name is required" })}
+              />
+              {errors.firstName && (
+                <p className="text-sm text-red-500 mt-1">{errors.firstName.message}</p>
+              )}
+            </div>
+
+            {/* Last Name */}
+            <div>
+              <label htmlFor="lastName" className="block text-[1rem] font-normal text-[#545454] mb-2">
+                Last Name
+              </label>
+              <Input
+                id="lastName"
+                className="w-full h-12 max-w-full"
+                {...register("lastName", { required: "Last name is required" })}
+              />
+              {errors.lastName && (
+                <p className="text-sm text-red-500 mt-1">{errors.lastName.message}</p>
+              )}
+            </div>
+
+            {/* Company Name */}
+            <div>
+              <label htmlFor="companyName" className="block text-[1rem] font-normal text-[#545454] mb-2">
+                Company Name
+              </label>
+              <Input
+                id="companyName"
+                className="w-full h-12 max-w-full"
+                {...register("companyName")}
+              />
+            </div>
+
+            {/* Phone Number */}
+            <div>
+              <label htmlFor="phoneNumber" className="block text-[1rem] font-normal text-[#545454] mb-2">
+                Phone Number
+              </label>
+              <Input
+                id="phoneNumber"
                 type="tel"
-                className="!w-full !max-w-full h-[60px]"
+                className="w-full h-12 max-w-full"
                 {...register("phoneNumber")}
               />
             </div>
-          </div>
 
-          {/* Password / Confirm */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      {/* Password */}
-      <div className="relative">
-        <Label className="h5-regular" htmlFor="password">
-          Password <span className="text-red-600">*</span>
-        </Label>
-        <Input
-          id="password"
-          type={showPassword ? "text" : "password"}
-          className="!w-full !max-w-full h-[60px] pr-12"
-          {...register("password", { required: true })}
-        />
-        <button
-          type="button"
-          onClick={() => setShowPassword((prev) => !prev)}
-          className="absolute right-3 top-[65px] -translate-y-1/2 text-gray-500 hover:text-gray-700"
-        >
-          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-        </button>
-        {errors.password && (
-          <p className="text-sm text-red-500 mt-1">Required</p>
-        )}
-      </div>
-
-      {/* Confirm Password */}
-      <div className="relative">
-        <Label className="h5-regular" htmlFor="confirmPassword">
-          Confirm Password <span className="text-red-600">*</span>
-        </Label>
-        <Input
-          id="confirmPassword"
-          type={showConfirmPassword ? "text" : "password"}
-          className="!w-full !max-w-full h-[60px] pr-12"
-          {...register("password_confirmation", {
-            required: true,
-            validate: (value) =>
-              value === password || "Passwords do not match",
-          })}
-        />
-        <button
-          type="button"
-          onClick={() => setShowConfirmPassword((prev) => !prev)}
-          className="absolute right-3 top-[65px] -translate-y-1/2 text-gray-500 hover:text-gray-700"
-        >
-          {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-        </button>
-        {errors.password_confirmation && (
-          <p className="text-sm text-red-500 mt-1">
-            {errors.password_confirmation.message || "Required"}
-          </p>
-        )}
-      </div>
-    </div>
-          {/* Company Name */}
-          <div>
-            <Label className="h5-regular" htmlFor="company">
-              Company Name
-            </Label>
-            <Input
-              id="company"
-              className="!w-full !max-w-full h-[60px]"
-              {...register("companyName")}
-            />
-          </div>
-
-          {/* Address */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Address Line 1 */}
             <div>
-              <Label className="h5-regular" htmlFor="address1">
-                Address Line 1 <span className="text-red-600">*</span>
-              </Label>
+              <label htmlFor="addressLine1" className="block text-[1rem] font-normal text-[#545454] mb-2">
+                Address Line 1
+              </label>
               <Input
-                id="address1"
-                className="!w-full !max-w-full h-[60px]"
-                {...register("addressLine1", { required: true })}
+                id="addressLine1"
+                className="w-full h-12 max-w-full"
+                {...register("addressLine1", { required: "Address is required" })}
               />
               {errors.addressLine1 && (
-                <p className="text-sm text-red-500">Required</p>
+                <p className="text-sm text-red-500 mt-1">{errors.addressLine1.message}</p>
               )}
             </div>
+
+            {/* Address Line 2 */}
             <div>
-              <Label className="h5-regular" htmlFor="address2">
+              <label htmlFor="addressLine2" className="block text-[1rem] font-normal text-[#545454] mb-2">
                 Address Line 2
-              </Label>
+              </label>
               <Input
-                id="address2"
-                className="!w-full !max-w-full h-[60px]"
+                id="addressLine2"
+                className="w-full h-12 max-w-full"
                 {...register("addressLine2")}
               />
             </div>
+
+            {/* Suburb/City */}
             <div>
-              <Label className="h5-regular" htmlFor="city">
-                Suburb/City <span className="text-red-600">*</span>
-              </Label>
+              <label htmlFor="suburb" className="block text-[1rem] font-normal text-[#545454] mb-2">
+                Suburb/City
+              </label>
               <Input
-                id="city"
-                className="!w-full !max-w-full h-[60px]"
-                {...register("suburb", { required: true })}
+                id="suburb"
+                className="w-full h-12 max-w-full"
+                {...register("suburb", { required: "Suburb/City is required" })}
               />
               {errors.suburb && (
-                <p className="text-sm text-red-500">Required</p>
+                <p className="text-sm text-red-500 mt-1">{errors.suburb.message}</p>
               )}
             </div>
-          </div>
 
-          {/* Country / State / Zip */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Country */}
             <div>
-              <Label className="h5-regular" htmlFor="country">
-                Country <span className="text-red-600">*</span>
-              </Label>
-
-              <Select>
-                <SelectTrigger className="!w-full !max-w-full !h-[60px]">
-                  <SelectValue placeholder="Select Country" />
+              <label htmlFor="country" className="block text-[1rem] font-normal text-[#545454] mb-2">
+                Country
+              </label>
+              <Select onValueChange={(value) => setValue("country", value)}>
+                <SelectTrigger className="w-full h-12 max-w-full">
+                  <SelectValue placeholder="Choose a Country" />
                 </SelectTrigger>
-
                 <SelectContent>
                   {countryList.map((country) => (
                     <SelectItem key={country.code} value={country.code}>
@@ -287,54 +267,60 @@ const SignupPage = () => {
                   ))}
                 </SelectContent>
               </Select>
+              {errors.country && (
+                <p className="text-sm text-red-500 mt-1">Country is required</p>
+              )}
             </div>
+
+            {/* State/Province */}
             <div>
-              <Label className="h5-regular" htmlFor="state">
-                State/Province <span className="text-red-600">*</span>
-              </Label>
+              <label htmlFor="state" className="block text-[1rem] font-normal text-[#545454] mb-2">
+                State/Province
+              </label>
               <Input
                 id="state"
-                className="!w-full !max-w-full h-[60px]"
-                {...register("state", { required: true })}
+                className="w-full h-12 max-w-full"
+                {...register("state", { required: "State/Province is required" })}
               />
-              {errors.state && <p className="text-sm text-red-500">Required</p>}
-            </div>
-            <div>
-              <Label className="h5-regular" htmlFor="zip">
-                Zip/Postcode <span className="text-red-600">*</span>
-              </Label>
-              <Input
-                id="zip"
-                className="!w-full !max-w-full h-[60px]"
-                {...register("zip", { required: true })}
-              />
-              {errors.zip && <p className="text-sm text-red-500">Required</p>}
+              {errors.state && (
+                <p className="text-sm text-red-500 mt-1">{errors.state.message}</p>
+              )}
             </div>
           </div>
 
-          {/* Submit */}
-          {registerLoading ? (
-            <div className="flex justify-center items-center py-9">
-              <div className="w-8 h-8 border-4 border-t-transparent border-[#F15939] rounded-full animate-spin"></div>
-            </div>
-          ) : (
-            <Button
-              type="submit"
-              className="w-full !py-9 !rounded-full btn-primary 2xl:text-[22px] xl:text-[16.5] text-[14px]"
-            >
-              Sign up
-            </Button>
-          )}
+          {/* Zip/Postcode - Full Width */}
+          <div className="max-w-[calc(50%-1rem)]">
+            <label htmlFor="zip" className="block text-[1rem] font-normal text-[#545454] mb-2">
+              Zip/Postcode
+            </label>
+            <Input
+              id="zip"
+              className="w-full h-12 max-w-full"
+              {...register("zip", { required: "Zip/Postcode is required" })}
+            />
+            {errors.zip && (
+              <p className="text-sm text-red-500 mt-1">{errors.zip.message}</p>
+            )}
+          </div>
 
-          <p className="h6-medium text-center !text-[#4A4A4A] mt-4">
-            Already have an account?{" "}
-            <Link href="/auth/login" className="text-red-500 hover:underline">
-              Login
-            </Link>
-          </p>
+          {/* Submit Button */}
+          <div className="py-6">
+            {registerLoading ? (
+              <div className="flex justify-start items-center py-3">
+                <div className="w-6 h-6 border-4 border-t-transparent border-red-600 rounded-full animate-spin"></div>
+              </div>
+            ) : (
+              <button
+                type="submit"
+                className="btn-primary"
+              >
+                CREATE ACCOUNT
+              </button>
+            )}
+          </div>
         </form>
       </div>
-    </section>
+    </div>
   );
 };
 

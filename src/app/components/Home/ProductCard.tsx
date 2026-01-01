@@ -52,7 +52,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     <div className="bg-[#F2F2F2] rounded shadow hover:shadow-md transition flex flex-col h-full">
       {/* Image */}
       <div className="relative w-full h-72 mb-2 bg-white">
-        <Image src={imageSrc} alt={productName} fill className="object-contain" />
+        <Image
+          src={imageSrc}
+          alt={productName}
+          fill
+          className="object-contain"
+        />
       </div>
 
       {/* Info Wrapper */}

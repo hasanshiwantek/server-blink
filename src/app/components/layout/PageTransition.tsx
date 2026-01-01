@@ -20,7 +20,7 @@ export default function PageTransition({
         className="
     flex-grow
     max-w-[1170px] mx-auto
-    lg:max-w-full lg:mx-0
+    lg:max-w-full  lg:mx-0 py-10
   "
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
