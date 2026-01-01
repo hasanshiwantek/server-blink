@@ -4,7 +4,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-
+import Link from "next/link";
 type ContactFormData = {
   fullName: string;
   phoneNumber: string;
@@ -37,9 +37,9 @@ const ContactForm = () => {
       {/* Breadcrumb */}
       <nav className="mb-6">
         <div className="flex items-center gap-2 text-sm">
-          <a href="/" className="text-[#D40511] hover:underline">
+          <Link href="/" className="text-[#D40511] hover:underline">
             Home
-          </a>
+          </Link>
           <span className="text-gray-600">/</span>
           <span className="text-gray-600">Contact Form</span>
         </div>
