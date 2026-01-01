@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Plus, Minus, ChevronDown, ChevronUp } from "lucide-react";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
@@ -10,8 +10,10 @@ import ProductPrice from "../productprice/ProductPrice";
 import { fetchReviews, fetchStats } from "@/redux/slices/homeSlice";
 import Link from "next/link";
 import { RootState } from "@/redux/store";
+import BulkInquiryModal from "../modal/BulkInquiryModal";
 
 const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const cart = useAppSelector((state: RootState) => state.cart.items);
@@ -32,6 +34,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
   }, [dispatch]);
 
   return (
+    <>
     <section className="product-middle flex flex-col h-full w-[80%] max-w-full  xl:max-w-[50%] 2xl:max-w-[50%] ">
         {/* Title Section */}
         <div className="flex flex-col gap-2 mb-4">
@@ -167,6 +170,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
             <a
               href="#"
               className="text-[var(--primary-color)] hover:underline font-normal"
+               onClick={() => setIsModalOpen(true)}
             >
               Request A Bulk Quote
             </a>
@@ -225,6 +229,23 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
           </div>
         </div>
     </section>
+        {/* Bulk Inquiry Modal */}
+      <BulkInquiryModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        product={
+          product
+            ? {
+                name: product.name,
+                image:  product.image?.[1]?.path ||
+    product.image?.[0]?.path ||
+    "/default-product-image.svg",
+                sku: product.sku ?? "",
+              }
+            : undefined
+        }
+      />
+    </>
   );
 };
 
