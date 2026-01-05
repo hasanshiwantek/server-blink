@@ -3,146 +3,142 @@ import React, { useEffect } from 'react'
 import Image from "next/image";
 import banner from '@/assets/shipping-banner.png'
 const Shippingpolicy = () => {
-  
-    // Enable smooth scroll globally
-    useEffect(() => {
-      document.documentElement.style.scrollBehavior = "smooth";
-      return () => {
-        document.documentElement.style.scrollBehavior = "auto";
-      };
-    }, []);
+
+  // Enable smooth scroll globally
+  useEffect(() => {
+    document.documentElement.style.scrollBehavior = "smooth";
+    return () => {
+      document.documentElement.style.scrollBehavior = "auto";
+    };
+  }, []);
   return (
-    <div className="w-full">
-      {/* Row 1: Banner */}
-      <div className="relative w-full h-[220px] sm:h-[280px] md:h-[320px] lg:h-[380px] 2xl:h-[400px]">
-        <Image
-          src={banner}
-          alt="Privacy Policy Banner"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-black/10" />
+    <main className="flex flex-col gap-30" role="main">
+      <div className="w-full max-w-[1170px] mx-auto lg:px-6 xl:px-0">
+        <div className="py-2">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+
+            {/* Content */}
+            <div className="lg:col-span-12">
+              <h2 className=""><span
+                className="text-[11px] !text-[#D42020]"
+                itemProp="name"
+              >
+                Home
+              </span> {" "} <span className="mt-2 mx-3 text-gray-400 text-[11px]" aria-hidden="true">/</span> {" "} <span
+                className="!text-[#D42020] text-[11px]"
+                itemProp="name"
+              >
+                  Shipping Policy
+                </span></h2>
+
+              {/* Page Title */}
+              <h1 className="text-4xl mb-4 text-[#4A4A4A] mt-5">
+                Shipping Policy
+              </h1>
+
+              {/* Policy Content */}
+              <ol className="space-y-6 list-decimal pl-5">
+
+                <li className="text-[14px] leading-[20px]">
+                  <strong>Delivery Timeframe:</strong> We are committed to delivering our products
+                  to our customers within the estimated delivery timeframe.
+
+
+                  <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <li>Transit time in days, shipped: Monday to Friday.</li>
+                    <li>Order handling time: 2 to 3 days, fulfilled: Monday to Friday.</li>
+                    <li>Order cutoff time: 3 PM Eastern Standard time.</li>
+                    <li>All other destinations: 2 to 5 days.</li>
+                  </ul>
+
+                </li>
+
+
+                <p className='text-[14px] leading-[20px] mt-5 md:mt-16'>  The delivery timeframe may vary based on the product and shipping location, and we
+                  will update the estimated delivery timeframe in case of any changes.</p>
+
+                <li className="text-[14px] leading-[20px] md:mt-12">
+                  <strong>Shipping Cost:</strong> The cost of shipping will be clearly displayed on
+                  the checkout page and will include all applicable taxes and fees. We will provide
+                  customers with the option to choose from different shipping methods, including
+                  standard, expedited, and express shipping, and the cost for each method will be
+                  clearly stated.
+                </li>
+
+                <li className="text-[14px] leading-[20px] md:mt-8">
+                  <strong>Shipping Method:</strong> We will use reputable carriers, such as FedEx,
+                  UPS, and DHL, to deliver our products. We will provide customers with a tracking
+                  number for their order, which they can use to track the status of their shipment.
+                </li>
+
+                <li className="text-[14px] leading-[20px] md:mt-8">
+                  <strong>Flat Shipping under 10 LBS:</strong> we offer a "$10 flat shipping
+                  for under 10 LBS" fee structure. This means item being shipped, the cost
+                  of shipping will be a flat fee within USA only. This fee structure makes
+                  it easy for our customers to understand the total cost of their order
+                  and eliminates any surprises or confusion around shipping costs. It
+                  also simplifies the purchasing process for our customers, making
+                  them more likely to complete their purchase.
+                </li>
+
+                <li className="text-[14px] leading-[20px] md:mt-8">
+                  <strong>Shipping Restrictions:</strong>  In some cases, we may have restrictions
+                  on shipping certain products to specific locations. These restrictions will be
+                  clearly stated on our website and include any geographic limitations or
+                  restrictions on expedited shipping options
+                </li>
+
+                <li className="text-[14px] leading-[20px] md:mt-8">
+                  <strong>Delivery Confirmation:</strong> We will require a signature upon
+                  delivery of our products or provide customers with the option to waive
+                  the signature requirement. This ensures products are delivered to the
+                  correct person and helps prevent fraud.
+                </li>
+
+                <li className="text-[14px] leading-[20px] md:mt-8">
+                  <strong>Order Tracking:</strong>  We will provide customers with
+                  a unique tracking number for their order, which they can use to
+                  track the status of their shipment. We will also send regular
+                  updates to customers on the status of their order via email.
+                </li>
+
+                <li className="text-[14px] leading-[20px] md:mt-8">
+                  <strong>Lost or Damaged Shipments:</strong>  In the event that a shipment is lost or
+                  damaged during transit, we will process a claim with the carrier and provide customers
+                  with a replacement product as soon as possible. We will do our best to resolve any
+                  issues as quickly as possible and ensure that our customers are satisfied with
+                  their purchase.
+                </li>
+
+                <li className="text-[14px] leading-[20px] md:mt-8">
+                  <strong>Returns and Refunds:</strong> Our returns and refunds policy will be
+                  in compliance with all applicable laws and regulations. We will provide
+                  customers with clear instructions on how to return a product and the conditions
+                  under which a refund will be issued. We will process returns and refunds as
+                  quickly as possible and will always strive to provide a positive experience
+                  for our customers
+                </li>
+
+              </ol>
+
+              {/* Other Info / Contact */}
+              <p className="text-[14px] leading-[20px] mt-6">
+                <strong>Other:</strong> On Holidays / Weekends, we don't process orders. Saturday
+                delivery option can be checked with the Sales Dept.
+              </p>
+
+              <p className="text-[14px] leading-[20px] mt-2 ml-12">
+                Contact: 502-206-2022<br />
+                Email: support@serverblink.com
+              </p>
+
+
+            </div>
+          </div>
+        </div>
       </div>
-
-      {/* Row 2: Grid Layout */}
-      <div className="max-w-[1920px] mx-auto py-10 px-[7%] md:px-[6%] lg:px-[5%] xl:px-[4.5%] 2xl:px-[100px] flex flex-col lg:flex-row gap-8">
-{/* Sidebar (2/10) */}
-<div className="w-full lg:w-[28%] xl:w-[23.6%] 2xl:w-[412px]">
-  <div className="border rounded-xl sticky top-8">
-    <div className="bg-[#F5F6FA] p-[1.25rem] border-b rounded-t-xl">
-      <h2 className="h3-secondary">Services</h2>
-    </div>
-    <div className="p-[1.25rem] overflow-y-auto max-h-[90vh]">
-      <ul className="space-y-5 2xl:space-y-10 h5-regular">
-        <li>
-          <a href="#intro" className="hover:text-[#F15939] transition-colors duration-200">
-            Introduction
-          </a>
-        </li>
-        <li>
-          <a href="#shipping" className="hover:text-[#F15939] transition-colors duration-200">
-            Shipping
-          </a>
-        </li>
-        <li>
-          <a href="#delivery-estimate" className="hover:text-[#F15939] transition-colors duration-200">
-            Delivery Estimate
-          </a>
-        </li>
-        <li>
-          <a href="#shipping-cost" className="hover:text-[#F15939] transition-colors duration-200">
-            Shipping Cost
-          </a>
-        </li>
-        <li>
-          <a href="#handling-time" className="hover:text-[#F15939] transition-colors duration-200">
-            Handling Time
-          </a>
-        </li>
-        <li>
-          <a href="#shipping-partners" className="hover:text-[#F15939] transition-colors duration-200">
-            Shipping Partners
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-{/* Content (8/10) */}
-<div className="w-full lg:w-[68%] xl:w-[72.2%] 2xl:w-[1260px] px-[3%] md:px-[2.5%] xl:px-[2%] 2xl:px-[24px]">
-  {/* Page Heading */}
-  <h2 className="h1-secondary-medium mb-2 text-[#4A4A4A]">Shipping Policy</h2>
-
-  {/* Section: Intro */}
-  <section id="intro" className="scroll-mt-28">
-    <p className="h5-regular leading-[28px] mb-4">
-      We at New Town Spares Inc. are committed to giving you excellent items at
-      competitive costs and working hard to make sure your experience is satisfying.
-      We provide you with the ease of returning the item in the unlikely event that
-      you obtain anything that doesn't live up to your expectations or has problems.
-      Please refer to our return policy for more information. Our top priority
-      continues to be making you happy.
-    </p>
-  </section>
-
-  {/* Section: Shipping */}
-  <section id="shipping" className="scroll-mt-28">
-    <h3 className="h2-medium mb-3 text-[#4A4A4A]">Shipping</h3>
-    <p className="h5-regular leading-[28px] mb-6">
-      Offering both domestic and international shipping services makes us happy. You may
-      be confident that we offer shipping choices that are suited to your needs for our
-      customers in the USA. For extra convenience, FedEx is also linked with our shipping
-      services. No matter where you are, we promise to give you a thorough shipping experience.
-      Please Note: be ware that some products are subject to restrictions and that some things
-      cannot be sent to foreign countries. We appreciate your understanding and embrace of
-      these restrictions.
-    </p>
-  </section>
-
-  {/* Section: Delivery Estimate */}
-  <section id="delivery-estimate" className="scroll-mt-28">
-    <p className="h5-regular leading-[28px] mb-6">
-      We will provide you a delivery estimate based on the items' availability
-      once you place your order. For your information, delivery time frame
-      estimations are available on the checkout page.
-    </p>
-  </section>
-
-  {/* Section: Shipping Cost */}
-  <section id="shipping-cost" className="scroll-mt-28">
-    <p className="h5-regular leading-[28px] mb-6">
-      Please note that the shipping costs for the products we sell are given as estimations
-      only. Feel free to contact our sales department for more help if you need a special
-      shipping solution or would rather use your own shipping account. We care about your
-      choices and comfort.
-    </p>
-  </section>
-
-  {/* Section: Handling Time */}
-  <section id="handling-time" className="scroll-mt-28">
-    <p className="h5-regular leading-[28px] mb-6">
-      If the order is placed before 2:00 PM Eastern routine Time, products usually ship the
-      same day as a routine procedure. Please be aware that a handling time of 1 to 2 days
-      is required. Please contact our Sales Department if you need a delivery to be made more
-      quickly. We value the urgent delivery needs that you have.
-    </p>
-  </section>
-
-  {/* Section: Shipping Partners */}
-  <section id="shipping-partners" className="scroll-mt-28">
-    <p className="h5-regular leading-[28px]">
-      For dependable delivery services, we work with reputable shipping companies like
-      FedEx, UPS, USPS, Royal Mail, and DHL. Please be aware that we do not process orders
-      on weekends or public holidays. We advise getting in touch with our Sales Department
-      if you have questions about Saturday delivery. Our top priority is your comfort.
-    </p>
-  </section>
-</div>
-
-      </div>
-    </div>
+    </main>
   )
 }
 

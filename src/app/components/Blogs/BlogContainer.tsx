@@ -21,14 +21,28 @@ console.log("Blogs data from frontend: ", blogPosts);
   }, [dispatch]);
 
   return (
-    <div>
-      <OurLatestBlogs />
-      {/* <GridCard /> */}
-      <BlogCategories blogPosts={blogPosts} error={error} loading={loading} pagination={pagination} 
-  filters={filters}
-  setFilters={setFilters} />
-      {/* <BlogTrending /> */}
+    <main className="flex flex-col gap-30" role="blog">
+  <div className="w-full max-w-[1170px] mx-auto px-6 xl:px-0">
+    <div className="py-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        {/* Main Content – full width */}
+        <div className="lg:col-span-12">
+          <BlogCategories
+            blogPosts={blogPosts}
+            error={error}
+            loading={loading}
+            pagination={pagination}
+            filters={filters}
+            setFilters={setFilters}
+          />
+        </div>
+
+      </div>
     </div>
+  </div>
+</main>
+
   );
 };
 
