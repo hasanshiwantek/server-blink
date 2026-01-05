@@ -39,7 +39,7 @@ const Pagination = ({
   }
 
   return (
-    <div className="flex justify-center items-center space-x-3 mt-6">
+    <div className="flex flex-col sm:flex-row justify-center items-center space-y-3 sm:space-y-0 space-x-2 md:space-x-3 mt-6">
       {/* Prev Button */}
       <Button
         variant="outline"
@@ -56,7 +56,7 @@ const Pagination = ({
         page === "..." ? (
           <span
             key={`ellipsis-${i}`}
-            className="px-5 text-sm text-gray-500 select-none"
+            className="px-5 text-base text-gray-500 select-none"
           >
             ...
           </span>

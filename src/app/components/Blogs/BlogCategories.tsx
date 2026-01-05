@@ -2,6 +2,7 @@ import React from "react";
 import BlogSkeleton from "../loader/BlogSkeleton";
 import Link from "next/link";
 import Pagination from "@/components/ui/pagination";
+import Image from "next/image";
 const BlogCategories = ({
   blogPosts,
   error,
@@ -38,93 +39,107 @@ const BlogCategories = ({
   const totalPages = pagination?.totalPages || 1;
   const showPagination = totalPages > 1;
   return (
-    <div className="flex flex-col items-start   py-5 w-full xl:max-w-[1290px] 2xl:max-w-[1720px] ">
-      {/* <h2 className="h1-secondary !text-[#4A4A4A] uppercase mb-8">
-    Categories
-  </h2> */}
+    <div className="flex flex-col items-start w-full ">
+        <h2 className=""><span
+                  className="text-[11px]"
+                  itemProp="name"
+                >
+                  Home
+                </span> {" "} <span className="mt-2 mx-3 text-gray-400 text-[11px]" aria-hidden="true">/</span> {" "} <span
+                  className="!text-[#D42020] text-[11px]"
+                  itemProp="name"
+                >
+                 Blog
+                </span></h2>
+      <h2 className="text-4xl my-6 text-[#545454]">
+    Blog
+  </h2>
 
-      <div className="space-y-8 w-full">
-        {loading ? (
-          // Skeleton Loader for 3 items
-          <BlogSkeleton />
-        ) : error ? (
-          <div className="w-full py-10 text-center text-red-500 font-medium">
-            {error || "Something went wrong while fetching blogs."}
-          </div>
-        ) : blogPosts && blogPosts.length > 0 ? (
-          blogPosts.map((blog) => (
-            <div
-              key={blog.id}
-              className="
-          flex flex-col 
-          md:flex-row 
-          xl:flex-row 2xl:flex-row
-          w-full 
-          xl:w-[100%] 2xl:w-[100%] 
-          xl:h-[20.9rem] 2xl:h-[20.1rem] 
-          md:gap-6 xl:gap-[30px] 2xl:gap-10 
-          bg-white rounded-lg overflow-hidden transition group
+<div className="w-full">
+  {loading ? (
+    // Skeleton Loader for 3 items
+    <BlogSkeleton />
+  ) : error ? (
+    <div className="w-full py-10 text-center text-red-500 font-medium">
+      {error || "Something went wrong while fetching blogs."}
+    </div>
+  ) : blogPosts && blogPosts.length > 0 ? (
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+  {blogPosts.map((blog) => (
+  <div
+    key={blog.id}
+    className="
+      relative
+      w-full 
+      h-[250px] md:h-[280px] xl:h-[250px]
+      rounded-lg overflow-hidden 
+      group
+      cursor-pointer
+    "
+  >
+    {/* Image with zoom effect */}
+    <div className="absolute inset-0 overflow-hidden">
+     <Image
+        src={blog.thumbnail || "/default-product-image.svg"}
+        alt={blog.title}
+        fill
+        className="
+          object-fill
+          transition-transform duration-500 ease-out
+          group-hover:scale-110
         "
-            >
-              {/* Image */}
-              <div
-                className="
-            w-full md:w-[35%] xl:w-[35.5%] 2xl:w-[38.2%] 
-            h-[220px] md:h-[280px] lg:h-[320px] xl:h-auto
-          "
-              >
-                <img
-                  src={blog.thumbnail}
-                  alt={blog.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+      />
+      {/* Dark overlay */}
+      <div className="
+        absolute inset-0 
+        bg-gradient-to-t from-black/80 via-black/40 to-transparent
+      "></div>
+    </div>
 
-              {/* Text Content */}
-              <div
-                className="
-            w-full md:w-[55%] xl:w-[52.2%] 2xl:w-[51.8%]
-            h-auto xl:h-[20.5rem] 2xl:h-[20.4rem] 
-            flex flex-col justify-center my-auto 
-            gap-6 md:gap-6 xl:gap-6 
-            p-5 md:p-6 xl:p-0
-          "
-              >
-                <p className="h5-medium border-l-3 border-[#F15939] pl-3">
-                  {blog.title || "N/A"}
-                </p>
-                <Link
-                  href={`blogs/${blog.id}`}
-                  className="h4-regular relative inline-block group/readmore"
-                >
-                  <h3 className="h3-secondary group-hover:!text-[#F15939] leading-12.5">
-                    {blog.title}
-                  </h3>
-                </Link>
-                <p className="h5-regular line-clamp-3">
-                  {getExcerpt(blog.body, 150)}
-                </p>
+    {/* Text Content Overlay */}
+    <div className="
+      absolute inset-0
+      flex flex-col justify-end
+      p-5 md:p-6
+      text-white
+    ">
+      
+      <Link
+        href={`blogs/${blog.id}`}
+        className="group/title mb-3"
+      >
+        <h3 className="
+          h3-secondary 
+          !text-white !font-normal line-clamp-1
+          group-hover/title:text-[#F15939] 
+          leading-tight
+          transition-colors duration-300
+        ">
+          {blog.title}
+        </h3>
+      </Link>
 
-                <Link
-                  href={`blogs/${blog.id}`}
-                  className="h4-regular relative inline-block group/readmore"
-                >
-                  Read More →
-                  <span className="absolute left-0 -bottom-1 h-[2px] !text-[#F15939] w-0 bg-current transition-all duration-300 group-hover/readmore:w-40"></span>
-                </Link>
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="w-full py-10 text-center text-gray-500 font-medium">
-            No blogs found.
-          </div>
-        )}
-      </div>
+      <Link
+        href={`blogs/${blog.id}`}
+        className="relative inline-block w-fit text-white bg-[#808080] font-bold md:text-[14px] py-2 px-3 border-b-2 border-black"
+      >
+        READ MORE
+      </Link>
+
+    </div>
+  </div>
+))}
+    </div>
+  ) : (
+    <div className="w-full py-10 text-center text-gray-500 font-medium">
+      No blogs found.
+    </div>
+  )}
+</div>
 
      {/* Pagination */}
       {!loading && !error && (
-        <div className="mt-6 flex justify-end m-auto">
+        <div className="mt-6 flex justify-start">
          <Pagination
             currentPage={pagination?.currentPage} 
             totalPages={totalPages}
