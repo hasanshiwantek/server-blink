@@ -15,598 +15,219 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="w-full">
-      {/* Row 1: Banner */}
-      <div className="relative w-full h-[220px] sm:h-[280px] md:h-[320px] lg:h-[380px] 2xl:h-[400px]">
-        <Image
-          src={banner}
-          alt="Privacy Policy Banner"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-black/10" />
-      </div>
+     <main className="flex flex-col gap-30" role="main">
+  <div className="w-full max-w-[1170px] mx-auto lg:px-6 xl:px-0">
+    <div className="py-2">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-      {/* Row 2: Grid Layout */}
-      <div className="max-w-[1920px] mx-auto py-10 px-[7%] md:px-[6%] lg:px-[5%] xl:px-[4.5%] 2xl:px-[100px] flex flex-col lg:flex-row gap-8">
-        {/* Sidebar (2/10) */}
+      
+        {/* Content */}
+        <div className="lg:col-span-12">
+              <h2 className=""><span
+                  className="text-[11px] !text-[#D42020]"
+                  itemProp="name"
+                >
+                  Home
+                </span> {" "} <span className="mt-2 mx-3 text-gray-400 text-[11px]" aria-hidden="true">/</span> {" "} <span
+                  className="!text-[#D42020] text-[11px]"
+                  itemProp="name"
+                >
+                 Terms & Conditions
+                </span></h2>
 
-        {/* Sidebar (Sticky) */}
-        <div className="w-full lg:w-[28%] xl:w-[23.6%] 2xl:w-[412px] ">
-          <div className="border rounded-xl sticky top-8">
-            <div className="bg-[#F5F6FA] p-[1.25rem] border-b rounded-t-xl">
-              <h2 className="h3-secondary">Services</h2>
-            </div>
-            <div className="p-[1.25rem] overflow-y-auto max-h-[90vh]">
-              <ul className="space-y-5 2xl:space-y-10 h5-regular">
-                <li>
-                  <a
-                    href="#data-we-collect"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Data We Collect
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#log-information"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Log Information
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#personal-data"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Personal Data
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#processing-your-personal-data"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Processing Your Personal Data
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#information-used-with-intent"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Information Used With Intent
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#protection-of-your-personal-data"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Protection of Your Personal Data
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#preservation-of-personal-data"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Preservation of Personal Data
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#payment-options"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Payment Options
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#inventory-accuracy-and-availability"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Inventory Accuracy and Availability
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#alternative-product-options"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Alternative Product Options
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#accurate-pricing-and-descriptions"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Accurate Pricing and Descriptions
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#children's-privacy"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Children's Privacy
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#sharing-private-data-with-outside-parties"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Sharing Private Data with Outside Parties
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#international-data-transfers"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    International Data Transfers
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#your-legal-authority"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Your Legal Authority
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#options-regarding-privacy"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Options Regarding Privacy
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#information-that-is-accurate"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Information That Is Accurate
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#engaging-with-regulatory-authorities-and-reporting-concerns"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Engaging with Regulatory Authorities
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#cookies-and-tracking"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Cookies and Tracking
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#capacity-of-our-policy"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Capacity of Our Policy
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#modifications-to-this-policy"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Modifications to This Policy
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#contact"
-                    className="hover:text-[#F15939] transition-colors duration-200"
-                  >
-                    Contact
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Content (8/10) */}
-        <div className="w-full lg:w-[68%] xl:w-[72.2%] 2xl:w-[1260px] px-[3%] md:px-[2.5%] xl:px-[2%] 2xl:px-[24px]">
-          {/* Page Heading */}
-          <h2 className="h1-secondary-medium mb-2 text-[#4A4A4A]">
+          {/* Page Title */}
+          <h1 className="text-4xl mb-4 text-[#4A4A4A] mt-5">
             Terms & Conditions
-          </h2>
-          <p className="h4-regular text-[#666666] mb-6">
-            Last Updated: May 26, 2025
-          </p>
+          </h1>
+            <p className="text-[14px] leading-[20px] mt-20"><strong>Last updated July 24, 2024</strong></p>
 
-          {/* Section:Priority One*/}
-          <section>
-            <h3 className="h2-medium text-[#4A4A4A] mb-3 ">Priority One</h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              for Us Your privacy is extremely important to New Town Spares. We
-              uphold a persistent dedication to safeguarding your privacy and
-              abiding by all pertinent laws and rules governing the gathering of
-              personal information. This relates to interactions on
-              https://www.newtownspares.com and other digital properties
-              operated by our company.
-            </p>
-          </section>
+<ol className="space-y-6 list-decimal pl-5 mt-6">
 
-          {/* Section:Data We Collect*/}
-          <section id="data-we-collect" className="scroll-mt-28">
-            <h3 className="h2-medium text-[#4A4A4A] mb-3 ">Data We Collect</h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              When you interact with our products and services, we learn
-              information about you from your active participation in our
-              promotions, automatic data transmissions from your devices, and
-              interactions with our services and products themselves.
-            </p>
-          </section>
+  <li className="text-[14px] leading-[20px]">
+    <strong>Product Description:</strong> We will provide detailed and accurate information on our electronic parts, including specifications, features, compatibility, and any certifications. We will also provide clear images and diagrams where applicable. We will make every effort to ensure that our product descriptions are up-to-date and accurate, but we cannot guarantee that the information is error-free or that it will always be current.
+  </li>
 
-          {/* Section:Log Information*/}
-          <section id="log-information" className="scroll-mt-28">
-            <h3 className="h2-medium text-[#4A4A4A] mb-3 ">Log Information</h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              Your Visit's Insights When you visit our website, our servers
-              automatically log the common data that is supplied by your web
-              browser. Your device's IP address, browser version, frequently
-              viewed pages, date and time of access, time spent on each page,
-              technical information about difficulties encountered, and more may
-              be included in this. While it's possible that this data doesn't by
-              itself identify people, it might be used in conjunction with other
-              data to do so.
-            </p>
-          </section>
+  <li className="text-[14px] leading-[20px]">
+    <strong>Pricing and Availability:</strong> We will provide clear and up-to-date information on the pricing and availability of our electronic parts. All prices will be in the currency stated and will include any applicable taxes and shipping and handling fees. We will make every effort to ensure that our pricing information is accurate, but we cannot guarantee that the information is error-free or that it will always be current. If a pricing error occurs, we reserve the right to cancel or refuse any order placed for that product.
+  </li>
 
-          {/* Section:Personal Data*/}
+  <li className="text-[14px] leading-[20px]">
+    <strong>Warranty and Returns:</strong> We will provide a warranty for our electronic parts, which will be clearly explained on our website. The length of the warranty will be specified, and the coverage provided will be detailed. We will also explain any exclusions or limitations on the warranty. Our return policy will be clearly explained, including the process for returning products, any restocking fees, and the conditions under which returns are accepted. Customers are responsible for ensuring that the products are returned in a manner that will prevent damage during shipping.
+  </li>
 
-          <section id="personal-data" className="scroll-mt-28">
-            <h3 className="h2-medium text-[#4A4A4A] mb-3 ">Personal Data</h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              What We Request We might need to ask you for personal information
-              in the following situations: Name, Email, Phone Number, Mobile
-              Number, and Home/Mailing Address.
-            </p>
-          </section>
+  <li className="text-[14px] leading-[20px]">
+    <strong>Payment and Security:</strong> Our website accepts payments through Stripe, a secure and reliable payment processing platform. Payments will be processed immediately upon receipt of the order and refunds will be processed through Stripe. We prioritize the security of customer payment information and all information is processed through Stripe's secure servers, not stored on our own. We accept Visa, Mastercard, American Express and other major credit and debit cards, and all payments must be made in USD. If a customer disputes a charge, we will work with Stripe to resolve the issue.
+  </li>
 
-          {/* Section:  Processing Your Personal Data*/}
-          <section id="processing-your-personal-data" className="scroll-mt-28">
-            <h3 className="h2-medium mb-3 text-[#4A4A4A]">
-              Processing Your Personal Data
-            </h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              When there is a legitimate need to do so, we only collect and use
-              your personal information. We only gather the data required to
-              provide our services efficiently. Information Gathering and
-              Utilization We gather individual data. when you:
-            </p>
-            <ul className="list-disc pl-6 h5-regular space-y-[14px] mb-6">
-              <li>Take part in promotions, surveys, and sweepstakes;</li>
-              <li> Choose to receive emails or updates via social media;</li>
-              <li>
-                Use mobile devices or web browsers to access our material;
-              </li>
-              <li>
-                Communicate with us via email, social media, or other similar
-                platforms;
-              </li>
-              <li>Mention us on social networking platforms.</li>
-            </ul>
-          </section>
+  <li className="text-[14px] leading-[20px]">
+    <strong>Shipping and Delivery:</strong> We will provide clear information on shipping and delivery times for our electronic parts, including any applicable shipping fees and any conditions or restrictions. We will use reliable shipping carriers, but we cannot guarantee delivery times. Customers are responsible for ensuring that the shipping address provided is accurate and complete. If a shipment is lost or damaged, we will make every effort to resolve the issue, but we cannot be held liable for any resulting damages.
+  </li>
 
-          {/* Section:  Information Used With Intent*/}
-          <section id="information-used-with-intent" className="scroll-mt-28">
-            <h3 className="h2-medium mb-3 text-[#4A4A4A]">
-              Information Used With Intent
-            </h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              The information gathered is used for a number of things,
-              including:
-            </p>
-            <ul className="list-disc pl-6 h5-regular space-y-[14px] mb-6">
-              <li>
-                Enhancing our website, applications, and social media platforms;
-              </li>
-              <li>
-                Personalizing your online experience; Interacting with you;
-              </li>
-              <li>Facilitating advertising and marketing activities;</li>
-              <li>Processing job applications;</li>
-              <li>Making our digital platforms accessible;</li>
-              <li>
-                Maintaining internal records and performing administrative tasks
-              </li>
-              <li>Conducting competitions and sweepstakes</li>
-              <li>Obeying the law and settling legal problems</li>
-              <li>
-                Ensuring security, preventing fraud, and observing our terms of
-                service
-              </li>
-            </ul>
-          </section>
+  <li className="text-[14px] leading-[20px]">
+    <strong>Promo/Gift Certificate:</strong> It is valid for a specific duration 
+    and can be redeemed for specific products or services only. It is non-transferable, 
+    non-refundable, and cannot be exchanged for cash. The certificate can be used only
+     once, and any unused balance will not be refunded. It cannot be combined with other
+      promotional offers or discounts. Users must present the certificate at the time
+       of redemption, and the company reserves the right to refuse if it has been 
+       tampered with, duplicated, or damaged. By using the certificate, the user
+        agrees to all terms governed by the laws of the state where the company 
+        is registered.
+  </li>
 
-          {/* Section:  Protection of Your Personal Data*/}
+  <li className="text-[14px] leading-[20px]">
+    <strong>TAX:</strong> Kentucky 6% Sales Tax applies to all retail sales of tangible
+     personal property and certain services within the state. The tax rate is calculated
+      based on the total product amount, and the seller or retailer is responsible for
+       collecting and remitting the tax. Buyers must provide valid documentation for 
+       any exemptions. Failure to pay or file may result in penalties and interest. By 
+       purchasing, buyers agree to these terms, governed by Kentucky state law.
+  </li>
 
-          <section
-            id="protection-of-your-personal-data"
-            className="scroll-mt-28"
-          >
-            <h3 className="h2-medium text-[#4A4A4A] mb-3 ">
-              Protection of Your Personal Data
-            </h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              While we take reasonable steps to guard against the loss, theft,
-              and unauthorized access to your data, it's important to remember
-              that no method of electronic communication or storage can be
-              completely trusted. Although we make every effort to safeguard
-              your personal information, complete data security cannot be
-              ensured.
-            </p>
-          </section>
+  <li className="text-[14px] leading-[20px]">
+    <strong>Changes to Terms and Conditions:</strong>  We reserve the right to update our terms and
+     conditions at any time. We will communicate any updates to our customers by posting the revised
+      terms and conditions on our website. By continuing to use our website and purchase our
+       products, customers agree to be bound by the most current version of our terms and
+        conditions.
+  </li>
 
-          {/* Section:   Preservation of Personal Data*/}
+  <li className="text-[14px] leading-[20px]">
+    <strong>Billing Information:</strong> We will collect accurate billing information from 
+    customers, including billing address, contact information, and payment method. Customers
+     are responsible for ensuring that their billing information is accurate and up-to-date.
+  </li>
 
-          <section id="preservation-of-personal-data" className="scroll-mt-28">
-            <h3 className="h2-medium text-[#4A4A4A] mb-3 ">
-              Preservation of Personal Data
-            </h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              We keep your personal information as long as necessary to fulfill
-              the objectives described in this policy. Your information will be
-              either deleted or anonymized to erase personally identifiable
-              information once it has served its purpose.
-            </p>
-          </section>
+  <li className="text-[14px] leading-[20px]">
+    <strong>Payment Processing:</strong>  We will process payments for electronic 
+    parts in accordance with the payment methods accepted and explained on our
+     website. Payments will be processed securely, and customers' payment
+      information will be protected in accordance with our privacy policy.
+  </li>
 
-          {/* Section: Payment Options*/}
+  <li className="text-[14px] leading-[20px]">
+    <strong>Order Confirmations:</strong> After an order is placed, we will provide an order
+     confirmation, which will include a summary of the products ordered and the total cost,
+      including any applicable taxes and shipping and handling fees.
+  </li>
 
-          <section id="payment-options" className="scroll-mt-28">
-            <h3 className="h2-medium text-[#4A4A4A] mb-3 ">Payment Options</h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              We are happy to accept the following payment options:
-            </p>
-            <ul className="list-disc pl-6 h5-regular space-y-[14px] mb-6">
-              <li>
-                Credit Cards: American Express, Visa, MasterCard, and Discover
-              </li>
-              <li>
-                Customers who meet the requirements may receive net payments.
-                For more information, please check
-                https://www.newtownspares.com/payment-options/
-              </li>
-            </ul>
-          </section>
+  <li className="text-[14px] leading-[20px]">
+    <strong>Invoicing:</strong> We will provide an invoice for each order, which will 
+    include a detailed breakdown of the products ordered, the total cost, and any 
+    applicable taxes and shipping and handling fees. The invoice will be sent to the
+     billing email address provided by the customer.
+  </li>
 
-          {/* Section:  Inventory Accuracy and Availability*/}
+  <li className="text-[14px] leading-[20px]">
+    <strong>Billing Disputes:</strong> In the event of a billing dispute, customers are 
+    encouraged to contact us as soon as possible to resolve the issue. If a billing 
+    error occurs, we will make every effort to correct the error in a timely and 
+    efficient manner.
+  </li>
 
-          <section
-            id="inventory-accuracy-and-availability"
-            className="scroll-mt-28"
-          >
-            <h3 className="h2-medium mb-3 text-[#4A4A4A]">
-              Inventory Accuracy and Availability
-            </h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              To give correct information on inventory availability, we
-              continuously refresh our website throughout the day. To reflect
-              the most recent status, the listed lead-time is continually
-              updated. While it is our intention to have the stated items
-              available at all times, we cannot make that promise. In the
-              extremely unlikely situation that your chosen item becomes
-              unavailable, we'll swiftly get in touch with you to let you know
-              when to expect delivery. If a product is still unavailable after
-              the specified waiting period, we'll email or call you to offer an
-              extended waiting period or an other product. A product may still
-              be in stock with one of our suppliers even though it doesn't
-              appear to be available on our website. Please get in touch with us
-              to inquire.
-            </p>
-          </section>
+<li className="text-[14px] leading-[20px]">
+  <strong>Purchase Order Terms:</strong>
 
-          {/* Section: Alternative Product Options*/}
+  <ul className="list-[lower-alpha] pl-5 mt-2 space-y-1">
+    <li>
+      <strong>Order Placement:</strong>  Customers may place orders for electronic parts by 
+      contacting us directly, through our website, or through any other agreed-upon method.
+       All orders are subject to availability and confirmation of the order price.
+    </li>
 
-          <section id="alternative-product-options" className="scroll-mt-28">
-            <h3 className="h2-medium mb-3 text-[#4A4A4A]">
-              Alternative Product Options
-            </h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              In the event that we are unable to deliver the ordered goods, we
-              reserve the right to substitute goods of comparable or higher
-              quality for no extra charge. In such cases, you have the option to
-              refuse the alternative products supplied and request a refund of
-              your entire order, including the shipping costs. There will be no
-              other option accessible to you in this situation besides this one.
-            </p>
-          </section>
+    <li>
+      <strong>Order Acceptance:</strong>  We reserve the right to accept or reject any order
+       in our sole discretion, even after receipt of an order confirmation. In the 
+       event of a rejection, we will notify the customer as soon as possible and will
+        not charge the customer for the rejected order.
+    </li>
 
-          {/* Section:  Accurate Pricing and Descriptions*/}
+    <li>
+      <strong>Order Changes:</strong> Customers may request changes to an order, but we
+       cannot guarantee that such changes can be made once the order has been processed.
+        Any changes to an order must be approved by us in writing.
+    </li>
 
-          <section
-            id="accurate-pricing-and-descriptions"
-            className="scroll-mt-28"
-          >
-            <h3 className="h2-medium mb-3 text-[#4A4A4A]">
-              Accurate Pricing and Descriptions
-            </h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              We make it a priority to keep the prices and descriptions in our
-              catalog and on our website accurate. However, since e-commerce is
-              dynamic, sporadic faults could occur. We have the right to deny or
-              cancel orders for goods or services in such circumstances, as well
-              as to swiftly correct or remove any erroneous information. If the
-              actual cost of an item exceeds our stated price, we reserve the
-              right to either contact you for approval prior to delivery or to
-              cancel your purchase and let you know.
-            </p>
-          </section>
+    <li>
+      <strong>Payment Terms:</strong>: Customers will be responsible for paying the purchase price for
+       electronic parts in accordance with the payment terms agreed upon at the time of the order.
+        Customers must provide valid payment information and will be responsible for any charges 
+        imposed by their bank or payment provider.
+    </li>
 
-          {/* Section:   Children's Privacy*/}
-          <section id="children's-privacy" className="scroll-mt-28">
-            <h3 className="h2-medium mb-3 text-[#4A4A4A]">
-              Children's Privacy
-            </h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              We do not specifically market to children under 13 or deliberately
-              gather their personal information.
-            </p>
-          </section>
+    <li>
+      <strong>Delivery:</strong> We will make every effort to deliver the electronic parts to the 
+      customer in a timely manner, in accordance with the delivery terms agreed upon at the time 
+      of the order. Delivery times are estimated and are not guaranteed.
+    </li>
+  </ul>
+</li>
 
-          {/* Section: Sharing private data with outside parties*/}
 
-          <section
-            id="sharing-private-data-with-outside-parties"
-            className="scroll-mt-28"
-          >
-            <h3 className="h2-medium mb-3 text-[#4A4A4A]">
-              Sharing private data with outside parties
-            </h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              In order to offer you with certain services, we may share personal
-              information to the following parties:
-            </p>
-            <ul className="list-disc pl-6 h5-regular space-y-[14px] mb-6">
-              <li>Agents or business partners</li>
-              <li>Sponsors of competitions, sweepstakes, or promotions</li>
-              <li>
-                Legal authorities and law enforcement officials when necessary
-              </li>
-              <li>Third parties for direct marketing</li>
-              <li>Third parties for data collecting and processing</li>
-            </ul>
-          </section>
+  <li className="text-[14px] leading-[20px]">
+    <strong>Governing Law:</strong>  These terms and conditions and all transactions relating to the sale of
+     electronic parts will be governed by and construed in accordance with the laws of the United States 
+     of America and the State of Kentucky, without giving effect to any conflict of laws principles
+  </li>
 
-          {/* Section: International Data Transfers*/}
+  <li className="text-[14px] leading-[20px]">
+    <strong>Compliance with Laws:</strong> We will comply with all applicable federal,
+     state, and local laws, rules, and regulations in the conduct of our business and 
+     the sale of our electronic parts
+  </li>
 
-          <section id="international-data-transfers" className="scroll-mt-28">
-            <h3 className="h2-medium mb-3 text-[#4A4A4A]">
-              International Data Transfers
-            </h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              Personal data may be processed and stored in places where the data
-              protection rules are different. We make sure that all relevant
-              laws and standards regarding data protection are followed.
-            </p>
-          </section>
+  <li className="text-[14px] leading-[20px]">
+    <strong>Taxes:</strong> : We will collect and remit any applicable taxes in accordance with 
+    federal, state, and local laws, rules, and regulations. Customers are responsible for any 
+    taxes imposed on their purchases.
+  </li>
 
-          {/* Section: Your legal authority*/}
+  <li className="text-[14px] leading-[20px]">
+    <strong>Export Controls:</strong>  We will comply with all applicable export control laws, 
+    rules, and regulations, including those of the United States and any other countries, in 
+    the sale and shipment of our electronic parts.
+  </li>
 
-          <section id="your-legal-authority" className="scroll-mt-28">
-            <h3 className="h2-medium mb-3 text-[#4A4A4A]">
-              Your legal authority
-            </h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              With knowledge of the possible effects on your experience, you can
-              withhold personal information. There won't be any discrimination
-              if you exercise your rights. You have the right to ask for more
-              information about the data we currently have on you.
-            </p>
-          </section>
+  <p className="text-[14px] leading-[20px]">
+   By adhering to these terms and conditions, we will provide our customers with a clear 
+   and transparent purchasing experience and ensure that we are in compliance with all 
+   relevant regulations set forth by Google and our business and transactions are 
+   conducted in compliance with the relevant laws and regulations in the United States
+    and the State of Kentucky. This will also help protect our customers and our 
+    company from any legal or regulatory issues that may arise. Additionally, we will
+     help protect the interests of both our customers and our company.
+  </p>
 
-          {/* Section: Options Regarding Privacy*/}
+</ol>
 
-          <section id="options-regarding-privacy" className="scroll-mt-28">
-            <h3 className="h2-medium mb-3 text-[#4A4A4A]">
-              Options Regarding Privacy
-            </h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              You can choose not to receive notifications at any time or
-              unsubscribe from our email list. For identification validation, we
-              might need a certain piece of information.
-            </p>
-          </section>
+{/* Contact Section */}
+<p className="text-[14px] leading-[20px] mt-6">
+  <strong>CONTACT US:</strong>
+</p>
 
-          {/* Section:     Information that is accurate*/}
+<p className="text-[14px] leading-[20px] mt-6">
+In order to resolve a complaint regarding the Site or to receive further 
+information regarding use of the Site, please contact us at:
+</p>
 
-          <section id="information-that-is-accurate" className="scroll-mt-28">
-            <h3 className="h2-medium mb-3 text-[#4A4A4A]">
-              Information that is accurate
-            </h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              Please get in touch with us if you think your data has to be
-              modified.
-            </p>
-          </section>
+<p className="text-[14px] leading-[20px] mt-6">
+<strong>Server Blink LLC <br />
+Old Address: 7301 Fegenbush Ln Suite#201-5001, Louisville, KY 40228  <br />
+New Address: 2210 Goldsmith Lane, Ste 126-5001, Louisville, KY 40218</strong>
+</p>
+<p className="text-[14px] leading-[20px] mt-6">
+<strong>United States <br />
+Phone: 502-206-2022  <br />
+support@serverblink.com</strong>
+</p>
 
-          {/* Section:Engaging with Regulatory Authorities and Reporting Concerns*/}
 
-          <section
-            id="engaging-with-regulatory-authorities-and-reporting-concerns"
-            className="scroll-mt-28"
-          >
-            <h3 className="h2-medium mb-3 text-[#4A4A4A]">
-              Engaging with Regulatory Authorities and Reporting Concerns
-            </h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              We invite you to contact us if you believe there has been a data
-              breach or if you have questions about how your personal
-              information is being handled. You can also interact with the
-              relevant regulatory agencies as an alternative. Your comfort is
-              our first priority, and we're dedicated to responding to any
-              issues in a prompt and responsible way.
-            </p>
-          </section>
 
-          {/* Section:  Cookies and tracking*/}
-
-          <section id="cookies-and-tracking" className="scroll-mt-28">
-            <h3 className="h2-medium mb-3 text-[#4A4A4A]">
-              Cookies and tracking
-            </h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              We use cookies to learn more about how you use our site. Cookies
-              improve your experience by taking your choices into account.
-            </p>
-          </section>
-
-          {/* Section: Capacity of Our Policy*/}
-
-          <section id="capacity-of-our-policy" className="scroll-mt-28">
-            <h3 className="h2-medium mb-3 text-[#4A4A4A]">
-              Capacity of Our Policy
-            </h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              We have no control over external links, and those sites' rules may
-              differ from ours. We take no responsibility for how they handle
-              personal information.
-            </p>
-          </section>
-
-          {/* Section: Modifications to This Policy*/}
-
-          <section id="modifications-to-this-policy" className="scroll-mt-28">
-            <h3 className="h2-medium mb-3 text-[#4A4A4A]">
-              Modifications to This Policy
-            </h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              As our procedures change, we might amend this policy. The provided
-              link will be updated with any modifications.
-            </p>
-          </section>
-
-          {/* Section:Contact:*/}
-
-          <section id="contact" className="scroll-mt-28">
-            <h3 className="h2-medium mb-3 text-[#4A4A4A]">Contact:</h3>
-            <p className="h5-regular leading-[28px] mb-4">
-              Write us at info@newtownspares.com with questions about the terms
-              and conditions.
-            </p>
-          </section>
         </div>
       </div>
     </div>
+  </div>
+</main>
   );
 };
 

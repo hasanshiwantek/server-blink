@@ -181,7 +181,7 @@ initialCategorydescription,
 
       {/* Pagination */}
       {!isLoading && !error && (
-        <div className="mt-6 flex justify-start">
+        <div className="mt-6 flex justify-center sm:justify-start">
           <Pagination
             currentPage={filters.page}
             totalPages={pagination?.lastPage || 1}

@@ -6,7 +6,11 @@ import { getBrands } from "@/redux/slices/homeSlice";
 import { CategoriesSidebarSkeleton } from "../reuseable/CategoryUtils";
 import Link from "next/link";
 
-const BrandsSidebar = () => {
+interface BrandsSidebarProps {
+  activeBrandId?: number; // ✅ currently active brand
+}
+
+const BrandsSidebar: React.FC<BrandsSidebarProps> = ({ activeBrandId }) => {
   const dispatch = useAppDispatch();
   const { getBrand, error, loading } = useAppSelector(
     (state: any) => state?.home
@@ -36,8 +40,12 @@ const BrandsSidebar = () => {
           data?.map((brand: any) => (
             <Link href={`/brand/${brand?.slug}`} key={brand.id}>
               <button
-                key={brand.id}
-                className="w-full px-3 py-1 text-left text-[15px] font-normal text-[#545454] hover:text-[var(--primary-color)] transition-colors flex items-center gap-3"
+                className={`w-full px-3 py-1 text-left text-[15px] font-normal flex items-center gap-3 transition-colors
+                  ${
+                    brand.id === activeBrandId
+                      ? " text-[var(--primary-color)]" // ✅ active highlight
+                      : "text-[#545454] hover:text-[var(--primary-color)]"
+                  }`}
               >
                 <span>{brand.name}</span>
               </button>
@@ -46,7 +54,7 @@ const BrandsSidebar = () => {
         )}
 
         {/* View all */}
-        <button className="w-full px-3 py-2.5 text-left text-[15px] font-normal text-[#545454]hover:text-[var(--primary-color)] transition-colors">
+        <button className="w-full px-3 py-2.5 text-left text-[15px] font-normal text-[#545454] hover:text-[var(--primary-color)] transition-colors">
           View all Brands
         </button>
       </div>

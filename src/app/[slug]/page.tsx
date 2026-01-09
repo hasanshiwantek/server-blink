@@ -111,8 +111,8 @@ export default async function ProductPage({
         <div className="grid grid-cols-1 lg:grid-cols-12  gap-6">
           {/* Left Sidebar */}
           <aside className="hidden lg:block lg:col-span-3 w-full lg:w-[85%]">
-            <CategoriesSidebar />
-            <BrandsSidebar />
+            <CategoriesSidebar activeCategoryId={product?.categoryIds[0]}  />
+            <BrandsSidebar activeBrandId={product?.brand?.id} />
           </aside>
 
           {/* Main Product Content - ✅ Added lg:col-span-9 */}

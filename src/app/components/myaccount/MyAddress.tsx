@@ -13,6 +13,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import countries from "world-countries";
 
 const MyAddress = () => {
   const dispatch = useAppDispatch();
@@ -25,6 +27,12 @@ const MyAddress = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [editData, setEditData] = useState<any>(null);
+    const countryList = countries
+    .map((country) => ({
+      name: country.name.common,
+      code: country.cca2,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   useEffect(() => {
     dispatch(fetchAccountAddress());
@@ -89,8 +97,120 @@ const MyAddress = () => {
   };
 
   return (
-    <div className="max-w-5xl">
-      {/* Skeleton Loader */}
+    <div className="max-w-full">
+
+
+      {/* -------------------- EDIT MODAL -------------------- */}
+      {showModal ? (
+      <div className="rounded-lg w-full max-w-full p-6 relative">
+  {/* Close Btn */}
+  {/* <button
+    onClick={() => setShowModal(false)}
+    className="absolute right-4 top-4 text-gray-600 hover:text-black"
+  >
+    <X size={22} />
+  </button> */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {/* Address Line 1 */}
+    <div>
+      <Label className="text-[14px]">Address Line 1</Label>
+      <Input
+        value={editData.addressLine1}
+        onChange={(e) =>
+          setEditData({ ...editData, addressLine1: e.target.value })
+        }
+        className="!w-full !max-w-full !h-[42px]"
+      />
+    </div>
+
+    {/* Address Line 2 */}
+    <div>
+      <Label className="text-[14px]">Address Line 2</Label>
+      <Input
+        value={editData.addressLine2}
+        onChange={(e) =>
+          setEditData({ ...editData, addressLine2: e.target.value })
+        }
+        className="!w-full !max-w-full !h-[42px]"
+      />
+    </div>
+
+    {/* City */}
+    <div>
+      <Label className="text-[14px]">City</Label>
+      <Input
+        value={editData.city}
+        onChange={(e) =>
+          setEditData({ ...editData, city: e.target.value })
+        }
+        className="!w-full !max-w-full !h-[42px]"
+      />
+    </div>
+
+    {/* State */}
+    <div>
+      <Label className="text-[14px]">State</Label>
+      <Input
+        value={editData.state}
+        onChange={(e) =>
+          setEditData({ ...editData, state: e.target.value })
+        }
+        className="!w-full !max-w-full !h-[42px]"
+      />
+    </div>
+
+    {/* Zip */}
+    <div>
+      <Label className="text-[14px]">Zip Code</Label>
+      <Input
+        value={editData.zip}
+        onChange={(e) =>
+          setEditData({ ...editData, zip: e.target.value })
+        }
+        className="!w-full !max-w-full !h-[42px]"
+      />
+    </div>
+
+    {/* Country */}
+    <div>
+      <Label className="text-[14px]">Country</Label>
+      <Select 
+        value={editData.country}
+        onValueChange={(value) => setEditData({ ...editData, country: value })}
+      >
+        <SelectTrigger className="!w-full !max-w-full !h-[42px]">
+          <SelectValue placeholder="Choose a Country" />
+        </SelectTrigger>
+        <SelectContent>
+          {countryList.map((country) => (
+            <SelectItem key={country.code} value={country.name}>
+              {country.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  </div>
+
+  <div className="flex flex-col md:flex-row gap-4 mt-10">
+    <Button
+      onClick={handleUpdate}
+      className="w-full md:w-[16%] !p-7 text-2xl border-b-2 border-black bg-[#D42020] text-white font-bold"
+    >
+      SAVE ADDRESS
+    </Button>
+    <Button
+      onClick={() => setShowModal(false)}
+      className="w-full md:w-36 !p-7 text-2xl border-b-2 border-black bg-[#D42020] font-bold text-white transition"
+    >
+      CANCEL
+    </Button>
+  </div>
+</div>
+
+      ): (
+      <>
+            {/* Skeleton Loader */}
       {loading && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[...Array(2)].map((_, idx) => (
@@ -120,155 +240,60 @@ const MyAddress = () => {
           {address?.addresses?.map((item: any) => (
             <div
               key={item.addressId}
-              className="bg-white shadow-md rounded-lg p-6 flex flex-col justify-between h-full"
+              className="bg-[#CAC9C9] rounded-lg p-6 flex flex-col justify-between h-full"
             >
               <div className="flex flex-col gap-1 mb-4">
-                <p className="h6-18-px-medium">
+                <p className="text-xl mb-6 text-gray-700">
                   {item.customerName || "N/A"}
                 </p>
-                <p className="text-lg">{item.addressLine1}</p>
+                <p className="text-xl">{item.addressLine1}</p>
                 {item.addressLine2 && (
-                  <p className="text-lg">{item.addressLine2}</p>
+                  <p className="text-xl">{item.addressLine2}</p>
                 )}
-                <p className="text-lg">
+                <p className="text-xl">
                   {item.city} {item.zip}
                 </p>
-                <p className="text-lg">{item.country}</p>
+                <p className="text-xl">{item.country}</p>
               </div>
 
-              <div className="flex flex-col gap-2 mt-auto">
-                <button
-                  onClick={() => openEditModal(item)}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded font-bold bg-[#F15939] text-white border border-[#F15939] hover:bg-white hover:text-[#F15939] transition"
-                >
-                  <Edit size={16} />
-                  Edit
-                </button>
+              <div className="flex gap-2 mt-auto">
+                {/* Edit Button */}
+{/* Edit Button */}
+<button
+  onClick={() => openEditModal(item)}
+  className="w-50 px-4 py-3 rounded text-2xl font-bold bg-[#D42020] text-white border-b-2 border-black transition"
+>
+  Edit
+</button>
 
-                <button
-                  onClick={() => handleDelete(item.addressId)}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded font-bold bg-white text-[#F15939] border border-[#F15939] hover:bg-[#F15939] hover:text-white transition"
-                >
-                  <Trash2 size={16} />
-                  Delete
-                </button>
+{/* Delete Button */}
+<button
+  onClick={() => handleDelete(item.addressId)}
+  className="w-50 px-4 py-3 rounded text-2xl font-bold bg-[#D42020] text-white border-b-2 border-black transition"
+>
+  Delete
+</button>
+
+
               </div>
             </div>
           ))}
 
           {/* New Address Button */}
-          <div className="bg-white shadow-md rounded-lg p-6 flex flex-col items-center justify-center h-full hover:bg-gray-50 cursor-pointer">
+          <div className="border border-gray-400 rounded-lg p-6 flex flex-col items-center justify-center h-[206px] hover:bg-gray-50 cursor-pointer">
             <Link
               href="/my-account/addresses/new-address"
               className="flex flex-col items-center justify-center gap-2"
             >
-              <Plus size={24} />
-              <span className="font-medium">New Address</span>
+              <Plus size={44} className="text-[#D42020]" />
+
+              <span className="font-medium text-xl">New Address</span>
             </Link>
           </div>
         </div>
       )}
-
-      {/* -------------------- EDIT MODAL -------------------- */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
-            {/* Close Btn */}
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute right-4 top-4 text-gray-600 hover:text-black"
-            >
-              <X size={22} />
-            </button>
-
-            <h2 className="text-xl font-semibold mb-4">Edit Address</h2>
-
-            <div className="grid grid-cols-1 gap-4">
-              {/* Address Line 1 */}
-              <div>
-                <Label>Address Line 1</Label>
-                <Input
-                  value={editData.addressLine1}
-                  onChange={(e) =>
-                    setEditData({ ...editData, addressLine1: e.target.value })
-                  }
-                />
-              </div>
-
-              {/* Address Line 2 */}
-              <div>
-                <Label>Address Line 2</Label>
-                <Input
-                  value={editData.addressLine2}
-                  onChange={(e) =>
-                    setEditData({ ...editData, addressLine2: e.target.value })
-                  }
-                />
-              </div>
-
-              {/* City */}
-              <div>
-                <Label>City</Label>
-                <Input
-                  value={editData.city}
-                  onChange={(e) =>
-                    setEditData({ ...editData, city: e.target.value })
-                  }
-                />
-              </div>
-
-              {/* State */}
-              <div>
-                <Label>State</Label>
-                <Input
-                  value={editData.state}
-                  onChange={(e) =>
-                    setEditData({ ...editData, state: e.target.value })
-                  }
-                />
-              </div>
-
-              {/* Zip */}
-              <div>
-                <Label>Zip Code</Label>
-                <Input
-                  value={editData.zip}
-                  onChange={(e) =>
-                    setEditData({ ...editData, zip: e.target.value })
-                  }
-                />
-              </div>
-
-              {/* Country */}
-              <div>
-                <Label>Country</Label>
-                <Input
-                  value={editData.country}
-                  onChange={(e) =>
-                    setEditData({ ...editData, country: e.target.value })
-                  }
-                />
-              </div>
-            </div>
-
-            <div className="mt-6 flex flex-col gap-4">
-              <Button
-                onClick={handleUpdate}
-                className="w-full bg-[#F15939] text-white"
-              >
-                Save Changes
-              </Button>
-              <Button
-                onClick={() => setShowModal(false)}
-                className="w-full border border-[#F15939] text-[#F15939]"
-                variant="outline"
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      </>
+      ) }
       {/* -------------------- END MODAL -------------------- */}
     </div>
   );

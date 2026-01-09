@@ -11,148 +11,109 @@ const Returnpolicy = () => {
     };
   }, []);
   return (
+   <main className="flex flex-col gap-30" role="main">
+  <div className="w-full max-w-[1170px] mx-auto lg:px-6 xl:px-0">
+    <div className="py-2">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-  
+      
+        {/* Content */}
+        <div className="lg:col-span-12">
+              <h2 className=""><span
+                  className="text-[11px] !text-[#D42020]"
+                  itemProp="name"
+                >
+                  Home
+                </span> {" "} <span className="mt-2 mx-3 text-gray-400 text-[11px]" aria-hidden="true">/</span> {" "} <span
+                  className="!text-[#D42020] text-[11px]"
+                  itemProp="name"
+                >
+                 Return & Refund Policy
+                </span></h2>
 
-         <div className="w-full">
-  {/* Row 1: Banner */}
-  <div className="relative w-full h-[220px] sm:h-[280px] md:h-[320px] lg:h-[380px] 2xl:h-[400px]">
-    <Image
-      src={banner}
-      alt="Privacy Policy Banner"
-      fill
-      className="object-cover"
-      priority
-    />
-    <div className="absolute inset-0 bg-black/10" />
-  </div>
+          {/* Page Title */}
+          <h1 className="text-4xl mb-4 text-[#4A4A4A] mt-5">
+            Return & Refund Policy
+          </h1>
+    
+       {/* Policy Content */}
+<ol className="space-y-6 list-decimal pl-5">
 
-  {/* Row 2: Grid Layout */}
-  <div className="max-w-[1920px] mx-auto py-10 px-[7%] md:px-[6%] lg:px-[5%] xl:px-[4.5%] 2xl:px-[100px] flex flex-col lg:flex-row gap-8">
-{/* Sidebar */}
-<div className="w-full lg:w-[28%] xl:w-[23.6%] 2xl:w-[412px]">
-  <div className="border rounded-xl sticky top-8">
-    <div className="bg-[#F5F6FA] p-[1.25rem] border-b rounded-t-xl">
-      <h2 className="h3-secondary">Services</h2>
+  <li className="text-[14px] leading-[20px]">
+    <strong>Return Eligibility</strong>  Our products are eligible for 
+    return within a 30 days of timeframe, The return timeframe may vary
+     based on the product and category, and any restrictions on specific
+      products or categories will be clearly stated. In order to initiate 
+      a return, customers must contact us and provide us
+       (email: info@serverblink.com - Ph: 502-206-2022) with 
+       their order number and the reason for the return
+  </li>
+
+  <li className="text-[14px] leading-[20px]">
+    <strong>Return Process: </strong> The return process will be
+     simple and straightforward for customers. We will provide 
+     clear instructions on how to initiate a return, including 
+     any required documentation or information. Customers will
+      be responsible for shipping the returned product back to 
+      us if customer returning the product because of "Change of
+       Mind, No More needed" and in other scenario we will bear
+        the return shipping cost and we recommend that they use a
+         tracking number to ensure that the product is returned safely.
+  </li>
+
+  <li className="text-[14px] leading-[20px]">
+    <strong>Refunds:</strong> Customers will have the 
+    option to receive a refund in the original form of
+     payment or as store credit. Refunds will be processed 
+     as quickly as possible, typically within 7-10 business 
+     days of receipt of the returned product. We will provide
+      regular updates to customers on the status of their
+       refund via email.
+  </li>
+
+  <li className="text-[14px] leading-[20px]">
+    <strong>Restocking Fees:</strong>  In some cases, a upto 25%
+     restocking fee may apply for returns. Restocking fees may be 
+     applied for returns of products that are not in their original 
+     condition, change of mind or are returned outside of the 
+     specified timeframe.
+  </li>
+
+  <li className="text-[14px] leading-[20px]">
+    <strong>Damaged or Defective Products:</strong> If a product is received 
+    damaged or is defective, customers should contact us within 14 days of
+     receipt to initiate a return. We will process a replacement or refund 
+     as necessary, and we will cover all shipping costs associated with the
+      return and replacement.
+  </li>
+
+  <li className="text-[14px] leading-[20px]">
+    <strong>Shipping Costs for Returns: </strong>  We will clearly state who is 
+    responsible for shipping costs for returns, including any conditions or 
+    exceptions. In most cases, customers will be responsible for shipping costs 
+    for returns, except in cases where the product is damaged or defective.
+
+
+  </li>
+
+  <li className="text-[14px] leading-[20px]">
+    <strong>Final Sale Items:</strong>  Some items may be final 
+    sale and not eligible for return or refund. These items will
+     be clearly stated on our website, and we will not accept
+      returns for these items.
+  </li>
+
+</ol>
+
+{/* Remaining Paragraphs */}
+<p className="text-[14px] leading-[20px] mt-6">
+ Last Updated on 29 Aug, 2025.
+</p>
+        </div>
+      </div>
     </div>
-    <div className="p-[1.25rem] overflow-y-auto max-h-[90vh]">
-      <ul className="space-y-5 2xl:space-y-10 h5-regular">
-        <li>
-          <a href="#eligibility-return-policy" className="hover:text-[#F15939] transition-colors duration-200">
-            Eligibility and Return Policy
-          </a>
-        </li>
-        <li>
-          <a href="#easy-return-process" className="hover:text-[#F15939] transition-colors duration-200">
-            Easy Return Process
-          </a>
-        </li>
-        <li>
-          <a href="#restocking-fees" className="hover:text-[#F15939] transition-colors duration-200">
-            Restocking Fees
-          </a>
-        </li>
-        <li>
-          <a href="#return-shipping-charges" className="hover:text-[#F15939] transition-colors duration-200">
-            Return Shipping Charges
-          </a>
-        </li>
-        <li>
-          <a href="#items-not-returnable" className="hover:text-[#F15939] transition-colors duration-200">
-            Items Not Returnable
-          </a>
-        </li>
-      </ul>
-    </div>
   </div>
-</div>
-
-{/* Content */}
-<div className="w-full lg:w-[68%] xl:w-[72.2%] 2xl:w-[1260px] px-[3%] md:px-[2.5%] xl:px-[2%] 2xl:px-[24px]">
-  {/* Page Heading */}
-  <h2 className="h1-secondary-medium mb-2 text-[#4A4A4A]">Return Policy</h2>
-  <p className="h4-regular text-[#666666] mb-6">Last Updated: May 26, 2025</p>
-
-  {/* Section: Eligibility and Return Policy */}
-  <section id="eligibility-return-policy" className="scroll-mt-28">
-    <h3 className="h2-medium text-[#4A4A4A] mb-3">Eligibility and Return Policy</h3>
-    <p className="h5-regular leading-[28px] mb-4">
-      We do not sell or rent your personal data. We may share data with trusted
-      third parties for the purposes listed above, including payment processors,
-      logistics providers, or IT service providers—always under strict data
-      protection obligations.
-    </p>
-    <p className="h5-regular leading-[28px] mb-4">
-      We comply with the high standards of applicable data protection regulations,
-      including the General Data Protection Regulation (GDPR) (Regulation (EU)
-      2016/679). We ensure that GDPR standards are embedded in our daily
-      operations when handling personal data of EU citizens, as required under the
-      GDPR.
-    </p>
-    <p className="h5-regular leading-[28px] mb-6">
-      We may also disclose personal data if required by law or to protect our
-      rights, safety, or users.
-    </p>
-  </section>
-
-  {/* Section: Easy Return Process */}
-  <section id="easy-return-process" className="scroll-mt-28">
-    <h3 className="h2-medium mb-3 text-[#4A4A4A]">Easy Return Process</h3>
-    <p className="h5-bold leading-7 mb-4">
-      We collect personal data in the following ways:
-    </p>
-    <ul className="list-disc pl-6 h5-regular space-y-[14px] mb-6">
-      <li>Enhance your browsing and shopping experience</li>
-      <li>Automatically, through your interactions with our website.</li>
-      <li>From third-party partners who help us support your business needs.</li>
-      <li>
-        Directly from you, when you register, request a quote, place an order, or
-        contact us.
-      </li>
-    </ul>
-  </section>
-
-  {/* Section: Restocking Fees */}
-  <section id="restocking-fees" className="scroll-mt-28">
-    <h3 className="h2-medium mb-3 text-[#4A4A4A]">Restocking Fees</h3>
-    <p className="h5-regular leading-[28px] mb-6">
-      We value your feedback and are always looking to improve our policies and
-      services. If you have any suggestions or comments on how we can enhance your
-      shopping experience, please don't hesitate to reach out. Your insights are
-      crucial for us to better serve you and future customers.
-    </p>
-  </section>
-
-  {/* Section: Return Shipping Charges */}
-  <section id="return-shipping-charges" className="scroll-mt-28">
-    <h3 className="h2-medium mb-3 text-[#4A4A4A]">Return Shipping Charges</h3>
-    <p className="h5-regular leading-[28px] mb-6">
-      We value your feedback and are always looking to improve our policies and
-      services. If you have any suggestions or comments on how we can enhance your
-      shopping experience, please don't hesitate to reach out. Your insights are
-      crucial for us to better serve you and future customers.
-    </p>
-  </section>
-
-  {/* Section: Items Not Returnable */}
-  <section id="items-not-returnable" className="scroll-mt-28">
-    <h3 className="h2-medium mb-3 text-[#4A4A4A]">Items Not Returnable</h3>
-    <p className="h5-regular leading-[28px] mb-4">
-      Some items may be considered <span className="italic">"final sale"</span>,
-      making them unsuitable for exchange or refund. As per our policy, we
-      diligently designate such things on our website and do not accept returns
-      for them.
-    </p>
-    <p className="h5-regular leading-[28px]">
-      We prioritize your pleasure and work to tailor our policies to meet your
-      needs. Do not hesitate to get in touch with us if you need any additional
-      information or support.
-    </p>
-  </section>
-</div>
-
-  </div>
-</div>
+</main>
   )
 }
 

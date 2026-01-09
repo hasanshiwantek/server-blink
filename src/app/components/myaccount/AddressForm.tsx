@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import { updatecustomer } from "@/redux/slices/myaccountSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import countries from "world-countries";
 
 interface AddressFormValues {
   address1?: string;
@@ -20,11 +22,18 @@ interface AddressFormValues {
 }
 
 const AddressForm = () => {
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<AddressFormValues>();
+  const { register, handleSubmit,setValue, formState: { errors }, reset } = useForm<AddressFormValues>();
   const { loading, error } = useAppSelector((state: RootState) => state.myaccount);
   const auth = useAppSelector((state: RootState) => state.auth);
   const dispatch = useAppDispatch();
   const router = useRouter();
+
+    const countryList = countries
+    .map((country) => ({
+      name: country.name.common,
+      code: country.cca2,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   const onSubmit = async (data: AddressFormValues) => {
     try {
@@ -58,17 +67,16 @@ const AddressForm = () => {
     }
   };
 
-  const inputClass = "!w-full h-[50px] !max-w-full";
+  const inputClass = "!w-full h-[42px] !max-w-full";
 
   return (
-    <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-6 text-center">New Address</h2>
+    <div className="max-w-full mx-auto p-8 rounded-lg">
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* Row 1: Address Line 1 & Address Line 2 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <Label htmlFor="address1">Address Line 1 <span className="text-red-600">*</span></Label>
+            <Label className="text-[14px] flex md:justify-between" htmlFor="address1">Address Line 1 <span className="">*</span></Label>
             <Input
               id="address1"
               {...register("address1", { required: "Address Line 1 is required" })}
@@ -77,7 +85,7 @@ const AddressForm = () => {
             {errors.address1 && <p className="text-sm text-red-500">{errors.address1.message}</p>}
           </div>
           <div>
-            <Label htmlFor="address2">Address Line 2</Label>
+            <Label className="text-[14px] flex md:justify-between" htmlFor="address2">Address Line 2</Label>
             <Input
               id="address2"
               {...register("address2")}
@@ -89,7 +97,7 @@ const AddressForm = () => {
         {/* Row 2: Suburb/City & Country */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="suburb">Suburb / City <span className="text-red-600">*</span></Label>
+            <Label className="text-[14px] flex md:justify-between" htmlFor="suburb">Suburb / City <span className="">*</span></Label>
             <Input
               id="suburb"
               {...register("suburb", { required: "Suburb/City is required" })}
@@ -97,26 +105,31 @@ const AddressForm = () => {
             />
             {errors.suburb && <p className="text-sm text-red-500">{errors.suburb.message}</p>}
           </div>
-          <div>
-            <Label htmlFor="country">Country <span className="text-red-600">*</span></Label>
-            <select
-              id="country"
-              {...register("country", { required: "Country is required" })}
-              className={`${inputClass} border border-gray-300 rounded`}
-            >
-              <option value="">Select Country</option>
-              <option value="Pakistan">Pakistan</option>
-              <option value="USA">USA</option>
-              <option value="UK">UK</option>
-            </select>
-            {errors.country && <p className="text-sm text-red-500">{errors.country.message}</p>}
-          </div>
+                <div>
+                              <Label className="text-[14px] flex md:justify-between" htmlFor="country">Country <span className="">*</span></Label>
+              <Select onValueChange={(value) => setValue("country", value)}>
+               <SelectTrigger className="!w-full !h-[42px] !max-w-full !border-none">
+                  <SelectValue placeholder="Choose a Country" />
+                </SelectTrigger>
+                <SelectContent>
+                  {countryList.map((country) => (
+                    <SelectItem key={country.code} value={country.code}>
+                      {country.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.country && (
+                <p className="text-sm text-red-500">{errors.country.message}</p>
+              )}
+            </div>
+
         </div>
 
         {/* Row 3: State/Province & Zip/Postcode */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="state">State / Province <span className="text-red-600">*</span></Label>
+            <Label className="text-[14px] flex md:justify-between" htmlFor="state">State / Province <span className="">*</span></Label>
             <Input
               id="state"
               {...register("state", { required: "State/Province is required" })}
@@ -125,7 +138,7 @@ const AddressForm = () => {
             {errors.state && <p className="text-sm text-red-500">{errors.state.message}</p>}
           </div>
           <div>
-            <Label htmlFor="postcode">Zip / Postcode <span className="text-red-600">*</span></Label>
+            <Label className="text-[14px] flex md:justify-between" htmlFor="postcode">Zip / Postcode <span className="">*</span></Label>
             <Input
               id="postcode"
               {...register("postcode", { required: "Zip/Postcode is required" })}
@@ -136,14 +149,14 @@ const AddressForm = () => {
         </div>
 
         {/* Buttons */}
-        <div className="flex flex-col gap-4 mt-4">
-          <Button type="submit" className="w-full py-6 rounded-full bg-[#F15939] text-white font-bold">
-            {loading ? "Saving..." : "Save Address"}
+        <div className="flex flex-col md:flex-row gap-4 mt-4">
+          <Button type="submit" className="w-full md:w-[16%] !p-7 text-2xl border-b-2 border-black bg-[#D42020] text-white font-bold">
+            {loading ? "Saving..." : "SAVE ADDRESS"}
           </Button>
           <Button 
             onClick={() => router.back()}
             type="button" 
-            className="w-full py-6 rounded-full border border-[#F15939] text-[#F15939] font-bold hover:bg-[#F15939] hover:text-white transition"
+            className="w-full md:w-36 !p-7 text-2xl border-b-2 border-black bg-[#D42020] font-bold text-white transition"
           >
             Cancel
           </Button>

@@ -19,8 +19,8 @@ export default function PageTransition({
         key={pathname}
         className="
     flex-grow
-    max-w-[1170px] mx-auto
-    lg:max-w-full  lg:mx-0 py-10
+    max-w-[1170px]
+    lg:max-w-full lg:mx-0 py-10
   "
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}

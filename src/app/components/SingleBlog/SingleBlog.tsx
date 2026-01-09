@@ -12,9 +12,9 @@ const SingleBlog = ({ blogPost }: { blogPost: any }) => {
 
   return (
     <>
-      <div className="flex flex-col gap-5  py-10 2xl:w-[68.6%]  2xl:max-w-[1180px] xl:w-[68.6%] xl:max-w-[885px]   w-full">
+      <div className="flex flex-col gap-5 2xl:w-[74%]  xl:w-[74%] lg:w-[74%] md:w-[70%] w-full">
         <BlogHeader blogPost={blogPost} />
-        <TableofContents />
+        {/* <TableofContents /> */}
 
         {/* Blog Content Sections */}
 
@@ -116,9 +116,9 @@ const SingleBlog = ({ blogPost }: { blogPost: any }) => {
             <FeaturedHBATable />
           </section> */}
 
-          <section>
+          {/* <section>
             <CommentForm />
-          </section>
+          </section> */}
         </div>
       </div>
     </>

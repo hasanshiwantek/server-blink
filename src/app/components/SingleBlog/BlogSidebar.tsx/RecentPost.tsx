@@ -34,30 +34,30 @@ const blogs = [
 const RecentPost = () => {
   return (
     <>
-         <h3 className="h2-medium ">
-            Recent Posts
+         <h3 className="text-4xl">
+           Popular Blogs
           </h3>
-    <section className="w-full flex  justify-center bg-[#F5F6FA] py-10 px-4 border sm:px-6 lg:px-5">
+    <section className="w-full flex  justify-center border">
         
       <div className="w-full xl:max-w-[1440px] 2xl:max-w-[1920px] ">
-        <div className="flex flex-col gap-10 justify-items-center ">
+        <div className="flex flex-col gap-5 justify-items-center ">
           {blogs.map((blog) => (
             <Link
               key={blog.id}
               href={`/blog/${blog.slug}`}
               className="
-            w-[80%] p-6 md:p-0 xl:w-[100.7%] 2xl:w-[97.1%]
+            w-[80%] p-1.5 md:w-[100.7%] 2xl:w-[97.1%]
              rounded-lg transition overflow-hidden
-            flex flex-col sm:flex-row justify-start items-center sm:items-stretch gap-5 sm:gap-7
+            flex flex-col sm:flex-row justify-start items-center sm:items-stretch gap-3 bg-[#F5F6FA]
           "
             >
               {/* Image */}
               <div
                 className="
-              w-full sm:w-[30%] md:w-[25%] lg:w-[35%]
-              xl:w-[36.5%] xl:h-[100.3%] 
-              2xl:w-[40.6%] 2xl:h-[100%]
-              relative overflow-hidden  flex-shrink-0
+              w-full
+              md:w-[34.5%] md:h-[55px]
+              2xl:w-[35.6%] 2xl:h-[55px]
+              relative overflow-hidden  flex-shrink-0 m-auto
             "
               >
                 <Image
@@ -72,16 +72,19 @@ const RecentPost = () => {
               {/* Text */}
               <div
                 className="
-              flex flex-col justify-center lg:justify-between gap-2 lg:gap-3 items-start 
+              flex flex-col justify-center gap-1.5 lg:justify-between items-start 
               w-full sm:w-[55%] md:w-[60%]
-              text-left py-2 sm:py-2
+              text-left
             "
               >
-                <p className="h5-20px-regular  ">
+                {/* <p className="h5-20px-regular  ">
                   {blog.author}
-                </p>
-                <h3 className="h5-regular group-hover:text-[#F15939] transition-colors duration-200 line-clamp-2">
+                </p> */}
+                <h3 className="text-xl group-hover:text-[#F15939] transition-colors duration-200 line-clamp-2">
                   {blog.title}
+                </h3>
+                <h3 className="!text-[#D42020] group-hover:text-[#F15939] transition-colors duration-200 line-clamp-2">
+                  {blog.date}
                 </h3>
               </div>
             </Link>

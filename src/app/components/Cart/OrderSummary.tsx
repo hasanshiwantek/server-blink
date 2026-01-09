@@ -6,12 +6,42 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import countries from "world-countries";
 
 const OrderSummary = () => {
     const [showCoupon, setShowCoupon] = useState(false);
       const [showShipping, setShowShipping] = useState(false);
   const cart = useAppSelector((state: RootState) => state.cart.items);
   const router = useRouter();
+
+  const [shippingData, setShippingData] = useState({
+  country: "",
+  state: "",
+  city: "",
+  zip: "",
+});
+
+const [couponCode, setCouponCode] = useState("");
+
+  const handleShippingSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  console.log("Shipping Form Data:", shippingData);
+};
+
+const handleCouponSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  console.log("Coupon Code:", couponCode);
+};
+
+   
+
+     const countryList = countries
+      .map((country) => ({
+        name: country.name.common,
+        code: country.cca2,
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
 
   const subtotal = useMemo(() => {
     return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -69,39 +99,76 @@ const shippingLabel = `FedEx priority $${shipping.toFixed(2)}`;
       </div>
 
       {/* Shipping form */}
-     {showShipping && (
-  <div className="flex flex-col gap-3 mt-4">
+{showShipping && (
+  <form onSubmit={handleShippingSubmit} className="flex flex-col gap-3 mt-4">
+    
     {/* Country */}
     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-      <label className="text-gray-700 font-medium w-full md:w-1/3 text-xl">Country</label>
-      <Input className="w-full !max-w-full md:w-2/3" placeholder="Pakistan" />
+      <label className="w-full md:w-1/3 text-xl">Country</label>
+
+      <Select
+        onValueChange={(value) =>
+          setShippingData({ ...shippingData, country: value })
+        }
+      >
+        <SelectTrigger className="w-full md:w-2/3 border-none outline-none">
+          <SelectValue placeholder="Choose a Country" />
+        </SelectTrigger>
+        <SelectContent className="w-full md:w-2/3 border-none outline-none">
+          {countryList.map((country) => (
+            <SelectItem  key={country.code} value={country.code}>
+              {country.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
 
-    {/* State/Province */}
-    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-      <label className="text-gray-700 font-medium w-full md:w-1/3 text-xl">State/Province</label>
-      <Input className="w-full !max-w-full md:w-2/3" placeholder="State/Province" />
+    {/* State */}
+    <div className="flex flex-col md:flex-row items-center gap-4">
+      <label className="w-full md:w-1/3 text-xl">State/Province</label>
+      <Input
+        className="w-full md:w-2/3"
+        onChange={(e) =>
+          setShippingData({ ...shippingData, state: e.target.value })
+        }
+      />
     </div>
 
-    {/* Suburb/City */}
-    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-      <label className="text-gray-700 font-medium w-full md:w-1/3 text-xl">Suburb/City</label>
-      <Input className="w-full !max-w-full md:w-2/3" placeholder="Suburb/City" />
+    {/* City */}
+    <div className="flex flex-col md:flex-row items-center gap-4">
+      <label className="w-full md:w-1/3 text-xl">Suburb/City</label>
+      <Input
+        className="w-full md:w-2/3"
+        onChange={(e) =>
+          setShippingData({ ...shippingData, city: e.target.value })
+        }
+      />
     </div>
 
-    {/* Zip/Postcode + Button */}
-    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-      <label className="text-gray-700 font-medium w-full md:w-1/3 text-xl">Zip/Postcode</label>
-        <Input className="w-full !max-w-full md:w-2/3" placeholder="Zip/Postcode" />
+    {/* Zip */}
+    <div className="flex flex-col md:flex-row items-center gap-4">
+      <label className="w-full md:w-1/3 text-xl">Zip/Postcode</label>
+      <Input
+        className="w-full md:w-2/3"
+        onChange={(e) =>
+          setShippingData({ ...shippingData, zip: e.target.value })
+        }
+      />
     </div>
-    {/*  Button */}
-    <div className="flex items-center justify-end">
-       <button className="w-full md:w-[65%] p-2 border-b border-black rounded bg-[#D42020] !text-white text-xl font-bold hover:bg-[#e04f33] transition">
-          Estimate Shipping
-        </button>
+
+    {/* Submit */}
+    <div className="flex justify-end">
+      <button
+        type="submit"
+        className="w-full md:w-[65%] p-2 border-b border-black rounded bg-[#D42020] text-white text-xl font-bold"
+      >
+        Estimate Shipping
+      </button>
     </div>
-  </div>
+  </form>
 )}
+
 
 
                  {/* Divider */}
@@ -121,19 +188,27 @@ const shippingLabel = `FedEx priority $${shipping.toFixed(2)}`;
       </div>
 
       {/* Coupon input & apply button */}
-      {showCoupon && (
-        <div className="flex flex-col md:flex-row gap-2 my-2">
-          <Input
-            id="discountCode"
-            placeholder="Enter your coupon code"
-            type="text"
-            className="!max-w-full"
-          />
-          <button className="border-b border-black py-2 md:py-0 px-3 md:px-12 rounded bg-[#D42020] !text-white text-xl font-bold hover:bg-[#e04f33] transition">
-            Apply
-          </button>
-        </div>
-      )}
+     {showCoupon && (
+  <form
+    onSubmit={handleCouponSubmit}
+    className="flex flex-col md:flex-row gap-2 my-2"
+  >
+    <Input
+      placeholder="Enter your coupon code"
+      value={couponCode}
+      onChange={(e) => setCouponCode(e.target.value)}
+      className="!max-w-full"
+    />
+
+    <button
+      type="submit"
+      className="border-b border-black px-12 rounded bg-[#D42020] text-white text-xl font-bold"
+    >
+      Apply
+    </button>
+  </form>
+)}
+
         </div>
 
         {/* Divider */}

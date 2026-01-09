@@ -55,7 +55,7 @@ const SingleBlogContainer = ({ singleBlog }: SingleBlogContainerProps) => {
       <article 
         itemScope 
         itemType="https://schema.org/BlogPosting"
-        className="2xl:px-3 px-0 w-full xl:max-w-[1290px] 2xl:max-w-[1720px]"
+        className="w-full max-w-[1170px] mx-auto  lg:px-6 xl:px-0"
       >
         {/* Breadcrumb Navigation with Schema markup */}
         <nav 
@@ -70,12 +70,12 @@ const SingleBlogContainer = ({ singleBlog }: SingleBlogContainerProps) => {
               className="h5-20px-regular transition-colors hover:text-blue-600"
               itemProp="item"
             >
-              <span itemProp="name">Home</span>
+              <span itemProp="name" className="text-[11px]">Home</span>
             </Link>
             <meta itemProp="position" content="1" />
           </span>
           
-          <ChevronRight className="mx-2 w-5 h-5 text-gray-400" aria-hidden="true" />
+           <span className="mt-2 mx-3 text-gray-400 text-[11px]" aria-hidden="true">/</span>
           
           <span itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
             <Link 
@@ -83,15 +83,15 @@ const SingleBlogContainer = ({ singleBlog }: SingleBlogContainerProps) => {
               className="h5-20px-regular transition-colors hover:text-blue-600"
               itemProp="item"
             >
-              <span itemProp="name">Blogs</span>
+              <span itemProp="name" className="text-[11px]">Blogs</span>
             </Link>
             <meta itemProp="position" content="2" />
           </span>
           
-          <ChevronRight className="mx-2 w-5 h-5 text-gray-400" aria-hidden="true" />
+           <span className="mt-2 mx-3 text-gray-400 text-[11px]" aria-hidden="true">/</span>
           
           <span itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-            <span className="h5-regular" itemProp="name">{singleBlog?.title}</span>
+            <span className="!text-[#D42020] text-[11px]" itemProp="name">{singleBlog?.title}</span>
             <meta itemProp="position" content="3" />
           </span>
         </nav>
@@ -111,13 +111,13 @@ const SingleBlogContainer = ({ singleBlog }: SingleBlogContainerProps) => {
         {wordCount > 0 && <meta itemProp="wordCount" content={wordCount.toString()} />}
 
         {/* Main content with sidebar */}
-        <div className="flex gap-11 flex-row">
+        <div className="flex justify-between flex-row">
           <SingleBlog blogPost={singleBlog} />
           <BlogSidebar />
         </div>
 
         {/* Related posts section with Schema markup */}
-        <section 
+        {/* <section 
           className="xl:max-w-[1440px] 2xl:max-w-[1720px] py-10"
           aria-labelledby="related-posts-heading"
           itemScope
@@ -153,8 +153,6 @@ const SingleBlogContainer = ({ singleBlog }: SingleBlogContainerProps) => {
                 >
                   <meta itemProp="position" content={(index + 1).toString()} />
                   <meta itemProp="url" content={`/blogs/${blog.postUrl || blog.id}`} />
-                  
-                  {/* Blog thumbnail with proper Next.js Image */}
                   <Image
                     src={blog?.thumbnail}
                     alt={blog?.title || "Blog Image"}
@@ -165,8 +163,6 @@ const SingleBlogContainer = ({ singleBlog }: SingleBlogContainerProps) => {
                     loading="lazy"
                     quality={85}
                   />
-
-                  {/* Blog title overlay */}
                   <div className="absolute left-4 bottom-3 md:bottom-8 xl:bottom-5 p-6 bg-gradient-to-t from-black/70 to-transparent w-full">
                     <Link 
                       href={`/blogs/${blog.id}`}
@@ -180,8 +176,6 @@ const SingleBlogContainer = ({ singleBlog }: SingleBlogContainerProps) => {
                         {blog?.title}
                       </h3>
                     </Link>
-                    
-                    {/* Hidden meta for related posts */}
                     {blog?.author && (
                       <meta itemProp="author" content={blog.author} />
                     )}
@@ -201,7 +195,7 @@ const SingleBlogContainer = ({ singleBlog }: SingleBlogContainerProps) => {
               </div>
             )}
           </div>
-        </section>
+        </section> */}
       </article>
     </>
   );

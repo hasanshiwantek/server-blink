@@ -6,6 +6,7 @@ import { useAppDispatch } from "@/hooks/useReduxHooks";
 import { addToCart } from "@/redux/slices/cartSlice";
 import { toast } from "sonner";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 interface Brand {
   id: number;
   name: string;
@@ -29,6 +30,7 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const router = useRouter();
     const dispatch = useAppDispatch();
   // safe brand name
   const brandName =
@@ -44,8 +46,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   // safe image src
   const imageSrc =
-    product.image?.[1]?.path ||
     product.image?.[0]?.path ||
+    product.image?.[1]?.path ||
     "/default-product-image.svg";
 
   return (
@@ -88,6 +90,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <button  onClick={() => {
                         dispatch(addToCart(product));
                         toast.success(`${product.name} added to cart!`);
+                        router.push("/cart")
                       }} className="w-full bg-[#CAC9C9] hover:bg-[#D42020] font-bold text-[#393939] border-b-2 border-[#393939] py-1 rounded text-[14px] mt-auto transition">
           ADD TO CART
         </button>
