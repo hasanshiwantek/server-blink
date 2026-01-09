@@ -1351,20 +1351,14 @@
 // };
 
 // export default CheckoutComponent;
-
 "use client";
 import React, {
   useState,
   useCallback,
   useMemo,
-  memo,
   useEffect,
   useRef,
 } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import { Trash2, Plus, Minus } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import {
@@ -1383,28 +1377,27 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectItem,
-  SelectContent,
-} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import countries from "world-countries";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { loadStripe } from "@stripe/stripe-js";
 import type { PaymentRequest as StripePaymentRequest } from "@stripe/stripe-js";
 import {
   Elements,
   CardNumberElement,
-  CardExpiryElement,
-  CardCvcElement,
   PaymentRequestButtonElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
 import { useRouter } from "next/navigation";
 import { setLastOrder } from "@/redux/slices/orderslice";
+
+// Import step components
+import CustomerStep from "./CustomerStep";
+import ShippingStep from "./Shippingstep";
+import BillingStep from "./Billingstep";
+import PaymentStep from "./Paymentstep";
+import CheckoutOrderSummary from "./CheckoutOrderSummary";
 
 // Stripe publishable key
 const stripePromise = loadStripe(
@@ -1448,82 +1441,13 @@ interface CheckoutFormValues {
   billingZip: string;
 }
 
-// Memoized Cart Item Component
-interface CartItemProps {
-  item: any;
-  onIncrease: (id: string | number) => void;
-  onDecrease: (id: string | number) => void;
-  onDelete: (item: any) => void;
-}
-
-const CartItem = memo(
-  ({ item, onIncrease, onDecrease, onDelete }: CartItemProps) => {
-    return (
-      <div className="relative flex flex-col sm:flex-row items-center gap-3 p-3 border rounded">
-        <Image
-          src={item.image?.[0]?.path || "/checkouticon/orderimg.png"}
-          alt={item.name}
-          width={80}
-          height={80}
-          className="object-cover"
-        />
-        <div className="flex-1">
-          <p className="font-medium text-sm line-clamp-2">{item.name}</p>
-          <p className="text-sm text-gray-600 mt-1">
-            ${Number(item.price).toFixed(2)}
-          </p>
-          <div className="flex w-[120px] h-[40px] items-center justify-center border border-gray-300 rounded-full mt-2">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onDecrease(item.id);
-              }}
-              className="flex items-center justify-center w-12 h-10"
-            >
-              <Minus className="w-4 h-4" />
-            </button>
-            <span className="border-x border-gray-300 px-4 flex items-center justify-center select-none">
-              {item.quantity}
-            </span>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onIncrease(item.id);
-              }}
-              className="flex items-center justify-center w-12 h-10"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
-          </div>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onDelete(item);
-            }}
-            className="absolute right-3 top-3 text-gray-500 hover:text-red-700 transition"
-          >
-            <Trash2 className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-    );
-  }
-);
-
-CartItem.displayName = "CartItem";
-
 // Inner component that uses Stripe hooks
 const CheckoutForm = () => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state.cart.items);
   const auth = useAppSelector((state: RootState) => state?.auth);
   const [currentStep, setCurrentStep] = useState(1);
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [itemToDelete, setItemToDelete] = useState<any | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -1574,7 +1498,7 @@ const CheckoutForm = () => {
   } = useForm<CheckoutFormValues>({
     defaultValues: {
       paymentMethod: "credit_card",
-      billingSame: true,
+      billingSame: false,
       email: auth?.user?.email || "",
       firstName: auth?.user?.firstName || "",
       lastName: auth?.user?.lastName || "",
@@ -1655,7 +1579,8 @@ const CheckoutForm = () => {
   useEffect(() => {
     if (!stripe || cart.length === 0) {
       setPaymentRequest(null);
-      setWalletSupport({ applePay: false, googlePay: false });
+      // Keep wallets enabled for UI even if PR API not available
+      // setWalletSupport({ applePay: false, googlePay: false });
       return;
     }
 
@@ -1673,19 +1598,26 @@ const CheckoutForm = () => {
 
     let isMounted = true;
 
-    pr.canMakePayment().then((result) => {
-      if (!isMounted) return;
-      if (result) {
-        setPaymentRequest(pr);
-        setWalletSupport({
-          applePay: Boolean(result.applePay),
-          googlePay: Boolean(result.googlePay || result.browserPay),
-        });
-      } else {
-        setPaymentRequest(null);
-        setWalletSupport({ applePay: false, googlePay: false });
-      }
-    });
+    pr.canMakePayment()
+      .then((result) => {
+        if (!isMounted) return;
+        if (result) {
+          setPaymentRequest(pr);
+          setWalletSupport({
+            applePay: Boolean(result.applePay),
+            googlePay: Boolean(result.googlePay || result.browserPay),
+          });
+        } else {
+          setPaymentRequest(null);
+          // Fallback: Enable wallets in UI even if Payment Request API not supported
+          // This allows testing and will show appropriate error when clicked
+          setWalletSupport({ applePay: true, googlePay: true });
+        }
+      })
+      .catch(() => {
+        // On error, enable wallets in UI
+        setWalletSupport({ applePay: true, googlePay: true });
+      });
 
     return () => {
       isMounted = false;
@@ -1827,6 +1759,7 @@ const CheckoutForm = () => {
   const handleContinueToShipping = async () => {
     const isValid = await trigger(["email"]);
     if (isValid) {
+      setCompletedSteps((prev) => [...new Set([...prev, 1])]);
       setCurrentStep(2);
     }
   };
@@ -1842,6 +1775,7 @@ const CheckoutForm = () => {
       "shippingMethod",
     ]);
     if (isValid) {
+      setCompletedSteps((prev) => [...new Set([...prev, 2])]);
       if (watchedBillingSame) {
         // Skip billing, go to payment
         setCurrentStep(4);
@@ -1862,10 +1796,57 @@ const CheckoutForm = () => {
         "billingZip",
       ]);
       if (isValid) {
+        setCompletedSteps((prev) => [...new Set([...prev, 3])]);
         setCurrentStep(4);
       }
     } else {
       setCurrentStep(4);
+    }
+  };
+
+  // Edit handlers
+  const handleEditCustomer = () => {
+    setCurrentStep(1);
+  };
+
+  const handleEditShipping = () => {
+    setCurrentStep(2);
+  };
+
+  const handleEditBilling = () => {
+    setCurrentStep(3);
+  };
+
+  const handleEditPayment = () => {
+    setCurrentStep(4);
+  };
+
+  const handleWalletClick = (method: string) => {
+    handlePaymentSelection(method);
+
+    if (!paymentRequest) {
+      // Show helpful message if Payment Request API not available
+      const methodName = method === "apple_pay" ? "Apple Pay" : "Google Pay";
+      toast.error(
+        `${methodName} is not available. Please use a supported device/browser or try credit card payment.`
+      );
+      return;
+    }
+
+    const formData = watch();
+    setPendingWalletForm(formData as CheckoutFormValues);
+    setIsProcessing(true);
+
+    try {
+      paymentRequest.show();
+    } catch (err: any) {
+      console.error("❌ Unable to launch wallet:", err);
+      const methodName = method === "apple_pay" ? "Apple Pay" : "Google Pay";
+      toast.error(
+        `Could not open ${methodName}. Please ensure you have a card set up in your wallet or try credit card payment.`
+      );
+      setIsProcessing(false);
+      setPendingWalletForm(null);
     }
   };
 
@@ -1999,8 +1980,8 @@ const CheckoutForm = () => {
   };
 
   return (
-    <div className="min-h-screen py-10 md:px-[6%]  xl:px-0 2xl:px-0  w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
-      {/* Payment Request Button (hidden) */}
+    <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
+      {/* Payment Request Button (hidden)  */}
       {paymentRequest && (
         <div className="hidden">
           <PaymentRequestButtonElement options={{ paymentRequest }} />
@@ -2010,924 +1991,120 @@ const CheckoutForm = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* LEFT SECTION - Multi-step form */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-0">
             {/* STEP 1: Customer */}
-            {currentStep === 1 && (
-              <div className="bg-white border rounded-md shadow-sm p-6">
-                <h2 className="text-2xl font-semibold mb-6">Customer</h2>
+            <div className="p-6 border-b-[1px] border-b-[#8b8b8b]">
+              <h2 className="text-[1.92308rem] font-normal mb-4 text-[#545454]">
+                Customer
+              </h2>
+              <CustomerStep
+                register={register}
+                errors={errors}
+                onContinue={handleContinueToShipping}
+                walletSupport={walletSupport}
+                onWalletClick={handleWalletClick}
+                isActive={currentStep === 1}
+                isCompleted={completedSteps.includes(1)}
+                onEdit={handleEditCustomer}
+                emailValue={watch("email")}
+              />
+            </div>
 
-                <div className="space-y-6">
-                  <div className="flex flex-col">
-                    <label htmlFor="email" className="text-sm mb-2">
-                      Email Address
-                    </label>
-                    <Input
-                      id="email"
-                      type="email"
-                      className={`w-full h-[50px] ${
-                        errors.email ? "border-red-500" : ""
-                      }`}
-                      {...register("email", {
-                        required: "Email is required",
-                        pattern: {
-                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                          message: "Invalid email address",
-                        },
-                      })}
-                    />
-                    {errors.email && (
-                      <p className="text-sm text-red-500 mt-1">
-                        {errors.email.message}
-                      </p>
-                    )}
-                  </div>
+            {/* STEP 2: Shipping - Always show heading */}
+            <div className="p-6  border-b-[1px] border-b-[#8b8b8b]">
+              <h2 className="text-[1.92308rem] font-normal mb-4 text-[#545454]">
+                Shipping
+              </h2>
+              <ShippingStep
+                register={register}
+                errors={errors}
+                control={control}
+                onContinue={handleContinueToBilling}
+                countryList={countryList}
+                isActive={currentStep === 2}
+                isCompleted={completedSteps.includes(2)}
+                onEdit={handleEditShipping}
+                shippingInfo={{
+                  firstName: watch("firstName"),
+                  lastName: watch("lastName"),
+                  address: watch("address1"),
+                  city: watch("city"),
+                  state: watch("state"),
+                  country: watch("country"),
+                  zip: watch("zip"),
+                }}
+              />
+            </div>
 
-                  <Button
-                    type="button"
-                    onClick={handleContinueToShipping}
-                    className="w-full h-[50px] bg-red-600 hover:bg-red-700 text-white font-medium"
-                  >
-                    CONTINUE
-                  </Button>
+            {/* STEP 3: Billing - Always show heading */}
+            <div className="p-6  border-b-[1px] border-b-[#8b8b8b]">
+              <h2 className="text-[1.92308rem] font-normal mb-4 text-[#545454]">
+                Billing
+              </h2>
+              {!watchedBillingSame && (
+                <BillingStep
+                  register={register}
+                  errors={errors}
+                  control={control}
+                  onContinue={handleContinueToPayment}
+                  countryList={countryList}
+                  isActive={currentStep === 3}
+                  isCompleted={completedSteps.includes(3)}
+                  onEdit={handleEditBilling}
+                  billingInfo={{
+                    firstName: watch("billingFirstName"),
+                    lastName: watch("billingLastName"),
+                    address: watch("billingAddress1"),
+                    city: watch("billingCity"),
+                    state: watch("billingState"),
+                    country: watch("billingCountry"),
+                    zip: watch("billingZip"),
+                  }}
+                />
+              )}
+            </div>
 
-                  <div className="text-center text-sm text-gray-600">
-                    Already have an account?{" "}
-                    <a href="/login" className="text-red-600 hover:underline">
-                      Sign in now
-                    </a>
-                  </div>
-
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-gray-300"></div>
-                    </div>
-                    <div className="relative flex justify-center text-sm">
-                      <span className="px-2 bg-white text-gray-500">
-                        Or continue with
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Google Pay Button */}
-                  {paymentRequest && walletSupport.googlePay && (
-                    <div className="w-full">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          handlePaymentSelection("google_pay");
-                          if (paymentRequest) {
-                            const formData = watch();
-                            setPendingWalletForm(
-                              formData as CheckoutFormValues
-                            );
-                            setIsProcessing(true);
-                            paymentRequest.show();
-                          }
-                        }}
-                        className="w-full h-[50px] bg-black text-white rounded flex items-center justify-center"
-                      >
-                        <Image
-                          src="/checkouticon/googlepay.png"
-                          alt="Google Pay"
-                          width={80}
-                          height={30}
-                        />
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* STEP 2: Shipping */}
-            {currentStep === 2 && (
-              <div className="bg-white border rounded-md shadow-sm p-6">
-                <h2 className="text-2xl font-semibold mb-6">Shipping</h2>
-
-                <div className="space-y-6">
-                  {/* Shipping Address */}
-                  <div>
-                    <h3 className="font-medium mb-4">Shipping Address</h3>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="flex flex-col">
-                        <label htmlFor="firstName" className="text-sm mb-2">
-                          First Name
-                        </label>
-                        <Input
-                          id="firstName"
-                          type="text"
-                          className={`w-full h-[50px] ${
-                            errors.firstName ? "border-red-500" : ""
-                          }`}
-                          {...register("firstName", {
-                            required: "First name is required",
-                          })}
-                        />
-                        {errors.firstName && (
-                          <p className="text-sm text-red-500 mt-1">
-                            {errors.firstName.message}
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="flex flex-col">
-                        <label htmlFor="lastName" className="text-sm mb-2">
-                          Last Name
-                        </label>
-                        <Input
-                          id="lastName"
-                          type="text"
-                          className={`w-full h-[50px] ${
-                            errors.lastName ? "border-red-500" : ""
-                          }`}
-                          {...register("lastName", {
-                            required: "Last name is required",
-                          })}
-                        />
-                        {errors.lastName && (
-                          <p className="text-sm text-red-500 mt-1">
-                            {errors.lastName.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col mt-4">
-                      <label htmlFor="company" className="text-sm mb-2">
-                        Company Name{" "}
-                        <span className="text-gray-400">(Optional)</span>
-                      </label>
-                      <Input
-                        id="company"
-                        type="text"
-                        className="w-full h-[50px]"
-                        {...register("company")}
-                      />
-                    </div>
-
-                    <div className="flex flex-col mt-4">
-                      <label htmlFor="phone" className="text-sm mb-2">
-                        Phone Number{" "}
-                        <span className="text-gray-400">(Optional)</span>
-                      </label>
-                      <Input
-                        id="phone"
-                        type="text"
-                        className="w-full h-[50px]"
-                        {...register("phone")}
-                      />
-                    </div>
-
-                    <div className="flex flex-col mt-4">
-                      <label htmlFor="address1" className="text-sm mb-2">
-                        Address Line 1
-                      </label>
-                      <Input
-                        id="address1"
-                        type="text"
-                        className={`w-full h-[50px] ${
-                          errors.address1 ? "border-red-500" : ""
-                        }`}
-                        {...register("address1", {
-                          required: "Address is required",
-                        })}
-                      />
-                      {errors.address1 && (
-                        <p className="text-sm text-red-500 mt-1">
-                          {errors.address1.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="flex flex-col mt-4">
-                      <label htmlFor="address2" className="text-sm mb-2">
-                        Address Line 2{" "}
-                        <span className="text-gray-400">(Optional)</span>
-                      </label>
-                      <Input
-                        id="address2"
-                        type="text"
-                        className="w-full h-[50px]"
-                        {...register("address2")}
-                      />
-                    </div>
-
-                    <div className="flex flex-col mt-4">
-                      <label htmlFor="city" className="text-sm mb-2">
-                        City
-                      </label>
-                      <Input
-                        id="city"
-                        type="text"
-                        className={`w-full h-[50px] ${
-                          errors.city ? "border-red-500" : ""
-                        }`}
-                        {...register("city", {
-                          required: "City is required",
-                        })}
-                      />
-                      {errors.city && (
-                        <p className="text-sm text-red-500 mt-1">
-                          {errors.city.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="flex flex-col mt-4">
-                      <label htmlFor="country" className="text-sm mb-2">
-                        Country
-                      </label>
-                      <Controller
-                        name="country"
-                        control={control}
-                        rules={{ required: "Country is required" }}
-                        render={({ field }) => (
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
-                          >
-                            <SelectTrigger
-                              className={`w-full h-[50px] ${
-                                errors.country ? "border-red-500" : ""
-                              }`}
-                            >
-                              <SelectValue placeholder="Select country" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {countryList.map((country) => (
-                                <SelectItem
-                                  key={country.code}
-                                  value={country.code}
-                                >
-                                  {country.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        )}
-                      />
-                      {errors.country && (
-                        <p className="text-sm text-red-500 mt-1">
-                          {errors.country.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 mt-4">
-                      <div className="flex flex-col">
-                        <label htmlFor="state" className="text-sm mb-2">
-                          State/Province
-                        </label>
-                        <Input
-                          id="state"
-                          type="text"
-                          className="w-full h-[50px]"
-                          {...register("state")}
-                        />
-                      </div>
-
-                      <div className="flex flex-col">
-                        <label htmlFor="zip" className="text-sm mb-2">
-                          Postal Code
-                        </label>
-                        <Input
-                          id="zip"
-                          type="text"
-                          className={`w-full h-[50px] ${
-                            errors.zip ? "border-red-500" : ""
-                          }`}
-                          {...register("zip", {
-                            required: "Postal code is required",
-                          })}
-                        />
-                        {errors.zip && (
-                          <p className="text-sm text-red-500 mt-1">
-                            {errors.zip.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 mt-4">
-                      <input
-                        type="checkbox"
-                        id="billingSame"
-                        {...register("billingSame")}
-                      />
-                      <label htmlFor="billingSame" className="text-sm">
-                        My Billing address is the same as my Shipping address
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Shipping Method */}
-                  <div>
-                    <h3 className="font-medium mb-4">Shipping Method</h3>
-
-                    <div className="space-y-3">
-                      <label className="flex items-start gap-3 border rounded p-4 cursor-pointer has-[:checked]:border-red-600">
-                        <input
-                          type="radio"
-                          value="own_account"
-                          {...register("shippingMethod", {
-                            required: "Please select a shipping method",
-                          })}
-                          className="mt-1"
-                        />
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-semibold">FedEx</span>
-                            <span className="text-sm">
-                              (International Economy)
-                            </span>
-                          </div>
-                          <div className="text-lg font-bold mt-1">$409.75</div>
-                        </div>
-                      </label>
-
-                      <label className="flex items-start gap-3 border rounded p-4 cursor-pointer has-[:checked]:border-red-600">
-                        <input
-                          type="radio"
-                          value="fedex_priority"
-                          {...register("shippingMethod", {
-                            required: "Please select a shipping method",
-                          })}
-                          className="mt-1"
-                        />
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-semibold">FedEx</span>
-                            <span className="text-sm">
-                              (International Priority)
-                            </span>
-                          </div>
-                          <div className="text-lg font-bold mt-1">$459.68</div>
-                        </div>
-                      </label>
-                    </div>
-
-                    {errors.shippingMethod && (
-                      <p className="text-sm text-red-500 mt-2">
-                        {errors.shippingMethod.message}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Order Comments */}
-                  <div className="flex flex-col">
-                    <label htmlFor="orderComment" className="text-sm mb-2">
-                      Order Comments
-                    </label>
-                    <textarea
-                      id="orderComment"
-                      rows={4}
-                      className="w-full border rounded-md p-3"
-                      {...register("orderComment")}
-                      placeholder="Add any special instructions..."
-                    />
-                  </div>
-
-                  <Button
-                    type="button"
-                    onClick={handleContinueToBilling}
-                    className="w-full h-[50px] bg-red-600 hover:bg-red-700 text-white font-medium"
-                  >
-                    CONTINUE
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {/* STEP 3: Billing (only if billingSame is false) */}
-            {currentStep === 3 && !watchedBillingSame && (
-              <div className="bg-white border rounded-md shadow-sm p-6">
-                <h2 className="text-2xl font-semibold mb-6">Billing</h2>
-
-                <div className="space-y-6">
-                  <h3 className="font-medium mb-4">Billing Address</h3>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col">
-                      <label
-                        htmlFor="billingFirstName"
-                        className="text-sm mb-2"
-                      >
-                        First Name
-                      </label>
-                      <Input
-                        id="billingFirstName"
-                        type="text"
-                        className={`w-full h-[50px] ${
-                          errors.billingFirstName ? "border-red-500" : ""
-                        }`}
-                        {...register("billingFirstName", {
-                          required: "First name is required",
-                        })}
-                      />
-                      {errors.billingFirstName && (
-                        <p className="text-sm text-red-500 mt-1">
-                          {errors.billingFirstName.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="flex flex-col">
-                      <label htmlFor="billingLastName" className="text-sm mb-2">
-                        Last Name
-                      </label>
-                      <Input
-                        id="billingLastName"
-                        type="text"
-                        className={`w-full h-[50px] ${
-                          errors.billingLastName ? "border-red-500" : ""
-                        }`}
-                        {...register("billingLastName", {
-                          required: "Last name is required",
-                        })}
-                      />
-                      {errors.billingLastName && (
-                        <p className="text-sm text-red-500 mt-1">
-                          {errors.billingLastName.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col">
-                    <label htmlFor="billingCompany" className="text-sm mb-2">
-                      Company Name{" "}
-                      <span className="text-gray-400">(Optional)</span>
-                    </label>
-                    <Input
-                      id="billingCompany"
-                      type="text"
-                      className="w-full h-[50px]"
-                      {...register("billingCompany")}
-                    />
-                  </div>
-
-                  <div className="flex flex-col">
-                    <label htmlFor="billingPhone" className="text-sm mb-2">
-                      Phone Number{" "}
-                      <span className="text-gray-400">(Optional)</span>
-                    </label>
-                    <Input
-                      id="billingPhone"
-                      type="text"
-                      className="w-full h-[50px]"
-                      {...register("billingPhone")}
-                    />
-                  </div>
-
-                  <div className="flex flex-col">
-                    <label htmlFor="billingAddress1" className="text-sm mb-2">
-                      Address Line 1
-                    </label>
-                    <Input
-                      id="billingAddress1"
-                      type="text"
-                      className={`w-full h-[50px] ${
-                        errors.billingAddress1 ? "border-red-500" : ""
-                      }`}
-                      {...register("billingAddress1", {
-                        required: "Address is required",
-                      })}
-                    />
-                    {errors.billingAddress1 && (
-                      <p className="text-sm text-red-500 mt-1">
-                        {errors.billingAddress1.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="flex flex-col">
-                    <label htmlFor="billingAddress2" className="text-sm mb-2">
-                      Address Line 2{" "}
-                      <span className="text-gray-400">(Optional)</span>
-                    </label>
-                    <Input
-                      id="billingAddress2"
-                      type="text"
-                      className="w-full h-[50px]"
-                      {...register("billingAddress2")}
-                    />
-                  </div>
-
-                  <div className="flex flex-col">
-                    <label htmlFor="billingCity" className="text-sm mb-2">
-                      City
-                    </label>
-                    <Input
-                      id="billingCity"
-                      type="text"
-                      className={`w-full h-[50px] ${
-                        errors.billingCity ? "border-red-500" : ""
-                      }`}
-                      {...register("billingCity", {
-                        required: "City is required",
-                      })}
-                    />
-                    {errors.billingCity && (
-                      <p className="text-sm text-red-500 mt-1">
-                        {errors.billingCity.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="flex flex-col">
-                    <label htmlFor="billingCountry" className="text-sm mb-2">
-                      Country
-                    </label>
-                    <Controller
-                      name="billingCountry"
-                      control={control}
-                      rules={{ required: "Country is required" }}
-                      render={({ field }) => (
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                        >
-                          <SelectTrigger
-                            className={`w-full h-[50px] ${
-                              errors.billingCountry ? "border-red-500" : ""
-                            }`}
-                          >
-                            <SelectValue placeholder="Select country" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {countryList.map((country) => (
-                              <SelectItem
-                                key={country.code}
-                                value={country.code}
-                              >
-                                {country.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      )}
-                    />
-                    {errors.billingCountry && (
-                      <p className="text-sm text-red-500 mt-1">
-                        {errors.billingCountry.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col">
-                      <label htmlFor="billingState" className="text-sm mb-2">
-                        State/Province
-                      </label>
-                      <Input
-                        id="billingState"
-                        type="text"
-                        className="w-full h-[50px]"
-                        {...register("billingState")}
-                      />
-                    </div>
-
-                    <div className="flex flex-col">
-                      <label htmlFor="billingZip" className="text-sm mb-2">
-                        Postal Code
-                      </label>
-                      <Input
-                        id="billingZip"
-                        type="text"
-                        className={`w-full h-[50px] ${
-                          errors.billingZip ? "border-red-500" : ""
-                        }`}
-                        {...register("billingZip", {
-                          required: "Postal code is required",
-                        })}
-                      />
-                      {errors.billingZip && (
-                        <p className="text-sm text-red-500 mt-1">
-                          {errors.billingZip.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <Button
-                    type="button"
-                    onClick={handleContinueToPayment}
-                    className="w-full h-[50px] bg-red-600 hover:bg-red-700 text-white font-medium"
-                  >
-                    CONTINUE
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {/* STEP 4: Payment */}
-            {currentStep === 4 && (
-              <div className="bg-white border rounded-md shadow-sm p-6">
-                <h2 className="text-2xl font-semibold mb-6">Payment</h2>
-
-                <div className="space-y-4">
-                  {/* Stripe Credit Card */}
-                  <label className="flex flex-col border rounded-lg p-4 cursor-pointer has-[:checked]:border-red-600">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <input
-                          type="radio"
-                          value="credit_card"
-                          {...register("paymentMethod", {
-                            required: "Please select a payment method",
-                          })}
-                          checked={watchedPaymentMethod === "credit_card"}
-                          onChange={() => handlePaymentSelection("credit_card")}
-                        />
-                        <span className="font-semibold">Stripe</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Image
-                          src="/checkouticon/card.png"
-                          alt="Cards"
-                          width={120}
-                          height={30}
-                        />
-                      </div>
-                    </div>
-
-                    {stripeCardMethods.includes(watchedPaymentMethod) && (
-                      <div className="space-y-4 mt-4">
-                        <div>
-                          <label className="text-sm mb-2 block">
-                            Card number
-                          </label>
-                          <div className="border rounded-md p-3 hover:border-gray-400 focus-within:border-red-600">
-                            <CardNumberElement
-                              onChange={(event) => {
-                                setCardCompletion((prev) => ({
-                                  ...prev,
-                                  number: event.complete,
-                                }));
-                                setCardError(event.error?.message || null);
-                              }}
-                              options={{
-                                style: {
-                                  base: {
-                                    fontSize: "16px",
-                                    color: "#333",
-                                    "::placeholder": {
-                                      color: "#aaa",
-                                    },
-                                  },
-                                  invalid: {
-                                    color: "#fa755a",
-                                  },
-                                },
-                              }}
-                            />
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="text-sm mb-2 block">
-                              Expiration date
-                            </label>
-                            <div className="border rounded-md p-3 hover:border-gray-400 focus-within:border-red-600">
-                              <CardExpiryElement
-                                onChange={(event) => {
-                                  setCardCompletion((prev) => ({
-                                    ...prev,
-                                    expiry: event.complete,
-                                  }));
-                                  setCardError(event.error?.message || null);
-                                }}
-                                options={{
-                                  style: {
-                                    base: {
-                                      fontSize: "16px",
-                                      color: "#333",
-                                      "::placeholder": {
-                                        color: "#aaa",
-                                      },
-                                    },
-                                    invalid: {
-                                      color: "#fa755a",
-                                    },
-                                  },
-                                }}
-                              />
-                            </div>
-                          </div>
-
-                          <div>
-                            <label className="text-sm mb-2 block">
-                              Security code
-                            </label>
-                            <div className="border rounded-md p-3 hover:border-gray-400 focus-within:border-red-600">
-                              <CardCvcElement
-                                onChange={(event) => {
-                                  setCardCompletion((prev) => ({
-                                    ...prev,
-                                    cvc: event.complete,
-                                  }));
-                                  setCardError(event.error?.message || null);
-                                }}
-                                options={{
-                                  style: {
-                                    base: {
-                                      fontSize: "16px",
-                                      color: "#333",
-                                      "::placeholder": {
-                                        color: "#aaa",
-                                      },
-                                    },
-                                    invalid: {
-                                      color: "#fa755a",
-                                    },
-                                  },
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-                        {cardError && (
-                          <p className="text-sm text-red-500">{cardError}</p>
-                        )}
-                      </div>
-                    )}
-                  </label>
-
-                  {/* Apple Pay */}
-                  <label
-                    className={`flex items-center justify-between border rounded-lg p-4 cursor-pointer has-[:checked]:border-red-600 ${
-                      !walletSupport.applePay
-                        ? "opacity-50 cursor-not-allowed"
-                        : ""
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="radio"
-                        value="apple_pay"
-                        {...register("paymentMethod")}
-                        checked={watchedPaymentMethod === "apple_pay"}
-                        onChange={() => handlePaymentSelection("apple_pay")}
-                        disabled={!walletSupport.applePay}
-                      />
-                      <Image
-                        src="/checkouticon/Apple-icon.svg"
-                        alt="Apple Pay"
-                        width={50}
-                        height={30}
-                      />
-                    </div>
-                    {walletSupport.applePay ? (
-                      <Image
-                        src="/checkouticon/card.png"
-                        alt="Cards"
-                        width={100}
-                        height={30}
-                      />
-                    ) : (
-                      <span className="text-xs text-gray-500">
-                        Not available
-                      </span>
-                    )}
-                  </label>
-
-                  {/* Google Pay */}
-                  <label
-                    className={`flex items-center justify-between border rounded-lg p-4 cursor-pointer has-[:checked]:border-red-600 ${
-                      !walletSupport.googlePay
-                        ? "opacity-50 cursor-not-allowed"
-                        : ""
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="radio"
-                        value="google_pay"
-                        {...register("paymentMethod")}
-                        checked={watchedPaymentMethod === "google_pay"}
-                        onChange={() => handlePaymentSelection("google_pay")}
-                        disabled={!walletSupport.googlePay}
-                      />
-                      <Image
-                        src="/checkouticon/googlepay.png"
-                        alt="Google Pay"
-                        width={60}
-                        height={30}
-                      />
-                    </div>
-                    {walletSupport.googlePay ? (
-                      <Image
-                        src="/checkouticon/card.png"
-                        alt="Cards"
-                        width={100}
-                        height={30}
-                      />
-                    ) : (
-                      <span className="text-xs text-gray-500">
-                        Not available
-                      </span>
-                    )}
-                  </label>
-
-                  {errors.paymentMethod && (
-                    <p className="text-sm text-red-500 mt-2">
-                      {errors.paymentMethod.message}
-                    </p>
-                  )}
-
-                  <Button
-                    type="submit"
-                    disabled={isProcessing || !stripe}
-                    className="w-full h-[50px] bg-red-600 hover:bg-red-700 text-white font-medium disabled:opacity-50"
-                  >
-                    {isProcessing ? "Processing..." : "PLACE ORDER"}
-                  </Button>
-                </div>
-              </div>
-            )}
+            {/* STEP 4: Payment - Always show heading */}
+            <div className="p-6  border-b-[1px] border-b-[#8b8b8b]">
+              <h2 className="text-[1.92308rem] font-normal mb-4 text-[#545454]">
+                Payment
+              </h2>
+              <PaymentStep
+                register={register}
+                errors={errors}
+                watchedPaymentMethod={watchedPaymentMethod}
+                handlePaymentSelection={handlePaymentSelection}
+                cardCompletion={cardCompletion}
+                setCardCompletion={setCardCompletion}
+                cardError={cardError}
+                setCardError={setCardError}
+                walletSupport={walletSupport}
+                isProcessing={isProcessing}
+                stripe={stripe}
+                isActive={currentStep === 4}
+                isCompleted={completedSteps.includes(4)}
+                onEdit={handleEditPayment}
+                paymentMethodLabel={
+                  watchedPaymentMethod === "credit_card"
+                    ? "Credit Card"
+                    : watchedPaymentMethod === "apple_pay"
+                    ? "Apple Pay"
+                    : watchedPaymentMethod === "google_pay"
+                    ? "Google Pay"
+                    : "Credit Card"
+                }
+              />
+            </div>
           </div>
 
           {/* RIGHT SECTION - Order Summary */}
-          <div className="bg-white border rounded-md shadow-sm p-6 h-fit sticky top-4">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold">Order Summary</h2>
-              <a href="/cart" className="text-sm text-red-600 hover:underline">
-                Edit Cart
-              </a>
-            </div>
-
-            <div className="mb-4 text-sm text-gray-600">
-              {cart.length} Item{cart.length !== 1 ? "s" : ""}
-            </div>
-
-            {/* Cart Items */}
-            <div className="space-y-4 mb-6 max-h-[400px] overflow-y-auto">
-              {cart.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-start gap-4 pb-4 border-b last:border-b-0"
-                >
-                  <div className="relative w-20 h-20 flex-shrink-0">
-                    <Image
-                      src={
-                        item.image?.[0]?.path || "/checkouticon/orderimg.png"
-                      }
-                      alt={item.name}
-                      width={80}
-                      height={80}
-                      className="object-cover rounded"
-                    />
-                    <span className="absolute -top-2 -right-2 bg-gray-700 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                      {item.quantity}
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium line-clamp-2 mb-1">
-                      {item.name}
-                    </p>
-                    <p className="text-sm font-semibold text-gray-900">
-                      ${Number(item.price).toFixed(2)}
-                    </p>
-                  </div>
-                  <div className="text-sm font-semibold text-gray-900">
-                    ${(Number(item.price) * (item.quantity || 1)).toFixed(2)}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Promo/Gift Certificate */}
-            <div className="mb-6">
-              <button className="text-sm text-gray-600 hover:text-gray-900 underline">
-                Promo/Gift Certificate
-              </button>
-            </div>
-
-            {/* Totals */}
-            <div className="space-y-3 text-sm border-t pt-4">
-              <div className="flex justify-between text-gray-700">
-                <span>Subtotal</span>
-                <span className="font-medium">${subtotal.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-gray-700">
-                <span>Shipping</span>
-                <span className="font-medium">${shipping.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-gray-700">
-                <span>Tax</span>
-                <span className="font-medium">${tax.toFixed(2)}</span>
-              </div>
-            </div>
-
-            {/* Total */}
-            <div className="flex justify-between items-center text-lg font-bold mt-4 pt-4 border-t">
-              <span>Total (USD)</span>
-              <span>${total.toFixed(2)}</span>
-            </div>
-          </div>
+          <CheckoutOrderSummary
+            cart={cart}
+            subtotal={subtotal}
+            shipping={shipping}
+            tax={tax}
+            total={total}
+          />
         </div>
       </form>
 

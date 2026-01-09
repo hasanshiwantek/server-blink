@@ -5,11 +5,11 @@ import React from "react";
 
 const ProductOverview = ({ product }: { product: any }) => {
   return (
-    <section className="my-8" aria-labelledby="product-overview-heading">
+    <section className="py-10   xl:px-0 2xl:px-0   w-[85%] lg:w-full max-w-[1170px] mx-auto px-4 lg:px-0 " aria-labelledby="product-overview-heading">
       <div className="w-full  flex flex-col">
         <div className="flex flex-col gap-8">
           {/* Main Overview Heading */}
-          <h2 className="h1-secondary-medium ">Overview</h2>
+          <h2 className="h1-lg ">Overview</h2>
 
           {/* Intro Paragraph */}
          
