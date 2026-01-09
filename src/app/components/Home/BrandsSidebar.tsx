@@ -25,7 +25,7 @@ const BrandsSidebar: React.FC<BrandsSidebarProps> = ({ activeBrandId }) => {
     <div className="rounded-xs overflow-hidden">
       {/* Header */}
       <div className="bg-[#393939] px-3 py-2 uppercase tracking-wide border-b-3 border-[#8b8b8b]">
-        <h2 className="h2-bold">SHOP BY BRAND</h2>
+        <h2 className="text-[15px] font-bold text-white ">SHOP BY BRAND</h2>
       </div>
 
       {/* Body */}
