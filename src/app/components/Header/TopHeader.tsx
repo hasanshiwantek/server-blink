@@ -1,15 +1,40 @@
 "use client";
 import { useState, useEffect } from "react";
 import { FaShoppingCart } from "react-icons/fa";
-import { Search } from "lucide-react";
+import { Search, User } from "lucide-react";
 import Link from "next/link";
-import { useAppSelector } from "@/hooks/useReduxHooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
+import { logout } from "@/redux/slices/authSlice";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const TopHeader = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const cart = useAppSelector((state: RootState) => state.cart.items);
+  const cart = useAppSelector((state: RootState) => state?.cart?.items);
+  const auth = useAppSelector((state: RootState) => state?.auth);
+    const dispatch = useAppDispatch();
+      const router = useRouter();
+
+      const handleLogout = () => {
+    const confirm = window.confirm("Confirm Logout?");
+    if (!confirm) {
+      return;
+    } else {
+      dispatch(logout());
+      toast.success("Logged out successfully!");
+      router.replace("/auth/login");
+    }
+  };
+
+  // const handleUserClick = () => {
+  //   if (auth?.isAuthenticated) {
+  //     router.push("/my-account/orders");
+  //   } else {
+  //     router.push("/auth/login"); 
+  //   }
+  // };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -89,9 +114,19 @@ const TopHeader = () => {
           </div>
 
           {/* Right: Login/Signup + Cart */}
-          <div className="flex items-center space-x-2 md:space-x-4">
+          <div className="flex items-center space-x-2 md:space-x-4" >
             <div className="flex items-center space-x-2">
-              <Link href="/auth/login">
+                  <Link
+                href={
+                  auth?.isAuthenticated ? "/my-account/orders" : "/auth/login"
+                }
+              >
+              <User className="w-8 h-8 text-white" fill="currentColor" />
+              </Link>
+              {auth?.isAuthenticated ? ( <button onClick={handleLogout} className="font-bold text-[14px] hover:text-gray-300 transition">
+                  Logout
+                </button> ) : (  <>
+                 <Link href="/auth/login">
                 <button className="font-bold text-[14px] hover:text-gray-300 transition">
                   Login
                 </button>
@@ -102,6 +137,7 @@ const TopHeader = () => {
                   Sign Up
                 </button>
               </Link>
+                </> )}
             </div>
 
             {/* Cart */}

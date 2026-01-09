@@ -37,6 +37,11 @@ const AccountForm = () => {
   } = useForm<AccountFormValues>({
   defaultValues: {
     email: auth?.user?.email || "",
+    firstName: auth?.user?.firstName || "",
+    lastName: auth?.user?.lastName || "",
+    companyName: auth?.user?.companyName || "",
+    phone: auth?.user?.phone || "",
+    
   },
 });
 
@@ -59,17 +64,15 @@ const AccountForm = () => {
     }
   };
 
-  const inputClass = "!w-full h-[50px] !max-w-full";
+  const inputClass = "!w-full h-[42px] !max-w-full";
 
   return (
-    <div className="max-w-5xl mx-auto bg-white p-8 rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-6 text-center">Account Form</h2>
-
+    <div className="max-w-full mx-auto p-8 rounded-lg">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* First Name & Last Name */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <Label htmlFor="firstName">First Name <span className="text-red-600">*</span></Label>
+            <Label className="text-[14px] flex md:justify-between" htmlFor="firstName">First Name <span className="">*</span></Label>
             <Input
               id="firstName"
               {...register("firstName", { required: "First Name is required" })}
@@ -78,7 +81,7 @@ const AccountForm = () => {
             {errors.firstName && <p className="text-sm text-red-500">{errors.firstName.message}</p>}
           </div>
           <div>
-            <Label htmlFor="lastName">Last Name <span className="text-red-600">*</span></Label>
+            <Label className="text-[14px] flex md:justify-between" htmlFor="lastName">Last Name <span className="">*</span></Label>
             <Input
               id="lastName"
               {...register("lastName", { required: "Last Name is required" })}
@@ -91,7 +94,7 @@ const AccountForm = () => {
         {/* Company & Phone Number */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="companyName">Company</Label>
+            <Label className="text-[14px] flex md:justify-between" htmlFor="companyName">Company</Label>
             <Input
               id="companyName"
               {...register("companyName")}
@@ -99,7 +102,7 @@ const AccountForm = () => {
             />
           </div>
           <div>
-            <Label htmlFor="phone">Phone Number</Label>
+            <Label className="text-[14px] flex md:justify-between" htmlFor="phone">Phone Number</Label>
             <Input
               id="phone"
               {...register("phone")}
@@ -111,7 +114,7 @@ const AccountForm = () => {
         {/* Email & Password */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="email">Email Address <span className="text-red-600">*</span></Label>
+            <Label className="text-[14px] flex md:justify-between" htmlFor="email">Email Address <span className="">*</span></Label>
             <Input
               id="email"
               type="email"
@@ -123,7 +126,7 @@ const AccountForm = () => {
           </div>
 
           <div className="relative">
-            <Label htmlFor="password">Password <span className="text-red-600">*</span></Label>
+            <Label className="text-[14px] flex md:justify-between" htmlFor="password">Password <span className="">*</span></Label>
             <Input
               id="password"
               type={showPassword ? "text" : "password"}
@@ -133,7 +136,7 @@ const AccountForm = () => {
             <button
               type="button"
               onClick={() => setShowPassword(prev => !prev)}
-              className="absolute right-3 top-[65%] -translate-y-1/2 text-gray-500"
+              className="absolute right-3 top-[72%] -translate-y-1/2 text-gray-500"
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
@@ -144,7 +147,7 @@ const AccountForm = () => {
         {/* Confirm Password & Current Password */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="relative">
-            <Label htmlFor="password_confirmation">Confirm Password <span className="text-red-600">*</span></Label>
+            <Label className="text-[14px] flex md:justify-between" htmlFor="password_confirmation">Confirm Password <span className="">*</span></Label>
             <Input
               id="password_confirmation"
               type={showConfirmPassword ? "text" : "password"}
@@ -157,7 +160,7 @@ const AccountForm = () => {
             <button
               type="button"
               onClick={() => setShowConfirmPassword(prev => !prev)}
-              className="absolute right-3 top-[65%] -translate-y-1/2 text-gray-500"
+              className="absolute right-3 top-[72%] -translate-y-1/2 text-gray-500"
             >
               {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
@@ -165,7 +168,7 @@ const AccountForm = () => {
           </div>
 
           <div className="relative">
-            <Label htmlFor="currentPassword">Current Password</Label>
+            <Label className="text-[14px] flex md:justify-between" htmlFor="currentPassword">Current Password</Label>
             <Input
               id="currentPassword"
               type={showCurrentPassword ? "text" : "password"}
@@ -175,7 +178,7 @@ const AccountForm = () => {
             <button
               type="button"
               onClick={() => setShowCurrentPassword(prev => !prev)}
-              className="absolute right-3 top-[65%] -translate-y-1/2 text-gray-500"
+              className="absolute right-3 top-[72%] -translate-y-1/2 text-gray-500"
             >
               {showCurrentPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
@@ -183,8 +186,8 @@ const AccountForm = () => {
         </div>
 
         {/* Submit */}
-        <Button type="submit" className="w-full py-6 rounded-full bg-[#F15939] text-white text-lg font-semibold">
-         {loading ? "Loading..." : "Update Account"}
+        <Button type="submit" className="w-64 !p-7 text-2xl border-b-2 border-black bg-[#D42020] text-white font-bold md:mt-8">
+         {loading ? "Loading..." : "UPDATE DETAILS"}
         </Button>
       </form>
     </div>

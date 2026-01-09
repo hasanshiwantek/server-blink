@@ -25,21 +25,27 @@ const ProductCard = ({ product }: { product: any }) => {
 
   const [selectedImage, setSelectedImage] = useState(images[0]);
 
-  useEffect(() => {
-    if (!product) return;
+useEffect(() => {
+  if (!product) return;
 
-    dispatch(
-      addRecentView({
-        sku: product?.sku,
-        name: product?.name,
-        image:
-          product?.image?.[0]?.path ||
-          product?.image?.[1]?.path ||
-          "/default-product-image.svg",
-        price: Number(product?.price) || 0,
-      })
-    );
-  }, [product]);
+  dispatch(
+    addRecentView({
+      id: product.id,
+      sku: product.sku,
+      slug: product.slug,
+
+      brand: product.brand,
+
+      name: product.name,
+
+      price: product.price,
+      msrp: product.msrp,
+
+      image: product.image,
+    })
+  );
+}, [product, dispatch]);
+
 
   const increment = () => {
     if (
