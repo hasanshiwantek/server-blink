@@ -64,29 +64,47 @@ export const metadata: Metadata = {
 const AOSWrapper = dynamic(() => import("../components/animation/AOSWrapper"));
 const page = () => {
   return (
-    <main className="flex flex-col gap-30">
-      {/* <AOSWrapper animation="zoom-in" delay={100}> */}
-        <AboutBanner />
-      {/* </AOSWrapper> */}
-      {/* <AOSWrapper animation="fade-up" delay={200}> */}
-        <GlobalSupplier />
-      {/* </AOSWrapper> */}
-      {/* <AOSWrapper animation="fade-up" delay={300}> */}
-        <AboutStats />
-      {/* </AOSWrapper> */}
-      {/* <AOSWrapper animation="fade-up" delay={400}> */}
-        <AboutBrandSection />
-      {/* </AOSWrapper> */}
-      {/* <AOSWrapper animation="fade-up" delay={500}> */}
-        <SocialResponsibilitySection />
-      {/* </AOSWrapper> */}
-      {/* <AOSWrapper animation="fade-up" delay={600}> */}
-        {/* <GetInTouch /> */}
-      {/* </AOSWrapper> */}
-      {/* <AOSWrapper animation="fade-up" delay={700}> */}
-        <ProductServicesSection />
-      {/* </AOSWrapper> */}
-    </main>
+        <main className="flex flex-col gap-30" role="main">
+            <div className="w-full max-w-[1170px] mx-auto lg:px-6 xl:px-0">
+                <div className="py-2">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+
+                        {/* Content */}
+                        <div className="lg:col-span-12">
+                            <h2 className=""><span
+                                className="text-[11px] !text-[#D42020]"
+                                itemProp="name"
+                            >
+                                Home
+                            </span> {" "} <span className="mt-2 mx-3 text-gray-400 text-[11px]" aria-hidden="true">/</span> {" "} <span
+                                className="!text-[#D42020] text-[11px]"
+                                itemProp="name"
+                            >
+                                    About Us
+                                </span></h2>
+
+                            {/* Page Title */}
+                            <h1 className="text-4xl mb-4 text-[#4A4A4A] mt-5">
+                                About Us
+                            </h1>
+
+                            {/* Remaining Paragraphs */}
+                            <p className="text-[16px] leading-[23px] mt-6">
+                                We are a leading online retailer of server parts, committed to providing 
+                                high-quality and reliable products to our customers. With a wide range 
+                                of parts to choose from, we make it easy for businesses of all sizes 
+                                to upgrade and maintain their servers. Our team of experts is dedicated
+                                 to delivering exceptional customer service and technical support,
+                                  ensuring that our customers get the best possible experience when 
+                                  shopping with us.
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
   );
 };
 

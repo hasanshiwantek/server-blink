@@ -24,30 +24,58 @@ const MyAccountTabs = () => {
   return (
     <div>
       {/* Breadcrumb */}
-      <div className="h5-regular mb-4 text-gray-600">
-        <span>Home</span> &gt; <span>Your Account</span> &gt;{" "}
-        <span className="font-semibold">{getActiveTab()}</span>
-      </div>
-      <div className="h5-regular mb-4 text-gray-600">
-        <span className="font-semibold">{getActiveTab()}</span>
-      </div>
+    {/* Breadcrumb */}
+<div className="flex items-center text-[11px] mb-4 text-gray-600" aria-label="breadcrumb">
+  {/* Home */}
+  <span className="" itemProp="name">
+    Home
+  </span>
+
+  {/* Separator */}
+  <span className="mx-3 text-gray-400" aria-hidden="true">
+    /
+  </span>
+
+  {/* Your Account */}
+  <span className="text-gray-600" itemProp="name">
+    Your Account
+  </span>
+
+  {/* Separator */}
+  <span className="mx-3 text-gray-400" aria-hidden="true">
+    /
+  </span>
+
+  {/* Current Tab */}
+  <span className="text-[#D42020] font-semibold" itemProp="name">
+    {getActiveTab()}
+  </span>
+</div>
+
+{/* Optional: Current Tab as Heading */}
+<div className="text-4xl mb-4 text-gray-600">
+  {getActiveTab()}
+</div>
+
 
       {/* Tabs */}
-   <div className="flex flex-wrap gap-3 mb-6 justify-center sm:justify-start">
+   <div className="flex flex-wrap gap-2 mb-6 justify-center">
   {tabs.map((tab) => {
     const isActive = pathname.startsWith(tab.href);
     return (
-      <Link
-        key={tab.name}
-        href={tab.href}
-        className={`px-4 py-2 rounded-md text-sm sm:text-base font-medium transition-colors duration-200 ${
-          isActive
-            ? "bg-[#F15939] text-white"
-            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-        }`}
-      >
-        {tab.name}
-      </Link>
+    <Link
+      key={tab.name}
+      href={tab.href}
+ className={`px-4 py-2 text-sm sm:text-[14px] font-medium transition-colors duration-200 uppercase ${
+  isActive
+    ? "underline underline-offset-4 text-black"
+    : "text-gray-600 hover:text-[#D42020]"      
+}`}
+
+
+    >
+      {tab.name}
+    </Link>
     );
   })}
 </div>

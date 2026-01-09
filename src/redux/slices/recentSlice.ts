@@ -1,14 +1,27 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface RecentProduct {
-  sku: string;
+
+export interface Brand {
+  id: number;
   name: string;
-  image: string;
-  price: number;
+  slug: string;
+  logo?: string;
 }
 
+export interface Product {
+  id: number;
+  brand: Brand | string;
+  sku: string;
+  name: string | { name?: string };
+  price: number | string;
+  msrp?: number;
+  image?: { path?: string }[];
+  slug: string;
+}
+
+
 interface RecentState {
-  items: RecentProduct[];
+  items: Product[];
 }
 
 const initialState: RecentState = {
@@ -19,13 +32,21 @@ const recentSlice = createSlice({
   name: "recent",
   initialState,
   reducers: {
-    addRecentView: (state, action: PayloadAction<RecentProduct>) => {
+    addRecentView: (state, action: PayloadAction<Product>) => {
       const product = action.payload;
-      // Remove existing same sku
-      state.items = state.items.filter((p) => p.sku !== product.sku);
-      // Add to top
+
+      // duplicate remove (SKU based)
+      state.items = state.items.filter(
+        (p) => p.sku !== product.sku
+      );
+
+      // top pe add
       state.items.unshift(product);
-      if (state.items.length > 20) state.items.pop();
+
+      // limit 20
+      if (state.items.length > 20) {
+        state.items.pop();
+      }
     },
     clearRecent: (state) => {
       state.items = [];
