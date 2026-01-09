@@ -21,7 +21,7 @@ const BrandsSidebar = () => {
     <div className="rounded-xs overflow-hidden">
       {/* Header */}
       <div className="bg-[#393939] px-3 py-2 uppercase tracking-wide border-b-3 border-[#8b8b8b]">
-        <h2 className="h2-bold">SHOP BY BRAND</h2>
+        <h2 className="text-[15px] font-bold text-white ">SHOP BY BRAND</h2>
       </div>
 
       {/* Body */}
@@ -34,14 +34,14 @@ const BrandsSidebar = () => {
           </div>
         ) : (
           data?.map((brand: any) => (
-           <Link href={`/brand/${brand?.slug}`} key={brand.id}>
-            <button
-              key={brand.id}
-              className="w-full px-3 py-1 text-left text-[15px] font-normal text-[#545454] hover:text-[var(--primary-color)] transition-colors flex items-center gap-3"
-            >
-              <span>{brand.name}</span>
-            </button>
-           </Link>
+            <Link href={`/brand/${brand?.slug}`} key={brand.id}>
+              <button
+                key={brand.id}
+                className="w-full px-3 py-1 text-left text-[15px] font-normal text-[#545454] hover:text-[var(--primary-color)] transition-colors flex items-center gap-3"
+              >
+                <span>{brand.name}</span>
+              </button>
+            </Link>
           ))
         )}
 

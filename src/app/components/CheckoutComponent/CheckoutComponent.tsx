@@ -1,3 +1,1357 @@
+// "use client";
+// import React, {
+//   useState,
+//   useCallback,
+//   useMemo,
+//   memo,
+//   useEffect,
+//   useRef,
+// } from "react";
+// import { Input } from "@/components/ui/input";
+// import { Button } from "@/components/ui/button";
+// import Image from "next/image";
+// import { Trash2, Plus, Minus } from "lucide-react";
+// import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
+// import { RootState } from "@/redux/store";
+// import {
+//   decreaseQty,
+//   increaseQty,
+//   removeFromCart,
+//   clearCart,
+// } from "@/redux/slices/cartSlice";
+// import axiosInstance from "@/lib/axiosInstance";
+// import { toast } from "sonner";
+// import {
+//   Dialog,
+//   DialogContent,
+//   DialogHeader,
+//   DialogTitle,
+//   DialogDescription,
+//   DialogFooter,
+// } from "@/components/ui/dialog";
+// import {
+//   Select,
+//   SelectTrigger,
+//   SelectValue,
+//   SelectItem,
+//   SelectContent,
+// } from "@/components/ui/select";
+// import countries from "world-countries";
+// import { useForm, Controller } from "react-hook-form";
+// import { loadStripe } from "@stripe/stripe-js";
+// import type { PaymentRequest as StripePaymentRequest } from "@stripe/stripe-js";
+// import {
+//   Elements,
+//   CardNumberElement,
+//   CardExpiryElement,
+//   CardCvcElement,
+//   PaymentRequestButtonElement,
+//   useStripe,
+//   useElements,
+// } from "@stripe/react-stripe-js";
+// import { useRouter } from "next/navigation";
+// import { setLastOrder } from "@/redux/slices/orderslice";
+// // Stripe publishable key
+// const stripePromise = loadStripe(
+//   "pk_test_51Q84ITDXm8Pt3arOOI28hj5W9JPohSimaAfVeGxCPCf9N86B5rK1POKOhQpOsNmeaid1cbRAU06yzV8eienwD10B00KDT12v4S"
+// );
+
+// // ✅ Pre-compute country list at module level (only once when module loads)
+// const countryList = countries
+//   .map((country) => ({
+//     name: country.name.common,
+//     code: country.cca2,
+//   }))
+//   .sort((a, b) => a.name.localeCompare(b.name));
+
+// interface CheckoutFormValues {
+//   email: string;
+//   firstName: string;
+//   lastName: string;
+//   company: string;
+//   phone: string;
+//   address1: string;
+//   address2: string;
+//   city: string;
+//   country: string;
+//   state: string;
+//   zip: string;
+//   shippingMethod: string;
+//   orderComment: string;
+//   paymentMethod: string;
+//   paymentIntentId?: string | null;
+//   billingSame: boolean;
+// }
+
+// // ✅ Memoized Cart Item Component to prevent unnecessary re-renders
+// interface CartItemProps {
+//   item: any;
+//   onIncrease: (id: string | number) => void;
+//   onDecrease: (id: string | number) => void;
+//   onDelete: (item: any) => void;
+// }
+
+// const CartItem = memo(({
+//   item,
+//   onIncrease,
+//   onDecrease,
+//   onDelete
+// }: CartItemProps) => {
+//   return (
+//     <div className="relative flex flex-col sm:flex-row items-center gap-3 p-3 border">
+//       <Image
+//         src={item.image?.[0]?.path || "/checkouticon/orderimg.png"}
+//         alt={item.name}
+//         width={116}
+//         height={35}
+//         className="object-cover"
+//       />
+//       <div className="flex-1">
+//         <p className="h6-medium !text-[#333333] line-clamp-2">
+//           {item.name}
+//         </p>
+//         <p className="h6-regular !text-[#4A4A4A]">
+//           ${Number(item.price).toFixed(2)}
+//         </p>
+//         <div className="flex w-[120.39999389648438px] sm:w-[146.39999389648438px] h-[48px] items-center justify-center border border-gray-300 rounded-full">
+//           {/* Decrease Button */}
+//           <button
+//             type="button"
+//             onClick={(e) => {
+//               e.preventDefault();
+//               e.stopPropagation();
+//               onDecrease(item.id);
+//             }}
+//             className="flex items-center justify-center w-16 h-10 h5-medium"
+//           >
+//             <Minus className="w-5 h-5" />
+//           </button>
+//           {/* Quantity Display */}
+//           <span className="h5-medium border-x h-[48px] border-gray-300 px-6 flex items-center justify-center select-none">
+//             {item.quantity}
+//           </span>
+//           {/* Increase Button */}
+//           <button
+//             type="button"
+//             onClick={(e) => {
+//               e.preventDefault();
+//               e.stopPropagation();
+//               onIncrease(item.id);
+//             }}
+//             className="flex items-center justify-center w-16 h-10 h5-medium"
+//           >
+//             <Plus className="w-5 h-5" />
+//           </button>
+//         </div>
+
+//         <button
+//           type="button"
+//           onClick={(e) => {
+//             e.preventDefault();
+//             e.stopPropagation();
+//             onDelete(item);
+//           }}
+//           className="absolute right-6 bottom-9 ml-auto text-gray-500 hover:text-red-700 transition"
+//         >
+//           <Trash2 className="w-5 h-5" />
+//         </button>
+//       </div>
+//     </div>
+//   );
+// });
+
+// CartItem.displayName = "CartItem";
+
+// // Inner component that uses Stripe hooks
+// const CheckoutForm = () => {
+//   const dispatch = useAppDispatch();
+//   const cart = useAppSelector((state: RootState) => state.cart.items);
+//    const auth = useAppSelector((state: RootState) => state?.auth);
+//   const [itemToDelete, setItemToDelete] = useState<any | null>(null);
+//   const [isDialogOpen, setIsDialogOpen] = useState(false);
+//   const [isProcessing, setIsProcessing] = useState(false);
+//   // const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+//   // const [latestOrderId, setLatestOrderId] = useState<string | null>(null);
+//   const [cardCompletion, setCardCompletion] = useState({
+//     number: false,
+//     expiry: false,
+//     cvc: false,
+//   });
+//   const [cardError, setCardError] = useState<string | null>(null);
+//   const [paymentRequest, setPaymentRequest] =
+//     useState<StripePaymentRequest | null>(null);
+//   const [walletSupport, setWalletSupport] = useState<{
+//     applePay: boolean;
+//     googlePay: boolean;
+//   }>({ applePay: false, googlePay: false });
+//   const [pendingWalletForm, setPendingWalletForm] =
+//     useState<CheckoutFormValues | null>(null);
+//   const stripe = useStripe();
+//   const elements = useElements();
+//   const router = useRouter();
+//   const emptyCartWarningShownRef = useRef(false);
+//   const skipEmptyCartCheckRef = useRef(false);
+//   // const [latestOrder, setLatestOrder] = useState<any | null>(null);
+
+//   // const handleSuccessModalChange = useCallback(
+//   //   (open: boolean) => {
+//   //     setIsSuccessModalOpen(open);
+//   //     if (!open) {
+//   //       router.push(`/my-account/orders`);
+//   //     }
+//   //   },
+//   //   [router]
+//   // );
+
+//   // useEffect(() => {
+//   //   if (!isSuccessModalOpen) {
+//   //     return;
+//   //   }
+//   //   const timeoutId = setTimeout(() => {
+//   //     handleSuccessModalChange(false);
+//   //   }, 4000);
+
+//   //   return () => clearTimeout(timeoutId);
+//   // }, [isSuccessModalOpen, handleSuccessModalChange]);
+
+//   useEffect(() => {
+//     if (cart.length === 0) {
+//       if (skipEmptyCartCheckRef.current) {
+//         return;
+//       }
+
+//       if (!emptyCartWarningShownRef.current) {
+//         emptyCartWarningShownRef.current = true;
+//         toast.error("Please add something");
+//         router.push("/cart");
+//       }
+//     } else {
+//       emptyCartWarningShownRef.current = false;
+//     }
+//   }, [cart.length, router]);
+
+//   // const handleSuccessRedirect = useCallback(() => {
+//   //   handleSuccessModalChange(false);
+//   // }, [handleSuccessModalChange]);
+
+//   const {
+//     register,
+//     handleSubmit,
+//     watch,
+//     setValue,
+//     control,
+//     formState: { errors },
+//   } = useForm<CheckoutFormValues>({
+//     defaultValues: {
+//       paymentMethod: "credit_card",
+//       billingSame: true,
+//       email: auth?.user?.email || "",
+//       firstName: auth?.user?.firstName || "",
+//       lastName: auth?.user?.lastName || "",
+//       company: auth?.user?.companyName || "",
+//       phone: auth?.user?.phone || "",
+//       state: auth?.user?.state || "",
+//     },
+//   });
+
+//   const watchedPaymentMethod = watch("paymentMethod") || "credit_card";
+//   const stripeCardMethods = ["credit_card"];
+//   const walletMethods = ["google_pay", "apple_pay"];
+
+//   // ✅ Memoized calculations to prevent recalculation on every render
+//   const subtotal = useMemo(() => {
+//     return cart.reduce(
+//       (acc, item) => acc + Number(item.price) * (item.quantity || 1),
+//       0
+//     );
+//   }, [cart]);
+
+//   const shipping = useMemo(() => {
+//   if (cart.length === 0) return 0;
+
+//   return cart.reduce((sum, item) => {
+//     const cost = Number(item.fixedShippingCost || 0);
+//     return sum + cost;
+//   }, 0);
+// }, [cart]);
+//   const tax = 0; // static example
+//   const total = useMemo(() => subtotal + shipping + tax, [subtotal, shipping]);
+
+//   // ✅ Memoized handlers to prevent form re-renders
+//   const confirmDelete = useCallback(() => {
+//     if (itemToDelete) {
+//       dispatch(removeFromCart(itemToDelete.id));
+//       setItemToDelete(null);
+//     }
+//     setIsDialogOpen(false);
+//   }, [itemToDelete, dispatch]);
+
+//   const handleIncreaseQty = useCallback((itemId: string | number) => {
+//     dispatch(increaseQty(itemId));
+//   }, [dispatch]);
+
+//   const handleDecreaseQty = useCallback((itemId: string | number) => {
+//     dispatch(decreaseQty(itemId));
+//   }, [dispatch]);
+
+//   const handleDeleteClick = useCallback((item: any) => {
+//     setItemToDelete(item);
+//     setIsDialogOpen(true);
+//   }, []);
+
+//   const handlePaymentSelection = useCallback(
+//     (method: CheckoutFormValues["paymentMethod"]) => {
+//       setValue("paymentMethod", method);
+//       setCardError(null);
+//       setCardCompletion({
+//         number: false,
+//         expiry: false,
+//         cvc: false,
+//       });
+//     },
+//     [setValue, setCardCompletion, setCardError]
+//   );
+
+//   useEffect(() => {
+//     if (!stripe || cart.length === 0) {
+//       setPaymentRequest(null);
+//       setWalletSupport({ applePay: false, googlePay: false });
+//       return;
+//     }
+
+//     const pr = stripe.paymentRequest({
+//       country: "US",
+//       currency: "usd",
+//       total: {
+//         label: "Order Total",
+//         amount: Math.max(0, Math.round(total * 100)),
+//       },
+//       requestPayerName: true,
+//       requestPayerEmail: true,
+//       requestPayerPhone: true,
+//     });
+
+//     let isMounted = true;
+
+//     pr.canMakePayment().then((result) => {
+//       if (!isMounted) return;
+//       if (result) {
+//         setPaymentRequest(pr);
+//         setWalletSupport({
+//           applePay: Boolean(result.applePay),
+//           googlePay: Boolean(result.googlePay || result.browserPay),
+//         });
+//       } else {
+//         setPaymentRequest(null);
+//         setWalletSupport({ applePay: false, googlePay: false });
+//       }
+//     });
+
+//     return () => {
+//       isMounted = false;
+//     };
+//   }, [stripe, cart, total]);
+
+// const buildOrderPayload = useCallback(
+//   (data: CheckoutFormValues & { paymentIntentId?: string | null }) => ({
+//     firstName: data.firstName,
+//     lastName: data.lastName,
+//     companyName: data.company || "",
+//     email: data.email,
+//     phone: data.phone || "",
+//     addressLine1: data.address1,
+//     addressLine2: data.address2 || "",
+//     city: data.city,
+//     state: data.state || "",
+//     zip: data.zip,
+//     country: data.country,
+//     paymentMethod: data.paymentMethod,
+//     shippingMethod: data.shippingMethod,
+//     shippingCost: shipping,
+//     comments: data.orderComment || "",
+//     paymentIntentId: data.paymentIntentId ?? "",
+//     products: cart.map((item) => ({
+//       product_id: item.id,
+//       quantity: item.quantity || 1,
+//     })),
+//   }),
+//   [cart, shipping]
+// );
+
+//   const placeOrder = useCallback(
+//     async (data: CheckoutFormValues) => {
+//       const orderPayload = buildOrderPayload(data);
+//       const orderResponse = await axiosInstance.post(
+//         "web/orders/place-order",
+//         orderPayload
+//       );
+//     const orderData = orderResponse.data?.data || orderResponse.data;
+//     // setLatestOrder(orderData); // <-- save full response
+
+//     return orderData || null;
+//     },
+//     [buildOrderPayload]
+//   );
+
+//   // const handleOrderSuccess = useCallback(
+//   //   (orderId?: string | number | null) => {
+//   //     skipEmptyCartCheckRef.current = true;
+//   //     // console.log("Clearing cart after order successs" , orderId);
+//   //     // setLatestOrderId(orderId ? String(orderId) : null);
+//   //     dispatch(clearCart());
+//   //     setIsSuccessModalOpen(true);
+//   //     setIsProcessing(false);
+//   //   },
+//   //   [dispatch]
+//   // );
+
+//   const handleStripeCharge = useCallback(
+//     async (paymentMethodId: string) => {
+//       const stripePayload = {
+//         payment_method_id: paymentMethodId,
+//         products: cart.map((item) => ({
+//           product_id: item.id,
+//           quantity: item.quantity || 1,
+//         })),
+//       };
+
+//         const response = await axiosInstance.post("web/stripe/pay", stripePayload);
+//         return response.data?.payment_intent_id || null;
+//     },
+//     [cart]
+//   );
+
+//   useEffect(() => {
+//     if (!paymentRequest) {
+//       return;
+//     }
+
+//    const handlePaymentMethod = async (event: any) => {
+//   if (!pendingWalletForm) {
+//     event.complete("fail");
+//     toast.error("Unable to process wallet payment. Please try again.");
+//     setIsProcessing(false);
+//     return;
+//   }
+
+//   try {
+//     const paymentIntentId = await handleStripeCharge(event.paymentMethod.id);
+
+//     if (!paymentIntentId) {
+//       event.complete("fail");
+//       toast.error("Failed to generate payment intent.");
+//       setIsProcessing(false);
+//       return;
+//     }
+
+//     const orderData = await placeOrder({
+//       ...pendingWalletForm,
+//       paymentIntentId
+//     });
+
+//     event.complete("success");
+
+//     // ✅ Save in Redux (lastOrder) and clear cart
+//     skipEmptyCartCheckRef.current = true; // agar aapka cart empty check logic hai
+//     dispatch(setLastOrder(orderData));
+//     dispatch(clearCart());
+
+//     // ✅ Redirect to order success
+//     router.push("/order-success");
+
+//   } catch (err: any) {
+//     console.error("❌ Wallet payment failed:", err);
+//     event.complete("fail");
+
+//     const errorMessage =
+//       err?.response?.data?.message || err?.message || "Payment failed.";
+
+//     toast.error(errorMessage);
+//     setIsProcessing(false);
+
+//   } finally {
+//     setPendingWalletForm(null);
+//   }
+// };
+
+//     const handleCancel = () => {
+//       setIsProcessing(false);
+//       setPendingWalletForm(null);
+//     };
+
+//     paymentRequest.on("paymentmethod", handlePaymentMethod);
+//     paymentRequest.on("cancel", handleCancel);
+
+//     return () => {
+//       paymentRequest.off("paymentmethod", handlePaymentMethod);
+//       paymentRequest.off("cancel", handleCancel);
+//     };
+//   }, [paymentRequest, pendingWalletForm, handleStripeCharge, placeOrder]);
+
+//   const onSubmit = async (data: CheckoutFormValues) => {
+//   const selectedPaymentMethod = data.paymentMethod || "credit_card";
+
+//   const requiresStripeCard = stripeCardMethods.includes(selectedPaymentMethod);
+//   const isWalletMethod = walletMethods.includes(selectedPaymentMethod);
+
+//   if (requiresStripeCard) {
+//     if (!cardCompletion.number || !cardCompletion.expiry || !cardCompletion.cvc) {
+//       const message =
+//         "Please complete your card details before placing the order.";
+//       setCardError(message);
+//       toast.error(message);
+//       return;
+//     }
+
+//     if (cardError) {
+//       toast.error(cardError);
+//       return;
+//     }
+//   }
+
+//   if (isWalletMethod) {
+//     const walletAvailable =
+//       selectedPaymentMethod === "apple_pay"
+//         ? walletSupport.applePay
+//         : walletSupport.googlePay;
+
+//     if (!paymentRequest || !walletAvailable) {
+//       toast.error("This wallet is not available on your devicesss.");
+//       return;
+//     }
+
+//     setPendingWalletForm(data);
+//     setIsProcessing(true);
+
+//     try {
+//       paymentRequest.show();
+//     } catch (err: any) {
+//       console.error("❌ Unable to launch wallet:", err);
+//       toast.error("Could not open the wallet sheet. Please try again.");
+//       setIsProcessing(false);
+//       setPendingWalletForm(null);
+//     }
+
+//     return;
+//   }
+
+//   setIsProcessing(true);
+
+//   try {
+//     let paymentIntentId: string | null = null;
+
+//     // Stripe card flow
+//     if (requiresStripeCard) {
+//       if (!stripe || !elements) {
+//         toast.error("Payment service is not ready yet. Please try again.");
+//         setIsProcessing(false);
+//         return;
+//       }
+
+//       const cardNumberElement = elements.getElement(CardNumberElement);
+
+//       if (!cardNumberElement) {
+//         toast.error("Payment form is not ready. Please refresh and try again.");
+//         setIsProcessing(false);
+//         return;
+//       }
+
+//       const { error: pmError, paymentMethod } =
+//         await stripe.createPaymentMethod({
+//           type: "card",
+//           card: cardNumberElement,
+//           billing_details: {
+//             name: `${data.firstName} ${data.lastName}`,
+//             email: data.email,
+//             phone: data.phone,
+//             address: {
+//               line1: data.address1,
+//               line2: data.address2,
+//               city: data.city,
+//               state: data.state,
+//               postal_code: data.zip,
+//               country: data.country,
+//             },
+//           },
+//         });
+
+//       if (pmError) {
+//         console.error("Payment method error:", pmError);
+//         toast.error(pmError.message || "Unable to create payment method.");
+//         setIsProcessing(false);
+//         return;
+//       }
+
+//       if (paymentMethod) {
+//         paymentIntentId = await handleStripeCharge(paymentMethod.id);
+
+//         if (!paymentIntentId) {
+//           toast.error("Failed to generate payment intent.");
+//           setIsProcessing(false);
+//           return;
+//         }
+//       }
+//     }
+
+//     // Place order
+//     const orderData = await placeOrder({ ...data, paymentIntentId });
+//    skipEmptyCartCheckRef.current = true;
+//     // Save to Redux
+//     dispatch(setLastOrder(orderData));
+//     dispatch(clearCart());
+//     // Redirect
+//     router.push("/order-success");
+//   } catch (err: any) {
+//     console.error("❌ Error processing order:", err);
+//     const errorMessage =
+//       err.response?.data?.message ||
+//       err.message ||
+//       "An error occurred while processing your order.";
+
+//     toast.error(errorMessage);
+//     setIsProcessing(false);
+//   }
+// };
+
+//   return (
+//     <div className="min-h-screen py-10 px-[5%] md:px-[6%] lg:px-[7%] xl:px-0 2xl:px-0 xl:max-w-[1290px] 2xl:max-w-[1720px] mx-auto">
+//       {/* Heading + Subheading */}
+//       <div className="mb-8 text-center lg:text-left">
+//         <h1 className="h1-secondary-medium">Checkout</h1>
+//         <p className="h5-regular mt-2">
+//           Please enter your details below to complete your purchase
+//         </p>
+//       </div>
+
+//       {/* Payment Request Button (hidden, used for Apple/Google Pay) */}
+//       {paymentRequest && (
+//         <div className="hidden">
+//           <PaymentRequestButtonElement options={{ paymentRequest }} />
+//         </div>
+//       )}
+
+//       {/* Main Grid */}
+//       <form onSubmit={handleSubmit(onSubmit)}>
+//         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+//           {/* LEFT SECTION (Shipping Address) */}
+//           <div className="w-full xl:w-[100.1%] 2xl:w-[100%] mx-auto space-y-6">
+//             <div className="bg-white border rounded-md shadow-sm p-6">
+//               <h2 className="h3-secondary flex items-center gap-2 mb-4">
+//                 <span className="w-[36px] h-[36px] flex items-center justify-center rounded-full border bg-[#F15939] border-red-600 text-white text-sm">
+//                   1
+//                 </span>
+//                 Shipping Address
+//               </h2>
+
+//               <div className="space-y-6">
+//               {/* Email */}
+//               <div className="flex flex-col">
+//                 <label htmlFor="email" className="h5-regular mb-2">
+//                   Email <span className="text-[#F15939]">*</span>
+//                 </label>
+//                 <Input
+//                   id="email"
+//                   type="email"
+//                   className={`w-full h-[60px] !max-w-full ${
+//                     errors.email ? "border-red-500" : ""
+//                   }`}
+//                   {...register("email", {
+//                     required: "Email is required",
+//                     pattern: {
+//                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+//                       message: "Invalid email address",
+//                     },
+//                   })}
+//                 />
+//                 {errors.email && (
+//                   <p className="text-sm text-red-500 mt-1">
+//                     {errors.email.message}
+//                   </p>
+//                 )}
+//               </div>
+
+//               {/* First & Last Name */}
+//               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+//                 <div className="flex flex-col">
+//                   <label htmlFor="firstName" className="h5-regular mb-2">
+//                     First Name <span className="text-[#F15939]">*</span>
+//                   </label>
+//                   <Input
+//                     id="firstName"
+//                     type="text"
+//                     className={`w-full h-[60px] !max-w-full ${
+//                       errors.firstName ? "border-red-500" : ""
+//                     }`}
+//                     {...register("firstName", {
+//                       required: "First name is required",
+//                     })}
+//                   />
+//                   {errors.firstName && (
+//                     <p className="text-sm text-red-500 mt-1">
+//                       {errors.firstName.message}
+//                     </p>
+//                   )}
+//                 </div>
+//                 <div className="flex flex-col">
+//                   <label htmlFor="lastName" className="h5-regular mb-2">
+//                     Last Name <span className="text-[#F15939]">*</span>
+//                   </label>
+//                   <Input
+//                     id="lastName"
+//                     type="text"
+//                     className={`w-full h-[60px] !max-w-full ${
+//                       errors.lastName ? "border-red-500" : ""
+//                     }`}
+//                     {...register("lastName", {
+//                       required: "Last name is required",
+//                     })}
+//                   />
+//                   {errors.lastName && (
+//                     <p className="text-sm text-red-500 mt-1">
+//                       {errors.lastName.message}
+//                     </p>
+//                   )}
+//                 </div>
+//               </div>
+
+//               {/* Other Fields */}
+//               <div className="flex flex-col">
+//                 <label htmlFor="company" className="h5-regular mb-2">
+//                   Company
+//                 </label>
+//                 <Input
+//                   id="company"
+//                   type="text"
+//                   className="w-full h-[60px] !max-w-full"
+//                   {...register("company")}
+//                 />
+//               </div>
+
+//               <div className="flex flex-col">
+//                 <label htmlFor="phone" className="h5-regular mb-2">
+//                   Phone Number
+//                 </label>
+//                 <Input
+//                   id="phone"
+//                   type="text"
+//                   className="w-full h-[60px] !max-w-full"
+//                   {...register("phone")}
+//                 />
+//               </div>
+
+//               <div className="flex flex-col">
+//                 <label htmlFor="address1" className="h5-regular mb-2">
+//                   Address Line 1 <span className="text-[#F15939]">*</span>
+//                 </label>
+//                 <Input
+//                   id="address1"
+//                   type="text"
+//                   className={`w-full h-[60px] !max-w-full ${
+//                     errors.address1 ? "border-red-500" : ""
+//                   }`}
+//                   {...register("address1", {
+//                     required: "Address Line 1 is required",
+//                   })}
+//                 />
+//                 {errors.address1 && (
+//                   <p className="text-sm text-red-500 mt-1">
+//                     {errors.address1.message}
+//                   </p>
+//                 )}
+//               </div>
+
+//               <div className="flex flex-col">
+//                 <label htmlFor="address2" className="h5-regular mb-2">
+//                   Address Line 2
+//                 </label>
+//                 <Input
+//                   id="address2"
+//                   type="text"
+//                   className="w-full h-[60px] !max-w-full"
+//                   {...register("address2")}
+//                 />
+//               </div>
+
+//               <div className="flex flex-col">
+//                 <label htmlFor="city" className="h5-regular mb-2">
+//                   City <span className="text-[#F15939]">*</span>
+//                 </label>
+//                 <Input
+//                   id="city"
+//                   type="text"
+//                   className={`w-full h-[60px] !max-w-full ${
+//                     errors.city ? "border-red-500" : ""
+//                   }`}
+//                   {...register("city", {
+//                     required: "City is required",
+//                   })}
+//                 />
+//                 {errors.city && (
+//                   <p className="text-sm text-red-500 mt-1">
+//                     {errors.city.message}
+//                   </p>
+//                 )}
+//               </div>
+
+//               {/* Country */}
+//               <div className="flex flex-col">
+//                 <label htmlFor="country" className="h5-regular mb-2">
+//                   Country <span className="text-[#F15939]">*</span>
+//                 </label>
+//                 <Controller
+//                   name="country"
+//                   defaultValue="US"
+//                   control={control}
+//                   rules={{ required: "Country is required" }}
+//                   render={({ field }) => (
+//                     <Select
+//                       onValueChange={field.onChange}
+//                       value={field.value}
+//                     >
+//                       <SelectTrigger
+//                         className={`!w-full !h-[60px] !max-w-full ${
+//                           errors.country ? "border-red-500" : ""
+//                         }`}
+//                       >
+//                         <SelectValue placeholder="Select your country *" />
+//                       </SelectTrigger>
+//                       <SelectContent>
+//                         {countryList.map((country) => (
+//                           <SelectItem key={country.code} value={country.code}>
+//                             {country.name}
+//                           </SelectItem>
+//                         ))}
+//                       </SelectContent>
+//                     </Select>
+//                   )}
+//                 />
+//                 {errors.country && (
+//                   <p className="text-sm text-red-500 mt-1">
+//                     {errors.country.message}
+//                   </p>
+//                 )}
+//               </div>
+
+//               <div className="flex flex-col">
+//                 <label htmlFor="state" className="h5-regular mb-2">
+//                   State/Province
+//                 </label>
+//                 <Input
+//                   id="state"
+//                   type="text"
+//                   className="w-full h-[60px] !max-w-full"
+//                   {...register("state")}
+//                 />
+//               </div>
+
+//               <div className="flex flex-col">
+//                 <label htmlFor="zip" className="h5-regular mb-2">
+//                   Zip/Postcode <span className="text-[#F15939]">*</span>
+//                 </label>
+//                 <Input
+//                   id="zip"
+//                   type="text"
+//                   className={`w-full h-[60px] !max-w-full ${
+//                     errors.zip ? "border-red-500" : ""
+//                   }`}
+//                   {...register("zip", {
+//                     required: "Zip/Postcode is required",
+//                   })}
+//                 />
+//                 {errors.zip && (
+//                   <p className="text-sm text-red-500 mt-1">
+//                     {errors.zip.message}
+//                   </p>
+//                 )}
+//               </div>
+
+//               {/* Checkbox */}
+//               <div className="flex items-center gap-2">
+//                 <input
+//                   type="checkbox"
+//                   id="billingSame"
+//                   {...register("billingSame")}
+//                   defaultChecked
+//                 />
+//                 <label
+//                   htmlFor="billingSame"
+//                   className="h6-regular !text-[#4A4A4A]"
+//                 >
+//                   My Billing address is the same as my Shipping address
+//                 </label>
+//               </div>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* MIDDLE SECTION (Shipping + Payment) */}
+//           <div className="w-full xl:w-[100.1%] 2xl:w-[100%] mx-auto space-y-6">
+//             {/* Shipping Method */}
+//             <div className="bg-white border rounded-md shadow-sm p-6">
+//               <h2 className="h3-secondary flex items-center gap-2 mb-4">
+//               <span className="w-[36px] h-[36px] flex items-center justify-center rounded-full border bg-[#F15939] text-white border-red-600 text-sm">
+//                 2
+//               </span>
+//               Shipping Method
+//             </h2>
+
+//             <div className="space-y-3 py-3">
+//               <label className="flex flex-col gap-3 border rounded px-3 py-2 cursor-pointer">
+//                 <div className="flex items-center gap-3">
+//                   <input
+//                     type="radio"
+//                     value="own_account"
+//                     {...register("shippingMethod", {
+//                       required: "Please select a shipping method",
+//                     })}
+//                     className="text-red-600"
+//                   />
+//                   <span className="h3-secondary">$00</span>
+//                 </div>
+//                 <div className="h5-regular">
+//                   Ship on my Company/Own shipping account (Add shipping account
+//                   in the comments box)
+//                 </div>
+//               </label>
+
+//               <div className="flex flex-col sm:flex-row sm:space-x-4 gap-4">
+//                 <label className="flex flex-col items-center border rounded px-4 py-3 cursor-pointer flex-1 has-[:checked]:border-orange-500">
+//                   <div className="flex items-center gap-2">
+//                     <input
+//                       type="radio"
+//                       value="fedex_economy"
+//                       {...register("shippingMethod", {
+//                         required: "Please select a shipping method",
+//                       })}
+//                       className="text-orange-500 focus:ring-orange-500"
+//                     />
+//                     <Image
+//                       src="/checkouticon/fedex.png"
+//                       alt="FedEx"
+//                       width={74}
+//                       height={25}
+//                       className="object-contain"
+//                     />
+//                   </div>
+//                   <span className="mt-2 h3-secondary text-center">
+//                     $199.48 <br />
+//                     <span className="h5-regular">(International Economy)</span>
+//                   </span>
+//                 </label>
+
+//                 <label className="flex flex-col items-center border rounded px-4 py-3 cursor-pointer flex-1 has-[:checked]:border-orange-500">
+//                   <div className="flex items-center gap-2">
+//                     <input
+//                       type="radio"
+//                       value="fedex_priority"
+//                       {...register("shippingMethod", {
+//                         required: "Please select a shipping method",
+//                       })}
+//                       className="text-orange-500 focus:ring-orange-500"
+//                     />
+//                     <Image
+//                       src="/checkouticon/fedex.png"
+//                       alt="FedEx"
+//                       width={74}
+//                       height={25}
+//                       className="object-contain"
+//                     />
+//                   </div>
+//                   <span className="mt-2 h3-secondary text-center">
+//                     $239.91 <br />
+//                     <span className="h5-regular">(International Priority)</span>
+//                   </span>
+//                 </label>
+//               </div>
+//               {errors.shippingMethod && (
+//                 <p className="text-sm text-red-500 mt-1">
+//                   {errors.shippingMethod.message}
+//                 </p>
+//               )}
+
+//               <div className="mt-4">
+//                 <label htmlFor="orderComment" className="h5-regular mb-4">
+//                   Order Comment
+//                 </label>
+//                 <Input
+//                   id="orderComment"
+//                   type="text"
+//                   className="w-full h-[60px] !max-w-full"
+//                   {...register("orderComment")}
+//                 />
+//               </div>
+//             </div>
+//             </div>
+
+//             {/* Payment Method */}
+//             <div className="bg-white border rounded-md shadow-sm p-6">
+//               <h2 className="h3-secondary flex items-center gap-2 mb-4">
+//               <span className="w-[36px] h-[36px] flex items-center justify-center rounded-full border bg-[#F15939] border-red-600 text-white text-sm">
+//                 3
+//               </span>
+//               Payment Method
+//             </h2>
+
+//             {/* Credit Card */}
+//             <label className="flex flex-col border rounded px-3 py-4 has-[:checked]:border-orange-500">
+//               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+//                 <div className="flex items-center gap-2 py-3">
+//                   <input
+//                     type="radio"
+//                     value="credit_card"
+//                     {...register("paymentMethod", {
+//                       required: "Please select a payment method",
+//                     })}
+//                     checked={watchedPaymentMethod === "credit_card"}
+//                     onChange={() => handlePaymentSelection("credit_card")}
+//                     className="text-orange-500 focus:ring-orange-500"
+//                   />
+//                   <span className="h3-secondary">Credit Card</span>
+//                 </div>
+//                 <Image
+//                   src="/checkouticon/card.png"
+//                   alt="Card"
+//                   width={207}
+//                   height={35}
+//                   className="object-contain"
+//                 />
+//               </div>
+
+//               {stripeCardMethods.includes(watchedPaymentMethod) && (
+//                 <div className="space-y-6 py-3">
+//                   {/* Card Number */}
+//                   <div>
+//                     <label className="h5-regular mb-4 block">
+//                       Credit Card Number <span className="text-[#F15939]">*</span>
+//                     </label>
+//                     <div className="border border-[#d1d0d4] rounded-md p-4 mt-3 hover:border-[#86848c] focus-within:border-orange-500 focus-within:ring-1 focus-within:ring-orange-300">
+//                       <CardNumberElement
+//                         onChange={(event) => {
+//                           setCardCompletion((prev) => ({
+//                             ...prev,
+//                             number: event.complete,
+//                           }));
+//                           setCardError(event.error?.message || null);
+//                         }}
+//                         options={{
+//                           style: {
+//                             base: {
+//                               fontSize: "16px",
+//                               color: "#333333",
+//                               fontFamily: "inherit",
+//                               "::placeholder": {
+//                                 color: "#aab7c4",
+//                               },
+//                             },
+//                             invalid: {
+//                               color: "#fa755a",
+//                               iconColor: "#fa755a",
+//                             },
+//                           },
+//                         }}
+//                       />
+//                     </div>
+//                   </div>
+
+//                   {/* Expiration and CVC */}
+//                   <div className="flex flex-col sm:flex-row gap-4 w-full">
+//                     <div className="flex flex-col w-full sm:w-1/2">
+//                       <label className="h5-regular mb-4 block">
+//                         Expiration <span className="text-[#F15939]">*</span>
+//                       </label>
+//                       <div className="border border-[#d1d0d4] rounded-md p-4 hover:border-[#86848c] focus-within:border-orange-500 focus-within:ring-1 focus-within:ring-orange-300">
+//                         <CardExpiryElement
+//                           onChange={(event) => {
+//                             setCardCompletion((prev) => ({
+//                               ...prev,
+//                               expiry: event.complete,
+//                             }));
+//                             setCardError(event.error?.message || null);
+//                           }}
+//                           options={{
+//                             style: {
+//                               base: {
+//                                 fontSize: "16px",
+//                                 color: "#333333",
+//                                 fontFamily: "inherit",
+//                                 "::placeholder": {
+//                                   color: "#aab7c4",
+//                                 },
+//                               },
+//                               invalid: {
+//                                 color: "#fa755a",
+//                                 iconColor: "#fa755a",
+//                               },
+//                             },
+//                           }}
+//                         />
+//                       </div>
+//                     </div>
+//                     <div className="flex flex-col w-full sm:w-1/2">
+//                       <label className="h5-regular mb-4 block">
+//                         CVC <span className="text-[#F15939]">*</span>
+//                       </label>
+//                       <div className="border border-[#d1d0d4] rounded-md p-4 hover:border-[#86848c] focus-within:border-orange-500 focus-within:ring-1 focus-within:ring-orange-300">
+//                         <CardCvcElement
+//                           onChange={(event) => {
+//                             setCardCompletion((prev) => ({
+//                               ...prev,
+//                               cvc: event.complete,
+//                             }));
+//                             setCardError(event.error?.message || null);
+//                           }}
+//                           options={{
+//                             style: {
+//                               base: {
+//                                 fontSize: "16px",
+//                                 color: "#333333",
+//                                 fontFamily: "inherit",
+//                                 "::placeholder": {
+//                                   color: "#aab7c4",
+//                                 },
+//                               },
+//                               invalid: {
+//                                 color: "#fa755a",
+//                                 iconColor: "#fa755a",
+//                               },
+//                             },
+//                           }}
+//                         />
+//                       </div>
+//                     </div>
+//                   </div>
+//                   <p className="text-xs text-gray-500 mt-2">
+//                     Test card: 4242 4242 4242 4242 | Any future date | Any 3 digits
+//                   </p>
+//                   {cardError && (
+//                     <p className="text-sm text-red-500">{cardError}</p>
+//                   )}
+//                 </div>
+//               )}
+//             </label>
+
+//             {/* Google Pay */}
+//             <label
+//               className={`flex flex-col mt-4 sm:flex-row items-center justify-between border rounded px-3 py-3 cursor-pointer w-full gap-3 has-[:checked]:border-orange-500 ${
+//                 !walletSupport.googlePay ? "opacity-50 cursor-not-allowed" : ""
+//               }`}
+//             >
+//               <div className="flex items-center gap-3">
+//                 <input
+//                   type="radio"
+//                   value="google_pay"
+//                   {...register("paymentMethod", {
+//                     required: "Please select a payment method",
+//                   })}
+//                   checked={watchedPaymentMethod === "google_pay"}
+//                   onChange={() => handlePaymentSelection("google_pay")}
+//                   className="text-orange-500 focus:ring-orange-500"
+//                   disabled={!walletSupport.googlePay}
+//                 />
+//                 <Image
+//                   src="/checkouticon/googlepay.png"
+//                   alt="Google Pay"
+//                   width={80}
+//                   height={25}
+//                   className="object-contain my-2"
+//                 />
+//               </div>
+//               {walletSupport.googlePay ? (
+//                 <Image
+//                   src="/checkouticon/card.png"
+//                   alt="Card"
+//                   width={133}
+//                   height={45}
+//                   className="object-contain"
+//                 />
+//               ) : (
+//                 <span className="text-xs text-gray-500">
+//                   Not available on this device
+//                 </span>
+//               )}
+//             </label>
+
+//             {/* Apple Pay */}
+//             <label
+//               className={`flex flex-col mt-4 sm:flex-row items-center justify-between border rounded px-3 py-3 cursor-pointer w-full gap-3 has-[:checked]:border-orange-500 ${
+//                 !walletSupport.applePay ? "opacity-50 cursor-not-allowed" : ""
+//               }`}
+//             >
+//               <div className="flex items-center gap-3">
+//                 <input
+//                   type="radio"
+//                   value="apple_pay"
+//                   {...register("paymentMethod", {
+//                     required: "Please select a payment method",
+//                   })}
+//                   checked={watchedPaymentMethod === "apple_pay"}
+//                   onChange={() => handlePaymentSelection("apple_pay")}
+//                   className="text-orange-500 focus:ring-orange-500"
+//                   disabled={!walletSupport.applePay}
+//                 />
+//                 <Image
+//                   src="/checkouticon/Apple-icon.svg"
+//                   alt="Apple Pay"
+//                   width={70}
+//                   height={25}
+//                   className="object-contain my-1 h-13 w-16"
+//                 />
+//               </div>
+//               {walletSupport.applePay ? (
+//                 <Image
+//                   src="/checkouticon/card.png"
+//                   alt="Card"
+//                   width={133}
+//                   height={45}
+//                   className="object-contain"
+//                 />
+//               ) : (
+//                 <span className="text-xs text-gray-500">
+//                   Not available on this device
+//                 </span>
+//               )}
+//             </label>
+
+//             {/* Affirm */}
+//             {/* <label className="flex flex-col mt-4 sm:flex-row items-center justify-between border rounded px-3 py-3 cursor-pointer w-full gap-3 has-[:checked]:border-orange-500">
+//               <div className="flex items-center gap-3">
+//                 <input
+//                   type="radio"
+//                   value="affirm"
+//                   {...register("paymentMethod", {
+//                     required: "Please select a payment method",
+//                   })}
+//                   checked={watchedPaymentMethod === "affirm"}
+//                   onChange={() => handlePaymentSelection("affirm")}
+//                   className="text-orange-500 focus:ring-orange-500"
+//                 />
+//                 <Image
+//                   src="/checkouticon/affirm.png"
+//                   alt="Affirm"
+//                   width={80}
+//                   height={15}
+//                   className="object-contain mb-3.5"
+//                 />
+//               </div>
+//               <span className="h5-regular">(Pay over time)</span>
+//             </label> */}
+//             {errors.paymentMethod && (
+//               <p className="text-sm text-red-500 mt-1">
+//                 {errors.paymentMethod.message}
+//               </p>
+//             )}
+
+//             <button
+//               type="submit"
+//               disabled={isProcessing || !stripe}
+//               className="!mt-4 w-full h-[57px] btn-primary !rounded-full !font-medium 2xl:text-[20px] xl:text-[15px] text-[15px] disabled:opacity-50 disabled:cursor-not-allowed"
+//             >
+//               {isProcessing ? "Processing..." : "PLACE YOUR ORDER"}
+//             </button>
+//           </div>
+//         </div>
+
+//         {/* RIGHT SECTION (Order Summary) */}
+//         <div className="bg-white border rounded-md shadow-sm p-6 w-full xl:w-[100.1%] 2xl:w-[100%] mx-auto">
+//           <h2 className="h3-secondary flex items-center gap-2 mb-4">
+//             <span className="w-[36px] h-[36px] flex items-center justify-center rounded-full border bg-[#F15939] text-white border-red-600 text-sm">
+//               {cart.length}
+//             </span>
+//             Order Summary
+//           </h2>
+//           {/* Cart Items */}
+//           <div className="space-y-5">
+//             {cart.map((item) => (
+//               <CartItem
+//                 key={item.id}
+//                 item={item}
+//                 onIncrease={handleIncreaseQty}
+//                 onDecrease={handleDecreaseQty}
+//                 onDelete={handleDeleteClick}
+//               />
+//             ))}
+//           </div>
+//           {/* Totals */}
+//           <div className="mt-4 space-y-2 text-sm">
+//             <div className="flex justify-between h5-regular">
+//               <span>Cart Subtotal</span> <span>${subtotal.toFixed(2)}</span>
+//             </div>
+//             <div className="flex justify-between h5-regular">
+//               <span>Shipping</span>
+//               <span>${shipping.toFixed(2)}</span>
+//             </div>
+//             <div className="flex justify-between h5-regular">
+//               <span>Tax</span>
+//               <span>${tax.toFixed(2)}</span>
+//             </div>
+//           </div>
+//           {/* Discount Code */}
+//           <div className="mt-4 space-y-2">
+//             <label htmlFor="discountCode" className="h5-regular">
+//               Apply Discount Code
+//             </label>
+//             <div className="flex gap-2 my-2">
+//               <Input
+//                 id="discountCode"
+//                 type="text"
+//                 className="h-[60px] !max-w-full "
+//               />
+//               <button className="h4-medium border border-black px-4 rounded">
+//                 Apply
+//               </button>
+//             </div>
+//           </div>
+//           {/* Total */}
+//           <div className="mt-4 flex justify-between h3-secondary">
+//             <span>Order total</span> <span>${total.toFixed(2)}</span>{" "}
+//           </div>
+//         </div>
+//         </div>
+//       </form>
+//       {/* ShadCN Dialog for Delete Confirmation */}
+//       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+//         <DialogContent className="sm:max-w-[400px]">
+//           <DialogHeader>
+//             <DialogTitle>Delete Item</DialogTitle>
+//             <DialogDescription>
+//               Are you sure you want to remove{" "}
+//               <strong>{itemToDelete?.name}</strong> from your cart? This action
+//               cannot be undone.
+//             </DialogDescription>
+//           </DialogHeader>
+//           <DialogFooter className="flex justify-end gap-3">
+//             <Button
+//               variant="outline"
+//               onClick={() => setIsDialogOpen(false)}
+//               className="!p-4 !text-lg"
+//             >
+//               Cancel
+//             </Button>
+//             <Button
+//               variant="destructive"
+//               onClick={confirmDelete}
+//               className="!p-4 !text-lg"
+//             >
+//               Confirm
+//             </Button>
+//           </DialogFooter>
+//         </DialogContent>
+//       </Dialog>
+//     </div>
+//   );
+// };
+
+// // Main component with Stripe Elements provider
+// const CheckoutComponent = () => {
+//   return (
+//     <Elements stripe={stripePromise}>
+//       <CheckoutForm />
+//     </Elements>
+//   );
+// };
+
+// export default CheckoutComponent;
+
 "use client";
 import React, {
   useState,
@@ -51,12 +1405,13 @@ import {
 } from "@stripe/react-stripe-js";
 import { useRouter } from "next/navigation";
 import { setLastOrder } from "@/redux/slices/orderslice";
+
 // Stripe publishable key
 const stripePromise = loadStripe(
   "pk_test_51Q84ITDXm8Pt3arOOI28hj5W9JPohSimaAfVeGxCPCf9N86B5rK1POKOhQpOsNmeaid1cbRAU06yzV8eienwD10B00KDT12v4S"
 );
 
-// ✅ Pre-compute country list at module level (only once when module loads)
+// Pre-compute country list at module level
 const countryList = countries
   .map((country) => ({
     name: country.name.common,
@@ -81,9 +1436,19 @@ interface CheckoutFormValues {
   paymentMethod: string;
   paymentIntentId?: string | null;
   billingSame: boolean;
+  billingFirstName: string;
+  billingLastName: string;
+  billingCompany: string;
+  billingPhone: string;
+  billingAddress1: string;
+  billingAddress2: string;
+  billingCity: string;
+  billingCountry: string;
+  billingState: string;
+  billingZip: string;
 }
 
-// ✅ Memoized Cart Item Component to prevent unnecessary re-renders
+// Memoized Cart Item Component
 interface CartItemProps {
   item: any;
   onIncrease: (id: string | number) => void;
@@ -91,74 +1456,65 @@ interface CartItemProps {
   onDelete: (item: any) => void;
 }
 
-const CartItem = memo(({ 
-  item, 
-  onIncrease, 
-  onDecrease, 
-  onDelete 
-}: CartItemProps) => {
-  return (
-    <div className="relative flex flex-col sm:flex-row items-center gap-3 p-3 border">
-      <Image
-        src={item.image?.[0]?.path || "/checkouticon/orderimg.png"}
-        alt={item.name}
-        width={116}
-        height={35}
-        className="object-cover"
-      />
-      <div className="flex-1">
-        <p className="h6-medium !text-[#333333] line-clamp-2">
-          {item.name}
-        </p>
-        <p className="h6-regular !text-[#4A4A4A]">
-          ${Number(item.price).toFixed(2)}
-        </p>
-        <div className="flex w-[120.39999389648438px] sm:w-[146.39999389648438px] h-[48px] items-center justify-center border border-gray-300 rounded-full">
-          {/* Decrease Button */}
+const CartItem = memo(
+  ({ item, onIncrease, onDecrease, onDelete }: CartItemProps) => {
+    return (
+      <div className="relative flex flex-col sm:flex-row items-center gap-3 p-3 border rounded">
+        <Image
+          src={item.image?.[0]?.path || "/checkouticon/orderimg.png"}
+          alt={item.name}
+          width={80}
+          height={80}
+          className="object-cover"
+        />
+        <div className="flex-1">
+          <p className="font-medium text-sm line-clamp-2">{item.name}</p>
+          <p className="text-sm text-gray-600 mt-1">
+            ${Number(item.price).toFixed(2)}
+          </p>
+          <div className="flex w-[120px] h-[40px] items-center justify-center border border-gray-300 rounded-full mt-2">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onDecrease(item.id);
+              }}
+              className="flex items-center justify-center w-12 h-10"
+            >
+              <Minus className="w-4 h-4" />
+            </button>
+            <span className="border-x border-gray-300 px-4 flex items-center justify-center select-none">
+              {item.quantity}
+            </span>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onIncrease(item.id);
+              }}
+              className="flex items-center justify-center w-12 h-10"
+            >
+              <Plus className="w-4 h-4" />
+            </button>
+          </div>
           <button
             type="button"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              onDecrease(item.id);
+              onDelete(item);
             }}
-            className="flex items-center justify-center w-16 h-10 h5-medium"
+            className="absolute right-3 top-3 text-gray-500 hover:text-red-700 transition"
           >
-            <Minus className="w-5 h-5" />
-          </button>
-          {/* Quantity Display */}
-          <span className="h5-medium border-x h-[48px] border-gray-300 px-6 flex items-center justify-center select-none">
-            {item.quantity}
-          </span>
-          {/* Increase Button */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onIncrease(item.id);
-            }}
-            className="flex items-center justify-center w-16 h-10 h5-medium"
-          >
-            <Plus className="w-5 h-5" />
+            <Trash2 className="w-5 h-5" />
           </button>
         </div>
-
-        <button
-          type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onDelete(item);
-          }}
-          className="absolute right-6 bottom-9 ml-auto text-gray-500 hover:text-red-700 transition"
-        >
-          <Trash2 className="w-5 h-5" />
-        </button>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 
 CartItem.displayName = "CartItem";
 
@@ -166,12 +1522,11 @@ CartItem.displayName = "CartItem";
 const CheckoutForm = () => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state.cart.items);
-   const auth = useAppSelector((state: RootState) => state?.auth);
+  const auth = useAppSelector((state: RootState) => state?.auth);
+  const [currentStep, setCurrentStep] = useState(1);
   const [itemToDelete, setItemToDelete] = useState<any | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  // const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  // const [latestOrderId, setLatestOrderId] = useState<string | null>(null);
   const [cardCompletion, setCardCompletion] = useState({
     number: false,
     expiry: false,
@@ -191,28 +1546,6 @@ const CheckoutForm = () => {
   const router = useRouter();
   const emptyCartWarningShownRef = useRef(false);
   const skipEmptyCartCheckRef = useRef(false);
-  // const [latestOrder, setLatestOrder] = useState<any | null>(null);
-
-  // const handleSuccessModalChange = useCallback(
-  //   (open: boolean) => {
-  //     setIsSuccessModalOpen(open);
-  //     if (!open) {
-  //       router.push(`/my-account/orders`);
-  //     }
-  //   },
-  //   [router]
-  // );
-
-  // useEffect(() => {
-  //   if (!isSuccessModalOpen) {
-  //     return;
-  //   }
-  //   const timeoutId = setTimeout(() => {
-  //     handleSuccessModalChange(false);
-  //   }, 4000);
-
-  //   return () => clearTimeout(timeoutId);
-  // }, [isSuccessModalOpen, handleSuccessModalChange]);
 
   useEffect(() => {
     if (cart.length === 0) {
@@ -230,16 +1563,13 @@ const CheckoutForm = () => {
     }
   }, [cart.length, router]);
 
-  // const handleSuccessRedirect = useCallback(() => {
-  //   handleSuccessModalChange(false);
-  // }, [handleSuccessModalChange]);
-  
   const {
     register,
     handleSubmit,
     watch,
     setValue,
     control,
+    trigger,
     formState: { errors },
   } = useForm<CheckoutFormValues>({
     defaultValues: {
@@ -247,18 +1577,21 @@ const CheckoutForm = () => {
       billingSame: true,
       email: auth?.user?.email || "",
       firstName: auth?.user?.firstName || "",
-      lastName: auth?.user?.lastName || "", 
+      lastName: auth?.user?.lastName || "",
       company: auth?.user?.companyName || "",
       phone: auth?.user?.phone || "",
       state: auth?.user?.state || "",
+      country: "US",
+      billingCountry: "US",
     },
   });
 
   const watchedPaymentMethod = watch("paymentMethod") || "credit_card";
+  const watchedBillingSame = watch("billingSame");
   const stripeCardMethods = ["credit_card"];
   const walletMethods = ["google_pay", "apple_pay"];
 
-  // ✅ Memoized calculations to prevent recalculation on every render
+  // Memoized calculations
   const subtotal = useMemo(() => {
     return cart.reduce(
       (acc, item) => acc + Number(item.price) * (item.quantity || 1),
@@ -267,17 +1600,18 @@ const CheckoutForm = () => {
   }, [cart]);
 
   const shipping = useMemo(() => {
-  if (cart.length === 0) return 0;
+    if (cart.length === 0) return 0;
 
-  return cart.reduce((sum, item) => {
-    const cost = Number(item.fixedShippingCost || 0);
-    return sum + cost;
-  }, 0);
-}, [cart]);
-  const tax = 0; // static example
+    return cart.reduce((sum, item) => {
+      const cost = Number(item.fixedShippingCost || 0);
+      return sum + cost;
+    }, 0);
+  }, [cart]);
+
+  const tax = 0;
   const total = useMemo(() => subtotal + shipping + tax, [subtotal, shipping]);
 
-  // ✅ Memoized handlers to prevent form re-renders
+  // Memoized handlers
   const confirmDelete = useCallback(() => {
     if (itemToDelete) {
       dispatch(removeFromCart(itemToDelete.id));
@@ -286,13 +1620,19 @@ const CheckoutForm = () => {
     setIsDialogOpen(false);
   }, [itemToDelete, dispatch]);
 
-  const handleIncreaseQty = useCallback((itemId: string | number) => {
-    dispatch(increaseQty(itemId));
-  }, [dispatch]);
+  const handleIncreaseQty = useCallback(
+    (itemId: string | number) => {
+      dispatch(increaseQty(itemId));
+    },
+    [dispatch]
+  );
 
-  const handleDecreaseQty = useCallback((itemId: string | number) => {
-    dispatch(decreaseQty(itemId));
-  }, [dispatch]);
+  const handleDecreaseQty = useCallback(
+    (itemId: string | number) => {
+      dispatch(decreaseQty(itemId));
+    },
+    [dispatch]
+  );
 
   const handleDeleteClick = useCallback((item: any) => {
     setItemToDelete(item);
@@ -352,58 +1692,45 @@ const CheckoutForm = () => {
     };
   }, [stripe, cart, total]);
 
-const buildOrderPayload = useCallback(
-  (data: CheckoutFormValues & { paymentIntentId?: string | null }) => ({
-    firstName: data.firstName,
-    lastName: data.lastName,
-    companyName: data.company || "",
-    email: data.email,
-    phone: data.phone || "",
-    addressLine1: data.address1,
-    addressLine2: data.address2 || "",
-    city: data.city,
-    state: data.state || "",
-    zip: data.zip,
-    country: data.country,
-    paymentMethod: data.paymentMethod,
-    shippingMethod: data.shippingMethod,
-    shippingCost: shipping,
-    comments: data.orderComment || "",
-    paymentIntentId: data.paymentIntentId ?? "",
-    products: cart.map((item) => ({
-      product_id: item.id,
-      quantity: item.quantity || 1,
-    })),
-  }),
-  [cart, shipping]
-);
+  const buildOrderPayload = useCallback(
+    (data: CheckoutFormValues & { paymentIntentId?: string | null }) => ({
+      firstName: data.firstName,
+      lastName: data.lastName,
+      companyName: data.company || "",
+      email: data.email,
+      phone: data.phone || "",
+      addressLine1: data.address1,
+      addressLine2: data.address2 || "",
+      city: data.city,
+      state: data.state || "",
+      zip: data.zip,
+      country: data.country,
+      paymentMethod: data.paymentMethod,
+      shippingMethod: data.shippingMethod,
+      shippingCost: shipping,
+      comments: data.orderComment || "",
+      paymentIntentId: data.paymentIntentId ?? "",
+      products: cart.map((item) => ({
+        product_id: item.id,
+        quantity: item.quantity || 1,
+      })),
+    }),
+    [cart, shipping]
+  );
 
   const placeOrder = useCallback(
     async (data: CheckoutFormValues) => {
-      const orderPayload = buildOrderPayload(data);      
+      const orderPayload = buildOrderPayload(data);
       const orderResponse = await axiosInstance.post(
         "web/orders/place-order",
         orderPayload
       );
-    const orderData = orderResponse.data?.data || orderResponse.data;
-    // setLatestOrder(orderData); // <-- save full response
+      const orderData = orderResponse.data?.data || orderResponse.data;
 
-    return orderData || null;
+      return orderData || null;
     },
     [buildOrderPayload]
   );
-
-  // const handleOrderSuccess = useCallback(
-  //   (orderId?: string | number | null) => {
-  //     skipEmptyCartCheckRef.current = true;
-  //     // console.log("Clearing cart after order successs" , orderId);
-  //     // setLatestOrderId(orderId ? String(orderId) : null);
-  //     dispatch(clearCart());
-  //     setIsSuccessModalOpen(true);
-  //     setIsProcessing(false);
-  //   },
-  //   [dispatch]
-  // );
 
   const handleStripeCharge = useCallback(
     async (paymentMethodId: string) => {
@@ -415,8 +1742,11 @@ const buildOrderPayload = useCallback(
         })),
       };
 
-        const response = await axiosInstance.post("web/stripe/pay", stripePayload);
-        return response.data?.payment_intent_id || null;
+      const response = await axiosInstance.post(
+        "web/stripe/pay",
+        stripePayload
+      );
+      return response.data?.payment_intent_id || null;
     },
     [cart]
   );
@@ -426,53 +1756,51 @@ const buildOrderPayload = useCallback(
       return;
     }
 
-   const handlePaymentMethod = async (event: any) => {
-  if (!pendingWalletForm) {
-    event.complete("fail");
-    toast.error("Unable to process wallet payment. Please try again.");
-    setIsProcessing(false);
-    return;
-  }
+    const handlePaymentMethod = async (event: any) => {
+      if (!pendingWalletForm) {
+        event.complete("fail");
+        toast.error("Unable to process wallet payment. Please try again.");
+        setIsProcessing(false);
+        return;
+      }
 
-  try {
-    const paymentIntentId = await handleStripeCharge(event.paymentMethod.id);
+      try {
+        const paymentIntentId = await handleStripeCharge(
+          event.paymentMethod.id
+        );
 
-    if (!paymentIntentId) {
-      event.complete("fail");
-      toast.error("Failed to generate payment intent.");
-      setIsProcessing(false);
-      return;
-    }
+        if (!paymentIntentId) {
+          event.complete("fail");
+          toast.error("Failed to generate payment intent.");
+          setIsProcessing(false);
+          return;
+        }
 
-    const orderData = await placeOrder({
-      ...pendingWalletForm,
-      paymentIntentId
-    });
+        const orderData = await placeOrder({
+          ...pendingWalletForm,
+          paymentIntentId,
+        });
 
-    event.complete("success");
+        event.complete("success");
 
-    // ✅ Save in Redux (lastOrder) and clear cart
-    skipEmptyCartCheckRef.current = true; // agar aapka cart empty check logic hai
-    dispatch(setLastOrder(orderData));
-    dispatch(clearCart());
+        skipEmptyCartCheckRef.current = true;
+        dispatch(setLastOrder(orderData));
+        dispatch(clearCart());
 
-    // ✅ Redirect to order success
-    router.push("/order-success");
+        router.push("/order-success");
+      } catch (err: any) {
+        console.error("❌ Wallet payment failed:", err);
+        event.complete("fail");
 
-  } catch (err: any) {
-    console.error("❌ Wallet payment failed:", err);
-    event.complete("fail");
+        const errorMessage =
+          err?.response?.data?.message || err?.message || "Payment failed.";
 
-    const errorMessage =
-      err?.response?.data?.message || err?.message || "Payment failed.";
-
-    toast.error(errorMessage);
-    setIsProcessing(false);
-
-  } finally {
-    setPendingWalletForm(null);
-  }
-};
+        toast.error(errorMessage);
+        setIsProcessing(false);
+      } finally {
+        setPendingWalletForm(null);
+      }
+    };
 
     const handleCancel = () => {
       setIsProcessing(false);
@@ -486,830 +1814,1124 @@ const buildOrderPayload = useCallback(
       paymentRequest.off("paymentmethod", handlePaymentMethod);
       paymentRequest.off("cancel", handleCancel);
     };
-  }, [paymentRequest, pendingWalletForm, handleStripeCharge, placeOrder]);
+  }, [
+    paymentRequest,
+    pendingWalletForm,
+    handleStripeCharge,
+    placeOrder,
+    dispatch,
+    router,
+  ]);
+
+  // Step navigation handlers
+  const handleContinueToShipping = async () => {
+    const isValid = await trigger(["email"]);
+    if (isValid) {
+      setCurrentStep(2);
+    }
+  };
+
+  const handleContinueToBilling = async () => {
+    const isValid = await trigger([
+      "firstName",
+      "lastName",
+      "address1",
+      "city",
+      "country",
+      "zip",
+      "shippingMethod",
+    ]);
+    if (isValid) {
+      if (watchedBillingSame) {
+        // Skip billing, go to payment
+        setCurrentStep(4);
+      } else {
+        setCurrentStep(3);
+      }
+    }
+  };
+
+  const handleContinueToPayment = async () => {
+    if (!watchedBillingSame) {
+      const isValid = await trigger([
+        "billingFirstName",
+        "billingLastName",
+        "billingAddress1",
+        "billingCity",
+        "billingCountry",
+        "billingZip",
+      ]);
+      if (isValid) {
+        setCurrentStep(4);
+      }
+    } else {
+      setCurrentStep(4);
+    }
+  };
 
   const onSubmit = async (data: CheckoutFormValues) => {
-  const selectedPaymentMethod = data.paymentMethod || "credit_card";
+    const selectedPaymentMethod = data.paymentMethod || "credit_card";
 
-  const requiresStripeCard = stripeCardMethods.includes(selectedPaymentMethod);
-  const isWalletMethod = walletMethods.includes(selectedPaymentMethod);
+    const requiresStripeCard = stripeCardMethods.includes(
+      selectedPaymentMethod
+    );
+    const isWalletMethod = walletMethods.includes(selectedPaymentMethod);
 
-  if (requiresStripeCard) {
-    if (!cardCompletion.number || !cardCompletion.expiry || !cardCompletion.cvc) {
-      const message =
-        "Please complete your card details before placing the order.";
-      setCardError(message);
-      toast.error(message);
+    if (requiresStripeCard) {
+      if (
+        !cardCompletion.number ||
+        !cardCompletion.expiry ||
+        !cardCompletion.cvc
+      ) {
+        const message =
+          "Please complete your card details before placing the order.";
+        setCardError(message);
+        toast.error(message);
+        return;
+      }
+
+      if (cardError) {
+        toast.error(cardError);
+        return;
+      }
+    }
+
+    if (isWalletMethod) {
+      const walletAvailable =
+        selectedPaymentMethod === "apple_pay"
+          ? walletSupport.applePay
+          : walletSupport.googlePay;
+
+      if (!paymentRequest || !walletAvailable) {
+        toast.error("This wallet is not available on your device.");
+        return;
+      }
+
+      setPendingWalletForm(data);
+      setIsProcessing(true);
+
+      try {
+        paymentRequest.show();
+      } catch (err: any) {
+        console.error("❌ Unable to launch wallet:", err);
+        toast.error("Could not open the wallet sheet. Please try again.");
+        setIsProcessing(false);
+        setPendingWalletForm(null);
+      }
+
       return;
     }
 
-    if (cardError) {
-      toast.error(cardError);
-      return;
-    }
-  }
-
-  if (isWalletMethod) {
-    const walletAvailable =
-      selectedPaymentMethod === "apple_pay"
-        ? walletSupport.applePay
-        : walletSupport.googlePay;
-
-    if (!paymentRequest || !walletAvailable) {
-      toast.error("This wallet is not available on your devicesss.");
-      return;
-    }
-
-    setPendingWalletForm(data);
     setIsProcessing(true);
 
     try {
-      paymentRequest.show();
-    } catch (err: any) {
-      console.error("❌ Unable to launch wallet:", err);
-      toast.error("Could not open the wallet sheet. Please try again.");
-      setIsProcessing(false);
-      setPendingWalletForm(null);
-    }
+      let paymentIntentId: string | null = null;
 
-    return;
-  }
-
-  setIsProcessing(true);
-
-  try {
-    let paymentIntentId: string | null = null;
-
-    // Stripe card flow
-    if (requiresStripeCard) {
-      if (!stripe || !elements) {
-        toast.error("Payment service is not ready yet. Please try again.");
-        setIsProcessing(false);
-        return;
-      }
-
-      const cardNumberElement = elements.getElement(CardNumberElement);
-
-      if (!cardNumberElement) {
-        toast.error("Payment form is not ready. Please refresh and try again.");
-        setIsProcessing(false);
-        return;
-      }
-
-      const { error: pmError, paymentMethod } =
-        await stripe.createPaymentMethod({
-          type: "card",
-          card: cardNumberElement,
-          billing_details: {
-            name: `${data.firstName} ${data.lastName}`,
-            email: data.email,
-            phone: data.phone,
-            address: {
-              line1: data.address1,
-              line2: data.address2,
-              city: data.city,
-              state: data.state,
-              postal_code: data.zip,
-              country: data.country,
-            },
-          },
-        });
-
-      if (pmError) {
-        console.error("Payment method error:", pmError);
-        toast.error(pmError.message || "Unable to create payment method.");
-        setIsProcessing(false);
-        return;
-      }
-
-      if (paymentMethod) {
-        paymentIntentId = await handleStripeCharge(paymentMethod.id);
-
-        if (!paymentIntentId) {
-          toast.error("Failed to generate payment intent.");
+      if (requiresStripeCard) {
+        if (!stripe || !elements) {
+          toast.error("Payment service is not ready yet. Please try again.");
           setIsProcessing(false);
           return;
         }
+
+        const cardNumberElement = elements.getElement(CardNumberElement);
+
+        if (!cardNumberElement) {
+          toast.error(
+            "Payment form is not ready. Please refresh and try again."
+          );
+          setIsProcessing(false);
+          return;
+        }
+
+        const { error: pmError, paymentMethod } =
+          await stripe.createPaymentMethod({
+            type: "card",
+            card: cardNumberElement,
+            billing_details: {
+              name: `${data.firstName} ${data.lastName}`,
+              email: data.email,
+              phone: data.phone,
+              address: {
+                line1: data.address1,
+                line2: data.address2,
+                city: data.city,
+                state: data.state,
+                postal_code: data.zip,
+                country: data.country,
+              },
+            },
+          });
+
+        if (pmError) {
+          console.error("Payment method error:", pmError);
+          toast.error(pmError.message || "Unable to create payment method.");
+          setIsProcessing(false);
+          return;
+        }
+
+        if (paymentMethod) {
+          paymentIntentId = await handleStripeCharge(paymentMethod.id);
+
+          if (!paymentIntentId) {
+            toast.error("Failed to generate payment intent.");
+            setIsProcessing(false);
+            return;
+          }
+        }
       }
+
+      const orderData = await placeOrder({ ...data, paymentIntentId });
+      skipEmptyCartCheckRef.current = true;
+      dispatch(setLastOrder(orderData));
+      dispatch(clearCart());
+      router.push("/order-success");
+    } catch (err: any) {
+      console.error("❌ Error processing order:", err);
+      const errorMessage =
+        err.response?.data?.message ||
+        err.message ||
+        "An error occurred while processing your order.";
+
+      toast.error(errorMessage);
+      setIsProcessing(false);
     }
-
-    // Place order
-    const orderData = await placeOrder({ ...data, paymentIntentId });
-   skipEmptyCartCheckRef.current = true;
-    // Save to Redux
-    dispatch(setLastOrder(orderData));
-    dispatch(clearCart());
-    // Redirect
-    router.push("/order-success");
-  } catch (err: any) {
-    console.error("❌ Error processing order:", err);
-    const errorMessage =
-      err.response?.data?.message ||
-      err.message ||
-      "An error occurred while processing your order.";
-
-    toast.error(errorMessage);
-    setIsProcessing(false);
-  }
-};
-
+  };
 
   return (
-    <div className="min-h-screen py-10 px-[5%] md:px-[6%] lg:px-[7%] xl:px-0 2xl:px-0 xl:max-w-[1290px] 2xl:max-w-[1720px] mx-auto">
-      {/* Heading + Subheading */}
-      <div className="mb-8 text-center lg:text-left">
-        <h1 className="h1-secondary-medium">Checkout</h1>
-        <p className="h5-regular mt-2">
-          Please enter your details below to complete your purchase
-        </p>
-      </div>
-
-      {/* Payment Request Button (hidden, used for Apple/Google Pay) */}
+    <div className="min-h-screen py-10 md:px-[6%]  xl:px-0 2xl:px-0  w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
+      {/* Payment Request Button (hidden) */}
       {paymentRequest && (
         <div className="hidden">
           <PaymentRequestButtonElement options={{ paymentRequest }} />
         </div>
       )}
 
-      {/* Main Grid */}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-          {/* LEFT SECTION (Shipping Address) */}
-          <div className="w-full xl:w-[100.1%] 2xl:w-[100%] mx-auto space-y-6">
-            <div className="bg-white border rounded-md shadow-sm p-6">
-              <h2 className="h3-secondary flex items-center gap-2 mb-4">
-                <span className="w-[36px] h-[36px] flex items-center justify-center rounded-full border bg-[#F15939] border-red-600 text-white text-sm">
-                  1
-                </span>
-                Shipping Address
-              </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* LEFT SECTION - Multi-step form */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* STEP 1: Customer */}
+            {currentStep === 1 && (
+              <div className="bg-white border rounded-md shadow-sm p-6">
+                <h2 className="text-2xl font-semibold mb-6">Customer</h2>
 
-              <div className="space-y-6">
-              {/* Email */}
-              <div className="flex flex-col">
-                <label htmlFor="email" className="h5-regular mb-2">
-                  Email <span className="text-[#F15939]">*</span>
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  className={`w-full h-[60px] !max-w-full ${
-                    errors.email ? "border-red-500" : ""
-                  }`}
-                  {...register("email", {
-                    required: "Email is required",
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Invalid email address",
-                    },
-                  })}
-                />
-                {errors.email && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
-
-              {/* First & Last Name */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex flex-col">
-                  <label htmlFor="firstName" className="h5-regular mb-2">
-                    First Name <span className="text-[#F15939]">*</span>
-                  </label>
-                  <Input
-                    id="firstName"
-                    type="text"
-                    className={`w-full h-[60px] !max-w-full ${
-                      errors.firstName ? "border-red-500" : ""
-                    }`}
-                    {...register("firstName", {
-                      required: "First name is required",
-                    })}
-                  />
-                  {errors.firstName && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {errors.firstName.message}
-                    </p>
-                  )}
-                </div>
-                <div className="flex flex-col">
-                  <label htmlFor="lastName" className="h5-regular mb-2">
-                    Last Name <span className="text-[#F15939]">*</span>
-                  </label>
-                  <Input
-                    id="lastName"
-                    type="text"
-                    className={`w-full h-[60px] !max-w-full ${
-                      errors.lastName ? "border-red-500" : ""
-                    }`}
-                    {...register("lastName", {
-                      required: "Last name is required",
-                    })}
-                  />
-                  {errors.lastName && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {errors.lastName.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Other Fields */}
-              <div className="flex flex-col">
-                <label htmlFor="company" className="h5-regular mb-2">
-                  Company
-                </label>
-                <Input
-                  id="company"
-                  type="text"
-                  className="w-full h-[60px] !max-w-full"
-                  {...register("company")}
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label htmlFor="phone" className="h5-regular mb-2">
-                  Phone Number
-                </label>
-                <Input
-                  id="phone"
-                  type="text"
-                  className="w-full h-[60px] !max-w-full"
-                  {...register("phone")}
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label htmlFor="address1" className="h5-regular mb-2">
-                  Address Line 1 <span className="text-[#F15939]">*</span>
-                </label>
-                <Input
-                  id="address1"
-                  type="text"
-                  className={`w-full h-[60px] !max-w-full ${
-                    errors.address1 ? "border-red-500" : ""
-                  }`}
-                  {...register("address1", {
-                    required: "Address Line 1 is required",
-                  })}
-                />
-                {errors.address1 && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.address1.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex flex-col">
-                <label htmlFor="address2" className="h5-regular mb-2">
-                  Address Line 2
-                </label>
-                <Input
-                  id="address2"
-                  type="text"
-                  className="w-full h-[60px] !max-w-full"
-                  {...register("address2")}
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label htmlFor="city" className="h5-regular mb-2">
-                  City <span className="text-[#F15939]">*</span>
-                </label>
-                <Input
-                  id="city"
-                  type="text"
-                  className={`w-full h-[60px] !max-w-full ${
-                    errors.city ? "border-red-500" : ""
-                  }`}
-                  {...register("city", {
-                    required: "City is required",
-                  })}
-                />
-                {errors.city && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.city.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Country */}
-              <div className="flex flex-col">
-                <label htmlFor="country" className="h5-regular mb-2">
-                  Country <span className="text-[#F15939]">*</span>
-                </label>
-                <Controller
-                  name="country"
-                  defaultValue="US"
-                  control={control}
-                  rules={{ required: "Country is required" }}
-                  render={({ field }) => (
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value}
-                    >
-                      <SelectTrigger
-                        className={`!w-full !h-[60px] !max-w-full ${
-                          errors.country ? "border-red-500" : ""
-                        }`}
-                      >
-                        <SelectValue placeholder="Select your country *" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {countryList.map((country) => (
-                          <SelectItem key={country.code} value={country.code}>
-                            {country.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-                {errors.country && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.country.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex flex-col">
-                <label htmlFor="state" className="h5-regular mb-2">
-                  State/Province
-                </label>
-                <Input
-                  id="state"
-                  type="text"
-                  className="w-full h-[60px] !max-w-full"
-                  {...register("state")}
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label htmlFor="zip" className="h5-regular mb-2">
-                  Zip/Postcode <span className="text-[#F15939]">*</span>
-                </label>
-                <Input
-                  id="zip"
-                  type="text"
-                  className={`w-full h-[60px] !max-w-full ${
-                    errors.zip ? "border-red-500" : ""
-                  }`}
-                  {...register("zip", {
-                    required: "Zip/Postcode is required",
-                  })}
-                />
-                {errors.zip && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.zip.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Checkbox */}
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="billingSame"
-                  {...register("billingSame")}
-                  defaultChecked
-                />
-                <label
-                  htmlFor="billingSame"
-                  className="h6-regular !text-[#4A4A4A]"
-                >
-                  My Billing address is the same as my Shipping address
-                </label>
-              </div>
-              </div>
-            </div>
-          </div>
-
-          {/* MIDDLE SECTION (Shipping + Payment) */}
-          <div className="w-full xl:w-[100.1%] 2xl:w-[100%] mx-auto space-y-6">
-            {/* Shipping Method */}
-            <div className="bg-white border rounded-md shadow-sm p-6">
-              <h2 className="h3-secondary flex items-center gap-2 mb-4">
-              <span className="w-[36px] h-[36px] flex items-center justify-center rounded-full border bg-[#F15939] text-white border-red-600 text-sm">
-                2
-              </span>
-              Shipping Method
-            </h2>
-
-            <div className="space-y-3 py-3">
-              <label className="flex flex-col gap-3 border rounded px-3 py-2 cursor-pointer">
-                <div className="flex items-center gap-3">
-                  <input
-                    type="radio"
-                    value="own_account"
-                    {...register("shippingMethod", {
-                      required: "Please select a shipping method",
-                    })}
-                    className="text-red-600"
-                  />
-                  <span className="h3-secondary">$00</span>
-                </div>
-                <div className="h5-regular">
-                  Ship on my Company/Own shipping account (Add shipping account
-                  in the comments box)
-                </div>
-              </label>
-
-              <div className="flex flex-col sm:flex-row sm:space-x-4 gap-4">
-                <label className="flex flex-col items-center border rounded px-4 py-3 cursor-pointer flex-1 has-[:checked]:border-orange-500">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      value="fedex_economy"
-                      {...register("shippingMethod", {
-                        required: "Please select a shipping method",
-                      })}
-                      className="text-orange-500 focus:ring-orange-500"
-                    />
-                    <Image
-                      src="/checkouticon/fedex.png"
-                      alt="FedEx"
-                      width={74}
-                      height={25}
-                      className="object-contain"
-                    />
-                  </div>
-                  <span className="mt-2 h3-secondary text-center">
-                    $199.48 <br />
-                    <span className="h5-regular">(International Economy)</span>
-                  </span>
-                </label>
-
-                <label className="flex flex-col items-center border rounded px-4 py-3 cursor-pointer flex-1 has-[:checked]:border-orange-500">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      value="fedex_priority"
-                      {...register("shippingMethod", {
-                        required: "Please select a shipping method",
-                      })}
-                      className="text-orange-500 focus:ring-orange-500"
-                    />
-                    <Image
-                      src="/checkouticon/fedex.png"
-                      alt="FedEx"
-                      width={74}
-                      height={25}
-                      className="object-contain"
-                    />
-                  </div>
-                  <span className="mt-2 h3-secondary text-center">
-                    $239.91 <br />
-                    <span className="h5-regular">(International Priority)</span>
-                  </span>
-                </label>
-              </div>
-              {errors.shippingMethod && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.shippingMethod.message}
-                </p>
-              )}
-
-              <div className="mt-4">
-                <label htmlFor="orderComment" className="h5-regular mb-4">
-                  Order Comment
-                </label>
-                <Input
-                  id="orderComment"
-                  type="text"
-                  className="w-full h-[60px] !max-w-full"
-                  {...register("orderComment")}
-                />
-              </div>
-            </div>
-            </div>
-
-            {/* Payment Method */}
-            <div className="bg-white border rounded-md shadow-sm p-6">
-              <h2 className="h3-secondary flex items-center gap-2 mb-4">
-              <span className="w-[36px] h-[36px] flex items-center justify-center rounded-full border bg-[#F15939] border-red-600 text-white text-sm">
-                3
-              </span>
-              Payment Method
-            </h2>
-
-            {/* Credit Card */}
-            <label className="flex flex-col border rounded px-3 py-4 has-[:checked]:border-orange-500">
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-                <div className="flex items-center gap-2 py-3">
-                  <input
-                    type="radio"
-                    value="credit_card"
-                    {...register("paymentMethod", {
-                      required: "Please select a payment method",
-                    })}
-                    checked={watchedPaymentMethod === "credit_card"}
-                    onChange={() => handlePaymentSelection("credit_card")}
-                    className="text-orange-500 focus:ring-orange-500"
-                  />
-                  <span className="h3-secondary">Credit Card</span>
-                </div>
-                <Image
-                  src="/checkouticon/card.png"
-                  alt="Card"
-                  width={207}
-                  height={35}
-                  className="object-contain"
-                />
-              </div>
-
-              {stripeCardMethods.includes(watchedPaymentMethod) && (
-                <div className="space-y-6 py-3">
-                  {/* Card Number */}
-                  <div>
-                    <label className="h5-regular mb-4 block">
-                      Credit Card Number <span className="text-[#F15939]">*</span>
+                <div className="space-y-6">
+                  <div className="flex flex-col">
+                    <label htmlFor="email" className="text-sm mb-2">
+                      Email Address
                     </label>
-                    <div className="border border-[#d1d0d4] rounded-md p-4 mt-3 hover:border-[#86848c] focus-within:border-orange-500 focus-within:ring-1 focus-within:ring-orange-300">
-                      <CardNumberElement
-                        onChange={(event) => {
-                          setCardCompletion((prev) => ({
-                            ...prev,
-                            number: event.complete,
-                          }));
-                          setCardError(event.error?.message || null);
-                        }}
-                        options={{
-                          style: {
-                            base: {
-                              fontSize: "16px",
-                              color: "#333333",
-                              fontFamily: "inherit",
-                              "::placeholder": {
-                                color: "#aab7c4",
-                              },
-                            },
-                            invalid: {
-                              color: "#fa755a",
-                              iconColor: "#fa755a",
-                            },
-                          },
-                        }}
-                      />
+                    <Input
+                      id="email"
+                      type="email"
+                      className={`w-full h-[50px] ${
+                        errors.email ? "border-red-500" : ""
+                      }`}
+                      {...register("email", {
+                        required: "Email is required",
+                        pattern: {
+                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                          message: "Invalid email address",
+                        },
+                      })}
+                    />
+                    {errors.email && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.email.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <Button
+                    type="button"
+                    onClick={handleContinueToShipping}
+                    className="w-full h-[50px] bg-red-600 hover:bg-red-700 text-white font-medium"
+                  >
+                    CONTINUE
+                  </Button>
+
+                  <div className="text-center text-sm text-gray-600">
+                    Already have an account?{" "}
+                    <a href="/login" className="text-red-600 hover:underline">
+                      Sign in now
+                    </a>
+                  </div>
+
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                      <span className="px-2 bg-white text-gray-500">
+                        Or continue with
+                      </span>
                     </div>
                   </div>
 
-                  {/* Expiration and CVC */}
-                  <div className="flex flex-col sm:flex-row gap-4 w-full">
-                    <div className="flex flex-col w-full sm:w-1/2">
-                      <label className="h5-regular mb-4 block">
-                        Expiration <span className="text-[#F15939]">*</span>
-                      </label>
-                      <div className="border border-[#d1d0d4] rounded-md p-4 hover:border-[#86848c] focus-within:border-orange-500 focus-within:ring-1 focus-within:ring-orange-300">
-                        <CardExpiryElement
-                          onChange={(event) => {
-                            setCardCompletion((prev) => ({
-                              ...prev,
-                              expiry: event.complete,
-                            }));
-                            setCardError(event.error?.message || null);
-                          }}
-                          options={{
-                            style: {
-                              base: {
-                                fontSize: "16px",
-                                color: "#333333",
-                                fontFamily: "inherit",
-                                "::placeholder": {
-                                  color: "#aab7c4",
-                                },
-                              },
-                              invalid: {
-                                color: "#fa755a",
-                                iconColor: "#fa755a",
-                              },
-                            },
-                          }}
+                  {/* Google Pay Button */}
+                  {paymentRequest && walletSupport.googlePay && (
+                    <div className="w-full">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handlePaymentSelection("google_pay");
+                          if (paymentRequest) {
+                            const formData = watch();
+                            setPendingWalletForm(
+                              formData as CheckoutFormValues
+                            );
+                            setIsProcessing(true);
+                            paymentRequest.show();
+                          }
+                        }}
+                        className="w-full h-[50px] bg-black text-white rounded flex items-center justify-center"
+                      >
+                        <Image
+                          src="/checkouticon/googlepay.png"
+                          alt="Google Pay"
+                          width={80}
+                          height={30}
                         />
-                      </div>
+                      </button>
                     </div>
-                    <div className="flex flex-col w-full sm:w-1/2">
-                      <label className="h5-regular mb-4 block">
-                        CVC <span className="text-[#F15939]">*</span>
-                      </label>
-                      <div className="border border-[#d1d0d4] rounded-md p-4 hover:border-[#86848c] focus-within:border-orange-500 focus-within:ring-1 focus-within:ring-orange-300">
-                        <CardCvcElement
-                          onChange={(event) => {
-                            setCardCompletion((prev) => ({
-                              ...prev,
-                              cvc: event.complete,
-                            }));
-                            setCardError(event.error?.message || null);
-                          }}
-                          options={{
-                            style: {
-                              base: {
-                                fontSize: "16px",
-                                color: "#333333",
-                                fontFamily: "inherit",
-                                "::placeholder": {
-                                  color: "#aab7c4",
-                                },
-                              },
-                              invalid: {
-                                color: "#fa755a",
-                                iconColor: "#fa755a",
-                              },
-                            },
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-2">
-                    Test card: 4242 4242 4242 4242 | Any future date | Any 3 digits
-                  </p>
-                  {cardError && (
-                    <p className="text-sm text-red-500">{cardError}</p>
                   )}
                 </div>
-              )}
-            </label>
-
-            {/* Google Pay */}
-            <label
-              className={`flex flex-col mt-4 sm:flex-row items-center justify-between border rounded px-3 py-3 cursor-pointer w-full gap-3 has-[:checked]:border-orange-500 ${
-                !walletSupport.googlePay ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <input
-                  type="radio"
-                  value="google_pay"
-                  {...register("paymentMethod", {
-                    required: "Please select a payment method",
-                  })}
-                  checked={watchedPaymentMethod === "google_pay"}
-                  onChange={() => handlePaymentSelection("google_pay")}
-                  className="text-orange-500 focus:ring-orange-500"
-                  disabled={!walletSupport.googlePay}
-                />
-                <Image
-                  src="/checkouticon/googlepay.png"
-                  alt="Google Pay"
-                  width={80}
-                  height={25}
-                  className="object-contain my-2"
-                />
               </div>
-              {walletSupport.googlePay ? (
-                <Image
-                  src="/checkouticon/card.png"
-                  alt="Card"
-                  width={133}
-                  height={45}
-                  className="object-contain"
-                />
-              ) : (
-                <span className="text-xs text-gray-500">
-                  Not available on this device
-                </span>
-              )}
-            </label>
-
-            {/* Apple Pay */}
-            <label
-              className={`flex flex-col mt-4 sm:flex-row items-center justify-between border rounded px-3 py-3 cursor-pointer w-full gap-3 has-[:checked]:border-orange-500 ${
-                !walletSupport.applePay ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <input
-                  type="radio"
-                  value="apple_pay"
-                  {...register("paymentMethod", {
-                    required: "Please select a payment method",
-                  })}
-                  checked={watchedPaymentMethod === "apple_pay"}
-                  onChange={() => handlePaymentSelection("apple_pay")}
-                  className="text-orange-500 focus:ring-orange-500"
-                  disabled={!walletSupport.applePay}
-                />
-                <Image
-                  src="/checkouticon/Apple-icon.svg"
-                  alt="Apple Pay"
-                  width={70}
-                  height={25}
-                  className="object-contain my-1 h-13 w-16"
-                />
-              </div>
-              {walletSupport.applePay ? (
-                <Image
-                  src="/checkouticon/card.png"
-                  alt="Card"
-                  width={133}
-                  height={45}
-                  className="object-contain"
-                />
-              ) : (
-                <span className="text-xs text-gray-500">
-                  Not available on this device
-                </span>
-              )}
-            </label>
-
-            {/* Affirm */}
-            {/* <label className="flex flex-col mt-4 sm:flex-row items-center justify-between border rounded px-3 py-3 cursor-pointer w-full gap-3 has-[:checked]:border-orange-500">
-              <div className="flex items-center gap-3">
-                <input
-                  type="radio"
-                  value="affirm"
-                  {...register("paymentMethod", {
-                    required: "Please select a payment method",
-                  })}
-                  checked={watchedPaymentMethod === "affirm"}
-                  onChange={() => handlePaymentSelection("affirm")}
-                  className="text-orange-500 focus:ring-orange-500"
-                />
-                <Image
-                  src="/checkouticon/affirm.png"
-                  alt="Affirm"
-                  width={80}
-                  height={15}
-                  className="object-contain mb-3.5"
-                />
-              </div>
-              <span className="h5-regular">(Pay over time)</span>
-            </label> */}
-            {errors.paymentMethod && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.paymentMethod.message}
-              </p>
             )}
 
-            <button
-              type="submit"
-              disabled={isProcessing || !stripe}
-              className="!mt-4 w-full h-[57px] btn-primary !rounded-full !font-medium 2xl:text-[20px] xl:text-[15px] text-[15px] disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isProcessing ? "Processing..." : "PLACE YOUR ORDER"}
-            </button>
-          </div>
-        </div>
+            {/* STEP 2: Shipping */}
+            {currentStep === 2 && (
+              <div className="bg-white border rounded-md shadow-sm p-6">
+                <h2 className="text-2xl font-semibold mb-6">Shipping</h2>
 
-        {/* RIGHT SECTION (Order Summary) */}
-        <div className="bg-white border rounded-md shadow-sm p-6 w-full xl:w-[100.1%] 2xl:w-[100%] mx-auto">
-          <h2 className="h3-secondary flex items-center gap-2 mb-4">
-            <span className="w-[36px] h-[36px] flex items-center justify-center rounded-full border bg-[#F15939] text-white border-red-600 text-sm">
-              {cart.length}
-            </span>
-            Order Summary
-          </h2>
-          {/* Cart Items */}
-          <div className="space-y-5">
-            {cart.map((item) => (
-              <CartItem
-                key={item.id}
-                item={item}
-                onIncrease={handleIncreaseQty}
-                onDecrease={handleDecreaseQty}
-                onDelete={handleDeleteClick}
-              />
-            ))}
+                <div className="space-y-6">
+                  {/* Shipping Address */}
+                  <div>
+                    <h3 className="font-medium mb-4">Shipping Address</h3>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="flex flex-col">
+                        <label htmlFor="firstName" className="text-sm mb-2">
+                          First Name
+                        </label>
+                        <Input
+                          id="firstName"
+                          type="text"
+                          className={`w-full h-[50px] ${
+                            errors.firstName ? "border-red-500" : ""
+                          }`}
+                          {...register("firstName", {
+                            required: "First name is required",
+                          })}
+                        />
+                        {errors.firstName && (
+                          <p className="text-sm text-red-500 mt-1">
+                            {errors.firstName.message}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="flex flex-col">
+                        <label htmlFor="lastName" className="text-sm mb-2">
+                          Last Name
+                        </label>
+                        <Input
+                          id="lastName"
+                          type="text"
+                          className={`w-full h-[50px] ${
+                            errors.lastName ? "border-red-500" : ""
+                          }`}
+                          {...register("lastName", {
+                            required: "Last name is required",
+                          })}
+                        />
+                        {errors.lastName && (
+                          <p className="text-sm text-red-500 mt-1">
+                            {errors.lastName.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col mt-4">
+                      <label htmlFor="company" className="text-sm mb-2">
+                        Company Name{" "}
+                        <span className="text-gray-400">(Optional)</span>
+                      </label>
+                      <Input
+                        id="company"
+                        type="text"
+                        className="w-full h-[50px]"
+                        {...register("company")}
+                      />
+                    </div>
+
+                    <div className="flex flex-col mt-4">
+                      <label htmlFor="phone" className="text-sm mb-2">
+                        Phone Number{" "}
+                        <span className="text-gray-400">(Optional)</span>
+                      </label>
+                      <Input
+                        id="phone"
+                        type="text"
+                        className="w-full h-[50px]"
+                        {...register("phone")}
+                      />
+                    </div>
+
+                    <div className="flex flex-col mt-4">
+                      <label htmlFor="address1" className="text-sm mb-2">
+                        Address Line 1
+                      </label>
+                      <Input
+                        id="address1"
+                        type="text"
+                        className={`w-full h-[50px] ${
+                          errors.address1 ? "border-red-500" : ""
+                        }`}
+                        {...register("address1", {
+                          required: "Address is required",
+                        })}
+                      />
+                      {errors.address1 && (
+                        <p className="text-sm text-red-500 mt-1">
+                          {errors.address1.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col mt-4">
+                      <label htmlFor="address2" className="text-sm mb-2">
+                        Address Line 2{" "}
+                        <span className="text-gray-400">(Optional)</span>
+                      </label>
+                      <Input
+                        id="address2"
+                        type="text"
+                        className="w-full h-[50px]"
+                        {...register("address2")}
+                      />
+                    </div>
+
+                    <div className="flex flex-col mt-4">
+                      <label htmlFor="city" className="text-sm mb-2">
+                        City
+                      </label>
+                      <Input
+                        id="city"
+                        type="text"
+                        className={`w-full h-[50px] ${
+                          errors.city ? "border-red-500" : ""
+                        }`}
+                        {...register("city", {
+                          required: "City is required",
+                        })}
+                      />
+                      {errors.city && (
+                        <p className="text-sm text-red-500 mt-1">
+                          {errors.city.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col mt-4">
+                      <label htmlFor="country" className="text-sm mb-2">
+                        Country
+                      </label>
+                      <Controller
+                        name="country"
+                        control={control}
+                        rules={{ required: "Country is required" }}
+                        render={({ field }) => (
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <SelectTrigger
+                              className={`w-full h-[50px] ${
+                                errors.country ? "border-red-500" : ""
+                              }`}
+                            >
+                              <SelectValue placeholder="Select country" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {countryList.map((country) => (
+                                <SelectItem
+                                  key={country.code}
+                                  value={country.code}
+                                >
+                                  {country.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                      {errors.country && (
+                        <p className="text-sm text-red-500 mt-1">
+                          {errors.country.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mt-4">
+                      <div className="flex flex-col">
+                        <label htmlFor="state" className="text-sm mb-2">
+                          State/Province
+                        </label>
+                        <Input
+                          id="state"
+                          type="text"
+                          className="w-full h-[50px]"
+                          {...register("state")}
+                        />
+                      </div>
+
+                      <div className="flex flex-col">
+                        <label htmlFor="zip" className="text-sm mb-2">
+                          Postal Code
+                        </label>
+                        <Input
+                          id="zip"
+                          type="text"
+                          className={`w-full h-[50px] ${
+                            errors.zip ? "border-red-500" : ""
+                          }`}
+                          {...register("zip", {
+                            required: "Postal code is required",
+                          })}
+                        />
+                        {errors.zip && (
+                          <p className="text-sm text-red-500 mt-1">
+                            {errors.zip.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 mt-4">
+                      <input
+                        type="checkbox"
+                        id="billingSame"
+                        {...register("billingSame")}
+                      />
+                      <label htmlFor="billingSame" className="text-sm">
+                        My Billing address is the same as my Shipping address
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Shipping Method */}
+                  <div>
+                    <h3 className="font-medium mb-4">Shipping Method</h3>
+
+                    <div className="space-y-3">
+                      <label className="flex items-start gap-3 border rounded p-4 cursor-pointer has-[:checked]:border-red-600">
+                        <input
+                          type="radio"
+                          value="own_account"
+                          {...register("shippingMethod", {
+                            required: "Please select a shipping method",
+                          })}
+                          className="mt-1"
+                        />
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold">FedEx</span>
+                            <span className="text-sm">
+                              (International Economy)
+                            </span>
+                          </div>
+                          <div className="text-lg font-bold mt-1">$409.75</div>
+                        </div>
+                      </label>
+
+                      <label className="flex items-start gap-3 border rounded p-4 cursor-pointer has-[:checked]:border-red-600">
+                        <input
+                          type="radio"
+                          value="fedex_priority"
+                          {...register("shippingMethod", {
+                            required: "Please select a shipping method",
+                          })}
+                          className="mt-1"
+                        />
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold">FedEx</span>
+                            <span className="text-sm">
+                              (International Priority)
+                            </span>
+                          </div>
+                          <div className="text-lg font-bold mt-1">$459.68</div>
+                        </div>
+                      </label>
+                    </div>
+
+                    {errors.shippingMethod && (
+                      <p className="text-sm text-red-500 mt-2">
+                        {errors.shippingMethod.message}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Order Comments */}
+                  <div className="flex flex-col">
+                    <label htmlFor="orderComment" className="text-sm mb-2">
+                      Order Comments
+                    </label>
+                    <textarea
+                      id="orderComment"
+                      rows={4}
+                      className="w-full border rounded-md p-3"
+                      {...register("orderComment")}
+                      placeholder="Add any special instructions..."
+                    />
+                  </div>
+
+                  <Button
+                    type="button"
+                    onClick={handleContinueToBilling}
+                    className="w-full h-[50px] bg-red-600 hover:bg-red-700 text-white font-medium"
+                  >
+                    CONTINUE
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* STEP 3: Billing (only if billingSame is false) */}
+            {currentStep === 3 && !watchedBillingSame && (
+              <div className="bg-white border rounded-md shadow-sm p-6">
+                <h2 className="text-2xl font-semibold mb-6">Billing</h2>
+
+                <div className="space-y-6">
+                  <h3 className="font-medium mb-4">Billing Address</h3>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col">
+                      <label
+                        htmlFor="billingFirstName"
+                        className="text-sm mb-2"
+                      >
+                        First Name
+                      </label>
+                      <Input
+                        id="billingFirstName"
+                        type="text"
+                        className={`w-full h-[50px] ${
+                          errors.billingFirstName ? "border-red-500" : ""
+                        }`}
+                        {...register("billingFirstName", {
+                          required: "First name is required",
+                        })}
+                      />
+                      {errors.billingFirstName && (
+                        <p className="text-sm text-red-500 mt-1">
+                          {errors.billingFirstName.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label htmlFor="billingLastName" className="text-sm mb-2">
+                        Last Name
+                      </label>
+                      <Input
+                        id="billingLastName"
+                        type="text"
+                        className={`w-full h-[50px] ${
+                          errors.billingLastName ? "border-red-500" : ""
+                        }`}
+                        {...register("billingLastName", {
+                          required: "Last name is required",
+                        })}
+                      />
+                      {errors.billingLastName && (
+                        <p className="text-sm text-red-500 mt-1">
+                          {errors.billingLastName.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label htmlFor="billingCompany" className="text-sm mb-2">
+                      Company Name{" "}
+                      <span className="text-gray-400">(Optional)</span>
+                    </label>
+                    <Input
+                      id="billingCompany"
+                      type="text"
+                      className="w-full h-[50px]"
+                      {...register("billingCompany")}
+                    />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label htmlFor="billingPhone" className="text-sm mb-2">
+                      Phone Number{" "}
+                      <span className="text-gray-400">(Optional)</span>
+                    </label>
+                    <Input
+                      id="billingPhone"
+                      type="text"
+                      className="w-full h-[50px]"
+                      {...register("billingPhone")}
+                    />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label htmlFor="billingAddress1" className="text-sm mb-2">
+                      Address Line 1
+                    </label>
+                    <Input
+                      id="billingAddress1"
+                      type="text"
+                      className={`w-full h-[50px] ${
+                        errors.billingAddress1 ? "border-red-500" : ""
+                      }`}
+                      {...register("billingAddress1", {
+                        required: "Address is required",
+                      })}
+                    />
+                    {errors.billingAddress1 && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.billingAddress1.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label htmlFor="billingAddress2" className="text-sm mb-2">
+                      Address Line 2{" "}
+                      <span className="text-gray-400">(Optional)</span>
+                    </label>
+                    <Input
+                      id="billingAddress2"
+                      type="text"
+                      className="w-full h-[50px]"
+                      {...register("billingAddress2")}
+                    />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label htmlFor="billingCity" className="text-sm mb-2">
+                      City
+                    </label>
+                    <Input
+                      id="billingCity"
+                      type="text"
+                      className={`w-full h-[50px] ${
+                        errors.billingCity ? "border-red-500" : ""
+                      }`}
+                      {...register("billingCity", {
+                        required: "City is required",
+                      })}
+                    />
+                    {errors.billingCity && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.billingCity.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label htmlFor="billingCountry" className="text-sm mb-2">
+                      Country
+                    </label>
+                    <Controller
+                      name="billingCountry"
+                      control={control}
+                      rules={{ required: "Country is required" }}
+                      render={({ field }) => (
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <SelectTrigger
+                            className={`w-full h-[50px] ${
+                              errors.billingCountry ? "border-red-500" : ""
+                            }`}
+                          >
+                            <SelectValue placeholder="Select country" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {countryList.map((country) => (
+                              <SelectItem
+                                key={country.code}
+                                value={country.code}
+                              >
+                                {country.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    {errors.billingCountry && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.billingCountry.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col">
+                      <label htmlFor="billingState" className="text-sm mb-2">
+                        State/Province
+                      </label>
+                      <Input
+                        id="billingState"
+                        type="text"
+                        className="w-full h-[50px]"
+                        {...register("billingState")}
+                      />
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label htmlFor="billingZip" className="text-sm mb-2">
+                        Postal Code
+                      </label>
+                      <Input
+                        id="billingZip"
+                        type="text"
+                        className={`w-full h-[50px] ${
+                          errors.billingZip ? "border-red-500" : ""
+                        }`}
+                        {...register("billingZip", {
+                          required: "Postal code is required",
+                        })}
+                      />
+                      {errors.billingZip && (
+                        <p className="text-sm text-red-500 mt-1">
+                          {errors.billingZip.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <Button
+                    type="button"
+                    onClick={handleContinueToPayment}
+                    className="w-full h-[50px] bg-red-600 hover:bg-red-700 text-white font-medium"
+                  >
+                    CONTINUE
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* STEP 4: Payment */}
+            {currentStep === 4 && (
+              <div className="bg-white border rounded-md shadow-sm p-6">
+                <h2 className="text-2xl font-semibold mb-6">Payment</h2>
+
+                <div className="space-y-4">
+                  {/* Stripe Credit Card */}
+                  <label className="flex flex-col border rounded-lg p-4 cursor-pointer has-[:checked]:border-red-600">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="radio"
+                          value="credit_card"
+                          {...register("paymentMethod", {
+                            required: "Please select a payment method",
+                          })}
+                          checked={watchedPaymentMethod === "credit_card"}
+                          onChange={() => handlePaymentSelection("credit_card")}
+                        />
+                        <span className="font-semibold">Stripe</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Image
+                          src="/checkouticon/card.png"
+                          alt="Cards"
+                          width={120}
+                          height={30}
+                        />
+                      </div>
+                    </div>
+
+                    {stripeCardMethods.includes(watchedPaymentMethod) && (
+                      <div className="space-y-4 mt-4">
+                        <div>
+                          <label className="text-sm mb-2 block">
+                            Card number
+                          </label>
+                          <div className="border rounded-md p-3 hover:border-gray-400 focus-within:border-red-600">
+                            <CardNumberElement
+                              onChange={(event) => {
+                                setCardCompletion((prev) => ({
+                                  ...prev,
+                                  number: event.complete,
+                                }));
+                                setCardError(event.error?.message || null);
+                              }}
+                              options={{
+                                style: {
+                                  base: {
+                                    fontSize: "16px",
+                                    color: "#333",
+                                    "::placeholder": {
+                                      color: "#aaa",
+                                    },
+                                  },
+                                  invalid: {
+                                    color: "#fa755a",
+                                  },
+                                },
+                              }}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="text-sm mb-2 block">
+                              Expiration date
+                            </label>
+                            <div className="border rounded-md p-3 hover:border-gray-400 focus-within:border-red-600">
+                              <CardExpiryElement
+                                onChange={(event) => {
+                                  setCardCompletion((prev) => ({
+                                    ...prev,
+                                    expiry: event.complete,
+                                  }));
+                                  setCardError(event.error?.message || null);
+                                }}
+                                options={{
+                                  style: {
+                                    base: {
+                                      fontSize: "16px",
+                                      color: "#333",
+                                      "::placeholder": {
+                                        color: "#aaa",
+                                      },
+                                    },
+                                    invalid: {
+                                      color: "#fa755a",
+                                    },
+                                  },
+                                }}
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="text-sm mb-2 block">
+                              Security code
+                            </label>
+                            <div className="border rounded-md p-3 hover:border-gray-400 focus-within:border-red-600">
+                              <CardCvcElement
+                                onChange={(event) => {
+                                  setCardCompletion((prev) => ({
+                                    ...prev,
+                                    cvc: event.complete,
+                                  }));
+                                  setCardError(event.error?.message || null);
+                                }}
+                                options={{
+                                  style: {
+                                    base: {
+                                      fontSize: "16px",
+                                      color: "#333",
+                                      "::placeholder": {
+                                        color: "#aaa",
+                                      },
+                                    },
+                                    invalid: {
+                                      color: "#fa755a",
+                                    },
+                                  },
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {cardError && (
+                          <p className="text-sm text-red-500">{cardError}</p>
+                        )}
+                      </div>
+                    )}
+                  </label>
+
+                  {/* Apple Pay */}
+                  <label
+                    className={`flex items-center justify-between border rounded-lg p-4 cursor-pointer has-[:checked]:border-red-600 ${
+                      !walletSupport.applePay
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="radio"
+                        value="apple_pay"
+                        {...register("paymentMethod")}
+                        checked={watchedPaymentMethod === "apple_pay"}
+                        onChange={() => handlePaymentSelection("apple_pay")}
+                        disabled={!walletSupport.applePay}
+                      />
+                      <Image
+                        src="/checkouticon/Apple-icon.svg"
+                        alt="Apple Pay"
+                        width={50}
+                        height={30}
+                      />
+                    </div>
+                    {walletSupport.applePay ? (
+                      <Image
+                        src="/checkouticon/card.png"
+                        alt="Cards"
+                        width={100}
+                        height={30}
+                      />
+                    ) : (
+                      <span className="text-xs text-gray-500">
+                        Not available
+                      </span>
+                    )}
+                  </label>
+
+                  {/* Google Pay */}
+                  <label
+                    className={`flex items-center justify-between border rounded-lg p-4 cursor-pointer has-[:checked]:border-red-600 ${
+                      !walletSupport.googlePay
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="radio"
+                        value="google_pay"
+                        {...register("paymentMethod")}
+                        checked={watchedPaymentMethod === "google_pay"}
+                        onChange={() => handlePaymentSelection("google_pay")}
+                        disabled={!walletSupport.googlePay}
+                      />
+                      <Image
+                        src="/checkouticon/googlepay.png"
+                        alt="Google Pay"
+                        width={60}
+                        height={30}
+                      />
+                    </div>
+                    {walletSupport.googlePay ? (
+                      <Image
+                        src="/checkouticon/card.png"
+                        alt="Cards"
+                        width={100}
+                        height={30}
+                      />
+                    ) : (
+                      <span className="text-xs text-gray-500">
+                        Not available
+                      </span>
+                    )}
+                  </label>
+
+                  {errors.paymentMethod && (
+                    <p className="text-sm text-red-500 mt-2">
+                      {errors.paymentMethod.message}
+                    </p>
+                  )}
+
+                  <Button
+                    type="submit"
+                    disabled={isProcessing || !stripe}
+                    className="w-full h-[50px] bg-red-600 hover:bg-red-700 text-white font-medium disabled:opacity-50"
+                  >
+                    {isProcessing ? "Processing..." : "PLACE ORDER"}
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
-          {/* Totals */}
-          <div className="mt-4 space-y-2 text-sm">
-            <div className="flex justify-between h5-regular">
-              <span>Cart Subtotal</span> <span>${subtotal.toFixed(2)}</span>
+
+          {/* RIGHT SECTION - Order Summary */}
+          <div className="bg-white border rounded-md shadow-sm p-6 h-fit sticky top-4">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold">Order Summary</h2>
+              <a href="/cart" className="text-sm text-red-600 hover:underline">
+                Edit Cart
+              </a>
             </div>
-            <div className="flex justify-between h5-regular">
-              <span>Shipping</span>
-              <span>${shipping.toFixed(2)}</span>
+
+            <div className="mb-4 text-sm text-gray-600">
+              {cart.length} Item{cart.length !== 1 ? "s" : ""}
             </div>
-            <div className="flex justify-between h5-regular">
-              <span>Tax</span>
-              <span>${tax.toFixed(2)}</span>
+
+            {/* Cart Items */}
+            <div className="space-y-4 mb-6 max-h-[400px] overflow-y-auto">
+              {cart.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-start gap-4 pb-4 border-b last:border-b-0"
+                >
+                  <div className="relative w-20 h-20 flex-shrink-0">
+                    <Image
+                      src={
+                        item.image?.[0]?.path || "/checkouticon/orderimg.png"
+                      }
+                      alt={item.name}
+                      width={80}
+                      height={80}
+                      className="object-cover rounded"
+                    />
+                    <span className="absolute -top-2 -right-2 bg-gray-700 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      {item.quantity}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium line-clamp-2 mb-1">
+                      {item.name}
+                    </p>
+                    <p className="text-sm font-semibold text-gray-900">
+                      ${Number(item.price).toFixed(2)}
+                    </p>
+                  </div>
+                  <div className="text-sm font-semibold text-gray-900">
+                    ${(Number(item.price) * (item.quantity || 1)).toFixed(2)}
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
-          {/* Discount Code */}
-          <div className="mt-4 space-y-2">
-            <label htmlFor="discountCode" className="h5-regular">
-              Apply Discount Code
-            </label>
-            <div className="flex gap-2 my-2">
-              <Input
-                id="discountCode"
-                type="text"
-                className="h-[60px] !max-w-full "
-              />
-              <button className="h4-medium border border-black px-4 rounded">
-                Apply
+
+            {/* Promo/Gift Certificate */}
+            <div className="mb-6">
+              <button className="text-sm text-gray-600 hover:text-gray-900 underline">
+                Promo/Gift Certificate
               </button>
             </div>
+
+            {/* Totals */}
+            <div className="space-y-3 text-sm border-t pt-4">
+              <div className="flex justify-between text-gray-700">
+                <span>Subtotal</span>
+                <span className="font-medium">${subtotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-gray-700">
+                <span>Shipping</span>
+                <span className="font-medium">${shipping.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-gray-700">
+                <span>Tax</span>
+                <span className="font-medium">${tax.toFixed(2)}</span>
+              </div>
+            </div>
+
+            {/* Total */}
+            <div className="flex justify-between items-center text-lg font-bold mt-4 pt-4 border-t">
+              <span>Total (USD)</span>
+              <span>${total.toFixed(2)}</span>
+            </div>
           </div>
-          {/* Total */}
-          <div className="mt-4 flex justify-between h3-secondary">
-            <span>Order total</span> <span>${total.toFixed(2)}</span>{" "}
-          </div>
-        </div>
         </div>
       </form>
-      {/* ShadCN Dialog for Delete Confirmation */}
+
+      {/* Delete Confirmation Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[400px]">
           <DialogHeader>
@@ -1338,60 +2960,6 @@ const buildOrderPayload = useCallback(
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-       {/* <OrderSuccessModal
-        open={isSuccessModalOpen}
-        onClose={() => setIsSuccessModalOpen(false)}
-         data={latestOrder}
-      /> */}
-
-      {/* <Dialog open={isSuccessModalOpen} onOpenChange={handleSuccessModalChange}>
-  <DialogContent className="sm:max-w-[380px] text-center py-8">
-    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-      <svg
-        className="h-10 w-10 text-green-600"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        viewBox="0 0 24 24"
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-      </svg>
-    </div>
-
-    <DialogHeader>
-      <DialogTitle className="text-2xl font-bold text-gray-800">
-        Thank You!
-      </DialogTitle>
-      <DialogDescription className="text-gray-600 mt-2">
-        Your order has been placed successfully.<br />
-        We appreciate your business.
-      </DialogDescription>
-    </DialogHeader>
-  </DialogContent>
-</Dialog> */}
-
-      {/* <Dialog open={isSuccessModalOpen} onOpenChange={handleSuccessModalChange}>
-        <DialogContent className="sm:max-w-[400px] text-center">
-          <DialogHeader>
-            <DialogTitle>Order Placed Successfully</DialogTitle>
-            <DialogDescription>
-              Thank you for your purchase. We&apos;ll take you back to the home page
-              in just a moment.
-              {latestOrderId && (
-                <span className="block mt-3 font-semibold text-gray-800">
-                  Order ID: {latestOrderId}
-                </span>
-              )}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="flex justify-center">
-            <Button className="!p-4 !text-lg" onClick={handleSuccessRedirect}>
-              Go to Home
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog> */}
     </div>
   );
 };
