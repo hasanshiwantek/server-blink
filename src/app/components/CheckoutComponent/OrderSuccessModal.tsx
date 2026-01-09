@@ -64,7 +64,7 @@ export default function OrderSuccessPage() {
   };
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
+    <div className="py-8 w-full max-w-[1170px] mx-auto  ">
       <div className="grid md:grid-cols-2 gap-8">
 
         {/* Left Section */}

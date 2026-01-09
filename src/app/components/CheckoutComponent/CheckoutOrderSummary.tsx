@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-
+import Link from "next/link";
 interface OrderSummaryProps {
   cart: any[];
   subtotal: number;
@@ -21,9 +21,9 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
     <div className="bg-white border-[1px] border-[#8b8b8b] rounded-sm  shadow-sm py-6 h-fit sticky top-9">
       <div className="flex items-center justify-between mb-6 px-6 border-b-[1px] border-[#8b8b8b]">
         <h2 className="text-xl font-semibold text-gray-800 p-2">Order Summary</h2>
-        <a href="/cart" className="text-base text-[var(--primary-color)] hover:underline">
+        <Link href="/cart" className="text-base text-[var(--primary-color)] hover:underline">
           Edit Cart
-        </a>
+        </Link>
       </div>
 
       <div className="mb-4 text-sm text-gray-600 px-6">

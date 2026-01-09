@@ -3,7 +3,7 @@ import React from "react";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { UseFormRegister, FieldErrors } from "react-hook-form";
-
+import Link from "next/link";
 interface CustomerStepProps {
   register: UseFormRegister<any>;
   errors: FieldErrors;
@@ -95,9 +95,9 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
 
           <div className="text-base text-gray-700">
             Already have an account?{" "}
-            <a href="/login" className="text-[var(--primary-color)]">
+            <Link href="/auth/login" className="text-[var(--primary-color)]">
               Sign in now
-            </a>
+            </Link>
           </div>
 
           <div className="text-base text-gray-600">Or continue with</div>
