@@ -244,7 +244,7 @@ const FooterBottom = () => {
         <div className="mt-12 pt-8  border-gray-600">
           <div className="flex flex-wrap items-center gap-4">
             <Image
-              src="/amex.png"
+              src="/amex.png.png"
               alt="American Express"
               width={60}
               height={40}
@@ -255,7 +255,7 @@ const FooterBottom = () => {
               alt="Discover"
               width={60}
               height={40}
-              className="object-contain"
+              className="object-contain "
             />
             <Image
               src="/mastercard.png"

@@ -66,7 +66,7 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
 
       {/* Promo/Gift Certificate */}
       <div className="mb-6 border-b-[1px] px-6 border-[#8b8b8b] py-4">
-        <button className="text-base text-[var(--primary-color)] ">
+        <button type="button" className="text-base text-[var(--primary-color)] ">
           Promo/Gift Certificate
         </button>
       </div>
