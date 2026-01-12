@@ -6,7 +6,7 @@ export const fetchBrands = async () => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      storeId: "4",
+      storeId: "10",
     },
     // ✅ ISR: cache once, refresh every 5 min
     next: { revalidate: 300 },

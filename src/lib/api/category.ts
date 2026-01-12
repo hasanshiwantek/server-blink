@@ -6,7 +6,7 @@ export const fetchCategories = async () => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      storeId: "4",
+      storeId: "10",
     },
     // ✅ ISR: cache once, refresh every 5 min
     next: { revalidate: 300},
@@ -27,7 +27,7 @@ export const fetchCategoryById = async (id: number | string ) => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      storeId: "4",
+      storeId: "10",
     },
     // ✅ ISR: cache once, refresh every 5 min
     next: { revalidate: 300 },

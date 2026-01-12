@@ -6,7 +6,7 @@ export const fetchOrderDetails = async (orderId: string) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        storeId: "4",
+        storeId: "10",
       },
       body: JSON.stringify({
         orderId: orderId,
