@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import LayoutWrapper from "./components/layout/LayoutWrapper";
-import { Inter, Jost,Roboto } from "next/font/google";
+import { Inter, Jost, Roboto } from "next/font/google";
 import localFont from "next/font/local";
 import "../styles/blog/api-content.css";
 const inter = Inter({
@@ -11,14 +11,12 @@ const inter = Inter({
   preload: true,
 });
 
-
 const roboto = Roboto({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
   preload: true,
 });
-
 
 // // ✅ Recoleta (400–700) - Loading multiple weights
 // const gilroy = localFont({
@@ -54,44 +52,44 @@ const roboto = Roboto({
 // });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://nts-ecommerce.vercel.app"),
+  metadataBase: new URL("https://server-blink.vercel.app"),
   title: {
-    default: "New Town Spares",
-    template: "%s | New Town Spares",
+    default: "Server Blink",
+    template: "%s | Server Blink",
   },
   description:
-    "Buy electronics, connectors, cables, and computer accessories online at New Town Spares. Quality parts at affordable prices with fast shipping.",
+    "Buy servers, networking equipment, and IT solutions online at Server Blink. Quality products at affordable prices with fast shipping.",
   keywords: [
-    "New Town Spares",
-    "computer accessories",
-    "connectors",
-    "cables",
-    "electronics store",
+    "Server Blink",
+    "servers",
+    "networking equipment",
+    "IT solutions",
     "buy online",
+    "IT hardware",
   ],
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://nts-ecommerce.vercel.app",
-    siteName: "New Town Spares",
-    title: "New Town Spares – Quality Electronics & Accessories",
+    url: "https://server-blink.vercel.app",
+    siteName: "Server Blink",
+    title: "Server Blink – Quality Servers & IT Solutions",
     description:
-      "Discover premium connectors, cables, motherboards, and storage devices at New Town Spares.",
+      "Discover premium servers, networking gear, storage devices, and IT solutions at Server Blink.",
     images: [
       {
-        url: "/navlogo.png",
+        url: "/serverblink-logo.png", // Replace with your logo
         width: 1200,
         height: 630,
-        alt: "New Town Spares",
+        alt: "Server Blink",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "New Town Spares – Quality Electronics & Accessories",
+    title: "Server Blink – Quality Servers & IT Solutions",
     description:
-      "Shop premium electronics, connectors, cables, and computer parts at New Town Spares.",
-    images: ["/navlogo.png"],
+      "Shop premium servers, networking equipment, and IT solutions at Server Blink.",
+    images: ["/serverblink-logo.png"], // Replace with actual logo path
   },
   icons: {
     icon: "/favicon.ico",
@@ -99,7 +97,6 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
 };
-
 export default function RootLayout({
   children,
 }: {

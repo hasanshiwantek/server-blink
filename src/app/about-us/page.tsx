@@ -10,31 +10,31 @@ import ProductServicesSection from "../components/about/ProductServicesSection";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About Us | New Town Spares",
+  title: "About Us | Server Blink",
   description:
-    "Learn more about New Town Spares, our mission, values, and commitment to providing quality IT hardware and excellent customer service. Discover our story and how we serve our clients.",
+    "Learn more about Server Blink, our mission, values, and commitment to providing quality server parts and IT solutions. Discover our story and how we serve our clients.",
   keywords: [
-    "about New Town Spares",
+    "about Server Blink",
     "company mission",
     "company values",
-    "IT hardware provider",
-    "New Town Spares story",
+    "server parts provider",
+    "Server Blink story",
   ],
   alternates: {
-    canonical: "https://newtownspares.advertsedge.com/about-us",
+    canonical: "https://server-blink.vercel.app/about-us",
   },
   openGraph: {
-    title: "About Us | New Town Spares",
+    title: "About Us | Server Blink",
     description:
-      "Learn more about New Town Spares, our mission, values, and commitment to providing quality IT hardware and excellent customer service.",
-    url: "https://newtownspares.advertsedge.com/about-us",
-    siteName: "New Town Spares",
+      "Learn more about Server Blink, our mission, values, and commitment to providing quality server parts and IT solutions.",
+    url: "https://server-blink.vercel.app/about-us",
+    siteName: "Server Blink",
     images: [
       {
-        url: "/aboutus.png",
+        url: "/aboutus.png", // Replace with Server Blink logo or About image
         width: 1200,
         height: 630,
-        alt: "About Us - New Town Spares",
+        alt: "About Us - Server Blink",
       },
     ],
     locale: "en_US",
@@ -42,10 +42,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "About Us | New Town Spares",
+    title: "About Us | Server Blink",
     description:
-      "Learn more about New Town Spares, our mission, values, and commitment to providing quality IT hardware and excellent customer service.",
-    images: ["/aboutus.png"],
+      "Learn more about Server Blink, our mission, values, and commitment to providing quality server parts and IT solutions.",
+    images: ["/aboutus.png"], // Replace with actual path if needed
   },
   robots: {
     index: true,

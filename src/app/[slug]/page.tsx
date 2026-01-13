@@ -19,22 +19,22 @@ export async function generateMetadata({
 
   if (!product) {
     return {
-      title: "Product Not Found | New Town Spares",
+      title: "Product Not Found | Server Blink",
       description: "This product could not be found.",
     };
   }
 
-  const url = `https://nts-ecommerce.vercel.app/${slug}`;
+  const url = `https://server-blink.vercel.app/${slug}`;
 
   return {
-    title: `${product.pageTitle || product.name} | New Town Spares`,
+    title: `${product.pageTitle || product.name} | Server Blink`,
     description:
       product.metaDescription?.substring(0, 160) ||
       product.description?.substring(0, 160) ||
-      "Buy quality products at New Town Spares.",
+      "Buy quality servers, networking equipment, and IT solutions at Server Blink.",
     keywords:
       product.searchKeywords ||
-      `${product.name}, ${product.brand?.name}, New Town Spares`,
+      `${product.name}, ${product.brand?.name}, Server Blink`,
     alternates: {
       canonical: url,
     },
@@ -42,7 +42,7 @@ export async function generateMetadata({
       title: product.pageTitle || product.name,
       description: product.metaDescription || product.description,
       url,
-      siteName: "New Town Spares",
+      siteName: "Server Blink",
       images: [
         {
           url: product.image?.[0]?.path || "/default-product-image.svg",
@@ -51,7 +51,7 @@ export async function generateMetadata({
           alt: product.pageTitle || product.name,
         },
       ],
-      type: "website", // ✅ cast since Next.js types don’t allow "product"
+      type: "website",
     },
     twitter: {
       card: "summary_large_image",
@@ -106,12 +106,12 @@ export default async function ProductPage({
 
       <main
         role="main"
-     className="w-full max-w-[1170px] mx-auto mt-8 lg:px-6 xl:px-0"
+        className="w-full max-w-[1170px] mx-auto mt-8 lg:px-6 xl:px-0"
       >
         <div className="grid grid-cols-1 lg:grid-cols-12  gap-6">
           {/* Left Sidebar */}
           <aside className="hidden lg:block lg:col-span-3 w-full lg:w-[85%]">
-            <CategoriesSidebar activeCategoryId={product?.categoryIds[0]}  />
+            <CategoriesSidebar activeCategoryId={product?.categoryIds[0]} />
             <BrandsSidebar activeBrandId={product?.brand?.id} />
           </aside>
 

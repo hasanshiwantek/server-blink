@@ -1,44 +1,45 @@
 import React from "react";
 import BlogContainer from "../components/Blogs/BlogContainer";
 import { Metadata } from "next";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://nts-ecommerce.vercel.app"),
+  metadataBase: new URL("https://server-blink.vercel.app"),
   title: {
-    default: "Blogs | New Town Spares",
-    template: "%s | Blogs | New Town Spares",
+    default: "Blogs | Server Blink",
+    template: "%s | Blogs | Server Blink",
   },
   description:
-    "Read the latest articles and insights on electronics, connectors, cables, and computer accessories at New Town Spares. Stay informed with tech trends and product guides.",
+    "Read the latest articles and insights on servers, networking equipment, and IT solutions at Server Blink. Stay informed with tech trends and product guides.",
   keywords: [
-    "New Town Spares blog",
-    "electronics articles",
-    "computer accessories guides",
+    "Server Blink blog",
+    "servers articles",
+    "networking guides",
+    "IT solutions insights",
     "tech trends",
-    "connectors and cables blog",
   ],
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://nts-ecommerce.vercel.app/blogs",
-    siteName: "New Town Spares",
-    title: "New Town Spares Blogs – Electronics & Tech Insights",
+    url: "https://server-blink.vercel.app/blogs",
+    siteName: "Server Blink",
+    title: "Server Blink Blogs – Servers, Networking & IT Insights",
     description:
-      "Explore expert blogs on electronics, computer accessories, and industry trends at New Town Spares.",
+      "Explore expert blogs on servers, networking equipment, and IT solutions at Server Blink.",
     images: [
       {
-        url: "/navlogo.png",
+        url: "/serverblink-logo.png", // Replace with your actual banner/logo
         width: 1200,
         height: 630,
-        alt: "New Town Spares Blog Banner",
+        alt: "Server Blink Blog Banner",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "New Town Spares Blogs – Electronics & Tech Insights",
+    title: "Server Blink Blogs – Servers, Networking & IT Insights",
     description:
-      "Stay updated with expert insights on electronics and computer parts from New Town Spares.",
-    images: ["/navlogo.png"],
+      "Stay updated with expert insights on servers and IT solutions from Server Blink.",
+    images: ["/serverblink-logo.png"], // Replace with actual image
   },
   icons: {
     icon: "/favicon.ico",
