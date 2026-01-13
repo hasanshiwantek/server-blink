@@ -6,9 +6,9 @@ import { getBlogByIdServer } from "@/lib/api/products";
 import { Metadata } from "next";
 import navlogo from "@/assets/navlogo.png";
 
-const SITE_NAME = "New Town Spares";
-const BASE_URL = "https://nts-ecommerce.vercel.app";
-const TWITTER_HANDLE = "@newtownspares"; 
+const SITE_NAME = "ServerBlink";
+const BASE_URL = "https://server-blink.vercel.app";
+const TWITTER_HANDLE = "@serverblink"; 
 const LOGO_URL = `${BASE_URL}/${navlogo}`; 
 
 export async function generateMetadata({ 

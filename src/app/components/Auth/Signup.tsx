@@ -80,7 +80,7 @@ const SignupPage = () => {
       <div className=" w-full" />
 
       {/* Breadcrumb */}
-      <div className=" w-full  xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-7xl mx-auto py-4">
+      <div className="  px-10 xl:px-0  w-full  xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-7xl mx-auto py-4">
         <div className="flex items-center gap-2 text-sm">
           <Link href="/" className="text-gray-600 hover:text-gray-900">
             Home
@@ -91,7 +91,7 @@ const SignupPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className=" w-full  xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-7xl mx-auto  py-8 pb-16">
+      <div className=" px-10 xl:px-0  w-full  xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-7xl mx-auto  py-8 pb-16">
         <h1 className="h1-lg mb-12">New Account</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

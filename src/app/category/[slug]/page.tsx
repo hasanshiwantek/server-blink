@@ -18,11 +18,8 @@ function findCategoryBySlug(categories: any[], slug: string): any | undefined {
   return undefined;
 }
 
-
 // ✅ Dynamic SEO metadata per category
-export async function generateMetadata({
-  params,
-}: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const categories = await fetchCategories();
   const category = findCategoryBySlug(categories, slug);
@@ -31,23 +28,23 @@ export async function generateMetadata({
     category?.name ||
     slug.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 
-  const title = `${formattedCategory} | NewTown Spares`;
+  const title = `${formattedCategory} | ServerBlink`;
   const description = `Browse our collection of ${formattedCategory}. Genuine components, affordable prices, and fast shipping.`;
 
   return {
     title,
     description,
     alternates: {
-      canonical: `https://newtownspares.com/category/${slug}`,
+      canonical: `https://server-blink.vercel.app/category/${slug}`,
     },
     openGraph: {
       title,
       description,
-      url: `https://newtownspares.com/category/${slug}`,
-      siteName: "NewTown Spares",
+      url: `https://server-blink.vercel.app/category/${slug}`,
+      siteName: "Server Blink",
       images: [
         {
-          url: "https://newtownspares.com/images/products-og.jpg",
+          url: "https://server-blink.vercel.app/images/products-og.jpg", // Replace with actual OG image
           width: 1200,
           height: 630,
           alt: `${formattedCategory} Products`,
@@ -63,9 +60,9 @@ export async function generateMetadata({
       googleBot: {
         index: true,
         follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
       },
     },
   };
@@ -80,11 +77,10 @@ export default async function CategoryPage({ params }: Props) {
   // Find category by slug
   const category = findCategoryBySlug(categories, slug);
 
-
   if (!category) {
     return <div className="text-center py-10">❌ Category not found</div>;
   }
-const formattedCategorydescription = await fetchCategoryById(category.id);
+  const formattedCategorydescription = await fetchCategoryById(category.id);
   return (
     <ProductsPage
       initialCategoryId={category.id}
