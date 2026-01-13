@@ -21,40 +21,37 @@ interface Props {
 
 function findBrandBySlug(brands: any[], slug: string): any | undefined {
   for (const brand of brands) {
-    if (brand.brand?.slug == slug) return brand; 
+    if (brand.brand?.slug == slug) return brand;
   }
-  return undefined; 
+  return undefined;
 }
 
-
 // ✅ Dynamic SEO metadata per category
-export async function generateMetadata({
-  params,
-}: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-   const brands = await fetchBrands();
+  const brands = await fetchBrands();
   const brand = findBrandBySlug(brands, slug);
   const formattedBrand =
     brand?.brand?.name ||
     slug.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 
-  const title = `${formattedBrand} | NewTown Spares`;
+  const title = `${formattedBrand} | ServerBlink`;
   const description = `Browse our collection of ${formattedBrand}. Genuine components, affordable prices, and fast shipping.`;
 
   return {
     title,
     description,
     alternates: {
-      canonical: `https://newtownspares.com/brand/${slug}`,
+      canonical: `https://server-blink.vercel.app/brand/${slug}`,
     },
     openGraph: {
       title,
       description,
-      url: `https://newtownspares.com/brand/${slug}`,
-      siteName: "NewTown Spares",
+      url: `https://server-blink.vercel.app/brand/${slug}`,
+      siteName: "Server Blink",
       images: [
         {
-          url: "https://newtownspares.com/images/products-og.jpg",
+          url: "https://server-blink.vercel.app/images/products-og.jpg", // Update with actual OG image
           width: 1200,
           height: 630,
           alt: `${formattedBrand} Products`,
@@ -71,8 +68,7 @@ export default async function BrandPage({ params }: Props) {
   console.log("Category Slug:", slug);
 
   const brands = await fetchBrands();
-  
-  
+
   const brand = findBrandBySlug(brands, slug);
 
   if (!brand) {

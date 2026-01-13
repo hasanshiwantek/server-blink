@@ -53,7 +53,7 @@ const SigninPage = () => {
       <div className=" h-2 w-full  xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-8xl" />
 
       {/* Breadcrumb */}
-      <div className=" w-full xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-8xl mx-auto  py-4">
+      <div className="px-10 xl:px-0  w-full xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-8xl mx-auto  py-4">
         <div className="flex items-center gap-2 text-sm">
           <Link href="/" className="text-gray-600 hover:text-gray-900">
             Home
@@ -64,7 +64,7 @@ const SigninPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-8xl  xl:max-w-[1170px] 2xl:max-w-[1170px]  mx-auto  py-8">
+      <div className="  px-10 xl:px-0 xl:max-w-[1170px] 2xl:max-w-[1170px]  mx-auto  py-8">
         <h1 className="h1-lg mb-10">Login</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-12">
