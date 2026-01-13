@@ -5,17 +5,19 @@ import React from "react";
 
 const ProductOverview = ({ product }: { product: any }) => {
   return (
-    <section className="py-10   xl:px-0 2xl:px-0   w-[85%] lg:w-full max-w-[1170px] mx-auto px-4 lg:px-0 " aria-labelledby="product-overview-heading">
+    <section className="py-10   xl:px-0 2xl:px-0 w-[85%] lg:w-full max-w-[1170px] mx-auto px-4 lg:px-0 border-b-2 border-[#545454]" aria-labelledby="product-overview-heading">
       <div className="w-full  flex flex-col">
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col">
           {/* Main Overview Heading */}
-          <h2 className="h1-lg ">Overview</h2>
+          <h2 className="text-[13px] bg-[#F2F2F2] p-2 w-48 text-center text-black font-bold">Overview</h2>
+          <h3 className="text-[20px] bg-[#F2F2F2] px-5 text-[#545454] py-2 font-bold">PRODUCT DESCRIPTION</h3>
+          <div className="w-[97%] mx-auto h-[1px] bg-[#545454]"></div>
 
           {/* Intro Paragraph */}
          
-           <div className="description-content" 
+           {/* <div className="description-content" 
          dangerouslySetInnerHTML={{ __html: product?.description }}>
-    </div>
+    </div> */}
           {/* <p className="h5-regular !leading-relaxed w-full xl:w-[60rem] 2xl:w-[80rem]">
             Introducing the {product?.name || "N/A"}, a versatile solution for
             your networking needs. This product is manufactured by
@@ -67,12 +69,14 @@ const ProductOverview = ({ product }: { product: any }) => {
 
         {/* Product Details Section */}
         <section className="border" aria-labelledby="product-details-heading">
-          <div className="bg-[#F5F6FA] py-[20px] px-[8px]">
-            <h2 className="h3-secondary  !mb-2">{product?.sku || "N/A"}</h2>
-          </div>
+          {/* <div className="p-4">
+          </div> */}
+            <h2 className="!p-4 bg-[#F2F2F2]">{product?.metaDescription || "N/A"}</h2>
+                 <h3 className="text-[20px] bg-[#F2F2F2] px-5 text-[#545454] py-2 font-bold">PRODUCT DETAILS</h3>
+          <div className="w-[97%] mx-auto h-[1px] bg-[#545454]"></div>
 
           {/* Key-Value Details */}
-          <dl className="p-2 space-y-4">
+          <dl className="py-3 px-6 bg-[#F2F2F2]">
   {[
     ["Brand", product?.brand?.name || "N/A"],
     [
@@ -89,12 +93,12 @@ const ProductOverview = ({ product }: { product: any }) => {
   ].map(([key, value], index) => (
     <div
       key={key}
-      className={`!grid !grid-cols-[200px_1fr] !items-center !p-2 ${
-        index % 2 === 1 ? "bg-gray-50" : ""
+      className={`!grid !grid-cols-[200px_1fr] !items-center !px-2 !py-1 ${
+        index % 2 === 1 ? "" : "bg-gray-50"
       }`}
     >
-      <dt className="h5-regular">{key}</dt>
-      <dd className="h5-medium !text-center">
+      <dt className="text-[13px] text-[#545454] font-bold">{key}</dt>
+      <dd className="text-[14px]">
         {key === "Brand" && product?.brand?.name ? (
           <Link
             href={`/brand/${product.brand.slug}`}
