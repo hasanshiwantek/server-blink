@@ -54,9 +54,9 @@ const BrandsSidebar: React.FC<BrandsSidebarProps> = ({ activeBrandId }) => {
         )}
 
         {/* View all */}
-        <button className="w-full px-3 py-2.5 text-left text-[15px] font-normal text-[#545454] hover:text-[var(--primary-color)] transition-colors">
+        {/* <button className="w-full px-3 py-2.5 text-left text-[15px] font-normal text-[#545454] hover:text-[var(--primary-color)] transition-colors">
           View all Brands
-        </button>
+        </button> */}
       </div>
     </div>
   );

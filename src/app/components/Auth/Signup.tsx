@@ -32,6 +32,7 @@ interface SignupFormValues {
   country: string;
   state: string;
   zip: string;
+  useRole: 2;
 }
 
 const SignupPage = () => {
@@ -50,14 +51,18 @@ const SignupPage = () => {
     setValue,
     formState: { errors },
   } = useForm<SignupFormValues>();
-  
+
   const dispatch = useAppDispatch();
   const { registerLoading } = useAppSelector((state: RootState) => state?.auth);
   const router = useRouter();
 
   const onSubmit = async (data: SignupFormValues) => {
     try {
-      const result = await dispatch(registerUser(data));
+      const payload = {
+        userRole: 2,
+        ...data,
+      };
+      const result = await dispatch(registerUser(payload));
 
       if (registerUser.fulfilled.match(result)) {
         reset();
@@ -98,10 +103,13 @@ const SignupPage = () => {
           {/* Two Column Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
             {/* Left Column */}
-            
+
             {/* Email Address */}
             <div>
-              <label htmlFor="email" className="block text-[1rem] font-normal text-[#545454] mb-2">
+              <label
+                htmlFor="email"
+                className="block text-[1rem] font-normal text-[#545454] mb-2"
+              >
                 Email Address
               </label>
               <Input
@@ -111,13 +119,18 @@ const SignupPage = () => {
                 {...register("email", { required: "Email is required" })}
               />
               {errors.email && (
-                <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.email.message}
+                </p>
               )}
             </div>
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-[1rem] font-normal text-[#545454] mb-2">
+              <label
+                htmlFor="password"
+                className="block text-[1rem] font-normal text-[#545454] mb-2"
+              >
                 Password
               </label>
               <Input
@@ -128,13 +141,18 @@ const SignupPage = () => {
                 {...register("password", { required: "Password is required" })}
               />
               {errors.password && (
-                <p className="text-sm text-red-500 mt-1">{errors.password.message}</p>
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.password.message}
+                </p>
               )}
             </div>
 
             {/* Confirm Password */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-[1rem] font-normal text-[#545454] mb-2">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-[1rem] font-normal text-[#545454] mb-2"
+              >
                 Confirm Password
               </label>
               <Input
@@ -143,7 +161,8 @@ const SignupPage = () => {
                 className="w-full h-12 max-w-full"
                 {...register("password_confirmation", {
                   required: "Please confirm your password",
-                  validate: (value) => value === password || "Passwords do not match",
+                  validate: (value) =>
+                    value === password || "Passwords do not match",
                 })}
               />
               {errors.password_confirmation && (
@@ -155,22 +174,32 @@ const SignupPage = () => {
 
             {/* First Name */}
             <div>
-              <label htmlFor="firstName" className="block text-[1rem] font-normal text-[#545454] mb-2">
+              <label
+                htmlFor="firstName"
+                className="block text-[1rem] font-normal text-[#545454] mb-2"
+              >
                 First Name
               </label>
               <Input
                 id="firstName"
                 className="w-full h-12 max-w-full"
-                {...register("firstName", { required: "First name is required" })}
+                {...register("firstName", {
+                  required: "First name is required",
+                })}
               />
               {errors.firstName && (
-                <p className="text-sm text-red-500 mt-1">{errors.firstName.message}</p>
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.firstName.message}
+                </p>
               )}
             </div>
 
             {/* Last Name */}
             <div>
-              <label htmlFor="lastName" className="block text-[1rem] font-normal text-[#545454] mb-2">
+              <label
+                htmlFor="lastName"
+                className="block text-[1rem] font-normal text-[#545454] mb-2"
+              >
                 Last Name
               </label>
               <Input
@@ -179,13 +208,18 @@ const SignupPage = () => {
                 {...register("lastName", { required: "Last name is required" })}
               />
               {errors.lastName && (
-                <p className="text-sm text-red-500 mt-1">{errors.lastName.message}</p>
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.lastName.message}
+                </p>
               )}
             </div>
 
             {/* Company Name */}
             <div>
-              <label htmlFor="companyName" className="block text-[1rem] font-normal text-[#545454] mb-2">
+              <label
+                htmlFor="companyName"
+                className="block text-[1rem] font-normal text-[#545454] mb-2"
+              >
                 Company Name
               </label>
               <Input
@@ -197,7 +231,10 @@ const SignupPage = () => {
 
             {/* Phone Number */}
             <div>
-              <label htmlFor="phoneNumber" className="block text-[1rem] font-normal text-[#545454] mb-2">
+              <label
+                htmlFor="phoneNumber"
+                className="block text-[1rem] font-normal text-[#545454] mb-2"
+              >
                 Phone Number
               </label>
               <Input
@@ -210,22 +247,32 @@ const SignupPage = () => {
 
             {/* Address Line 1 */}
             <div>
-              <label htmlFor="addressLine1" className="block text-[1rem] font-normal text-[#545454] mb-2">
+              <label
+                htmlFor="addressLine1"
+                className="block text-[1rem] font-normal text-[#545454] mb-2"
+              >
                 Address Line 1
               </label>
               <Input
                 id="addressLine1"
                 className="w-full h-12 max-w-full"
-                {...register("addressLine1", { required: "Address is required" })}
+                {...register("addressLine1", {
+                  required: "Address is required",
+                })}
               />
               {errors.addressLine1 && (
-                <p className="text-sm text-red-500 mt-1">{errors.addressLine1.message}</p>
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.addressLine1.message}
+                </p>
               )}
             </div>
 
             {/* Address Line 2 */}
             <div>
-              <label htmlFor="addressLine2" className="block text-[1rem] font-normal text-[#545454] mb-2">
+              <label
+                htmlFor="addressLine2"
+                className="block text-[1rem] font-normal text-[#545454] mb-2"
+              >
                 Address Line 2
               </label>
               <Input
@@ -237,7 +284,10 @@ const SignupPage = () => {
 
             {/* Suburb/City */}
             <div>
-              <label htmlFor="suburb" className="block text-[1rem] font-normal text-[#545454] mb-2">
+              <label
+                htmlFor="suburb"
+                className="block text-[1rem] font-normal text-[#545454] mb-2"
+              >
                 Suburb/City
               </label>
               <Input
@@ -246,13 +296,18 @@ const SignupPage = () => {
                 {...register("suburb", { required: "Suburb/City is required" })}
               />
               {errors.suburb && (
-                <p className="text-sm text-red-500 mt-1">{errors.suburb.message}</p>
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.suburb.message}
+                </p>
               )}
             </div>
 
             {/* Country */}
             <div>
-              <label htmlFor="country" className="block text-[1rem] font-normal text-[#545454] mb-2">
+              <label
+                htmlFor="country"
+                className="block text-[1rem] font-normal text-[#545454] mb-2"
+              >
                 Country
               </label>
               <Select onValueChange={(value) => setValue("country", value)}>
@@ -274,23 +329,33 @@ const SignupPage = () => {
 
             {/* State/Province */}
             <div>
-              <label htmlFor="state" className="block text-[1rem] font-normal text-[#545454] mb-2">
+              <label
+                htmlFor="state"
+                className="block text-[1rem] font-normal text-[#545454] mb-2"
+              >
                 State/Province
               </label>
               <Input
                 id="state"
                 className="w-full h-12 max-w-full"
-                {...register("state", { required: "State/Province is required" })}
+                {...register("state", {
+                  required: "State/Province is required",
+                })}
               />
               {errors.state && (
-                <p className="text-sm text-red-500 mt-1">{errors.state.message}</p>
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.state.message}
+                </p>
               )}
             </div>
           </div>
 
           {/* Zip/Postcode - Full Width */}
           <div className="max-w-[calc(50%-1rem)]">
-            <label htmlFor="zip" className="block text-[1rem] font-normal text-[#545454] mb-2">
+            <label
+              htmlFor="zip"
+              className="block text-[1rem] font-normal text-[#545454] mb-2"
+            >
               Zip/Postcode
             </label>
             <Input
@@ -310,10 +375,7 @@ const SignupPage = () => {
                 <div className="w-6 h-6 border-4 border-t-transparent border-red-600 rounded-full animate-spin"></div>
               </div>
             ) : (
-              <button
-                type="submit"
-                className="btn-primary"
-              >
+              <button type="submit" className="btn-primary">
                 CREATE ACCOUNT
               </button>
             )}

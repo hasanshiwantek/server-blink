@@ -226,19 +226,18 @@ const shippingLabel = `FedEx priority $${shipping.toFixed(2)}`;
           <button
             type="button"
             onClick={handleProceedToCheckout}
-            className="w-50 bg-[#D42020] border-b border-black hover:bg-[#e04f33] !text-white py-2 h4-medium font-semibold mb-2
-             transition"
+            className="btn-primary"
           >
           Checkout
           </button>
 
-          <button className="w-50 bg-black hover:bg-gray-900 !text-white py-3 h4-medium font-semibold flex items-center justify-center gap-2 transition">
+          {/* <button className="w-50 bg-black hover:bg-gray-900 !text-white py-3 h4-medium font-semibold flex items-center justify-center gap-2 transition">
             <img
               src="/checkouticon/googlepay.png"
               alt="Google"
               className="w-20 h-8"
             />
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
