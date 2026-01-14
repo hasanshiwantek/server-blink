@@ -210,7 +210,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
 
       {/* Apple Pay */}
       <label
-        className="flex items-center justify-between border-[1px] border-gray-400 rounded-lg p-4 cursor-pointer bg-white hover:border-red-600 transition-colors"
+        className={`flex items-center justify-between border-[1px] border-gray-400 rounded-lg p-4 cursor-pointer bg-white hover:border-red-600 transition-colors ${!walletSupport.applePay ? "hidden" : ""}`}
       >
         <div className="flex items-center gap-3">
           <input
@@ -238,7 +238,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
       {/* Google Pay */}
 
       <label
-        className="flex items-center justify-between border-[1px] border-gray-400 rounded-lg p-4 cursor-pointer bg-white hover:border-red-600 transition-colors"
+        className={`flex items-center justify-between border-[1px] border-gray-400 rounded-lg p-4 cursor-pointer bg-white hover:border-red-600 transition-colors ${!walletSupport.googlePay ? "hidden" : ""}`}
       >
         <div className="flex items-center gap-3">
           <input

@@ -227,7 +227,7 @@ const CheckoutForm = () => {
     if (!stripe || cart.length === 0) {
       setPaymentRequest(null);
       // Keep wallets enabled for UI even if PR API not available
-      // setWalletSupport({ applePay: false, googlePay: false });
+        setWalletSupport({ applePay: false, googlePay: false });
       return;
     }
 
@@ -258,12 +258,8 @@ const CheckoutForm = () => {
           setPaymentRequest(null);
           // Fallback: Enable wallets in UI even if Payment Request API not supported
           // This allows testing and will show appropriate error when clicked
-          setWalletSupport({ applePay: true, googlePay: true });
+           setWalletSupport({ applePay: false, googlePay: false });
         }
-      })
-      .catch(() => {
-        // On error, enable wallets in UI
-        setWalletSupport({ applePay: true, googlePay: true });
       });
 
     return () => {
