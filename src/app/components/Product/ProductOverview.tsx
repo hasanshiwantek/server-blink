@@ -91,25 +91,31 @@ const ProductOverview = ({ product }: { product: any }) => {
     ["Availability", product?.availabilityText || "N/A"],
     ["Stock", product?.currentStock ?? "N/A"],
   ].map(([key, value], index) => (
-    <div
-      key={key}
-      className={`!grid !grid-cols-[200px_1fr] !items-center !px-2 !py-1 ${
-        index % 2 === 1 ? "" : "bg-gray-50"
-      }`}
-    >
-      <dt className="text-[13px] text-[#545454] font-bold">{key}</dt>
-      <dd className="text-[14px]">
-        {key === "Brand" && product?.brand?.name ? (
-          <Link
-            href={`/brand/${product.brand.slug}`}
-          >
-            {value}
-          </Link>
-        ) : (
-          value
-        )}
-      </dd>
-    </div>
+<div
+  key={key}
+  className={`
+    !grid 
+    grid-cols-1 sm:!grid-cols-[200px_1fr]
+    !items-start sm:!items-center
+    !px-2 !py-1
+    ${index % 2 === 1 ? "" : "bg-gray-50"}
+  `}
+>
+  <dt className="text-[13px] text-[#545454] font-bold mb-1 sm:mb-0">
+    {key}
+  </dt>
+
+  <dd className="text-[14px]">
+    {key === "Brand" && product?.brand?.name ? (
+      <Link href={`/brand/${product.brand.slug}`}>
+        {value}
+      </Link>
+    ) : (
+      value
+    )}
+  </dd>
+</div>
+
   ))}
 </dl>
 

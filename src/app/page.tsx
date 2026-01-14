@@ -74,7 +74,7 @@ const Page = async () => {
                 title="Featured Products"
               />
               <FeaturedProducts
-                endpoint="web/products/popular-products"
+                endpoint="web/products/last-week-orders"
                 isSlider={false}
                 title="Current Top Sellers"
               />

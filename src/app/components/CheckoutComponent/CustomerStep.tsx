@@ -108,7 +108,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
           <button
             type="button"
             onClick={() => onWalletClick("apple_pay")}
-            className="w-full h-[48px] bg-white border text-white rounded flex items-center justify-center transition"
+            className={`w-full h-[48px] bg-white border text-white rounded flex items-center justify-center transition ${!walletSupport.applePay ? "hidden" : ""}`}
           >
             <Image
               src="/checkouticon/Apple-icon.svg"
@@ -123,7 +123,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
      <button
             type="button"
             onClick={() => onWalletClick("google_pay")}
-            className="w-full h-[48px] bg-black text-white rounded flex items-center justify-center hover:bg-gray-900 transition"
+            className={`w-full h-[48px] bg-black text-white rounded flex items-center justify-center hover:bg-gray-900 transition ${!walletSupport.googlePay ? "hidden" : ""}`}
           >
             <Image
               src="/checkouticon/googlepay.png"

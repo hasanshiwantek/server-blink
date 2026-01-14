@@ -17,4 +17,4 @@ Disallow: /?*
 Allow: /
 
 # Sitemap location
-Sitemap: https://newtownspares.advertsedge.com/sitemap.xml
+Sitemap: https://server-blink.vercel.app//sitemap.xml

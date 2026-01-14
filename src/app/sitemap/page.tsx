@@ -7,7 +7,7 @@ const BASE_URL = "https://newtownspares.advertsedge.com";
 async function fetchCategories() {
   const res = await fetch(
     "https://ecom.brokercell.com/api/web/categories/get-categories",
-    { headers: { storeId: "4" }, cache: "no-store" }
+    { headers: { storeId: "10" }, cache: "no-store" }
   );
   const data = await res.json();
   return data.data || [];
@@ -16,7 +16,7 @@ async function fetchCategories() {
 // Fetch brands
 async function fetchBrands() {
   const res = await fetch("https://ecom.brokercell.com/api/web/brands/brands", {
-    headers: { storeId: "4" },
+    headers: { storeId: "10" },
     cache: "no-store",
   });
   const data = await res.json();
@@ -66,7 +66,7 @@ export default async function SitemapPage() {
   ];
 
   return (
-    <main className="p-4">
+    <main className="w-full max-w-[1170px] mx-auto mt-8 lg:px-6 xl:px-4">
       <h1 className="text-3xl font-bold mb-6">Sitemap</h1>
 
       {/* Static Pages */}
