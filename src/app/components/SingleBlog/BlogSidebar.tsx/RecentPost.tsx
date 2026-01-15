@@ -5,34 +5,6 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { getBlogs } from "@/redux/slices/storeFrontSlice";
-const blogs = [
-  {
-    id: 1,
-    title: "Network Attached Storage Buying Guide 2026: A Comprehensive Look",
-    author: "Business |  Power Supplies",
-    date: "September 12, 2022",
-    image: "/gridimgone.png",
-    slug: "network-attached-storage-guide",
-  },
-  {
-    id: 2,
-    title:
-      "Host Bus Adapter: Types, Comparisons, and Complete Guide to Modern Storage",
-    author: "Business |  Power Supplies",
-    date: "September 12, 2022",
-    image: "/gridimgtwo.png",
-    slug: "host-bus-adapter-guide",
-  },
-  {
-    id: 3,
-    title: "Cloud Storage vs Local Storage: The Modern Dilemma",
-    author: "Business |  Power Supplies",
-    date: "September 12, 2022",
-    image: "/gridimgthree.png",
-    slug: "cloud-storage-modern-dilemma",
-  },
-];
-
 const RecentPost = () => {
   const [filters, setFilters] = useState({ page: 1, perPage: 20 });
   const dispatch = useAppDispatch();
