@@ -22,7 +22,7 @@ interface AuthState {
   user: any;
   token: string | null;
   expireAt?: string | null;
-  loginLoading: boolean;
+  loginloading: boolean;
   registerLoading: boolean;
   error: string | null;
   isAuthenticated: boolean;
@@ -33,7 +33,7 @@ const initialState: AuthState = {
   user: null,
   token: null,
   expireAt: null,
-  loginLoading: false,
+  loginloading: false,
   registerLoading: false,
   error: null,
   isAuthenticated: false,
@@ -113,7 +113,7 @@ const authSlice = createSlice({
     builder
       // Pending
       .addCase(loginUser.pending, (state) => {
-        state.loginLoading  = true;
+        state.loginloading  = true;
         state.error = null;
       })
       .addCase(registerUser.pending, (state) => {
@@ -124,7 +124,7 @@ const authSlice = createSlice({
       // Fulfilled - login
       .addCase(loginUser.fulfilled, (state, action) => {
         const {user, customer, token ,expireAt} = action.payload.data || action.payload;
-        state.loginLoading  = false;
+        state.loginloading  = false;
         state.user = user || customer;
         state.token = token;
         state.expireAt = expireAt;
@@ -147,7 +147,7 @@ const authSlice = createSlice({
 
       // Rejected
       .addCase(loginUser.rejected, (state, action) => {
-        state.loginLoading  = false;
+        state.loginloading  = false;
         state.error = action.payload as string;
       })
       .addCase(registerUser.rejected, (state, action) => {

@@ -27,7 +27,7 @@ const SigninPage = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
-  const { loginLoading } = useAppSelector((state: RootState) => state?.auth);
+  const { loginloading } = useAppSelector((state: RootState) => state?.auth);
   const onSubmit = async (data: SigninFormValues) => {
     try {
       const result = await dispatch(loginUser(data));
@@ -125,7 +125,7 @@ const SigninPage = () => {
 
               {/* Login Button and Forgot Password */}
               <div className="flex  gap-4">
-                {loginLoading ? (
+                {loginloading ? (
                   <div className="flex justify-center items-center py-3">
                     <div className="w-6 h-6 border-4 border-t-transparent border-red-600 rounded-full animate-spin"></div>
                   </div>
