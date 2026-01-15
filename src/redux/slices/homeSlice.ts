@@ -192,10 +192,12 @@ const homeSlice = createSlice({
       })
       .addCase(getBrands.pending, (state) => {
         state.loading = true;
+          state.error = null; 
       })
       .addCase(getBrands.fulfilled, (state, action) => {
         state.loading = false;
         state.getBrand = action.payload;
+          state.error = null; 
       })
       .addCase(getBrands.rejected, (state, action) => {
         state.loading = false;

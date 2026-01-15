@@ -30,12 +30,12 @@ const BrandsSidebar: React.FC<BrandsSidebarProps> = ({ activeBrandId }) => {
 
       {/* Body */}
       <div className="py-2 bg-white text-[#545454]">
-        {loading ? (
-          <CategoriesSidebarSkeleton />
-        ) : error ? (
-          <div className="px-2 py-4 text-center text-red-400">
-            Failed to load brands
-          </div>
+      {loading ? (
+  <CategoriesSidebarSkeleton />
+) : error && !data?.length ? (
+  <div className="px-2 py-4 text-center text-red-400">
+    Failed to load brands
+  </div>
         ) : (
           data?.map((brand: any) => (
             <Link href={`/brand/${brand?.slug}`} key={brand.id}>

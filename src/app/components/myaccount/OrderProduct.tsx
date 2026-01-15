@@ -11,7 +11,6 @@ const OrderProduct = () => {
   const { order, loading, error } = useAppSelector(
     (state: RootState) => state.myaccount
   ); 
-  console.log("Order.....",order);
   
 
   useEffect(() => {
@@ -46,14 +45,19 @@ const OrderProduct = () => {
     Failed to fetch orders. {error}
   </p>;
   if (!order?.orders || order.orders.length === 0)
-    return <p>No orders found.</p>;
+    return <div className="w-full bg-white border border-black p-4">
+  <p className="text-[#545454] text-[14px]">
+    You haven't placed any order with us. When you do, they will appear on this page.
+  </p>
+</div>;
+
 
   return (
     <div className="flex flex-col gap-4">
       {order.orders.map((item: any) => (
         <div
           key={item.id}
-          className="border rounded-lg p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-6 w-full"
+          className="border text-center md:text-left rounded-lg p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-6 w-full"
         >
           {/* Left Side: Product Info */}
           <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:w-[65%] w-full">
@@ -73,11 +77,11 @@ const OrderProduct = () => {
             {/* Product Details */}
             <div className="flex flex-col justify-center w-full">
              <Link href={`/my-account/orders/${item.order_number || ""}`}>
-              <p className="h6-18-px-medium mb-1">
+<p className="mb-1 text-xl text-red-600 hover:text-red-700 transition-colors duration-200">
                 Order #{item.order_number || "N/A"}
               </p>
              </Link>
-              <p className="mb-2 text-sm md:text-base">
+              <p className="text-sm md:text-[14px]">
                 {item?.products?.length || 1} product
                 totaling $
                 {item?.total_amount
@@ -86,19 +90,19 @@ const OrderProduct = () => {
               </p>
 
               {/* Order Info */}
-              <div className="flex flex-col sm:flex-row sm:gap-12 gap-2 mt-2 text-sm">
-                <div className="flex flex-col">
-                  <span className="h6-18-px-medium">Order Placed</span>
-                  <span>
+              <div className="flex flex-col items-center justify-center md:justify-start md:items-start sm:flex-row sm:gap-12 gap-2 mt-2 text-sm">
+                <div className="flex flex-col gap-2">
+                  <span className="text-[12px]">Order Placed</span>
+                  <span className="text-xl">
                     {item?.created_at
                       ? new Date(item.created_at).toLocaleDateString()
                       : "-"}
                   </span>
                 </div>
 
-                <div className="flex flex-col">
-                  <span className="h6-18-px-medium">Last Update</span>
-                  <span>
+                <div className="flex flex-col gap-2">
+                  <span className="text-[12px]">Last Update</span>
+                  <span className="text-xl">
                     {item?.updated_at
                       ? new Date(item.updated_at).toLocaleDateString()
                       : "-"}
@@ -109,8 +113,8 @@ const OrderProduct = () => {
           </div>
 
           {/* Right Side: Status Button */}
-          <div className="md:w-[30%] w-full flex md:justify-end justify-start mt-2 md:mt-0">
-  <button className="bg-[#F15939] text-white font-bold border border-[#F15939] px-4 py-2 rounded hover:bg-white hover:text-[#F15939] transition w-auto text-center text-sm md:text-base">
+          <div className="md:w-[30%] w-full flex md:justify-end justify-center mt-2 md:mt-0">
+  <button className="bg-[#BFBFBF] text-white font-bold border border-[#BFBFBF] px-4 py-2 rounded hover:bg-white hover:text-[#F15939] transition w-auto text-center text-sm md:text-base">
     {item.status || "Pending"}
   </button>
 </div>
