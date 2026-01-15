@@ -63,13 +63,13 @@ const ProductLeft = ({ images, selectedImage, setSelectedImage }: any) => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="flex flex-col items-center flex-1 border-r-2  border-[#545454] px-2">
-                  <div className="w-[90] h-[90] sm:w-[90] sm:h-[90] mb-2 flex items-center justify-center">
+                  <div className="w-[60] h-[60] sm:w-[60] sm:h-[60] mb-2 flex items-center justify-center">
                     <Image
                       src={img1}
                       alt="Trustpilot"
-                      width={90}
-                      height={90}
-                      className="w-[90] h-[90] sm:w-[90] sm:h-[90] object-contain"
+                      width={60}
+                      height={60}
+                      className="w-[60] h-[60] sm:w-[60] sm:h-[60] object-contain"
                     />
                   </div>
                 </div>
@@ -90,13 +90,13 @@ const ProductLeft = ({ images, selectedImage, setSelectedImage }: any) => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="flex flex-col items-center flex-1 border-r-2  border-[#545454]  px-2">
-                  <div className="w-[90] h-[90] sm:w-[90] sm:h-[90] mb-2 flex items-center justify-center">
+                  <div className="w-[60] h-[60] sm:w-[60] sm:h-[60] mb-2 flex items-center justify-center">
                     <Image
                       src={img2}
                       alt="Fast Shipping"
-                      width={90}
-                      height={90}
-                      className="w-[90] h-[90] sm:w-[90] sm:h-[90] object-contain"
+                      width={60}
+                      height={60}
+                      className="w-[60] h-[60] sm:w-[60] sm:h-[60] object-contain"
                     />
                   </div>
                 </div>
@@ -116,13 +116,13 @@ const ProductLeft = ({ images, selectedImage, setSelectedImage }: any) => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="flex flex-col items-center flex-1 border-r-2  border-[#545454]  px-2">
-                  <div className="w-[90] h-[90] sm:w-[90] sm:h-[90] mb-2 flex items-center justify-center">
+                  <div className="w-[60] h-[60] sm:w-[60] sm:h-[60] mb-2 flex items-center justify-center">
                     <Image
                       src={img3}
                       alt="Easy Return"
-                      width={90}
-                      height={90}
-                      className="w-[90] h-[90] sm:w-[90] sm:h-[90] object-contain"
+                      width={60}
+                      height={60}
+                      className="w-[60] h-[60] sm:w-[60] sm:h-[60] object-contain"
                     />
                   </div>
                 </div>
@@ -142,13 +142,13 @@ const ProductLeft = ({ images, selectedImage, setSelectedImage }: any) => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="flex flex-col items-center flex-1 px-2">
-                  <div className="w-[90] h-[90] sm:w-[90] sm:h-[90] mb-2 flex items-center justify-center">
+                  <div className="w-[60] h-[60] sm:w-[60] sm:h-[60] mb-2 flex items-center justify-center">
                     <Image
                       src={img4}
                       alt="Secure Payment"
-                      width={90}
-                      height={90}
-                      className="w-[90] h-[90] sm:w-[90] sm:h-[90] object-contain"
+                      width={60}
+                      height={60}
+                      className="w-[60] h-[60] sm:w-[60] sm:h-[60] object-contain"
                     />
                   </div>
                 </div>
