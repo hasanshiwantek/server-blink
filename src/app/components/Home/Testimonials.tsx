@@ -229,10 +229,8 @@ const Testimonials = () => {
               </p>
             </div>
           ) : (
-            <Carousel
+ <Carousel
   value={reviews}
-  page={pageIndex}
-  onPageChange={(e) => setPageIndex(e.page)}
   numVisible={visibleItems}
   numScroll={1}
   responsiveOptions={responsiveOptions.map((r) => ({
@@ -240,13 +238,13 @@ const Testimonials = () => {
     numVisible: r.numVisible,
     numScroll: 1,
   }))}
-  className="custom-carousel"
-  circular={true}              // 🔁 loop enable
-  autoplayInterval={4000}      // ⏱ auto slide (4 sec)
+  circular
+  autoplayInterval={4000}
   itemTemplate={reviewTemplate}
-  showIndicators={false}       // ❌ dots hide
-  showNavigators={false}       // ❌ arrows hide
+  showIndicators={false}
+  showNavigators={false}
 />
+
 
           )}
   </div>

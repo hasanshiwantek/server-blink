@@ -154,14 +154,13 @@ const SingleOrder = () => {
     <div className="py-6 max-w-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Order Contents */}
       <div className="lg:col-span-2 border rounded-md p-6">
-        <h2 className="text-xl font-semibold mb-4">Order Contents</h2>
-        <p className="text-gray-500 mb-4">
+        <p className="text-gray-500 mb-4 text-xl">
           Items shipped to {shippingAddress?.addressLine1},{" "}
           {shippingAddress?.city}, {shippingAddress?.zip},{" "}
           {shippingAddress?.country}
         </p>
 
-        <div className="border-t border-b divide-y">
+        <div className="divide-y">
           {order.products.map((item) => {
             const quantity = getProductQuantity(item.id);
             const itemPrice = parseFloat(item.price);
@@ -170,10 +169,10 @@ const SingleOrder = () => {
             return (
               <div
                 key={item.id}
-                className="flex items-center justify-between py-4"
+                className="border-t border-b border-gray-300 flex flex-col md:flex-row items-center justify-between py-4"
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-40 h-40 relative border rounded">
+                <div className="flex flex-col md:flex-row items-center gap-4">
+                  <div className="w-28 h-28 relative border rounded">
                     <Image
                       src={primaryImage?.path || "/default-product-image.svg"}
                       alt={primaryImage?.altText || item.name}
@@ -182,12 +181,12 @@ const SingleOrder = () => {
                     />
                   </div>
                   <div>
-                    <p className="font-medium">
+                    <p className="font-medium text-xl max-w-2xl">
                       {quantity} × {item.sku} - {item.name}
                     </p>
                   </div>
                 </div>
-                <p className="font-medium">
+                <p className="font-medium text-xl">
                   ${(itemPrice * quantity).toFixed(2)}
                 </p>
               </div>
@@ -196,10 +195,10 @@ const SingleOrder = () => {
         </div>
 
         {/* Totals */}
-        <div className="flex flex-col items-end mt-6 gap-1">
+        <div className="flex flex-col items-end mt-6 gap-1 text-xl">
           <p>Subtotal: ${subtotal.toFixed(2)}</p>
           {shippingCost > 0 && <p>Shipping: ${shippingCost.toFixed(2)}</p>}
-          <p className="text-lg font-semibold">
+          <p className="font-semibold">
             Grand total: ${total.toFixed(2)}
           </p>
         </div>
@@ -208,20 +207,18 @@ const SingleOrder = () => {
       {/* Order Details, Ship To, Bill To */}
       <div className="flex flex-col gap-6">
         {/* Order Details */}
-        <div className="border rounded-md p-4">
-          <h2 className="font-semibold mb-2">Order Details</h2>
+        <div className="border rounded-md p-4 text-xl">
           <p>Order number: {order.orderNumber}</p>
           <p>Order status: {order.status}</p>
           <p>Order date: {orderDate}</p>
           <p>Order total: ${total.toFixed(2)}</p>
-          <button className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition w-full">
+          <button className="mt-3 text-2xl font-bold border-b-2 border-black px-4 py-2 bg-[#D42020] text-white rounded-md hover:bg-red-700 transition w-60">
             PRINT INVOICE
           </button>
         </div>
 
         {/* Ship To */}
-        <div className="border rounded-md p-4">
-          <h2 className="font-semibold mb-2">Ship To</h2>
+        <div className="border rounded-md p-4 text-xl">
           <p>
             {shippingAddress?.firstName} {shippingAddress?.lastName}
           </p>
@@ -236,12 +233,12 @@ const SingleOrder = () => {
           </p>
           <p>{shippingAddress?.country}</p>
           <p className="mt-2 text-sm text-gray-600">{shippingAddress?.phone}</p>
-          <p className="text-sm text-gray-600">{shippingAddress?.email}</p>
+          <p className="text-gray-600">{shippingAddress?.email}</p>
         </div>
 
         {/* Bill To */}
-        <div className="border rounded-md p-4">
-          <h2 className="font-semibold mb-2">Bill To</h2>
+        <div className="border rounded-md p-4 text-xl">
+          {/* <h2 className="font-semibold mb-2">Bill To</h2> */}
           <p>
             {billingAddress?.firstName} {billingAddress?.lastName}
           </p>
@@ -254,7 +251,7 @@ const SingleOrder = () => {
           </p>
           <p>{billingAddress?.country}</p>
           <p className="mt-2 text-sm text-gray-600">{billingAddress?.phone}</p>
-          <p className="text-sm text-gray-600">{billingAddress?.email}</p>
+          <p className="text-gray-600">{billingAddress?.email}</p>
         </div>
       </div>
     </div>
