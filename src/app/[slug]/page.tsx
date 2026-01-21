@@ -111,14 +111,14 @@ export default async function ProductPage({
         <div className="grid grid-cols-1 lg:grid-cols-12  gap-6">
           {/* Left Sidebar */}
           <aside className="hidden lg:block lg:col-span-3 w-full lg:w-[85%]">
-            <CategoriesSidebar activeCategoryId={product?.categoryIds[0]} />
+            {/* <CategoriesSidebar activeCategoryId={product?.categoryIds[0]} /> */}
             <BrandsSidebar activeBrandId={product?.brand?.id} />
           </aside>
 
           {/* Main Product Content - ✅ Added lg:col-span-9 */}
           <article className="lg:col-span-9 w-full">
             <ProductCard product={product} />
-            <ProductOverview product={product} />
+            <ProductOverview product={product} />  
 
             {/* Client-side component */}
             <Suspense

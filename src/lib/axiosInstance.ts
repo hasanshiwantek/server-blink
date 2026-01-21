@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const axiosInstance = axios.create({
-  baseURL: "http://3.12.69.112/api/",
+  baseURL: "https://backend.sparemicro.com/api/",
 });
 
 axiosInstance.interceptors.request.use((config) => {
