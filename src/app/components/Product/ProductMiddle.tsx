@@ -51,48 +51,52 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
         </div>
 
         {/* Price Section */}
-        <div className="mb-3">
-          <div className="flex flex-col ">
+        <div className="">
+          <div className="flex flex-col">
             {product?.msrp && Number(product?.msrp) > 0 ? (
               <>
-                <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-[16px] text-[#7b7b7b] font-normal">
                     Price
                   </span>
-                  <span className="line-through text-[16px] text-[#7b7b7b] font-normal">
+                  <span className="">
                     <ProductPrice
                       price={Number(product?.retailPrice)}
                       inline={true}
+                      className="!text-[16px] text-[#7b7b7b] font-normal !line-through" 
                     />
                   </span>
                 </div>
-                <span className="text-[#545454] font-bold text-[22px] sm:text-[20px] md:text-[22px] lg:text-[22px]">
+                <span className="">
                   <ProductPrice
                     price={Number(product?.price)}
                     inline={true}
                     textColor="#545454"
+                    className="text-[#545454] font-bold !text-[22px]"
                   />
                 </span>
               </>
             ) : (
               product?.price && (
-                <span className="text-[#545454] font-bold text-[22px] sm:text-[20px] md:text-[22px] lg:text-[22px]">
+                <span className="">
                   <ProductPrice
                     price={Number(product?.price)}
                     inline={true}
                     textColor="#545454"
+                      className="text-[#545454] font-bold !text-[22px]"
                   />
                 </span>
               )
             )}
 
             {product?.msrp && Number(product?.msrp) > 0 && (
-              <span className="text-[#545454] text-[13px] sm:text-[14px] ">
+              <span className="text-[#545454] text-[13px] sm:text-[16px]">
                 (You save{" "}
                 <ProductPrice
                   price={Number(product?.msrp)}
                   inline={true}
                   textColor="#545454"
+                  className="!text-[13px] sm:!text-[16px]"
                 />
                 )
               </span>
@@ -101,8 +105,8 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
         </div>
 
         {/* Quantity & Add to Cart Section */}
-        <div className="mt-8 mb-6">
-          <div className="flex items-center gap-4 mb-8 flex-wrap ">
+        <div className="mt-8 mb-5">
+          <div className="flex items-center gap-1 mb-8 flex-wrap ">
             <span className="text-[14px] sm:text-[14px] text-[#545454] font-bold min-w-[70px]">
               Quantity:
             </span>
@@ -159,7 +163,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
                 `${product.name} added to cart (${quantityToAdd})!`
               );
             }}
-            className="btn-primary "
+            className="btn-primary lg:!w-[51.7%] !py-3.5"
           >
             ADD TO CART
           </button>
@@ -191,8 +195,8 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
         {/* Product Details */}
         <div className="mb-6">
           <div className="space-y-2">
-            <div className="flex">
-              <span className="text-[12px] sm:text-[14px] font-bold text-[#545454] min-w-[100px] sm:min-w-[80px]">
+            <div className="flex gap-2">
+              <span className="text-[12px] sm:text-[14px] font-bold text-[#545454] ">
                 SKU:
               </span>
               <span className="text-[12px] sm:text-[14px] text-[#545454]">
@@ -200,8 +204,8 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
               </span>
             </div>
 
-            <div className="flex">
-              <span className="text-[12px] sm:text-[14px] font-bold text-[#545454] min-w-[100px] sm:min-w-[80px]">
+            <div className="flex gap-2">
+              <span className="text-[12px] sm:text-[14px] font-bold text-[#545454] ">
                 Availability:
               </span>
               <span  className="text-[12px] sm:text-[14px] text-[#545454]">
@@ -209,8 +213,8 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
               </span>
             </div>
 
-            <div className="flex">
-              <span className="text-[12px] sm:text-[14px] font-bold text-[#545454] min-w-[100px] sm:min-w-[80px]">
+            <div className="flex gap-2">
+              <span className="text-[12px] sm:text-[14px] font-bold text-[#545454] ">
                 Weight:
               </span>
               <span className="text-[12px] sm:text-[14px] text-[#545454]">
@@ -218,8 +222,8 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
               </span>
             </div>
 
-            <div className="flex">
-              <span  className="text-[12px] sm:text-[14px] font-bold text-[#545454] min-w-[100px] sm:min-w-[80px]">
+            <div className="flex gap-2">
+              <span  className="text-[12px] sm:text-[14px] font-bold text-[#545454] ">
                 Shipping:
               </span>
               <span className="text-[12px] sm:text-[14px] text-[#545454]">

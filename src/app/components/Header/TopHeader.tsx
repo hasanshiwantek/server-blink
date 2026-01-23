@@ -144,7 +144,7 @@ const TopHeader = () => {
             <div className="relative ml-2">
               <Link href="/cart" className="transition block">
                 <div className="bg-red-600 p-2 rounded hover:bg-red-700 transition">
-                  <FaShoppingCart className="w-5 h-5 text-white" />
+                  <FaShoppingCart className="w-7 h-7 text-white" />
                     <span className="absolute -top-1 -right-1 bg-white text-red-600 text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                       {cart?.length || "0"}
                     </span>

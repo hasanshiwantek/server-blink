@@ -83,9 +83,8 @@ export default async function ProductPage({
   const { slug } = await params; // <-- await here
   console.log("Slug: ", slug);
   // 🔥 Parallel data fetching
-  const [product, products] = await Promise.all([
+  const [product] = await Promise.all([
     fetchProductBySlug(slug),
-    fetchProducts(),
   ]);
 
   const backendSchema = product?.schema;
@@ -128,7 +127,7 @@ export default async function ProductPage({
                 </div>
               }
             >
-              <ProductExtras products={products} />
+              <ProductExtras product={product} />
             </Suspense>
           </article>
         </div>
