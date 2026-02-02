@@ -58,9 +58,9 @@ export default async function SitemapPage() {
     { name: "Login", url: "/auth/login" },
     { name: "Signup", url: "/auth/signup" },
 
-    { name: "Privacy policy", url: "/privacyPolicy" },
+    { name: "Privacy policy", url: "/privacy-Policy" },
     { name: "Shipping policy", url: "/shipping-policy" },
-    { name: "Return policy", url: "/returnPolicy" },
+    { name: "Return policy", url: "/return-Policy" },
     { name: "Terms and Conditions", url: "/terms-conditions" },
     { name: "Blogs", url: "/blogs" },
   ];
