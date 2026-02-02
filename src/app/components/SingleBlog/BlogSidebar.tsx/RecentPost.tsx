@@ -27,7 +27,7 @@ const RecentPost = () => {
             {blogPosts?.map((blog: any) => (
               <Link
                 key={blog.id}
-                href={`/blogs/${blog.id}`}
+                href={`/blogs/${blog.slug}`}
                 className="
             w-[80%] p-1.5 md:w-[100.7%] 2xl:w-[97.1%]
              rounded-lg transition overflow-hidden
