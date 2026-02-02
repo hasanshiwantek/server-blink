@@ -14,9 +14,9 @@ import {
 const ProductLeft = ({ images, selectedImage, setSelectedImage }: any) => {
   return (
     <div className="product-left flex flex-col  w-full md:px-0 px-10 lg:w-[50%]">
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-8 items-center">
         {/* Main Image */}
-        <figure className="border-1 border-[#8b8b8b]  rounded-2xl flex items-center justify-center bg-white p-4 w-full h-auto aspect-square lg:w-[90%]  lg:h-[455px]">
+        <figure className="border-1 border-[#8b8b8b]  rounded-2xl flex items-center justify-center bg-white p-4 w-full h-auto aspect-square lg:w-[76.7%]  lg:h-[455px]">
           <Image
             src={selectedImage || "/default-product-image.svg"}
             alt="Main product image"
@@ -31,7 +31,7 @@ const ProductLeft = ({ images, selectedImage, setSelectedImage }: any) => {
         </figure>
 
         {/* Thumbnails - Only show if multiple images */}
-        {images && images.length > 1 && (
+        {/* {images && images.length > 1 && (
           <div className="flex gap-2 overflow-x-auto">
             {images.map((img: string, index: number) => (
               <button
@@ -54,7 +54,7 @@ const ProductLeft = ({ images, selectedImage, setSelectedImage }: any) => {
               </button>
             ))}
           </div>
-        )}
+        )} */}
 
         <TooltipProvider>
           {/* Trust Badges */}

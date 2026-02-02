@@ -120,7 +120,7 @@ const BlogCategories = ({
       </Link>
 
       <Link
-        href={`blogs/${blog.id}`}
+        href={`blogs/${blog.slug}`}
         className="relative inline-block w-fit text-white bg-[#808080] font-bold md:text-[14px] py-2 px-3 border-b-2 border-black"
       >
         READ MORE

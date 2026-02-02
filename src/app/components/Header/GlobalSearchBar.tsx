@@ -66,7 +66,7 @@ const GlobalSearchBar: React.FC = () => {
         brand: item.brand?.name || "N/A",
         sku: item.sku || "N/A",
         price: item.price || item.costPrice || "0.00",
-        url: `/category/${item.categories?.[0]?.slug || item.slug}`,
+        url: `/${item?.sku}`
       }));
       
       setResults(mapped);
