@@ -162,6 +162,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
               toast.success(
                 `${product.name} added to cart (${quantityToAdd})!`
               );
+              router.push("/cart")
             }}
             className="btn-primary lg:!w-[51.7%] !py-3.5"
           >

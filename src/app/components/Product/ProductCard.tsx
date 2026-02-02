@@ -60,7 +60,7 @@ useEffect(() => {
 
   return (
     <div className="max-w-full mx-auto">
-      <div className=" rounded-xl w-full 2xl:max-w-[1719px] 2xl:px-3 px-0">
+      <div className=" rounded-xl w-full px-0">
         {/* Breadcrumb */}
      <nav
           aria-label="breadcrumb"
@@ -94,7 +94,7 @@ useEffect(() => {
           </React.Fragment> */}
         </nav>
 
-        <div className="flex flex-wrap justify-center  lg:justify-normal lg:flex-nowrap gap-6 lg:gap-8 xl:gap-10">
+        <div className="flex flex-wrap justify-center  lg:justify-normal lg:flex-nowrap gap-6 lg:gap-8 xl:gap-8">
           <ProductLeft
             images={images}
             selectedImage={selectedImage}

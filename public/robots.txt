@@ -17,4 +17,4 @@ Disallow: /?*
 Allow: /
 
 # Sitemap location
-Sitemap: https://server-blink.vercel.app//sitemap.xml
+Sitemap: https://server-blink.vercel.app/sitemap.xml
