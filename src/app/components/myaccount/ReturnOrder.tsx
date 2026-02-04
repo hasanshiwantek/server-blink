@@ -1,61 +1,29 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-// Static test data
-const mockOrders = [
-  {
-    id: 1,
-    order_number: "100123",
-    total_amount: 129.99,
-    status: "Returned",
-    created_at: "2026-01-16T10:00:00Z",
-    updated_at: "2026-01-16T12:00:00Z",
-    products: [
-      {
-        id: 1,
-        name: "Wireless Headphones",
-        images: ["/default-product-image.svg"],
-      },
-    ],
-    returnRequested: "Jan 16, 2026",
-    returnAction: "Store Credit",
-    returnReason: "Not Satisfied With The Product",
-    returnComments: "Testing Return",
-  },
-  {
-    id: 2,
-    order_number: "100124",
-    total_amount: 79.5,
-    status: "Shipped",
-    created_at: "2026-01-14T09:00:00Z",
-    updated_at: "2026-01-15T15:00:00Z",
-    products: [
-      {
-        id: 2,
-        name: "Smart Watch",
-        images: ["/default-product-image.svg"],
-      },
-    ],
-    returnRequested: null,
-    returnAction: null,
-    returnReason: null,
-    returnComments: null,
-  },
-];
+import { useSearchParams } from "next/navigation";
+const mockOrders =
+  [{ id: 1, order_number: "100123", total_amount: 129.99, status: "Returned", created_at: "2026-01-16T10:00:00Z", updated_at: "2026-01-16T12:00:00Z", products: [{ id: 1, name: "Wireless Headphones", images: ["/default-product-image.svg"], },], returnRequested: "Jan 16, 2026", returnAction: "Store Credit", returnReason: "Not Satisfied With The Product", returnComments: "Testing Return", }, { id: 2, order_number: "100124", total_amount: 79.5, status: "Shipped", created_at: "2026-01-14T09:00:00Z", updated_at: "2026-01-15T15:00:00Z", products: [{ id: 2, name: "Smart Watch", images: ["/default-product-image.svg"], },], returnRequested: null, returnAction: null, returnReason: null, returnComments: null, },];
 
 const ReturnOrder = () => {
-  return (
-    <div className="flex flex-col gap-4 p-4">
-      {mockOrders.map((order) => (
+   const [quantity, setQuantity] = useState(1);
+  const [returnReason, setReturnReason] = useState('Not Satisfied With The Product');
+  const [returnAction, setReturnAction] = useState('Store Credit');
+  const [comments, setComments] = useState('Testing Return.');
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get("order_id");
+  console.log("Order ID from query params:", orderId);
+
+return (
+  <div className="flex flex-col gap-4 p-4">
+    {!orderId ? (
+      mockOrders.map((order) => (
         <div
           key={order.id}
           className="border rounded-lg p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-6 w-full bg-white"
         >
-          {/* Left Side: Product Info */}
-          <div className="flex flex-col md:flex-row items-center md:items-center gap-4 md:w-[65%] w-full">
-            {/* Product Image */}
+          <div className="flex flex-col md:flex-row items-center gap-4 md:w-[65%] w-full">
             <div className="w-full max-w-[128px] h-32 relative flex-shrink-0">
               <Image
                 src={order.products[0].images[0]}
@@ -65,59 +33,113 @@ const ReturnOrder = () => {
               />
             </div>
 
-            {/* Product Details */}
-            <div className="flex flex-col items-center md:items-start justify-center w-full">
-              <Link href={`/my-account/orders/${order.order_number}`}>
-                <p className="mb-1 text-xl text-red-600 hover:text-red-700 transition-colors duration-200">
+            <div className="flex flex-col items-center md:items-start w-full">
+              <Link href={`/my-account/orders?order_id=${order.order_number}`}>
+                <p className="mb-1 text-xl text-red-600 hover:text-red-700">
                   Order #{order.order_number}
                 </p>
               </Link>
-              <p className="text-sm md:text-[14px]">
-                {order.products.length} product
-                totaling ${order.total_amount.toFixed(2)}
+
+              <p className="text-sm">
+                {order.products.length} product totaling $
+                {order.total_amount.toFixed(2)}
               </p>
-
-              {/* Order Placed / Last Update */}
-          {/* Return Info */}
-<div className="flex text-center md:text-left flex-wrap gap-6 md:gap-2 mt-2">
-  {/* 1st Field */}
-  <div className="flex flex-col gap-1 w-full md:w-[25%]">
-    <span className="text-[12px]">Return Requested:</span>
-    <span className="text-xl">{order.returnRequested}</span>
-  </div>
-
-  {/* 2nd Field */}
-  <div className="flex flex-col gap-1 w-full md:w-[25%]">
-    <span className="text-[12px]">Return Action:</span>
-    <span className="text-xl">{order.returnAction}</span>
-  </div>
-
-  {/* 3rd Field */}
-  <div className="flex flex-col gap-1 w-full md:w-[45%]">
-    <span className="text-[12px]">Return Reason:</span>
-    <span className="text-xl">{order.returnReason}</span>
-  </div>
-
-  {/* 4th Field – New row */}
-  <div className="flex flex-col gap-1 w-full">
-    <span className="text-[12px]">Your Comments:</span>
-    <span className="text-xl">{order.returnComments}</span>
-  </div>
-</div>
-
             </div>
           </div>
 
-          {/* Right Side: Status Button */}
-          <div className="md:w-[30%] w-full flex md:justify-end justify-center mt-2 md:mt-0">
-            <button className="bg-[#BFBFBF] text-white font-bold border border-[#BFBFBF] px-4 py-2 rounded hover:bg-white hover:text-[#F15939] transition w-auto text-center text-sm md:text-base">
+          <div className="md:w-[30%] w-full flex md:justify-end justify-center">
+            <button className="bg-[#BFBFBF] text-white px-4 py-2 rounded">
               {order.status || "Pending"}
             </button>
           </div>
         </div>
-      ))}
-    </div>
-  );
+      ))
+    ) : (
+      <div className="">
+        {/* Return Form Content */}
+{/* Table Header */}
+<div className="hidden md:grid grid-cols-12 gap-4 pb-2 border-b border-gray-300 mb-6">
+  <div className="col-span-6 text-xl">Item</div>
+  <div className="col-span-3 text-xl text-center">Price</div>
+  <div className="col-span-3 text-xl text-end">Qty To Return</div>
+</div>
+
+{/* Item Row */}
+<div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center pb-2 border-b border-gray-300 mb-6">
+  <div className="col-span-1 md:col-span-6 text-xl">
+    13M737202CT | IBM | Es/Xs 335 System Board
+  </div>
+  <div className="col-span-1 md:col-span-3 text-xl text-left md:text-center">
+    $176.23
+  </div>
+  <div className="col-span-1 md:col-span-3 text-xl text-left md:text-end">
+    <select
+      value={quantity}
+      onChange={(e) => setQuantity(Number(e.target.value))}
+      className="w-24 border px-3 py-2 rounded bg-white"
+    >
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+    </select>
+  </div>
+</div>
+
+
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-6">
+            <div>
+              <label className="block font-medium text-xl mb-2">
+                Return Reason <span className="text-red-600">*</span>
+              </label>
+              <select
+                value={returnReason}
+                onChange={(e) => setReturnReason(e.target.value)}
+                className="w-full border px-4 py-4 rounded bg-white"
+              >
+                <option>Received Wrong Product</option>
+                <option>Wrong Product Order</option>
+                <option>Not Satisfied With The Product</option>
+                <option>There was a problem with the Product</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block font-medium text-xl mb-2">
+                Return Action
+              </label>
+              <select
+                value={returnAction}
+                onChange={(e) => setReturnAction(e.target.value)}
+                className="w-full border px-4 py-4 rounded bg-white"
+              >
+                <option>Repair</option>
+                <option>Replacement</option>
+                <option>Store Credit</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="block font-medium text-xl mb-2">Comments</label>
+            <textarea
+              value={comments}
+              onChange={(e) => setComments(e.target.value)}
+              className="w-full h-[185px] border px-4 py-4 rounded bg-white resize-none"
+            />
+          </div>
+        </div>
+
+        <div className="mt-8">
+          <button className="btn-primary !px-8 !py-5 font-bold">
+            SUBMIT RETURN REQUEST
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
+);
 };
 
 export default ReturnOrder;
