@@ -89,18 +89,19 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
               )
             )}
 
-            {product?.msrp && Number(product?.msrp) > 0 && (
-              <span className="text-[#545454] text-[13px] sm:text-[16px]">
-                (You save{" "}
-                <ProductPrice
-                  price={Number(product?.msrp)}
-                  inline={true}
-                  textColor="#545454"
-                  className="!text-[13px] sm:!text-[16px]"
-                />
-                )
-              </span>
-            )}
+          {Number(product?.msrp || 0) > 0 && (
+  <span className="text-[#545454] text-[13px] sm:text-[16px]">
+    (You save{" "}
+    <ProductPrice
+      price={Number(product.msrp)}
+      inline={true}
+      textColor="#545454"
+      className="!text-[13px] sm:!text-[16px]"
+    />
+    )
+  </span>
+)}
+
           </div>
         </div>
 

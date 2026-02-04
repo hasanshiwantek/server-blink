@@ -50,7 +50,6 @@ const CategoryGrid = () => {
 
     loadCategories();
   }, []);
-
   if (loading) {
     return (
       <div className="mt-6">
