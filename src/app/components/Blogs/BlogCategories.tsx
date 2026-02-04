@@ -105,7 +105,7 @@ const BlogCategories = ({
     ">
       
       <Link
-        href={`blogs/${blog.id}`}
+        href={`blogs/${blog.slug}`}
         className="group/title mb-3"
       >
         <h3 className="

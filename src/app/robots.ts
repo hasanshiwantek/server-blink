@@ -1,24 +1,19 @@
 import type { MetadataRoute } from "next";
-import axiosInstance from "@/lib/axiosInstance"; // yahan apna path adjust karo
+import axiosInstance from "@/lib/axiosInstance";
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
   try {
-    // Axios call
+    console.log("🤖 Robots.ts is running..."); // Yeh sirf build time par terminal mein dikhega
+    
     const res = await axiosInstance.get(
-      "/api/web/store-setting/get-store-setting",
-      {
-        // Next.js app router me cache: "no-store" jaise fetch option nahi, agar zarurat ho toh headers me add kar sakte ho
-        headers: {
-          "Cache-Control": "no-store",
-        },
-      }
+      "/api/web/store-setting/get-store-setting"
     );
 
     const json = res.data;
-   console.log("Robots.txt data:", json);
+    console.log("Robots.txt data:", json); // Terminal mein dikhega, browser console mein nahi
+    
     const robotsTxt = json?.data?.[0]?.website?.robotsTxt || "";
 
-    // Laravel se jo string aa rahi hai usko rules me convert karna
     const disallowRules = robotsTxt
       .split("\n")
       .filter((line: string) => line.startsWith("Disallow:"))
@@ -29,17 +24,20 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
         {
           userAgent: "*",
           allow: "/",
-          disallow: disallowRules,
+          disallow: disallowRules.length > 0 ? disallowRules : undefined,
         },
       ],
       sitemap: "https://server-blink.vercel.app/sitemap.xml",
     };
   } catch (error) {
+    console.error("❌ Robots.ts error:", error); // Terminal mein dikhega
+    
     return {
       rules: [
         {
           userAgent: "*",
-          disallow: "/",
+          allow: "/",
+          disallow: [],
         },
       ],
       sitemap: "https://server-blink.vercel.app/sitemap.xml",
