@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 interface Brand {
   id: number;
   name: string;
-  slug: string;
+  slug?: string;
   logo?: string;
 }
 
@@ -37,7 +37,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     typeof product.brand === "string"
       ? product.brand
       : product.brand?.name || "Unknown Brand";
-
   // safe product name
   const productName =
     typeof product.name === "string"
@@ -49,6 +48,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     product.image?.[0]?.path ||
     product.image?.[1]?.path ||
     "/default-product-image.svg";
+  const brandSlug =
+  typeof product.brand === "object" ? product.brand.slug : undefined;
+
 
   return (
     <div className="bg-[#F2F2F2] rounded shadow hover:shadow-md transition flex flex-col h-full">
@@ -64,7 +66,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
       {/* Info Wrapper */}
       <div className="px-3 pb-3 flex flex-col flex-1">
+           <Link href={`/brand/${brandSlug || ""}`}>
         <p className="text-[1rem] text-gray-500 hover:text-[#D42020]">{brandName}</p>
+                </Link>
         <p className="text-[1rem] text-gray-400 mb-1 hover:text-[#D42020]">Sku: {product.sku}</p>
         <Link href={`/${product?.sku}`}>
         <p className="text-[14px] font-medium mb-1 line-clamp-2 hover:text-[#D42020]">{productName}</p>
