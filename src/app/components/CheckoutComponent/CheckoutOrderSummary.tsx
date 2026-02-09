@@ -1,13 +1,21 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+
 interface OrderSummaryProps {
   cart: any[];
   subtotal: number;
   shipping: number;
   tax: number;
   total: number;
+  finalTotal: number;
+  discountAmount: number;
+  appliedCoupon: any;
+  promoCode: string;
+  setPromoCode: (code: string) => void;
+  onApplyCoupon: () => void;
+  onRemoveCoupon: () => void;
 }
 
 const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
@@ -16,12 +24,27 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
   shipping,
   tax,
   total,
+  finalTotal,
+  discountAmount,
+  appliedCoupon,
+  promoCode,
+  setPromoCode,
+  onApplyCoupon,
+  onRemoveCoupon,
 }) => {
+  const [showPromo, setShowPromo] = useState(false);
+  const [discountOpen, setDiscountOpen] = useState(false);
+
   return (
-    <div className="bg-white border-[1px] border-[#8b8b8b] rounded-sm  shadow-sm py-6 h-fit sticky top-9">
+    <div className="bg-white border-[1px] border-[#8b8b8b] rounded-sm shadow-sm py-6 h-fit sticky top-9">
       <div className="flex items-center justify-between mb-6 px-6 border-b-[1px] border-[#8b8b8b]">
-        <h2 className="text-xl font-semibold text-gray-800 p-2">Order Summary</h2>
-        <Link href="/cart" className="text-base text-[var(--primary-color)] hover:underline">
+        <h2 className="text-xl font-semibold text-gray-800 p-2">
+          Order Summary
+        </h2>
+        <Link
+          href="/cart"
+          className="text-base text-[var(--primary-color)] hover:underline"
+        >
           Edit Cart
         </Link>
       </div>
@@ -31,7 +54,7 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
       </div>
 
       {/* Cart Items */}
-      <div className="space-y-4  max-h-[400px] overflow-y-auto px-6 border-b-[1px]  border-[#8b8b8b]">
+      <div className="space-y-4 max-h-[400px] overflow-y-auto px-6 border-b-[1px] border-[#8b8b8b]">
         {cart.map((item) => (
           <div
             key={item.id}
@@ -66,9 +89,51 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
 
       {/* Promo/Gift Certificate */}
       <div className="mb-6 border-b-[1px] px-6 border-[#8b8b8b] py-4">
-        <button type="button" className="text-base text-[var(--primary-color)] ">
+        <button
+          type="button"
+          className="text-base text-[var(--primary-color)]"
+          onClick={() => setShowPromo((prev) => !prev)}
+        >
           Promo/Gift Certificate
         </button>
+
+        {/* Promo input toggled */}
+        {showPromo && (
+          <div className="mt-4 flex flex-col gap-2">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Enter code"
+                className="w-full border border-gray-300 rounded px-4 py-3.5 focus:outline-none focus:ring-1 focus:ring-[var(--primary-color)]"
+                value={promoCode}
+                onChange={(e) => setPromoCode(e.target.value)}
+              />
+              <button
+                type="button"
+                className="bg-[var(--primary-color)] text-white px-4 py-1 rounded-none border-b-2 border-black text-2xl"
+                onClick={onApplyCoupon}
+              >
+                Apply
+              </button>
+            </div>
+
+            {/* Show applied coupon */}
+            {appliedCoupon && (
+              <div className="flex gap-3 items-center px-4 py-2 rounded">
+                <span>
+                  ${Number(appliedCoupon.discountAmount).toFixed(2)} off the
+                  order total ({appliedCoupon.couponCode.toUpperCase()})
+                </span>
+                <button
+                  onClick={onRemoveCoupon}
+                  className="font-bold hover:text-red-700"
+                >
+                  X
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Totals */}
@@ -77,6 +142,56 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
           <span>Subtotal</span>
           <span className="font-medium">${subtotal.toFixed(2)}</span>
         </div>
+
+        {/* Discounts */}
+        {appliedCoupon && discountAmount > 0 && (
+          <div className="mt-2">
+            {/* Discounts header with arrow */}
+            <div
+              className="flex justify-between items-center text-gray-700 cursor-pointer select-none"
+              onClick={() => setDiscountOpen((prev) => !prev)}
+            >
+              <span className="flex items-center gap-1 font-medium">
+                Discounts
+                {/* Arrow */}
+                <svg
+                  className={`w-4 h-4 transition-transform ${
+                    discountOpen ? "rotate-180" : "rotate-0"
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </span>
+
+              {/* Discount value */}
+              <span className="font-medium">
+                -${discountAmount.toFixed(2)}
+              </span>
+            </div>
+
+            {/* Expanded details */}
+            {discountOpen && (
+              <div className="flex justify-between text-gray-600 text-sm mt-1">
+                <span>
+                  ${Number(appliedCoupon.discountAmount).toFixed(2)} off the
+                  order total ({appliedCoupon.couponCode.toUpperCase()})
+                </span>
+                <span className="font-medium">
+                  -${discountAmount.toFixed(2)}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="flex justify-between text-gray-700">
           <span>Shipping</span>
           <span className="font-medium">${shipping.toFixed(2)}</span>
@@ -88,9 +203,18 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
       </div>
 
       {/* Total */}
-      <div className="flex justify-between items-center text-lg font-bold mt-4 pt-4 px-6 border-t-[1px] border-[#8b8b8b] text-gray-900">
-        <span>Total (USD)</span>
-        <span>${total.toFixed(2)}</span>
+      <div className="flex flex-col mt-4 pt-4 px-6 border-t-[1px] border-[#8b8b8b] text-gray-900">
+        <div className="flex justify-between items-center text-lg font-bold">
+          <span>Total (USD)</span>
+          <span>${finalTotal.toFixed(2)}</span>
+        </div>
+
+        {/* Savings message */}
+        {appliedCoupon && discountAmount > 0 && (
+          <div className="text-sm mt-1 self-end">
+            You saved ${discountAmount.toFixed(2)} in total!
+          </div>
+        )}
       </div>
     </div>
   );
