@@ -63,7 +63,6 @@ interface OrderData {
 const SingleOrder = () => {
   const params = useParams();
   const orderNumber = params?.slug as string;
-  console.log(orderNumber);
   
   
   const dispatch = useAppDispatch();
