@@ -1,64 +1,98 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import { Package } from "lucide-react";
 import React, { useMemo, useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useAppSelector } from "@/hooks/useReduxHooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import countries from "world-countries";
+import { applyCoupon, removeCoupon } from "@/redux/slices/couponSlice";
 
 const OrderSummary = () => {
-    const [showCoupon, setShowCoupon] = useState(false);
-      const [showShipping, setShowShipping] = useState(false);
+  const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state.cart.items);
+  const { appliedCoupon, discountAmount, loading: couponLoading } = useAppSelector(
+    (state: RootState) => state.coupon
+  );
   const router = useRouter();
 
+  const [showCoupon, setShowCoupon] = useState(false);
+  const [showShipping, setShowShipping] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [discountOpen, setDiscountOpen] = useState(false);
+
   const [shippingData, setShippingData] = useState({
-  country: "",
-  state: "",
-  city: "",
-  zip: "",
-});
+    country: "",
+    state: "",
+    city: "",
+    zip: "",
+  });
 
-const [couponCode, setCouponCode] = useState("");
-
-  const handleShippingSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
-  console.log("Shipping Form Data:", shippingData);
-};
-
-const handleCouponSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
-  console.log("Coupon Code:", couponCode);
-};
-
-   
-
-     const countryList = countries
-      .map((country) => ({
-        name: country.name.common,
-        code: country.cca2,
-      }))
-      .sort((a, b) => a.name.localeCompare(b.name));
+  const countryList = countries
+    .map((country) => ({
+      name: country.name.common,
+      code: country.cca2,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   const subtotal = useMemo(() => {
     return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   }, [cart]);
 
-const shipping = useMemo(() => {
-  if (cart.length === 0) return 0;
+  const shipping = useMemo(() => {
+    if (cart.length === 0) return 0;
 
-  return cart.reduce((sum, item) => {
-    const cost = Number(item.fixedShippingCost || 0);
-    return sum + cost;
-  }, 0);
-}, [cart]);
+    return cart.reduce((sum, item) => {
+      const cost = Number(item.fixedShippingCost || 0);
+      return sum + cost;
+    }, 0);
+  }, [cart]);
 
-const shippingLabel = `FedEx priority $${shipping.toFixed(2)}`;
+  const shippingLabel = `FedEx priority $${shipping.toFixed(2)}`;
 
-  const total = subtotal + shipping;
+  // Total before discount
+  const totalBeforeDiscount = subtotal + shipping;
+
+  // Final total after discount
+  const finalTotal = Math.max(totalBeforeDiscount - discountAmount, 0);
+
+  const handleShippingSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Shipping Form Data:", shippingData);
+  };
+
+  const handleCouponSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!couponCode.trim()) {
+      toast.error("Please enter a coupon code");
+      return;
+    }
+
+    try {
+      await dispatch(
+        applyCoupon({ couponCode, total: totalBeforeDiscount })
+      ).unwrap();
+      toast.success("Coupon applied successfully!");
+      setCouponCode("");
+      setShowCoupon(false); // Close coupon form after success
+    } catch (err: any) {
+      toast.error(err || "Failed to apply coupon");
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    dispatch(removeCoupon());
+    setCouponCode("");
+    toast.info("Coupon removed");
+  };
 
   const handleProceedToCheckout = useCallback(() => {
     if (!cart.length) {
@@ -75,140 +109,206 @@ const shippingLabel = `FedEx priority $${shipping.toFixed(2)}`;
 
       {/* Estimate Shipping */}
       <div className="px-6 py-6">
-
         {/* Subtotal + Shipping */}
         <div className="text-sm text-gray-700 space-y-2 mb-2">
           <div className="flex justify-between py-2">
             <span className="text-xl text-[#393939]">Subtotal:</span>
             <span className="text-xl">${subtotal.toFixed(2)}</span>
           </div>
-       {/* Divider */}
-        <div className="w-full h-[1px] bg-gray-300 my-3"></div>
-            {/* Header */}
-      <div className="flex justify-between py-2">
-        <span className="text-xl text-[#393939]">
-          Shipping:
-        </span>
+          {/* Divider */}
+          <div className="w-full h-[1px] bg-gray-300 my-3"></div>
+          {/* Header */}
+          <div className="flex justify-between py-2">
+            <span className="text-xl text-[#393939]">Shipping:</span>
 
-        <span
-          className="text-xl border-b border-gray-500 inline-block cursor-pointer"
-          onClick={() => setShowShipping(!showShipping)}
-        >
-          {showShipping ? "Cancel" : "Add info"}
-        </span>
-      </div>
+            <span
+              className="text-xl border-b border-gray-500 inline-block cursor-pointer"
+              onClick={() => setShowShipping(!showShipping)}
+            >
+              {showShipping ? "Cancel" : "Add info"}
+            </span>
+          </div>
 
-      {/* Shipping form */}
-{showShipping && (
-  <form onSubmit={handleShippingSubmit} className="flex flex-col gap-3 mt-4">
-    
-    {/* Country */}
-    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-      <label className="w-full md:w-1/3 text-xl">Country</label>
+          {/* Shipping form */}
+          {showShipping && (
+            <form
+              onSubmit={handleShippingSubmit}
+              className="flex flex-col gap-3 mt-4"
+            >
+              {/* Country */}
+              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                <label className="w-full md:w-1/3 text-xl">Country</label>
 
-      <Select
-        onValueChange={(value) =>
-          setShippingData({ ...shippingData, country: value })
-        }
-      >
-        <SelectTrigger className="w-full md:w-2/3 border-none outline-none">
-          <SelectValue placeholder="Choose a Country" />
-        </SelectTrigger>
-        <SelectContent className="w-full md:w-2/3 border-none outline-none">
-          {countryList.map((country) => (
-            <SelectItem  key={country.code} value={country.code}>
-              {country.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
+                <Select
+                  onValueChange={(value) =>
+                    setShippingData({ ...shippingData, country: value })
+                  }
+                >
+                  <SelectTrigger className="w-full md:w-2/3 border-none outline-none">
+                    <SelectValue placeholder="Choose a Country" />
+                  </SelectTrigger>
+                  <SelectContent className="w-full md:w-2/3 border-none outline-none">
+                    {countryList.map((country) => (
+                      <SelectItem key={country.code} value={country.code}>
+                        {country.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-    {/* State */}
-    <div className="flex flex-col md:flex-row items-center gap-4">
-      <label className="w-full md:w-1/3 text-xl">State/Province</label>
-      <Input
-        className="w-full md:w-2/3"
-        onChange={(e) =>
-          setShippingData({ ...shippingData, state: e.target.value })
-        }
-      />
-    </div>
+              {/* State */}
+              <div className="flex flex-col md:flex-row items-center gap-4">
+                <label className="w-full md:w-1/3 text-xl">
+                  State/Province
+                </label>
+                <Input
+                  className="w-full md:w-2/3"
+                  onChange={(e) =>
+                    setShippingData({ ...shippingData, state: e.target.value })
+                  }
+                />
+              </div>
 
-    {/* City */}
-    <div className="flex flex-col md:flex-row items-center gap-4">
-      <label className="w-full md:w-1/3 text-xl">Suburb/City</label>
-      <Input
-        className="w-full md:w-2/3"
-        onChange={(e) =>
-          setShippingData({ ...shippingData, city: e.target.value })
-        }
-      />
-    </div>
+              {/* City */}
+              <div className="flex flex-col md:flex-row items-center gap-4">
+                <label className="w-full md:w-1/3 text-xl">Suburb/City</label>
+                <Input
+                  className="w-full md:w-2/3"
+                  onChange={(e) =>
+                    setShippingData({ ...shippingData, city: e.target.value })
+                  }
+                />
+              </div>
 
-    {/* Zip */}
-    <div className="flex flex-col md:flex-row items-center gap-4">
-      <label className="w-full md:w-1/3 text-xl">Zip/Postcode</label>
-      <Input
-        className="w-full md:w-2/3"
-        onChange={(e) =>
-          setShippingData({ ...shippingData, zip: e.target.value })
-        }
-      />
-    </div>
+              {/* Zip */}
+              <div className="flex flex-col md:flex-row items-center gap-4">
+                <label className="w-full md:w-1/3 text-xl">Zip/Postcode</label>
+                <Input
+                  className="w-full md:w-2/3"
+                  onChange={(e) =>
+                    setShippingData({ ...shippingData, zip: e.target.value })
+                  }
+                />
+              </div>
 
-    {/* Submit */}
-    <div className="flex justify-end">
-      <button
-        type="submit"
-        className="w-full md:w-[65%] p-2 border-b border-black rounded bg-[#D42020] text-white text-xl font-bold"
-      >
-        Estimate Shipping
-      </button>
-    </div>
-  </form>
-)}
+              {/* Submit */}
+              <div className="flex justify-end">
+                <button
+                  type="submit"
+                  className="w-full md:w-[65%] p-2 border-b border-black rounded bg-[#D42020] text-white text-xl font-bold"
+                >
+                  Estimate Shipping
+                </button>
+              </div>
+            </form>
+          )}
 
+          {/* Divider */}
+          <div className="w-full h-[1px] bg-gray-300 my-3"></div>
 
+          {/* Coupon Section */}
+          <div className="flex justify-between py-2">
+            <span className="text-xl text-[#393939]">Coupon Code: {appliedCoupon ? (appliedCoupon.couponCode.toUpperCase()) : ""}</span>
 
-                 {/* Divider */}
-        <div className="w-full h-[1px] bg-gray-300 my-3"></div>
-           <div className="flex justify-between py-2">
-        <span className="text-xl text-[#393939]">
-          Coupon Code:
-        </span>
+            {/* If coupon already applied, show it here */}
+            {appliedCoupon ? (
+              <span className="text-xl font-medium">
+                -${discountAmount.toFixed(2)}
+              </span>
+            ) : (
+              <span
+                className="text-xl border-b border-gray-500 inline-block cursor-pointer"
+                onClick={() => setShowCoupon(!showCoupon)}
+              >
+                {showCoupon ? "Cancel" : "Add Coupon"}
+              </span>
+            )}
+          </div>
 
-        {/* Toggle button */}
-        <span
-          className="text-xl border-b border-gray-500 inline-block cursor-pointer"
-          onClick={() => setShowCoupon(!showCoupon)}
-        >
-          {showCoupon ? "Cancel" : "Add Coupon"}
-        </span>
-      </div>
+          {/* Show applied coupon details */}
+          {appliedCoupon && (
+            <div className="flex gap-3 items-center rounded">
+              {/* <span className="text-sm">
+                ${Number(appliedCoupon.discountAmount).toFixed(2)} off (
+                {appliedCoupon.couponCode.toUpperCase()})
+              </span> */}
+              <button
+                onClick={handleRemoveCoupon}
+                className=" text-xl underline text-red-600 hover:text-red-700"
+              >
+                Remove
+              </button>
+            </div>
+          )}
 
-      {/* Coupon input & apply button */}
-     {showCoupon && (
-  <form
-    onSubmit={handleCouponSubmit}
-    className="flex flex-col md:flex-row gap-2 my-2"
-  >
-    <Input
-      placeholder="Enter your coupon code"
-      value={couponCode}
-      onChange={(e) => setCouponCode(e.target.value)}
-      className="!max-w-full"
-    />
+          {/* Coupon input - only show if no coupon applied */}
+          {showCoupon && !appliedCoupon && (
+            <form
+              onSubmit={handleCouponSubmit}
+              className="flex flex-col md:flex-row gap-2 my-2"
+            >
+              <Input
+                placeholder="Enter your coupon code"
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value)}
+                className="!max-w-full"
+                disabled={couponLoading}
+              />
 
-    <button
-      type="submit"
-      className="border-b border-black px-12 rounded bg-[#D42020] text-white text-xl font-bold"
-    >
-      Apply
-    </button>
-  </form>
-)}
+              <button
+                type="submit"
+                className="border-b border-black px-12 rounded bg-[#D42020] text-white text-xl font-bold disabled:opacity-50"
+                disabled={couponLoading}
+              >
+                {couponLoading ? "..." : "Apply"}
+              </button>
+            </form>
+          )}
 
+          {/* Show discount breakdown if applied */}
+          {/* {appliedCoupon && discountAmount > 0 && (
+            <div className="mt-2">
+              <div
+                className="flex justify-between items-center text-gray-700 cursor-pointer select-none py-2"
+                onClick={() => setDiscountOpen((prev) => !prev)}
+              >
+                <span className="flex items-center gap-1 text-xl">
+                  Discounts
+                  <svg
+                    className={`w-4 h-4 transition-transform ${
+                      discountOpen ? "rotate-180" : "rotate-0"
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </span>
+                <span className="text-xl text-green-600 font-medium">
+                  -${discountAmount.toFixed(2)}
+                </span>
+              </div>
+
+              {discountOpen && (
+                <div className="flex justify-between text-gray-600 text-sm mt-1 px-4">
+                  <span>
+                    ${Number(appliedCoupon.discountAmount).toFixed(2)} off (
+                    {appliedCoupon.couponCode.toUpperCase()})
+                  </span>
+                  <span className="font-medium text-green-600">
+                    -${discountAmount.toFixed(2)}
+                  </span>
+                </div>
+              )}
+            </div>
+          )} */}
         </div>
 
         {/* Divider */}
@@ -218,9 +318,18 @@ const shippingLabel = `FedEx priority $${shipping.toFixed(2)}`;
         <div className="flex justify-between items-center py-2">
           <span className="text-xl text-[#393939]">Grand total:</span>
           <span className="text-xl text-[#393939]">
-            ${total.toFixed(2)}
+            ${finalTotal.toFixed(2)}
           </span>
         </div>
+
+        {/* Savings message */}
+
+        {/* {appliedCoupon && discountAmount > 0 && (
+          <div className="text-sm text-green-600 text-right mt-1">
+            You saved ${discountAmount.toFixed(2)}!
+          </div>
+        )} */}
+
         {/* Buttons */}
         <div className="flex flex-col items-end gap-3 mt-5">
           <button
@@ -228,16 +337,8 @@ const shippingLabel = `FedEx priority $${shipping.toFixed(2)}`;
             onClick={handleProceedToCheckout}
             className="btn-primary"
           >
-          Checkout
+            Checkout
           </button>
-
-          {/* <button className="w-50 bg-black hover:bg-gray-900 !text-white py-3 h4-medium font-semibold flex items-center justify-center gap-2 transition">
-            <img
-              src="/checkouticon/googlepay.png"
-              alt="Google"
-              className="w-20 h-8"
-            />
-          </button> */}
         </div>
       </div>
     </div>

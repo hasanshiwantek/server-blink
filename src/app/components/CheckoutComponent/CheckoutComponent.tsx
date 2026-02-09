@@ -14,6 +14,7 @@ import {
   removeFromCart,
   clearCart,
 } from "@/redux/slices/cartSlice";
+import { applyCoupon, removeCoupon } from "@/redux/slices/couponSlice"; // ADD THIS
 import axiosInstance from "@/lib/axiosInstance";
 import { toast } from "sonner";
 import {
@@ -93,6 +94,13 @@ const CheckoutForm = () => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state.cart.items);
   const auth = useAppSelector((state: RootState) => state?.auth);
+  
+  // ADD COUPON STATE FROM REDUX
+  const { appliedCoupon, discountAmount } = useAppSelector(
+    (state: RootState) => state.coupon
+  );
+  const [promoCode, setPromoCode] = useState("");
+
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [itemToDelete, setItemToDelete] = useState<any | null>(null);
@@ -180,7 +188,39 @@ const CheckoutForm = () => {
   }, [cart]);
 
   const tax = 0;
-  const total = useMemo(() => subtotal + shipping + tax, [subtotal, shipping]);
+  
+  // Total before discount
+  const totalBeforeDiscount = useMemo(() => subtotal + shipping + tax, [subtotal, shipping]);
+  
+  // Final total after discount
+  const finalTotal = useMemo(() => 
+    Math.max(totalBeforeDiscount - discountAmount, 0),
+    [totalBeforeDiscount, discountAmount]
+  );
+
+  // ADD COUPON HANDLERS
+  const handleApplyCoupon = async () => {
+    if (!promoCode.trim()) {
+      toast.error("Please enter a promo code");
+      return;
+    }
+
+    try {
+      await dispatch(
+        applyCoupon({ couponCode: promoCode, total: totalBeforeDiscount })
+      ).unwrap();
+      toast.success("Promo code applied successfully!");
+      setPromoCode("");
+    } catch (err: any) {
+      toast.error(err || "Failed to apply coupon");
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    dispatch(removeCoupon());
+    setPromoCode("");
+    toast.info("Coupon removed");
+  };
 
   // Memoized handlers
   const confirmDelete = useCallback(() => {
@@ -226,8 +266,7 @@ const CheckoutForm = () => {
   useEffect(() => {
     if (!stripe || cart.length === 0) {
       setPaymentRequest(null);
-      // Keep wallets enabled for UI even if PR API not available
-        setWalletSupport({ applePay: false, googlePay: false });
+      setWalletSupport({ applePay: false, googlePay: false });
       return;
     }
 
@@ -236,7 +275,7 @@ const CheckoutForm = () => {
       currency: "usd",
       total: {
         label: "Order Total",
-        amount: Math.max(0, Math.round(total * 100)),
+        amount: Math.max(0, Math.round(finalTotal * 100)), // USE finalTotal
       },
       requestPayerName: true,
       requestPayerEmail: true,
@@ -256,16 +295,14 @@ const CheckoutForm = () => {
           });
         } else {
           setPaymentRequest(null);
-          // Fallback: Enable wallets in UI even if Payment Request API not supported
-          // This allows testing and will show appropriate error when clicked
-           setWalletSupport({ applePay: false, googlePay: false });
+          setWalletSupport({ applePay: false, googlePay: false });
         }
       });
 
     return () => {
       isMounted = false;
     };
-  }, [stripe, cart, total]);
+  }, [stripe, cart, finalTotal]); // DEPENDENCY: finalTotal instead of total
 
   const buildOrderPayload = useCallback(
     (data: CheckoutFormValues & { paymentIntentId?: string | null }) => ({
@@ -311,6 +348,7 @@ const CheckoutForm = () => {
     async (paymentMethodId: string) => {
       const stripePayload = {
         payment_method_id: paymentMethodId,
+        amount: Math.round(finalTotal * 100), // USE finalTotal for Stripe
         products: cart.map((item) => ({
           product_id: item.id,
           quantity: item.quantity || 1,
@@ -323,7 +361,7 @@ const CheckoutForm = () => {
       );
       return response.data?.payment_intent_id || null;
     },
-    [cart]
+    [cart, finalTotal] // ADD finalTotal as dependency
   );
 
   useEffect(() => {
@@ -420,7 +458,6 @@ const CheckoutForm = () => {
     if (isValid) {
       setCompletedSteps((prev) => [...new Set([...prev, 2])]);
       if (watchedBillingSame) {
-        // Skip billing, go to payment
         setCurrentStep(4);
       } else {
         setCurrentStep(3);
@@ -468,7 +505,6 @@ const CheckoutForm = () => {
     handlePaymentSelection(method);
 
     if (!paymentRequest) {
-      // Show helpful message if Payment Request API not available
       const methodName = method === "apple_pay" ? "Apple Pay" : "Google Pay";
       toast.error(
         `${methodName} is not available. Please use a supported device/browser or try credit card payment.`
@@ -624,7 +660,6 @@ const CheckoutForm = () => {
 
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
-      {/* Payment Request Button (hidden)  */}
       {paymentRequest && (
         <div className="hidden">
           <PaymentRequestButtonElement options={{ paymentRequest }} />
@@ -653,7 +688,7 @@ const CheckoutForm = () => {
               />
             </div>
 
-            {/* STEP 2: Shipping - Always show heading */}
+            {/* STEP 2: Shipping */}
             <div className="p-6  border-b-[1px] border-b-[#8b8b8b]">
               <h2 className="text-[1.92308rem] font-normal mb-4 text-[#545454]">
                 Shipping
@@ -679,7 +714,7 @@ const CheckoutForm = () => {
               />
             </div>
 
-            {/* STEP 3: Billing - Always show heading */}
+            {/* STEP 3: Billing */}
             <div className="p-6  border-b-[1px] border-b-[#8b8b8b]">
               <h2 className="text-[1.92308rem] font-normal mb-4 text-[#545454]">
                 Billing
@@ -707,7 +742,7 @@ const CheckoutForm = () => {
               )}
             </div>
 
-            {/* STEP 4: Payment - Always show heading */}
+            {/* STEP 4: Payment */}
             <div className="p-6  border-b-[1px] border-b-[#8b8b8b]">
               <h2 className="text-[1.92308rem] font-normal mb-4 text-[#545454]">
                 Payment
@@ -746,7 +781,14 @@ const CheckoutForm = () => {
             subtotal={subtotal}
             shipping={shipping}
             tax={tax}
-            total={total}
+            total={totalBeforeDiscount}
+            finalTotal={finalTotal}
+            discountAmount={discountAmount}
+            appliedCoupon={appliedCoupon}
+            promoCode={promoCode}
+            setPromoCode={setPromoCode}
+            onApplyCoupon={handleApplyCoupon}
+            onRemoveCoupon={handleRemoveCoupon}
           />
         </div>
       </form>
