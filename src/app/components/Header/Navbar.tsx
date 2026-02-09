@@ -16,11 +16,11 @@ const Navbar: React.FC = () => {
   return (
     <header className="bg-[var(--bg-color)]  sticky top-0 z-50">
       <nav className="w-full">
-        <div className="flex items-center justify-between gap-4 h-20 sm:h-20 lg:h-24 w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-1  2xl:px-2">
+        <div className="flex items-center md:justify-between justify-center gap-4 h-20 sm:h-20 lg:h-24 w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-1  2xl:px-2">
           {/* Left: Logo */}
-          <div className="flex items-center flex-shrink-0">
+          <div className="flex items-center justify-center flex-shrink-0">
             <Link href={"/"}>
-              <div className="relative w-36 h-7 sm:w-40 sm:h-8 md:w-44 md:h-9 lg:w-48 lg:h-10 xl:w-76 xl:h-18 2xl:w-[253.48px] 2xl:h-[48px]">
+              <div className="relative w-44 h-35 sm:w-70 sm:h-30 md:w-44 md:h-9 lg:w-48 lg:h-20 xl:w-76 xl:h-18 2xl:w-[253.48px] 2xl:h-[48px]">
                 <Image
                   src={navlogo}
                   alt="Logo"
@@ -28,7 +28,7 @@ const Navbar: React.FC = () => {
                   fetchPriority="high"
                   className="object-contain"
                   priority
-                  sizes="(max-width: 768px) 120px, (max-width: 1200px) 200px, 253px"
+                  sizes="(max-width: 768px) 200px, (max-width: 1200px) 200px, 253px"
                 />
               </div>
             </Link>
@@ -53,24 +53,24 @@ const Navbar: React.FC = () => {
                 </svg>
               </div>
               <div className="flex flex-col text-gray-800">
-                    <p className="text-[15px] font-semibold">
-  Call:{" "}
-  <a
-    href="tel:+15022063033"
-    className="text-[var(--primary-color)] text-[15px] hover:underline"
-  >
-    +1 502-206-3033
-  </a>
-</p>
+                <p className="text-[15px] font-semibold">
+                  Call:{" "}
+                  <a
+                    href="tel:+15022063033"
+                    className="text-[var(--primary-color)] text-[15px] hover:underline"
+                  >
+                    +1 502-206-3033
+                  </a>
+                </p>
 
-        <p className="text-[15px] font-semibold">
-  Email:{" "}
-  <a
-    href="mailto:sales@serverblink.com"
-    className="text-[var(--primary-color)] text-[15px] hover:underline"
-  >
-    sales@serverblink.com
-  </a>
+                <p className="text-[15px] font-semibold">
+                  Email:{" "}
+                  <a
+                    href="mailto:sales@serverblink.com"
+                    className="text-[var(--primary-color)] text-[15px] hover:underline"
+                  >
+                    sales@serverblink.com
+                  </a>
                 </p>
               </div>
             </div>
@@ -93,7 +93,7 @@ const Navbar: React.FC = () => {
               </button>
             </Link> */}
             {/* Hamburger */}
-            <button
+            {/* <button
               aria-label="hamburger"
               onClick={() => setMobileOpen(!mobileOpen)}
               className="text-gray-800"
@@ -103,7 +103,7 @@ const Navbar: React.FC = () => {
               ) : (
                 <Menu className="w-6 h-6" />
               )}
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -119,14 +119,12 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Mobile Dropdown */}
-        {mobileOpen && (
+        {/* {mobileOpen && (
           <div className="lg:hidden mt-4 space-y-4 px-4 pb-6 bg-white">
-            {/* Search */}
             <div className="relative w-full">
               <MobileSearchBar />
             </div>
 
-            {/* Contact */}
             <div className="flex items-center gap-3 py-3 border-t">
               <svg
                 className="w-6 h-6 text-gray-700"
@@ -154,7 +152,7 @@ const Navbar: React.FC = () => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
       </nav>
     </header>
   );
