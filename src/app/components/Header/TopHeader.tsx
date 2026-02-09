@@ -342,7 +342,7 @@ const TopHeader = () => {
 
             {/* Right: Login/Signup + Cart */}
 
-            <div className="flex items-center md:justify-end justify-between w-full whitespace-nowrap md:w-0 gap-5 md:gap-4">
+            <div className="flex items-center md:justify-end justify-between w-full whitespace-nowrap md:w-0 gap-5 md:gap-5">
               {/* Hamburger */}
               <div className="md:hidden block">
 
