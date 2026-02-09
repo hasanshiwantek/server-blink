@@ -53,20 +53,24 @@ const Navbar: React.FC = () => {
                 </svg>
               </div>
               <div className="flex flex-col text-gray-800">
-                <p className="text-[15px] font-semibold">
-                  Call:{" "}
-                  <span className="text-[var(--primary-color)] font-semibold text-[18px]">
-                    +1 502-206-3033
-                  </span>
-                </p>
-                <p className="text-[15px] font-semibold">
-                  Email:{" "}
-                  <a
-                    href="mailto:sales@serverblink.com"
-                    className="text-[var(--primary-color)] hover:text-red-600 font-light"
-                  >
-                    sales@serverblink.com
-                  </a>
+                    <p className="text-[15px] font-semibold">
+  Call:{" "}
+  <a
+    href="tel:+15022063033"
+    className="text-[var(--primary-color)] text-[15px] hover:underline"
+  >
+    +1 502-206-3033
+  </a>
+</p>
+
+        <p className="text-[15px] font-semibold">
+  Email:{" "}
+  <a
+    href="mailto:sales@serverblink.com"
+    className="text-[var(--primary-color)] text-[15px] hover:underline"
+  >
+    sales@serverblink.com
+  </a>
                 </p>
               </div>
             </div>

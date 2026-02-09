@@ -148,7 +148,7 @@ const Banner = () => {
       </Carousel>
 
       {/* Promo Banner Below Carousel */}
-      <div className="bg-white text-center py-3 md:py-5 mt-4 rounded-xs border-b-3 border-[#8b8b8b]">
+      <div className="bg-white text-center py-3 mt-6 rounded-xs border-b-3 border-[#8b8b8b]">
         <p className="text-base md:text-[18px]  text-[#8b8b8b] font-medium">
           $10 off on First Order: Code:{" "}
           <span className="text-base md:text-[18px]  text-[#8b8b8b] font-medium">

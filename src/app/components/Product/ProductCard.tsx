@@ -60,15 +60,26 @@ useEffect(() => {
 
   return (
     <div className="max-w-full mx-auto">
-      <div className=" rounded-xl w-full 2xl:max-w-[1719px] 2xl:px-3 px-0">
+      <div className=" rounded-xl w-full px-0">
         {/* Breadcrumb */}
      <nav
           aria-label="breadcrumb"
           className="flex items-center justify-center lg:justify-normal space-x-2 text-[11px] text-[#393939] lg:mb-7 sm:mb-7 mb-7 flex-wrap"
         >
-          <span>Home</span>
-          {/* {product.categoryHierarchy?.map((data: any, index: number) => (
-          ))} */}
+            <h2 className=""><span
+                  className="text-[11px]"
+                  itemProp="name"
+                >
+                  Home
+                </span> {" "} <span className="mt-2 mx-3 text-gray-400 text-[11px]" aria-hidden="true">/</span> {" "} <span
+                  className="!text-[#D42020] text-[11px]"
+                  itemProp="name"
+                >
+               {product?.sku}
+                </span></h2>
+          {/* <span>Home</span>
+          {product.categoryHierarchy?.map((data: any, index: number) => (
+          ))}
           <React.Fragment>
             <Image
               className="inline-block align-middle"
@@ -79,11 +90,11 @@ useEffect(() => {
               loading="lazy"
               sizes="12px"
             />
-            <span className="text-[11px] text-[#393939]">{product?.sku}</span>
-          </React.Fragment>
+            <span className="text-[11px] text-[var(--primary-color)]">{product?.sku}</span>
+          </React.Fragment> */}
         </nav>
 
-        <div className="flex flex-wrap justify-center  lg:justify-normal lg:flex-nowrap gap-6 lg:gap-8 xl:gap-10">
+        <div className="flex flex-wrap justify-center  lg:justify-normal lg:flex-nowrap gap-6 lg:gap-8 xl:gap-8">
           <ProductLeft
             images={images}
             selectedImage={selectedImage}

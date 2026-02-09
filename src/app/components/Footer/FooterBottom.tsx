@@ -4,6 +4,9 @@ import Link from "next/link";
 import { fetchCategories } from "@/lib/api/category";
 import Image from "next/image";
 import FooterSkeleton from "../loader/FooterSkeleton";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
+import { getBlogs } from "@/redux/slices/storeFrontSlice";
+import { RootState } from "@/redux/store";
 interface Category {
   id: number;
   name: string;
@@ -13,19 +16,29 @@ interface Category {
 
 const FooterBottom = () => {
   const [categories, setCategories] = useState<Category[]>([]);
+    const auth = useAppSelector((state: RootState) => state?.auth);
+    const [filters, setFilters] = useState({ page: 1, perPage: 20 });
+  const dispatch = useAppDispatch();
+  const { blogs, error,loading } = useAppSelector(
+    (state: any) => state.storeFront
+  );
+  const blogPosts = blogs?.data || [];
+    useEffect(() => {
+      dispatch(getBlogs(filters));
+    }, [dispatch]);
 
-  useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        const data = await fetchCategories();
-        setCategories(data); // ✅ fill the variable
-      } catch (error) {
-        console.error("Failed to load categories:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const loadCategories = async () => {
+  //     try {
+  //       const data = await fetchCategories();
+  //       setCategories(data); // ✅ fill the variable
+  //     } catch (error) {
+  //       console.error("Failed to load categories:", error);
+  //     }
+  //   };
 
-    loadCategories();
-  }, []); // ✅ run once on mount
+  //   loadCategories();
+  // }, []); 
 
   return (
     <footer className="bg-[#333333] text-white w-full mx-auto">
@@ -49,19 +62,26 @@ const FooterBottom = () => {
             </h3>
           </div>
 
-          <form className="w-[80%] md:w-[50%] 2xl:max-w-[30%] flex items-center gap-2 mt-4 md:mt-0 ">
-            <input
-              type="email"
-              placeholder="Email"
-              className="w-full px-4 py-3 border border-white text-[#545454] bg-white focus:outline-none rounded-xs text-sm md:text-base "
-            />
-            <button
-              type="submit"
-              className="btn-primary !p-3  !rounded-sm w-[40%] md:w-[30%] max-w-[9rem]"
-            >
-              JOIN
-            </button>
-          </form>
+   <form
+  action="/subscribe"
+  method="get"   // or "post" if you plan to handle server-side
+  className="w-[80%] md:w-[50%] 2xl:max-w-[30%] flex items-center gap-2 mt-4 md:mt-0"
+>
+  <input
+    type="email"
+    name="email"
+    placeholder="Email"
+    required
+    className="w-full px-4 py-3 border border-white text-[#545454] bg-white focus:outline-none rounded-xs text-sm md:text-base"
+  />
+  <button
+    type="submit"
+    className="btn-primary !p-3 !rounded-sm w-[40%] md:w-[30%] max-w-[9rem]"
+  >
+    JOIN
+  </button>
+</form>
+
         </div>
       </section>
 
@@ -107,7 +127,7 @@ const FooterBottom = () => {
               Accounts & Orders
             </h4>
             <ul className="space-y-2 text-[14px] lg:text-[12px] text-white">
-              <li>
+              {!auth?.isAuthenticated &&  <li>
                 <Link href="/auth/login" className="hover:text-gray-300">
                   Login
                 </Link>{" "}
@@ -115,7 +135,8 @@ const FooterBottom = () => {
                 <Link href="/auth/signup" className="hover:text-gray-300">
                   Sign Up
                 </Link>
-              </li>
+              </li>}
+          
             </ul>
           </div>
 
@@ -131,7 +152,7 @@ const FooterBottom = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/privacyPolicy" className="hover:text-gray-300">
+                <Link href="/privacy-Policy" className="hover:text-gray-300">
                   Privacy Policy
                 </Link>
               </li>
@@ -178,28 +199,32 @@ const FooterBottom = () => {
             <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white">
               Recent Blog Posts
             </h4>
-            <ul className="space-y-2 text-[14px] lg:text-[12px] text-white">
-              <li>
-                <Link href="/blog/post-1" className="hover:text-gray-300">
-                  ServerBlink's Registered Address Has Changed
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog/post-2" className="hover:text-gray-300">
-                  Exploring Cisco 15454-OPT-EDFA-24: Key Features & Uses
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog/post-3" className="hover:text-gray-300">
-                  Exploring Cisco 15454-DS1E1-56 & DS3EC1-48 Network Cards
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog/post-4" className="hover:text-gray-300">
-                  Exploring Cisco 15454-CE-100T-8 & 15454-CE-MR-10 Series
-                </Link>
-              </li>
-            </ul>
+                 <ul  className="space-y-2 text-[14px] lg:text-[12px] text-white">
+      {loading ? (
+        // 🔹 Inline skeleton (4 items)
+        Array.from({ length: 4 }).map((_, i) => (
+          <li
+            key={i}
+            className="h-4 bg-gray-300 rounded w-3/4 animate-pulse"
+          ></li>
+        ))
+      ) : error ? (
+        <li className="text-red-500 px-2 py-1">{error}</li>
+      ) : blogPosts.length === 0 ? (
+        <li className="text-gray-500 px-2 py-1">No blogs available</li>
+      ) : (
+        blogPosts.map((post: any) => (
+          <li key={post.id}>
+            <Link
+              href={`/blogs/${post.slug}`}
+              className="hover:text-gray-300 text-[12px]"
+            >
+              {post.title}
+            </Link>
+          </li>
+        ))
+      )}
+    </ul>
 
             {/* Connect with Us */}
             <div className="mt-8">
@@ -208,7 +233,7 @@ const FooterBottom = () => {
               </h4>
               <div className="flex gap-3">
                 <Link
-                  href="https://facebook.com"
+                  href="http://www.facebook.com/serverblink"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:opacity-80"
@@ -222,7 +247,7 @@ const FooterBottom = () => {
                   </svg>
                 </Link>
                 <Link
-                  href="https://linkedin.com"
+                  href="http://www.linkedin.com/company/server-blink/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:opacity-80"
@@ -242,30 +267,30 @@ const FooterBottom = () => {
 
         {/* Payment Methods */}
         <div className="mt-12 pt-8  border-gray-600">
-          <div className="flex flex-wrap items-center gap-4">
+               <div className="flex flex-wrap items-center gap-4">
             <Image
-              src="/amex.png.png"
+              src="/american-express.svg"
               alt="American Express"
               width={60}
               height={40}
               className="object-contain"
             />
             <Image
-              src="/discover.png"
+              src="/discover.svg"
               alt="Discover"
               width={60}
               height={40}
               className="object-contain "
             />
             <Image
-              src="/mastercard.png"
+              src="/master.svg"
               alt="Mastercard"
               width={60}
               height={40}
               className="object-contain"
             />
             <Image
-              src="/visa.png"
+              src="/visa.svg"
               alt="Visa"
               width={60}
               height={40}

@@ -26,12 +26,12 @@ interface Props {
   products: any[];
 }
 
-export default function ProductExtras({ products }: Props) {
+export default function ProductExtras({ product }: any) {
   return (
     <>
       {/* <ProductFAQs /> */}
       {/* <ProductReview /> */}
-       <FeaturedProducts endpoint="web/products/featured-products" isSlider={true} title="RECOMMENDED"  />
+       <FeaturedProducts endpoint={`/web/products/products/by-brand?brand_id=${product?.brandId}`}isSlider={true} title="RECOMMENDED"  />
     </>
   );
 }

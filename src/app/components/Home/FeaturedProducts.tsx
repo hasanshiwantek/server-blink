@@ -151,28 +151,61 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
       )}
 
       {/* Only render loading/products if NO error */}
-      {!localError && (
-        <>
-          {/* Loading */} {loading ? (<div className={isSlider ? "flex gap-4 overflow-x-auto pb-2 scroll-smooth scrollbar-hide" : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"} > {Array.from({ length: 4 }).map((_, i) => (<div key={i} className={isSlider ? "flex-shrink-0 w-full sm:w-1/2 md:w-1/3 lg:w-1/4" : ""}> <ProductSkeleton /> </div>))} </div>) : ( // Render products isSlider ? (
-            // Render products
-            isSlider ? (
-              <div ref={sliderRef} className="flex gap-4 overflow-x-auto pb-2 scroll-smooth scrollbar-hide">
-                {productsData.map((product: any) => (
-                  <div key={product.id} className="flex-shrink-0 w-full sm:w-1/2 md:w-1/3 lg:w-1/4">
-                    <ProductCard product={product} />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {productsData.map((product: any) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            )
-          )}
-        </>
-      )}
+   {!localError && (
+  <>
+    {loading ? (
+      /* Loading skeleton */
+      <div
+        className={
+          isSlider
+            ? "flex gap-4 overflow-x-auto pb-2 scroll-smooth scrollbar-hide"
+            : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+        }
+      >
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div
+            key={i}
+            className={
+              isSlider
+                ? "flex-shrink-0 w-full sm:w-1/2 md:w-1/3 lg:w-1/4"
+                : ""
+            }
+          >
+            <ProductSkeleton />
+          </div>
+        ))}
+      </div>
+    ) : productsData.length === 0 ? (
+      /* ✅ No products found */
+      <div className="py-12 text-center text-gray-500 text-sm">
+        No products found
+      </div>
+    ) : isSlider ? (
+      /* Slider view */
+      <div
+        ref={sliderRef}
+        className="flex gap-4 overflow-x-auto pb-2 scroll-smooth scrollbar-hide"
+      >
+        {productsData.map((product: any) => (
+          <div
+            key={product.id}
+            className="flex-shrink-0 w-full sm:w-1/2 md:w-1/3 lg:w-1/4"
+          >
+            <ProductCard product={product} />
+          </div>
+        ))}
+      </div>
+    ) : (
+      /* Grid view */
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {productsData.map((product: any) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+    )}
+  </>
+)}
+
     </div>
   );
 }

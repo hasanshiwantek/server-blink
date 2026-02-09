@@ -14,9 +14,9 @@ import {
 const ProductLeft = ({ images, selectedImage, setSelectedImage }: any) => {
   return (
     <div className="product-left flex flex-col  w-full md:px-0 px-10 lg:w-[50%]">
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-8 items-center">
         {/* Main Image */}
-        <figure className="border-1 border-[#8b8b8b]  rounded-2xl flex items-center justify-center bg-white p-4 w-full h-auto aspect-square lg:w-[90%]  lg:h-[455px]">
+        <figure className="border-1 border-[#8b8b8b]  rounded-2xl flex items-center justify-center bg-white p-4 w-full h-auto aspect-square lg:w-[76.7%]  lg:h-[455px]">
           <Image
             src={selectedImage || "/default-product-image.svg"}
             alt="Main product image"
@@ -31,7 +31,7 @@ const ProductLeft = ({ images, selectedImage, setSelectedImage }: any) => {
         </figure>
 
         {/* Thumbnails - Only show if multiple images */}
-        {images && images.length > 1 && (
+        {/* {images && images.length > 1 && (
           <div className="flex gap-2 overflow-x-auto">
             {images.map((img: string, index: number) => (
               <button
@@ -54,122 +54,122 @@ const ProductLeft = ({ images, selectedImage, setSelectedImage }: any) => {
               </button>
             ))}
           </div>
-        )}
+        )} */}
 
         <TooltipProvider>
           {/* Trust Badges */}
-          <div className="flex items-center justify-between gap-0 border-2 border-[#545454] mt-2">
-            {/* Trustpilot Badge */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex flex-col items-center flex-1 border-r-2  border-[#545454] px-2">
-                  <div className="w-[60] h-[60] sm:w-[60] sm:h-[60] mb-2 flex items-center justify-center">
-                    <Image
-                      src={img1}
-                      alt="Trustpilot"
-                      width={60}
-                      height={60}
-                      className="w-[60] h-[60] sm:w-[60] sm:h-[60] object-contain"
-                    />
-                  </div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent
-                side="top"
-                className="bg-[#3d3d3d] text-white px-4 py-2 rounded-md max-w-[280px] text-base"
-              >
-                <p>
-                  A well-known review website is Trustpilot. It is used by
-                  companies of all sizes, from small local businesses to large
-                  international corporations.
-                </p>
-              </TooltipContent>
-            </Tooltip>
+    <div className="flex items-center gap-0 border-2 border-[#545454] mt-2 w-fit mx-auto overflow-x-auto">
+  {/* Trustpilot Badge */}
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <div className="flex flex-col items-center border-r-2 border-[#545454]">
+        <div className="w-[60px] h-[60px] sm:w-[75px] sm:h-[75px] md:w-[90px] md:h-[90px] flex items-center justify-center flex-shrink-0">
+          <Image
+            src={img1}
+            alt="Trustpilot"
+            width={90}
+            height={90}
+            className="w-full h-full object-contain"
+          />
+        </div>
+      </div>
+    </TooltipTrigger>
+    <TooltipContent
+      side="top"
+      className="bg-[#3d3d3d] text-white px-4 py-2 rounded-md max-w-[280px] text-base"
+    >
+      <p>
+        A well-known review website is Trustpilot. It is used by
+        companies of all sizes, from small local businesses to large
+        international corporations.
+      </p>
+    </TooltipContent>
+  </Tooltip>
 
-            {/* Fast Shipping Badge */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex flex-col items-center flex-1 border-r-2  border-[#545454]  px-2">
-                  <div className="w-[60] h-[60] sm:w-[60] sm:h-[60] mb-2 flex items-center justify-center">
-                    <Image
-                      src={img2}
-                      alt="Fast Shipping"
-                      width={60}
-                      height={60}
-                      className="w-[60] h-[60] sm:w-[60] sm:h-[60] object-contain"
-                    />
-                  </div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent
-                side="top"
-                className="bg-[#3d3d3d] text-white px-4 py-2 rounded-md max-w-[280px] text-base"
-              >
-                <p>
-                  Express shipping is available. Get your product delivered in
-                  as fast as one day
-                </p>
-              </TooltipContent>
-            </Tooltip>
+  {/* Fast Shipping Badge */}
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <div className="flex flex-col items-center border-r-2 border-[#545454]">
+        <div className="w-[60px] h-[60px] sm:w-[75px] sm:h-[75px] md:w-[90px] md:h-[90px] flex items-center justify-center flex-shrink-0">
+          <Image
+            src={img2}
+            alt="Fast Shipping"
+            width={90}
+            height={90}
+            className="w-full h-full object-contain"
+          />
+        </div>
+      </div>
+    </TooltipTrigger>
+    <TooltipContent
+      side="top"
+      className="bg-[#3d3d3d] text-white px-4 py-2 rounded-md max-w-[280px] text-base"
+    >
+      <p>
+        Express shipping is available. Get your product delivered in
+        as fast as one day
+      </p>
+    </TooltipContent>
+  </Tooltip>
 
-            {/* Easy Return Badge */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex flex-col items-center flex-1 border-r-2  border-[#545454]  px-2">
-                  <div className="w-[60] h-[60] sm:w-[60] sm:h-[60] mb-2 flex items-center justify-center">
-                    <Image
-                      src={img3}
-                      alt="Easy Return"
-                      width={60}
-                      height={60}
-                      className="w-[60] h-[60] sm:w-[60] sm:h-[60] object-contain"
-                    />
-                  </div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent
-                side="top"
-                className="bg-[#3d3d3d] text-white px-4 py-2 rounded-md max-w-[280px] text-base"
-              >
-                <p>
-                  Have peace of mind knowing that *replacements/refunds are done
-                  promptly
-                </p>
-              </TooltipContent>
-            </Tooltip>
+  {/* Easy Return Badge */}
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <div className="flex flex-col items-center border-r-2 border-[#545454]">
+        <div className="w-[60px] h-[60px] sm:w-[75px] sm:h-[75px] md:w-[90px] md:h-[90px] flex items-center justify-center flex-shrink-0">
+          <Image
+            src={img3}
+            alt="Easy Return"
+            width={90}
+            height={90}
+            className="w-full h-full object-contain"
+          />
+        </div>
+      </div>
+    </TooltipTrigger>
+    <TooltipContent
+      side="top"
+      className="bg-[#3d3d3d] text-white px-4 py-2 rounded-md max-w-[280px] text-base"
+    >
+      <p>
+        Have peace of mind knowing that *replacements/refunds are done
+        promptly
+      </p>
+    </TooltipContent>
+  </Tooltip>
 
-            {/* Secure Payment Badge */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex flex-col items-center flex-1 px-2">
-                  <div className="w-[60] h-[60] sm:w-[60] sm:h-[60] mb-2 flex items-center justify-center">
-                    <Image
-                      src={img4}
-                      alt="Secure Payment"
-                      width={60}
-                      height={60}
-                      className="w-[60] h-[60] sm:w-[60] sm:h-[60] object-contain"
-                    />
-                  </div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent
-                side="top"
-                className="bg-[#3d3d3d] text-white px-4 py-2 rounded-md max-w-[280px] text-base"
-              >
-                <p className="mb-2">
-                  Protects both users and merchants from the threats posed by
-                  fraudulent payments. Accepted Payment Cards:
-                </p>
-                <ul className="list-none space-y-1">
-                  <li>Visa</li>
-                  <li>Mastercard</li>
-                  <li>American Express</li>
-                  <li>Discover</li>
-                </ul>
-              </TooltipContent>
-            </Tooltip>
-          </div>
+  {/* Secure Payment Badge */}
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <div className="flex flex-col items-center">
+        <div className="w-[60px] h-[60px] sm:w-[75px] sm:h-[75px] md:w-[90px] md:h-[90px] flex items-center justify-center flex-shrink-0">
+          <Image
+            src={img4}
+            alt="Secure Payment"
+            width={90}
+            height={90}
+            className="w-full h-full object-contain"
+          />
+        </div>
+      </div>
+    </TooltipTrigger>
+    <TooltipContent
+      side="top"
+      className="bg-[#3d3d3d] text-white px-4 py-2 rounded-md max-w-[280px] text-base"
+    >
+      <p className="mb-2">
+        Protects both users and merchants from the threats posed by
+        fraudulent payments. Accepted Payment Cards:
+      </p>
+      <ul className="list-none space-y-1">
+        <li>Visa</li>
+        <li>Mastercard</li>
+        <li>American Express</li>
+        <li>Discover</li>
+      </ul>
+    </TooltipContent>
+  </Tooltip>
+</div>
         </TooltipProvider>
       </div>
     </div>

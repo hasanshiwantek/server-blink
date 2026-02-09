@@ -121,7 +121,7 @@ const CategoriesSidebar: React.FC<CategoriesSidebarProps> = ({ activeCategoryId 
         <h2 className="text-[15px] font-bold text-white ">SHOP BY CATEGORY</h2>
       </div>
 
-      <div className="py-2 bg-white text-[#545454]">
+      <div className="py-2 px-2 bg-white text-[#545454]">
         {categories.map((category) => (
           <CategoryItem
             key={category.id}
