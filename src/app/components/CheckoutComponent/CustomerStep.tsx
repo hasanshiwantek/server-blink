@@ -81,7 +81,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
             )}
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <input
               type="checkbox"
               id="newsletter"
@@ -91,7 +91,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
             <label htmlFor="newsletter" className="text-base text-gray-700">
               Subscribe to our newsletter.
             </label>
-          </div>
+          </div> */}
 
           <div className="text-base text-gray-700">
             Already have an account?{" "}

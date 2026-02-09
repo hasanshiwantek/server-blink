@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -15,6 +15,7 @@ import {
   FieldErrors,
   Control,
   Controller,
+  useWatch,
 } from "react-hook-form";
 
 interface ShippingStepProps {
@@ -48,8 +49,27 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   onEdit,
   shippingInfo,
 }) => {
+  // Watch form values to check if shipping address is complete
+  const firstName = useWatch({ control, name: "firstName" });
+  const lastName = useWatch({ control, name: "lastName" });
+  const address1 = useWatch({ control, name: "address1" });
+  const city = useWatch({ control, name: "city" });
+  const country = useWatch({ control, name: "country" });
+  const zip = useWatch({ control, name: "zip" });
+
+  // Check if all required fields are filled
+  const isShippingComplete = useMemo(() => {
+    return !!(
+      firstName?.trim() &&
+      lastName?.trim() &&
+      address1?.trim() &&
+      city?.trim() &&
+      country?.trim() &&
+      zip?.trim()
+    );
+  }, [firstName, lastName, address1, city, country, zip]);
+
   if (isCompleted && !isActive) {
-    // Show completed state with shipping info and edit button
     return (
       <div className="flex items-start justify-between">
         <div className="text-base text-gray-600">
@@ -287,8 +307,20 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
           Shipping Method
         </h3>
 
+        {!isShippingComplete && (
+          <p className="text-sm text-amber-600 mb-3 bg-amber-50 p-3 rounded border border-amber-200">
+            Please complete all required shipping address fields to select a shipping method.
+          </p>
+        )}
+
         <div className="space-y-3">
-          <label className="flex items-start gap-3 border rounded p-4 cursor-pointer has-[:checked]:border-red-600 ">
+          <label
+            className={`flex items-start gap-3 border rounded p-4 ${
+              isShippingComplete
+                ? "cursor-pointer has-[:checked]:border-red-600"
+                : "cursor-not-allowed opacity-50 bg-gray-50"
+            }`}
+          >
             <input
               type="radio"
               value="fedex_economy"
@@ -296,6 +328,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                 required: "Please select a shipping method",
               })}
               className="mt-1"
+              disabled={!isShippingComplete}
             />
             <div className="flex-1">
               <div className="flex items-center gap-2">
@@ -314,7 +347,13 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             </div>
           </label>
 
-          <label className="flex items-start gap-3 border rounded p-4 cursor-pointer has-[:checked]:border-red-600 ">
+          <label
+            className={`flex items-start gap-3 border rounded p-4 ${
+              isShippingComplete
+                ? "cursor-pointer has-[:checked]:border-red-600"
+                : "cursor-not-allowed opacity-50 bg-gray-50"
+            }`}
+          >
             <input
               type="radio"
               value="fedex_priority"
@@ -322,6 +361,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                 required: "Please select a shipping method",
               })}
               className="mt-1"
+              disabled={!isShippingComplete}
             />
             <div className="flex-1">
               <div className="flex items-center gap-2">
