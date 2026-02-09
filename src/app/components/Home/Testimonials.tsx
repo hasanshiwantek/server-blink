@@ -130,13 +130,13 @@ const Testimonials = () => {
         />
         <p className="mb-1 font-[500]">{review.dateOfExperience}</p>
       </div>
-    <Link href={review?.url} target="_blank">
-  <h2 className="text-xl text-black font-bold hover:text-blue-600">
-    <span className="inline-block border-b border-black overflow-hidden whitespace-nowrap text-ellipsis max-w-72">
-      {review?.reviewHeading}
-    </span>
-  </h2>
-</Link>
+      <Link href={review?.url} target="_blank">
+        <h2 className="text-xl text-black font-bold hover:text-blue-600">
+          <span className="inline-block border-b border-black overflow-hidden whitespace-nowrap text-ellipsis max-w-72">
+            {review?.reviewHeading}
+          </span>
+        </h2>
+      </Link>
 
 
       <div
@@ -149,8 +149,8 @@ const Testimonials = () => {
         {review?.reviewContent ? review?.reviewContent : "No review content"}
       </div>
       <p className="text-black">
-  <span className="font-bold">Date of Experience:</span> {review.dateOfExperience}
-</p>
+        <span className="font-bold">Date of Experience:</span> {review.dateOfExperience}
+      </p>
 
       <p className="mb-2">{review.reviewer}</p>
     </div>
@@ -160,9 +160,9 @@ const Testimonials = () => {
     <div>
       {/* Header */}
       <header className="text-left mb-4 bg-[#393939] border-b border-gray-400">
-               <h2 className="font-bold text-xl text-white p-3 flex-1">
-                 REVIEWS
-               </h2>
+        <h2 className="font-bold text-xl text-white p-3 flex-1">
+          REVIEWS
+        </h2>
 
       </header>
 
@@ -196,7 +196,7 @@ const Testimonials = () => {
         </div>
 
         {/* Carousel */}
-        <div className="card w-[81%] relative">
+        <div className="w-full lg:w-[81%] relative">
           {reviewsLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4 animate-pulse">
               {Array.from({ length: visibleItems }).map((_, index) => (
@@ -212,8 +212,8 @@ const Testimonials = () => {
               ))}
             </div>
           ) : reviewsError ? (
-            <div className="flex flex-col items-center justify-center gap-4 bg-white border rounded-md p-8 text-center">
-              <p className="h5-regular text-red-600">{reviewsError}</p>
+            <div className="flex flex-col items-center justify-center gap-4 bg-white border rounded-md p-8 text-center w-full max-w-full overflow-hidden">
+              <p className="h5-regular text-red-600 break-words w-full">{reviewsError}</p>
               <button
                 onClick={() => dispatch(fetchReviews())}
                 className="btn-outline-primary !px-6 !py-3 !text-base"
@@ -229,25 +229,25 @@ const Testimonials = () => {
               </p>
             </div>
           ) : (
- <Carousel
-  value={reviews}
-  numVisible={visibleItems}
-  numScroll={1}
-  responsiveOptions={responsiveOptions.map((r) => ({
-    breakpoint: r.breakpoint + "px",
-    numVisible: r.numVisible,
-    numScroll: 1,
-  }))}
-  circular
-  autoplayInterval={4000}
-  itemTemplate={reviewTemplate}
-  showIndicators={false}
-  showNavigators={false}
-/>
+            <Carousel
+              value={reviews}
+              numVisible={visibleItems}
+              numScroll={1}
+              responsiveOptions={responsiveOptions.map((r) => ({
+                breakpoint: r.breakpoint + "px",
+                numVisible: r.numVisible,
+                numScroll: 1,
+              }))}
+              circular
+              autoplayInterval={4000}
+              itemTemplate={reviewTemplate}
+              showIndicators={false}
+              showNavigators={false}
+            />
 
 
           )}
-  </div>
+        </div>
       </div>
     </div>
   );
