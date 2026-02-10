@@ -102,10 +102,10 @@ const ReturnOrder = () => {
             <div className="w-full max-w-[128px] h-32 relative flex-shrink-0">
               <Image
                 src={
-                  order?.products?.[0]?.images?.[0] ||
+                order?.product?.[1]?.image?.[0]?.path ||  order?.product?.[0]?.images?.[0]?.path ||
                   "/default-product-image.svg"
                 }
-                alt={order?.products?.[0]?.name || "Product Image"}
+                alt={order?.product?.[0]?.name || "Product Image"}
                 fill
                 className="object-contain border rounded-md"
               />
@@ -113,18 +113,22 @@ const ReturnOrder = () => {
 
             {/* Product Details */}
             <div className="flex flex-col items-center md:items-start justify-center w-full">
-              <Link href={`/my-account/orders/${order?.orderNumber || ""}`}>
+              {/* <Link href={`/my-account/orders/${order?.orderNumber || ""}`}> */}
                 <p className="mb-1 text-xl text-red-600 hover:text-red-700 transition-colors duration-200">
                   Order #{order?.orderNumber || "N/A"}
                 </p>
-              </Link>
-              <p className="text-sm md:text-[14px]">
-                {order?.products?.length || 0} product
-                {order?.products?.length > 1 ? "s" : ""} totaling $
-                {order?.totalAmount
-                  ? Number(order.totalAmount).toFixed(2)
-                  : "0.00"}
-              </p>
+              {/* </Link> */}
+             <p className="text-sm md:text-[14px]">
+  {order?.product?.length || 0} product
+  {order?.product?.length > 1 ? "s" : ""} totaling $
+  {(
+    order?.product?.reduce(
+      (total:any, item:any) => total + Number(item?.price || 0),
+      0
+    ) || 0
+  ).toFixed(2)}
+</p>
+
 
               {/* Return Info */}
               <div className="flex text-center md:text-left flex-wrap gap-6 md:gap-2 mt-2 w-full">
