@@ -646,8 +646,9 @@ const CheckoutForm = () => {
       const orderData = await placeOrder({ ...data, paymentIntentId });
       skipEmptyCartCheckRef.current = true;
       dispatch(setLastOrder(orderData));
-      dispatch(clearCart());
-      router.push("/order-success");
+dispatch(clearCart());
+dispatch(removeCoupon());
+router.push("/order-success");
     } catch (err: any) {
       console.error("❌ Error processing order:", err);
       const errorMessage =
