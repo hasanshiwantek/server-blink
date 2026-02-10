@@ -85,10 +85,10 @@ const OrderProduct = () => {
               <div className="w-full max-w-[128px] h-32 relative flex-shrink-0">
                 <Image
                   src={
-                    item?.products?.[0]?.images?.[0] ||
+                    item?.products?.[0]?.images?.[0] || item?.products?.[1]?.images?.[0] ||
                     "/default-product-image.svg"
                   }
-                  alt={item?.products?.[0]?.name || "Product Image"}
+                  alt={item?.products?.[0]?.name || item?.products?.[1]?.name || "Product Image"}
                   fill
                   className="object-contain border rounded-md"
                 />

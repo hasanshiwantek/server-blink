@@ -99,6 +99,7 @@ const CheckoutForm = () => {
   const { appliedCoupon, discountAmount } = useAppSelector(
     (state: RootState) => state.coupon
   );
+
   const [promoCode, setPromoCode] = useState("");
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -319,6 +320,7 @@ const CheckoutForm = () => {
       country: data.country,
       paymentMethod: data.paymentMethod,
       shippingMethod: data.shippingMethod,
+      discountAmount: discountAmount ? finalTotal : 0,
       shippingCost: shipping,
       comments: data.orderComment || "",
       paymentIntentId: data.paymentIntentId ?? "",
@@ -399,7 +401,7 @@ const CheckoutForm = () => {
         skipEmptyCartCheckRef.current = true;
         dispatch(setLastOrder(orderData));
         dispatch(clearCart());
-
+       dispatch(removeCoupon());
         router.push("/order-success");
       } catch (err: any) {
         console.error("❌ Wallet payment failed:", err);
