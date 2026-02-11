@@ -8,6 +8,7 @@ interface ReturnItemsModalProps {
   isOpen: boolean;
   onClose: () => void;
   orderId: any;
+  isSubmit?: boolean;
 }
 
 interface OrderData {
@@ -67,6 +68,7 @@ const ReturnItemsModal: React.FC<ReturnItemsModalProps> = ({
   isOpen,
   onClose,
   orderId,
+  isSubmit,
 }) => {
   const [returnReason, setReturnReason] = useState("");
   const [returnAction, setReturnAction] = useState("");
@@ -80,11 +82,17 @@ const ReturnItemsModal: React.FC<ReturnItemsModalProps> = ({
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  
   useEffect(() => {
     const loadOrderDetails = async () => {
       if (!orderId) {
         setError("Order ID not found");
+        setLoading(false);
+        return;
+      }
+
+      // Check if already returned
+      if (isSubmit) {
         setLoading(false);
         return;
       }
@@ -121,7 +129,7 @@ const ReturnItemsModal: React.FC<ReturnItemsModalProps> = ({
     if (isOpen) {
       loadOrderDetails();
     }
-  }, [orderId, isOpen, dispatch]);
+  }, [orderId, isOpen, dispatch, isSubmit]);
 
   // Reset form when modal closes
   useEffect(() => {
@@ -204,8 +212,41 @@ const ReturnItemsModal: React.FC<ReturnItemsModalProps> = ({
             </div>
           )}
 
+          {/* Already Returned State */}
+          {!loading && isSubmit && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-8 text-center">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-yellow-100">
+                <svg
+                  className="h-10 w-10 text-yellow-600"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+              <p className="text-yellow-800 text-xl font-semibold mb-2">
+                Return Already Submitted
+              </p>
+              <p className="text-gray-700 mb-6">
+                You have already submitted a return request for this order.
+              </p>
+              <button
+                onClick={onClose}
+                className="px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition font-semibold"
+              >
+                Close
+              </button>
+            </div>
+          )}
+
           {/* Error State */}
-          {error && !loading && (
+          {error && !loading && !isSubmit && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
               <p className="text-red-600 text-lg font-medium mb-2">
                 Error Loading Order
@@ -221,7 +262,7 @@ const ReturnItemsModal: React.FC<ReturnItemsModalProps> = ({
           )}
 
           {/* Content */}
-          {!loading && !error && order && (
+          {!loading && !error && !isSubmit && order && (
             <>
               {/* Table Header */}
               <div className="hidden md:grid grid-cols-12 gap-4 pb-2 border-b border-gray-300 mb-6">
