@@ -49,7 +49,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     product.image?.[1]?.path ||
     "/default-product-image.svg";
   const brandSlug =
-  typeof product.brand === "object" ? product.brand.slug : undefined;
+  typeof product.brand === "object" ? product?.brand?.slug : undefined;
 
 
   return (
