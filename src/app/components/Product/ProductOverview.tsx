@@ -85,8 +85,8 @@ const ProductOverview = ({ product }: { product: any }) => {
         ? `${product.dimensions.weight} lbs`
         : "N/A",
     ],
-    ["MSRP", product?.msrp ? `$${product.msrp}` : "N/A"],
-    ["Price", product?.price ? `$${product.price}` : "N/A"],
+    // ["MSRP", product?.msrp ? `$${product.msrp}` : "N/A"],
+    // ["Price", product?.price ? `$${product.price}` : "N/A"],
     ["Condition", product?.showCondition ? "Yes" : "N/A"],
     ["Availability", product?.availabilityText || "N/A"],
     ["Stock", product?.currentStock ?? "N/A"],
