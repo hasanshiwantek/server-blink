@@ -66,17 +66,33 @@ useEffect(() => {
           aria-label="breadcrumb"
           className="flex items-center justify-center lg:justify-normal space-x-2 text-[11px] text-[#393939] lg:mb-7 sm:mb-7 mb-7 flex-wrap"
         >
-            <h2 className=""><span
-                  className="text-[11px]"
-                  itemProp="name"
-                >
-                  Home
-                </span> {" "} <span className="mt-2 mx-3 text-gray-400 text-[11px]" aria-hidden="true">/</span> {" "} <span
-                  className="!text-[#D42020] text-[11px]"
-                  itemProp="name"
-                >
-               {product?.sku}
-                </span></h2>
+          <h2 className="">
+  <span className="text-[11px]" itemProp="name">
+    Home
+  </span>
+
+  {product?.categoryHierarchy?.map((cat:any, index:any) => (
+    <span key={cat.id}>
+      <span
+        className="mt-2 mx-3 text-gray-400 text-[11px]"
+        aria-hidden="true"
+      >
+        /
+      </span>
+
+      <span
+        className={`text-[11px] ${
+          index === product.categoryHierarchy.length - 1
+            ? "!text-[#D42020]"
+            : "text-black"
+        }`}
+        itemProp="name"
+      >
+        {cat.name}
+      </span>
+    </span>
+  ))}
+</h2>
           {/* <span>Home</span>
           {product.categoryHierarchy?.map((data: any, index: number) => (
           ))}
