@@ -7,6 +7,9 @@ import { useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 const Cart = () => {
     const cartItems = useAppSelector((state: RootState) => state?.cart?.items);
+    const cartItemCount =
+      cartItems?.reduce((sum: number, item: any) => sum + (item?.quantity ?? 1), 0) ??
+      0;
   return (
    <main className="flex flex-col gap-8 w-full py-5">
   {/* Container: max-width 1170px, centered */}
@@ -26,7 +29,7 @@ const Cart = () => {
                  Your Cart
                 </span></h2>
 
-      <h1 className="text-2xl lg:text-4xl mt-5">Your Cart ({cartItems?.length} items)
+      <h1 className="text-2xl lg:text-4xl mt-5">Your Cart ({cartItemCount} items)
                  </h1>
     </div>
 

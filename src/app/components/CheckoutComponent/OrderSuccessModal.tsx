@@ -160,7 +160,7 @@ export default function OrderSuccessPage() {
         {orderData?.discountAmount && orderData?.discountAmount > 0 && (
           <div className="flex justify-between text-xl font-bold text-gray-900 border-t-2 border-gray-300 pt-4">
             <span>Total Discount</span>
-            <span>-${(orderData.total - orderData?.discountAmount).toFixed(2)}</span>
+              -${(Number(orderData.subTotal) -Number(orderData.discountAmount)).toFixed(2)}
           </div>)}
         </div>
       </div>
