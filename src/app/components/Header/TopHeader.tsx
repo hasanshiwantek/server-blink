@@ -252,6 +252,8 @@ const TopHeader = () => {
   const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const cartItemCount =
+    cart?.reduce((sum, item: any) => sum + (item?.quantity ?? 1), 0) ?? 0;
 
   const handleLogout = () => {
     const confirm = window.confirm("Confirm Logout?");
@@ -398,7 +400,7 @@ const TopHeader = () => {
                   <div className="bg-red-600 p-2 rounded hover:bg-red-700 transition">
                     <FaShoppingCart className="w-7 h-7 text-white" />
                     <span className="absolute -top-1 -right-1 bg-white text-red-600 text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                      {cart?.length || "0"}
+                      {cartItemCount || "0"}
                     </span>
                   </div>
                 </Link>

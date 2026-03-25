@@ -34,6 +34,10 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
 }) => {
   const [showPromo, setShowPromo] = useState(false);
   const [discountOpen, setDiscountOpen] = useState(false);
+  const cartItemCount = cart.reduce(
+    (sum, item: any) => sum + (item?.quantity ?? 1),
+    0
+  );
 
   return (
     <div className="bg-white border-[1px] border-[#8b8b8b] rounded-sm shadow-sm py-6 h-fit sticky top-9">
@@ -50,7 +54,7 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
       </div>
 
       <div className="mb-4 text-sm text-gray-600 px-6">
-        {cart.length} Item{cart.length !== 1 ? "s" : ""}
+        {cartItemCount} Item{cartItemCount !== 1 ? "s" : ""}
       </div>
 
       {/* Cart Items */}
