@@ -12,12 +12,12 @@ import { addRecentView } from "@/redux/slices/recentSlice";
 const ProductCard = ({ product }: { product: any }) => {
   const [quantity, setQuantity] = useState(1);
   const dispatch = useAppDispatch();
-  
+
   const addtocart = () => {
     dispatch(addToCart(product));
     toast.success(`${product?.name} added to cart!`);
   };
-  
+
   const images =
     product?.image?.length > 0
       ? product?.image?.map((img: any) => img?.path)
@@ -25,26 +25,26 @@ const ProductCard = ({ product }: { product: any }) => {
 
   const [selectedImage, setSelectedImage] = useState(images[0]);
 
-useEffect(() => {
-  if (!product) return;
+  useEffect(() => {
+    if (!product) return;
 
-  dispatch(
-    addRecentView({
-      id: product.id,
-      sku: product.sku,
-      slug: product.slug,
+    dispatch(
+      addRecentView({
+        id: product.id,
+        sku: product.sku,
+        slug: product.slug,
 
-      brand: product.brand,
+        brand: product.brand,
 
-      name: product.name,
+        name: product.name,
 
-      price: product.price,
-      msrp: product.msrp,
+        price: product.price,
+        msrp: product.msrp,
 
-      image: product.image,
-    })
-  );
-}, [product, dispatch]);
+        image: product.image,
+      })
+    );
+  }, [product, dispatch]);
 
 
   const increment = () => {
@@ -62,37 +62,36 @@ useEffect(() => {
     <div className="max-w-full mx-auto">
       <div className=" rounded-xl w-full px-0">
         {/* Breadcrumb */}
-     <nav
+        <nav
           aria-label="breadcrumb"
           className="flex items-center justify-center lg:justify-normal space-x-2 text-[11px] text-[#393939] lg:mb-7 sm:mb-7 mb-7 flex-wrap"
         >
           <h2 className="">
-  <span className="text-[11px]" itemProp="name">
-    Home
-  </span>
+            <span className="text-[11px]" itemProp="name">
+              Home
+            </span>
 
-  {product?.categoryHierarchy?.map((cat:any, index:any) => (
-    <span key={cat.id}>
-      <span
-        className="mt-2 mx-3 text-gray-400 text-[11px]"
-        aria-hidden="true"
-      >
-        /
-      </span>
+            {product?.categoryHierarchy?.map((cat: any, index: any) => (
+              <span key={cat.id}>
+                <span
+                  className="mt-2 mx-3 text-gray-400 text-[11px]"
+                  aria-hidden="true"
+                >
+                  /
+                </span>
 
-      <span
-        className={`text-[11px] ${
-          index === product.categoryHierarchy.length - 1
-            ? "!text-[#D42020]"
-            : "text-black"
-        }`}
-        itemProp="name"
-      >
-        {cat.name}
-      </span>
-    </span>
-  ))}
-</h2>
+                <span
+                  className={`text-[11px] ${index === product.categoryHierarchy.length - 1
+                      ? "!text-[#D42020]"
+                      : "text-black"
+                    }`}
+                  itemProp="name"
+                >
+                  {cat.name}
+                </span>
+              </span>
+            ))}
+          </h2>
           {/* <span>Home</span>
           {product.categoryHierarchy?.map((data: any, index: number) => (
           ))}
