@@ -13,7 +13,7 @@ import { RootState } from "@/redux/store";
 import BulkInquiryModal from "../modal/BulkInquiryModal";
 
 const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const cart = useAppSelector((state: RootState) => state.cart.items);
@@ -35,7 +35,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
 
   return (
     <>
-    <section className="product-middle flex flex-col h-full w-[80%] max-w-full  xl:max-w-[50%] 2xl:max-w-[50%] ">
+      <section className="product-middle flex flex-col h-full w-[80%] max-w-full  xl:max-w-[50%] 2xl:max-w-[50%] ">
         {/* Title Section */}
         <div className="flex flex-col gap-2 mb-4">
           <h1 className="font-bold text-[18px] sm:text-[18px] md:text-[18px] lg:text-[20px] xl:text-[20px] 2xl:text-[20px] leading-tight text-[#545454] border-b-1 border-[#8b8b8b] pb-3">
@@ -61,9 +61,9 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
                   </span>
                   <span className="">
                     <ProductPrice
-                      price={Number(product?.retailPrice)}
+                      price={Number(product?.msrp)}
                       inline={true}
-                      className="!text-[16px] text-[#7b7b7b] font-normal !line-through" 
+                      className="!text-[16px] text-[#7b7b7b] font-normal !line-through"
                     />
                   </span>
                 </div>
@@ -83,24 +83,24 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
                     price={Number(product?.price)}
                     inline={true}
                     textColor="#545454"
-                      className="text-[#545454] font-bold !text-[22px]"
+                    className="text-[#545454] font-bold !text-[22px]"
                   />
                 </span>
               )
             )}
 
-          {Number(product?.msrp || 0) > 0 && (
-  <span className="text-[#545454] text-[13px] sm:text-[16px]">
-    (You save{" "}
-    <ProductPrice
-      price={Number(product.msrp)}
-      inline={true}
-      textColor="#545454"
-      className="!text-[13px] sm:!text-[16px]"
-    />
-    )
-  </span>
-)}
+            {Number(product?.retailPrice || 0) > 0 && (
+              <span className="text-[#545454] text-[13px] sm:text-[16px]">
+                (You save{" "}
+                <ProductPrice
+                  price={Number(product?.retailPrice)}
+                  inline={true}
+                  textColor="#545454"
+                  className="!text-[13px] sm:!text-[16px]"
+                />
+                )
+              </span>
+            )}
 
           </div>
         </div>
@@ -176,7 +176,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
             <a
               href="#"
               className="text-[var(--primary-color)] hover:underline font-normal"
-               onClick={() => setIsModalOpen(true)}
+              onClick={() => setIsModalOpen(true)}
             >
               Request A Bulk Quote
             </a>
@@ -205,12 +205,20 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
                 {product?.sku || "N/A"}
               </span>
             </div>
+            <div className="flex gap-2">
+              <span className="text-[12px] sm:text-[14px] font-bold text-[#545454] ">
+                Condition:
+              </span>
+              <span className="text-[12px] sm:text-[14px] text-[#545454]">
+                {product?.condition || "N/A"}
+              </span>
+            </div>
 
             <div className="flex gap-2">
               <span className="text-[12px] sm:text-[14px] font-bold text-[#545454] ">
                 Availability:
               </span>
-              <span  className="text-[12px] sm:text-[14px] text-[#545454]">
+              <span className="text-[12px] sm:text-[14px] text-[#545454]">
                 {product?.availabilityText || "N/A"}
               </span>
             </div>
@@ -225,7 +233,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
             </div>
 
             <div className="flex gap-2">
-              <span  className="text-[12px] sm:text-[14px] font-bold text-[#545454] ">
+              <span className="text-[12px] sm:text-[14px] font-bold text-[#545454] ">
                 Shipping:
               </span>
               <span className="text-[12px] sm:text-[14px] text-[#545454]">
@@ -234,20 +242,20 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
             </div>
           </div>
         </div>
-    </section>
-        {/* Bulk Inquiry Modal */}
+      </section>
+      {/* Bulk Inquiry Modal */}
       <BulkInquiryModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         product={
           product
             ? {
-                name: product.name,
-                image:  product.image?.[1]?.path ||
-    product.image?.[0]?.path ||
-    "/default-product-image.svg",
-                sku: product.sku ?? "",
-              }
+              name: product.name,
+              image: product.image?.[1]?.path ||
+                product.image?.[0]?.path ||
+                "/default-product-image.svg",
+              sku: product.sku ?? "",
+            }
             : undefined
         }
       />
