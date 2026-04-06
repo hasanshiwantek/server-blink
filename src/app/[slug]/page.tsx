@@ -78,9 +78,8 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params; // <-- await here
-  console.log("Slug: ", slug);
   // 🔥 Parallel data fetching
- const product = await fetchProductBySlug(slug);
+  const product = await fetchProductBySlug(slug);
 
   if (!product) {
     notFound(); // 🔥 THIS IS THE KEY
@@ -102,35 +101,35 @@ export default async function ProductPage({
         />
       )}
 
-<main
-  role="main"
-  className="w-full max-w-[1170px] mx-auto px-4 lg:px-6 xl:px-0"
->
-  <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
-    {/* Left Sidebar - Fixed 235px on desktop */}
-    <aside className="hidden lg:block lg:w-[20%] flex-shrink-0">
-      <CategoriesSidebar activeCategoryId={product?.categoryIds[0]} />
-      <BrandsSidebar activeBrandId={product?.brand?.id} />
-    </aside>
-
-    {/* Main Product Content - Fixed 912px max on desktop */}
-    <article className="w-full lg:max-w-[78%]">
-      <ProductCard product={product} />
-      <ProductOverview product={product} />  
-
-      {/* Client-side component */}
-      <Suspense
-        fallback={
-          <div className="py-10 text-center text-sm text-gray-500">
-            Loading...
-          </div>
-        }
+      <main
+        role="main"
+        className="w-full max-w-[1170px] mx-auto px-4 lg:px-6 xl:px-0"
       >
-        <ProductExtras product={product} />
-      </Suspense>
-    </article>
-  </div>
-</main>
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
+          {/* Left Sidebar - Fixed 235px on desktop */}
+          <aside className="hidden lg:block lg:w-[20%] flex-shrink-0">
+            <CategoriesSidebar activeCategoryId={product?.categoryIds[0]} />
+            <BrandsSidebar activeBrandId={product?.brand?.id} />
+          </aside>
+
+          {/* Main Product Content - Fixed 912px max on desktop */}
+          <article className="w-full lg:max-w-[78%]">
+            <ProductCard product={product} />
+            <ProductOverview product={product} />
+
+            {/* Client-side component */}
+            <Suspense
+              fallback={
+                <div className="py-10 text-center text-sm text-gray-500">
+                  Loading...
+                </div>
+              }
+            >
+              <ProductExtras product={product} />
+            </Suspense>
+          </article>
+        </div>
+      </main>
     </>
   );
 }
