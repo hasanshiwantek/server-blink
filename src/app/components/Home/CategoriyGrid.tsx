@@ -23,14 +23,15 @@ interface Category {
   image?: string;
 }
 
-// Category images mapping - Add your actual category images here
-const categoryImages: { [key: string]: StaticImageData } = {
-  "server-memory": memoryImg,
-  motherboards: motherboardImg,
-  "graphic-cards": gpuImg,
-  "hard-drives": hddImg,
-  "power-supplies": psuImg,
-};
+// 5 categories (slice 0–5) → 5 images in this fixed order; slug ignored so API
+// duplicates / same-looking slugs never force the same asset on two tiles.
+const GRID_CATEGORY_IMAGES: StaticImageData[] = [
+  memoryImg,
+  motherboardImg,
+  gpuImg,
+  hddImg,
+  psuImg,
+];
 const CategoryGrid = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -73,7 +74,8 @@ const CategoryGrid = () => {
         {categories.map((category, index) => {
           // Fourth item (index 3) spans 2 columns
           const isWide = index === 3;
-          const categoryImage = categoryImages[category.slug];
+          const categoryImage =
+            GRID_CATEGORY_IMAGES[index % GRID_CATEGORY_IMAGES.length];
 
           return (
             <Link
@@ -85,17 +87,13 @@ const CategoryGrid = () => {
             >
               {/* Background Image */}
               <div className="absolute inset-0 ">
-                {categoryImage ? (
-                  <Image
-                    src={categoryImage}
-                    alt={category.name}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  />
-                ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900" />
-                )}
+                <Image
+                  src={categoryImage}
+                  alt={category.name}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                />
               </div>
 
               {/* Dark Overlay */}

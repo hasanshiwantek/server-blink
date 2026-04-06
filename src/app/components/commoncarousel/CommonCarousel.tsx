@@ -69,7 +69,7 @@ const scrollRight = () => {
       key={index}
       className="
         flex-shrink-0
-        w-full        /* Mobile: 1 item */
+        w-1/2       /* Mobile: 1 item */
         sm:w-1/3      /* Small screens: 2 items */
         md:w-1/4      /* Medium and above: 4 items */
         flex justify-center
