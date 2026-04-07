@@ -307,7 +307,7 @@ const TopHeader = () => {
           }`}
       >
         <div className="w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto px-4 xl:px-4 2xl:px-2">
-          <div className="flex items-center md:justify-between justify-center gap-4 py-2">
+          <div className="flex items-center md:justify-between justify-center gap-4 sm:py-2">
             {/* Left: Promo Text (hidden when scrolled) */}
             <div
               className={`md:flex hidden items-center whitespace-nowrap space-x-2 md:space-x-3 transition-all duration-300 ${isScrolled ? "hidden" : "flex"
@@ -362,7 +362,7 @@ const TopHeader = () => {
               </div>
 
               {/* User & Auth */}
-              <div className="flex items-center  gap-2">
+              <div className="flex items-center gap-2 ml-16 sm:ml-0">
                 <Link
                   href={
                     auth?.isAuthenticated ? "/my-account/orders" : "/auth/login"
@@ -373,20 +373,20 @@ const TopHeader = () => {
                 {auth?.isAuthenticated ? (
                   <button
                     onClick={handleLogout}
-                    className="font-bold text-[14px] hover:text-gray-300 transition"
+                    className="font-bold text-[12px] sm:text-[14px] hover:text-gray-300 transition"
                   >
                     Logout
                   </button>
                 ) : (
                   <>
                     <Link href="/auth/login">
-                      <button className="font-bold text-[14px] hover:text-gray-300 transition">
+                      <button className="font-bold text-[12px] sm:text-[14px] hover:text-gray-300 transition">
                         Login
                       </button>
                     </Link>
                     <span className="font-bold">or</span>
                     <Link href="/auth/signup">
-                      <button className="font-bold text-[14px] hover:text-gray-300 transition">
+                      <button className="font-bold text-[12px] sm:text-[14px] hover:text-gray-300 transition">
                         Sign Up
                       </button>
                     </Link>

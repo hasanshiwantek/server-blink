@@ -14,13 +14,13 @@ const Navbar: React.FC = () => {
   const cart = useAppSelector((state: RootState) => state.cart.items);
 
   return (
-    <header className="bg-[var(--bg-color)]  sticky top-0 z-50">
+    <header className="bg-[var(--bg-color)]  sticky top-0 z-50 px-4 sm:px-0">
       <nav className="w-full">
         <div className="flex items-center md:justify-between justify-center gap-4 h-20 sm:h-20 lg:h-24 w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-1  2xl:px-2">
           {/* Left: Logo */}
           <div className="flex items-center justify-center flex-shrink-0">
             <Link href={"/"}>
-              <div className="relative w-44 h-35 sm:w-70 sm:h-30 md:w-44 md:h-9 lg:w-48 lg:h-20 xl:w-76 xl:h-18 2xl:w-[253.48px] 2xl:h-[48px]">
+              <div className="relative w-80 h-14 sm:w-70 sm:h-30 md:w-44 md:h-9 lg:w-48 lg:h-20 xl:w-76 xl:h-18 2xl:w-[253.48px] 2xl:h-[48px]">
                 <Image
                   src={navlogo}
                   alt="Logo"
@@ -110,7 +110,7 @@ const Navbar: React.FC = () => {
         {/* Text Banner */}
         <div className="w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto">
           <div className="bg-white p-4 text-center mb-4">
-            <p className="md:text-[14px] text-[12px] font-medium">
+            <p className="md:text-[14px] text-[14px] font-medium">
               We Accept POs from Fortune 1000 Companies, Government Agencies
               (Federal, State, Local), Defense (Military, Air Force, Navy),
               Universities, Schools and Colleges.

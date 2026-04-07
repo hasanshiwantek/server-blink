@@ -88,9 +88,9 @@ const Banner = () => {
         <CarouselContent>
           {bannerSlides.map((slide, index) => (
             <CarouselItem key={slide.id}>
-              <div className="relative h-[320px] md:h-[312px] md:w-[913px] w-full rounded-xs overflow-hidden">
-                {/* Background Image */}
-                <div className="absolute inset-0">
+              <div className="relative flex w-full flex-col overflow-hidden rounded-xs sm:block md:h-[312px] md:w-[913px] sm:h-[320px]">
+                {/* Image (mobile: top only; sm+: full slide background) */}
+                <div className="relative h-[105px] w-full shrink-0 sm:absolute sm:inset-0 sm:h-full">
                   <Image
                     src={slide.image}
                     alt={slide.title}
@@ -101,38 +101,53 @@ const Banner = () => {
                   />
                 </div>
 
-                {/* Gradient Overlay */}
-                <div className={`absolute inset-0 `} />
+                {/* Mobile: copy below image on gray */}
+                <div className="bg-[#393939] px-6 py-5 text-left sm:hidden">
+                  <h1 className="mb-3 text-xl font-bold leading-tight text-white">
+                    {slide.title}
+                  </h1>
+                  <p className="mb-5 max-w-xl text-base font-semibold text-white">
+                    {slide.subtitle}
+                  </p>
+                  <button
+                    type="button"
+                    className="rounded bg-[var(--primary-color)] px-5 py-2 text-base font-bold uppercase tracking-wide text-white shadow-md transition-colors duration-200"
+                  >
+                    {slide.buttonText}
+                  </button>
+                </div>
 
-                {/* Content - Left aligned */}
-                <div className="relative h-full flex items-center px-6 md:px-12 lg:px-16">
-                  <div className="text-left text-white max-w-2xl">
-                    <h1 className="h1-bold mb-3 md:mb-4 drop-shadow-2xl leading-tight">
+                {/* sm+: overlay on image (absolute so it stacks over full-bleed image) */}
+                <div className="absolute inset-0 z-[1] hidden items-center px-6 sm:flex md:px-12 lg:px-16">
+                  <div className="max-w-2xl text-left text-white">
+                    <h1 className="h1-bold mb-3 drop-shadow-2xl md:mb-4 md:leading-tight">
                       {slide.title}
                     </h1>
-                    <p className="text-base md:text-[18px] font-bold mb-6 md:mb-8 text-gray-100 drop-shadow-lg max-w-xl">
+                    <p className="mb-6 max-w-xl text-base font-bold text-gray-100 drop-shadow-lg md:mb-8 md:text-[18px]">
                       {slide.subtitle}
                     </p>
-                    <button className="bg-[var(--primary-color)] hover:bg-[var(--primary-color)] text-white font-bold py-2.5 md:py-2 px-5 md:px-5 rounded text-base md:text-[15px] transition-colors duration-200 shadow-xl uppercase tracking-wide">
+                    <button
+                      type="button"
+                      className="rounded bg-[var(--primary-color)] px-5 py-2.5 text-base font-bold uppercase tracking-wide text-white shadow-xl transition-colors duration-200 md:py-2 md:text-[15px]"
+                    >
                       {slide.buttonText}
                     </button>
                   </div>
                 </div>
 
-                {/* Bottom gradient for better dot visibility */}
-                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/40 to-transparent" />
+                <div className="pointer-events-none absolute bottom-0 left-0 right-0 hidden h-20 bg-gradient-to-t from-black/40 to-transparent sm:block" />
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
 
-        {/* Navigation Dots - Bottom Right */}
-        <div className="absolute bottom-4 right-4 md:right-6 flex gap-2 z-10">
+        {/* Navigation Dots - Bottom Right (sits on gray strip on mobile) */}
+        <div className="absolute bottom-0.5 right-0 z-10 flex gap-2 bg-[#CAC9C9] p-2 px-3 sm:bottom-0.5">
           {bannerSlides.map((_, index) => (
             <button
               key={index}
               onClick={() => api?.scrollTo(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              className={`w-4 h-4 rounded-full transition-all duration-300 ${
                 current === index
                   ? "bg-red-600 w-3"
                   : "bg-white/60 hover:bg-white/90"
@@ -142,9 +157,9 @@ const Banner = () => {
           ))}
         </div>
 
-        {/* Arrow Navigation */}
-        <CarouselPrevious className="hidden md:flex left-4 bg-white/10 hover:bg-white/20 border-white/30 text-white" />
-        <CarouselNext className="hidden md:flex right-4 bg-white/10 hover:bg-white/20 border-white/30 text-white" />
+        {/* Arrow Navigation — visible on all breakpoints; vertically center on mobile image */}
+        <CarouselPrevious className="flex size-9 border-white/30 bg-white/10 text-white hover:bg-white/20 sm:size-8 sm:left-4 left-2 top-[110px] z-20 -translate-y-1/2 sm:top-1/2" />
+        <CarouselNext className="flex size-9 border-white/30 bg-white/10 text-white hover:bg-white/20 sm:size-8 sm:right-4 right-2 top-[110px] z-20 -translate-y-1/2 sm:top-1/2" />
       </Carousel>
 
       {/* Promo Banner Below Carousel */}
