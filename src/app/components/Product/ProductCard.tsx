@@ -46,11 +46,10 @@ const ProductCard = ({ product }: { product: any }) => {
     );
   }, [product, dispatch]);
 
-
   const increment = () => {
     if (
-      !product.maxPurchaseQuantity ||
-      quantity < product.maxPurchaseQuantity
+      !product.currentStock ||
+      quantity < product.currentStock
     ) {
       setQuantity(quantity + 1);
     }
@@ -71,7 +70,7 @@ const ProductCard = ({ product }: { product: any }) => {
               Home
             </span>
 
-            {product?.categoryHierarchy?.map((cat: any, index: any) => (
+            {product?.categoryHierarchy?.map((cat: any, index: number) => (
               <span key={cat.id}>
                 <span
                   className="mt-2 mx-3 text-gray-400 text-[11px]"
@@ -82,8 +81,8 @@ const ProductCard = ({ product }: { product: any }) => {
 
                 <span
                   className={`text-[11px] ${index === product.categoryHierarchy.length - 1
-                      ? "!text-[#D42020]"
-                      : "text-black"
+                    ? "!text-[#D42020]"
+                    : "text-black"
                     }`}
                   itemProp="name"
                 >

@@ -22,7 +22,7 @@ export const fetchProducts = async () => {
 
 // Get single product by slug (always fresh)
 export const fetchProductBySlugAndUrl = async (slug?: string) => {
-  console.log("slug", slug);
+  if (!slug) return
   try {
     const res = await fetch(`${baseURL}web/products/get-product-by-url${slug}`, {
       cache: "no-store",
@@ -48,8 +48,6 @@ export const fetchProductBySlugAndUrl = async (slug?: string) => {
   }
 };
 export const fetchProductBySlug = async (slug: string) => {
-  console.log("slug", slug);
-
   try {
     const res = await fetch(`${baseURL}web/products/get-product/${slug}`, {
       cache: "no-store",

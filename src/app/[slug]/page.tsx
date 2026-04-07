@@ -25,11 +25,10 @@ export async function generateMetadata({
   const pathname: any = headersList.get("x-pathname");
 
 
-  // const product = await fetchProductBySlug(slug);
   const product = await fetchProductBySlugAndUrl(pathname);
 
   if (!product) {
-    notFound(); // 🔥 IMPORTANT
+    notFound();
   }
 
   const url = `https://server-blink.vercel.app/${slug}`;
@@ -96,7 +95,6 @@ export default async function ProductPage({
   const pathname: any = headersList.get("x-pathname");
 
   // 🔥 Parallel data fetching
-  // const product = await fetchProductBySlug(slug);
   const product = await fetchProductBySlugAndUrl(pathname);
 
   if (!product) {
