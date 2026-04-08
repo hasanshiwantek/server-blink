@@ -41,7 +41,7 @@ const ContactForm = () => {
             Home
           </Link>
           <span className="text-gray-600">/</span>
-          <span className="text-gray-600">Contact Form</span>
+          <span className="text-[#D40511]">Contact Form</span>
         </div>
       </nav>
 
@@ -58,6 +58,29 @@ const ContactForm = () => {
         </p>
         <p className="text-[1rem] text-[#545454] font-normal">
           Please fill out the form below if you need assistance.
+        </p>
+      </div>
+
+      {/* Intro Text */}
+      <div className="mb-8">
+        <p className="text-[10px] text-black font-normal mb-2">
+          SMS Disclaimer:
+        </p>
+        <p className="text-[10px] text-[#545454] font-normal">
+        By providing my phone number to Server Blink LLC, I agree and acknowledge 
+        that Server Blink may send text messages to my wireless phone number
+         for any purpose. Message frequency will vary, and Message and data 
+         rates may apply. If you need further assistance, please reply “HELP”. 
+         You can also opt out by replying “STOP.” For more information on how 
+         your data will be handled, please visit 
+         <a
+           href="/privacy-Policy"
+           className="text-[#D40511] underline cursor-pointer"
+           target="_blank"
+           rel="noopener noreferrer"
+         >
+           https://www.serverblink.com/privacy-policy.
+         </a>
         </p>
       </div>
 

@@ -15,32 +15,6 @@ export default function SortingBar({
   setFilters,
   filterMeta,
 }: Props) {
-  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedValue = e.target.value;
-    let sortBy = "";
-
-    // Normalize value to match your backend expectation
-    switch (selectedValue) {
-      case "Best selling":
-        sortBy = "bestSelling";
-        break;
-      case "Price: Low to High":
-        sortBy = "priceLowToHigh";
-        break;
-      case "Price: High to Low":
-        sortBy = "priceHighToLow";
-        break;
-      default:
-        sortBy = "bestSelling";
-    }
-
-    setFilters((prev: any) => ({
-      ...prev,
-      sortBy,
-      page: 1, // Reset to page 1 on sort change
-    }));
-  };
-
   // ✅ Build a dynamic title based on filters
   const getFilterTitle = () => {
     const parts: string[] = [];
@@ -118,8 +92,12 @@ export default function SortingBar({
       >
         <option value="">Sort By</option>
         <option value="bestSelling">Best Selling</option>
-        <option value="priceLowToHigh">Low to High</option>
-        <option value="priceHighToLow">High to Low</option>
+        <option value="nameAsc">A TO Z</option>
+        <option value="nameDesc">Z TO A</option>
+        <option value="featured">FEATURE ITEMS</option>
+        <option value="newest">NEWEST ITEMS</option>
+        <option value="priceLowToHigh">PRICE ASSENDING</option>
+        <option value="priceHighToLow">PRICE DESENDING</option>
       </select>
     </div>
 

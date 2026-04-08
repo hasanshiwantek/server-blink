@@ -18,7 +18,7 @@ export default function ProductsClientWrapper({
 }: any) {
   const params = useParams(); // get slug param
   const pathname = usePathname(); // get current path
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<any[]>([]);
   const [pagination, setPagination] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,6 +38,57 @@ export default function ProductsClientWrapper({
     maxPrice: undefined,
     sortBy: "",
   });
+
+  const normalizeProductName = (p: any) => {
+    const name =
+      typeof p?.name === "string" ? p.name : (p?.name?.name as string | undefined);
+    return (name ?? "").toString().toLowerCase().trim();
+  };
+
+  const normalizeFeatured = (p: any) => {
+    return Boolean(p?.isFeatured ?? p?.featured ?? p?.is_featured ?? p?.is_featured_item);
+  };
+
+  const normalizeCreatedAt = (p: any) => {
+    const raw = p?.createdAt ?? p?.created_at ?? p?.created ?? p?.dateCreated;
+    const t = raw ? Date.parse(raw) : NaN;
+    return Number.isFinite(t) ? t : null;
+  };
+
+  const applyClientSort = (items: any[], sortBy?: string) => {
+    const list = [...(items ?? [])];
+    switch (sortBy) {
+      case "nameAsc":
+        return list.sort((a, b) =>
+          normalizeProductName(a).localeCompare(normalizeProductName(b))
+        );
+      case "nameDesc":
+        return list.sort((a, b) =>
+          normalizeProductName(b).localeCompare(normalizeProductName(a))
+        );
+      case "featured":
+        return list.sort((a, b) => Number(normalizeFeatured(b)) - Number(normalizeFeatured(a)));
+      case "newest":
+        return list.sort((a, b) => {
+          const ta = normalizeCreatedAt(a);
+          const tb = normalizeCreatedAt(b);
+          if (ta !== null && tb !== null) return tb - ta;
+          if (ta !== null) return -1;
+          if (tb !== null) return 1;
+          return Number(b?.id ?? 0) - Number(a?.id ?? 0);
+        });
+      case "priceLowToHigh":
+        return list.sort(
+          (a, b) => Number(a?.price ?? 0) - Number(b?.price ?? 0)
+        );
+      case "priceHighToLow":
+        return list.sort(
+          (a, b) => Number(b?.price ?? 0) - Number(a?.price ?? 0)
+        );
+      default:
+        return list;
+    }
+  };
 
   // ✅ Sync filters when URL slug changes (for category pages)
   useEffect(() => {
@@ -90,7 +141,7 @@ export default function ProductsClientWrapper({
         setError(null);
 
         const res = await fetchFilteredProducts(filters);
-        setProducts(res.data || []);
+        setProducts(applyClientSort(res.data || [], filters.sortBy));
         setPagination(res.pagination || null);
       } catch (err: any) {
         console.error("Error fetching products:", err);

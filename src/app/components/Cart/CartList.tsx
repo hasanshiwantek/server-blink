@@ -15,13 +15,7 @@ import { ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 const CartList = () => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state.cart.items);
@@ -227,23 +221,38 @@ const CartList = () => {
       )}
       {/* ShadCN Dialog for Delete Confirmation */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Delete Item</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to remove{" "}
-              <strong>{itemToDelete?.name}</strong> from your cart? This action
-              cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)} className="!p-4 !text-lg">
-              Cancel
-            </Button>
-            <Button variant="destructive" onClick={confirmDelete} className="!p-4 !text-lg">
-              Confirm
-            </Button>
-          </DialogFooter>
+        <DialogContent
+          showCloseButton={false}
+          className="sm:max-w-[520px] border-none p-0"
+        >
+          <div className="bg-white px-6 py-12 sm:px-10 sm:py-14 text-center">
+            <div className="mx-auto mb-6 flex h-28 w-28 items-center justify-center rounded-full border-4 border-[#D42020]">
+              <span className="text-6xl font-extrabold leading-none text-[#D42020]">
+                !
+              </span>
+            </div>
+
+            <p className="text-xl sm:text-2xl font-medium text-[#2d2d2d]">
+              Are you sure you want to delete this item?
+            </p>
+
+            <div className="mt-6 flex items-center justify-center gap-4">
+              <button
+                type="button"
+                onClick={confirmDelete}
+                className="min-w-[85px] bg-[#D42020] px-10 py-3 text-xl font-bold text-white hover:bg-[#b81a1a] transition border-b border-black"
+              >
+                OK
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsDialogOpen(false)}
+                className="min-w-[123px] bg-[#D42020] px-10 py-3 text-xl font-bold text-white hover:bg-[#b81a1a] transition border-b border-black"
+              >
+                CANCEL
+              </button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
