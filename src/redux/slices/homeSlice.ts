@@ -73,7 +73,7 @@ export const fetchReviews = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const res = await axiosInstance.get(
-        "https://widget.advertsedge.com/api/reviews-nts"
+        "https://widget.advertsedge.com/api/reviews-sb"
       );
       return res?.data?.data ?? [];
     } catch (err: any) {
@@ -92,7 +92,7 @@ export const fetchStats = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const res = await axiosInstance.get(
-        "https://widget.advertsedge.com/api/stats-nts"
+        "https://widget.advertsedge.com/api/stats-sb"
       );
       if (res?.data?.status && res?.data?.data) {
         return res.data.data;
