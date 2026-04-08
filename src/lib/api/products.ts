@@ -21,6 +21,32 @@ export const fetchProducts = async () => {
 };
 
 // Get single product by slug (always fresh)
+export const fetchProductBySlugAndUrl = async (slug?: string) => {
+  if (!slug) return
+  try {
+    const res = await fetch(`${baseURL}web/products/get-product-by-url${slug}`, {
+      cache: "no-store",
+      headers: { storeId: "10" },
+    });
+
+    if (!res.ok) {
+      console.error(`❌ API failed for slug: ${slug}, status: ${res.status}`);
+      return null;
+    }
+
+    const data = await res.json();
+    if (!data?.data) {
+      console.warn(`⚠️ No product found for slug: ${slug}`);
+      return null;
+    }
+    console.log("Slug data response: ", data?.data);
+
+    return data.data;
+  } catch (err) {
+    console.error("🚨 Error fetching product:", err);
+    return null; // always return null, not throw
+  }
+};
 export const fetchProductBySlug = async (slug: string) => {
   try {
     const res = await fetch(`${baseURL}web/products/get-product/${slug}`, {
@@ -58,6 +84,8 @@ export async function fetchFilteredProducts(filters: {
   sortBy?: string;
 }) {
   const params = new URLSearchParams();
+  console.log("params", params);
+
 
   if (filters.page) params.append("page", filters.page.toString());
   if (filters.pageSize) params.append("pageSize", filters.pageSize.toString());
@@ -100,7 +128,7 @@ export const getBlogByIdServer = async (id: string) => {
     });
 
     if (!res.ok) {
-       throw new Error("Failed to fetch blog with id");
+      throw new Error("Failed to fetch blog with id");
     }
 
     const data = await res.json();

@@ -1,14 +1,16 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import Script from "next/script";
+import { headers } from "next/headers";
 import dynamic from "next/dynamic";
-import { fetchProductBySlug, fetchProducts } from "@/lib/api/products";
+import { fetchProductBySlug, fetchProductBySlugAndUrl, fetchProducts } from "@/lib/api/products";
 import ProductCard from "@/app/components/Product/ProductCard";
 import ProductOverview from "@/app/components/Product/ProductOverview";
 import ProductExtras from "@/app/components/Product/ProductExtras";
 import { Suspense } from "react";
 import CategoriesSidebar from "../components/Home/CategoriesSidebar";
 import BrandsSidebar from "../components/Home/BrandsSidebar";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+
 // ✅ Dynamic metadata for SEO
 export async function generateMetadata({
   params,
@@ -16,9 +18,17 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params; // <-- await here
-  const product = await fetchProductBySlug(slug);
+  const headersList = await headers();
+
+  // ✅ Most reliable - Next.js sets this automatically
+  const fullUrl = headersList.get("x-full-url");
+  const pathname: any = headersList.get("x-pathname");
+
+
+  const product = await fetchProductBySlugAndUrl(pathname);
+
   if (!product) {
-    notFound(); // 🔥 IMPORTANT
+    notFound();
   }
 
   const url = `https://server-blink.vercel.app/${slug}`;
@@ -78,13 +88,18 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params; // <-- await here
+  const headersList = await headers();
+
+  // ✅ Most reliable - Next.js sets this automatically
+  const fullUrl = headersList.get("x-full-url");
+  const pathname: any = headersList.get("x-pathname");
+
   // 🔥 Parallel data fetching
-  const product = await fetchProductBySlug(slug);
+  const product = await fetchProductBySlugAndUrl(pathname);
 
   if (!product) {
     notFound(); // 🔥 THIS IS THE KEY
   }
-
   const backendSchema = product?.schema;
 
   return (

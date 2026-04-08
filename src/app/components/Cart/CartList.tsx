@@ -25,15 +25,20 @@ const CartList = () => {
   }>({});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<any | null>(null);
-  const handleChange = (id: string, value: string) => {
+
+  const handleChange = (id: string, value: string, currentStock?: number) => {
     if (value === "" || /^\d*$/.test(value)) {
-      setQuantities((prev) => ({
-        ...prev,
-        [id]: value,
-      }));
+      const parsed = Number(value);
+
+      if (currentStock && parsed > currentStock) {
+        setQuantities((prev) => ({ ...prev, [id]: currentStock }));
+        dispatch(updateQty({ id, quantity: currentStock }));
+        return;
+      }
+
+      setQuantities((prev) => ({ ...prev, [id]: value }));
     }
   };
-
   const confirmDelete = () => {
     if (itemToDelete) {
       dispatch(removeFromCart(itemToDelete.id));
@@ -52,18 +57,18 @@ const CartList = () => {
   const handleManualQtyUpdate = (
     e: React.KeyboardEvent<HTMLInputElement>,
     id: string,
-    maxPurchaseQuantity?: number
+    currentStock?: number
   ) => {
     if (e.key === "Enter") {
       e.preventDefault();
       const inputValue = quantities[id];
       const parsed = Number(inputValue);
 
-         const newQty = maxPurchaseQuantity
-      ? Math.min(parsed > 0 ? parsed : 1, maxPurchaseQuantity)
-      : parsed > 0
-      ? parsed
-      : 1;
+      const newQty = currentStock
+        ? Math.min(parsed > 0 ? parsed : 1, currentStock)
+        : parsed > 0
+          ? parsed
+          : 1;
 
       dispatch(updateQty({ id, quantity: newQty }));
 
@@ -105,78 +110,88 @@ const CartList = () => {
                   />
                 </div>
                 <div className="w-full xl:w-[63.1%] 2xl:w-[71%] mx-4">
-                 <Link href={`/brand/${item?.brand?.slug || "#"}`}>
-                  <p className="text-xl text-center xl:text-start">
-                     {item?.brand?.name || "N/A"}
-                  </p>
-                 </Link>
-                 <Link href={`/${item?.sku || "#"}`}>
-                 <p className="text-xl text-[#D42020] text-center lg:mx-auto md:mx-auto sm:mx-auto w-[100%] sm:w-[60%]  md:w-[70%] lg:w-[80%] xl:text-start xl:w-[100%] 2xl:w-[100%]">
-                    {item.name}
-                  </p>
-                 </Link>
-                 
+                  <Link href={`/brand/${item?.brand?.slug || "#"}`}>
+                    <p className="text-xl text-center xl:text-start">
+                      {item?.brand?.name || "N/A"}
+                    </p>
+                  </Link>
+                  <Link href={`/${item?.sku || "#"}`}>
+                    <p className="text-xl text-[#D42020] text-center lg:mx-auto md:mx-auto sm:mx-auto w-[100%] sm:w-[60%]  md:w-[70%] lg:w-[80%] xl:text-start xl:w-[100%] 2xl:w-[100%]">
+                      {item.name}
+                    </p>
+                  </Link>
+
                 </div>
               </div>
 
               <div className="relative flex items-center gap-4 xl:gap-0 xl:w-[66%]  2xl:w-[68%] justify-between">
                 <p className="text-xl">${Number(item.price).toFixed(2)}</p>
-       <div className="flex items-center border border-gray-300 overflow-hidden">
-  
-  {/* Down Arrow (Decrease) — Left */}
-  <button
-    type="button"
-    onClick={() => dispatch(decreaseQty(item.id))}
-    className="
+                <div className="flex items-center border border-gray-300 overflow-hidden">
+
+                  {/* Down Arrow (Decrease) — Left */}
+                  <button
+                    type="button"
+                    onClick={() => dispatch(decreaseQty(item.id))}
+                    className="
       flex items-center justify-center w-8 h-full
       hover:bg-gray-100
       text-black
     "
-  >
-    <ChevronDown size={16} />
-  </button>
+                  >
+                    <ChevronDown size={16} />
+                  </button>
 
-  {/* Number Input — Center */}
-  <input
-    type="number"
-    value={
-      quantities[item.id] === undefined
-        ? item.quantity
-        : quantities[item.id]
-    }
-    onChange={(e) => handleChange(item.id, e.target.value)}
-    onKeyDown={(e) =>
-      handleManualQtyUpdate(e, item.id, item.maxPurchaseQuantity)
-    }
-    className="
+                  {/* Number Input — Center */}
+                  <input
+                    type="number"
+                    value={
+                      quantities[item.id] === undefined
+                        ? item.quantity
+                        : quantities[item.id]
+                    }
+                    onChange={(e) => handleChange(item.id, e.target.value, item?.currentStock)}
+                    onBlur={(e) => {
+                      const parsed = Number(quantities[item.id]);
+                      if (!parsed || parsed <= 0) {
+                        dispatch(updateQty({ id: item.id, quantity: 1 }));
+                        setQuantities((prev) => ({ ...prev, [item.id]: 1 }));
+                      } else if (item.currentStock && parsed > item.currentStock) {
+                        dispatch(updateQty({ id: item.id, quantity: item.currentStock }));
+                        setQuantities((prev) => ({ ...prev, [item.id]: item.currentStock }));
+                      }
+                    }}
+                    onKeyDown={(e) =>
+                      handleManualQtyUpdate(e, item.id, item.currentStock)
+                    }
+                    className="
       w-10 bg-white text-center py-2 outline-none
       border-x border-gray-300
       [appearance:textfield]
       [&::-webkit-outer-spin-button]:appearance-none
       [&::-webkit-inner-spin-button]:appearance-none
     "
-  />
+                  />
 
-  {/* Up Arrow (Increase) — Right */}
-  <button
-    type="button"
-    onClick={() => {
-      if (
-        !item.maxPurchaseQuantity ||
-        item.quantity < item.maxPurchaseQuantity
-      ) {
-        dispatch(increaseQty(item.id));
-      }
-    }}
-    className="
+                  {/* Up Arrow (Increase) — Right */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (
+                        !item.currentStock ||
+                        item.quantity < item.currentStock
+                      ) {
+                        dispatch(increaseQty(item.id));
+                      }
+                    }}
+                    className="
       flex items-center justify-center w-8 h-full
       hover:bg-gray-100
       text-black
     "
-  >
-    <ChevronUp size={16} />
-  </button>
-</div>
+                  >
+                    <ChevronUp size={16} />
+                  </button>
+                </div>
 
                 {/* Trash / Delete Button */}
                 <button
