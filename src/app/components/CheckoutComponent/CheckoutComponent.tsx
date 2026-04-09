@@ -304,9 +304,19 @@ const CheckoutForm = () => {
       isMounted = false;
     };
   }, [stripe, cart, finalTotal]); // DEPENDENCY: finalTotal instead of total
+  const getDeviceType = () => {
+    if (typeof window === "undefined") return "desktop";
 
+    const userAgent = navigator.userAgent;
+
+    if (/mobile/i.test(userAgent)) return "mobile";
+    if (/tablet/i.test(userAgent)) return "tablet";
+
+    return "desktop";
+  };
   const buildOrderPayload = useCallback(
     (data: CheckoutFormValues & { paymentIntentId?: string | null }) => ({
+      deviceType: getDeviceType(),
       firstName: data.firstName,
       lastName: data.lastName,
       companyName: data.company || "",
