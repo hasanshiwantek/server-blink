@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
+import { X } from "lucide-react";
 type ContactFormData = {
   fullName: string;
   phoneNumber: string;
@@ -124,10 +125,12 @@ const ContactForm = () => {
           <div>
             <label
               htmlFor="email"
-              className="block text-[1rem] text-[#545454] font-normal mb-2"
+              className="mb-2 flex items-baseline justify-between gap-2 text-[1rem] font-normal text-[#545454]"
             >
-              Email Address
-              <span className="text-[#D40511] ml-1">*</span>
+              <span>Email Address</span>
+              <span className="shrink-0 text-[#545454]" aria-hidden="true">
+                *
+              </span>
             </label>
             <Input
               type="email"
@@ -142,9 +145,13 @@ const ContactForm = () => {
               className="mt-1 block w-full h- max-w-full h-[40px] px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-red-500 focus:border-red-500"
             />
             {errors.email && (
-              <p className="text-[#D40511] text-sm mt-1">
-                {errors.email.message}
-              </p>
+              <div
+                className="mt-1 text-red-600"
+                role="alert"
+                aria-label={String(errors.email.message)}
+              >
+                <X className="h-4 w-4" strokeWidth={2.5} aria-hidden />
+              </div>
             )}
           </div>
 
@@ -201,10 +208,12 @@ const ContactForm = () => {
         <div>
           <label
             htmlFor="message"
-            className="block text-[1rem] text-[#545454] font-normalmb-2"
+            className="mb-2 flex items-baseline justify-between gap-2 text-[1rem] font-normal text-[#545454]"
           >
-            Comments/Questions
-            <span className="text-[#D40511] ml-1">*</span>
+            <span>Comments/Questions</span>
+            <span className="shrink-0 text-[#545454]" aria-hidden="true">
+              *
+            </span>
           </label>
           <Textarea
             id="message"
@@ -215,9 +224,13 @@ const ContactForm = () => {
             className="mt-1 block  max-w-full h-50 px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-red-500 focus:border-red-500 resize-none"
           />
           {errors.message && (
-            <p className="text-[#D40511] text-sm mt-1">
-              {errors.message.message}
-            </p>
+            <div
+              className="mt-1 text-red-600"
+              role="alert"
+              aria-label={String(errors.message.message)}
+            >
+              <X className="h-4 w-4" strokeWidth={2.5} aria-hidden />
+            </div>
           )}
         </div>
 
