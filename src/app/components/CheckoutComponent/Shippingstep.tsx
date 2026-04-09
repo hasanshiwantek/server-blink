@@ -1,5 +1,6 @@
 "use client";
 import React, { useMemo } from "react";
+import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -101,13 +102,19 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
 
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col">
-            <label htmlFor="firstName" className="text-base mb-2 text-gray-700">
+            <label
+              htmlFor="firstName"
+              className={cn(
+                "mb-2 text-base",
+                errors.firstName ? "text-red-500" : "text-gray-700"
+              )}
+            >
               First Name
             </label>
             <Input
               id="firstName"
               type="text"
-              className={`w-full h-[40px] ${
+              className={`w-full !max-w-full h-[40px] ${
                 errors.firstName ? "border-red-500" : ""
               }`}
               {...register("firstName", {
@@ -122,13 +129,19 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="lastName" className="text-base mb-2 text-gray-700">
+            <label
+              htmlFor="lastName"
+              className={cn(
+                "mb-2 text-base",
+                errors.lastName ? "text-red-500" : "text-gray-700"
+              )}
+            >
               Last Name
             </label>
             <Input
               id="lastName"
               type="text"
-              className={`w-full h-[40px] ${
+              className={`w-full !max-w-full h-[40px] ${
                 errors.lastName ? "border-red-500" : ""
               }`}
               {...register("lastName", {
@@ -144,37 +157,51 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
         </div>
 
         <div className="flex flex-col mt-4">
-          <label htmlFor="company" className="text-base mb-2 text-gray-700">
-            Company Name <span className="text-gray-400">(Optional)</span>
+          <label
+            htmlFor="company"
+            className="mb-2 flex items-baseline justify-between gap-2 text-base text-gray-700"
+          >
+            <span>Company Name</span>
+            <span className="shrink-0 text-gray-400">(Optional)</span>
           </label>
           <Input
             id="company"
             type="text"
-            className="w-full h-[40px]"
+            className="w-full !max-w-full h-[40px]"
             {...register("company")}
           />
         </div>
 
         <div className="flex flex-col mt-4">
-          <label htmlFor="phone" className="text-base mb-2 text-gray-700">
-            Phone Number <span className="text-gray-400">(Optional)</span>
+          <label
+            htmlFor="phone"
+            className="mb-2 flex items-baseline justify-between gap-2 text-base text-gray-700"
+          >
+            <span>Phone Number</span>
+            <span className="shrink-0 text-gray-400">(Optional)</span>
           </label>
           <Input
             id="phone"
             type="text"
-            className="w-full h-[40px]"
+            className="w-full !max-w-full h-[40px]"
             {...register("phone")}
           />
         </div>
 
         <div className="flex flex-col mt-4">
-          <label htmlFor="address1" className="text-base mb-2 text-gray-700">
+          <label
+            htmlFor="address1"
+            className={cn(
+              "mb-2 text-base",
+              errors.address1 ? "text-red-500" : "text-gray-700"
+            )}
+          >
             Address Line 1
           </label>
           <Input
             id="address1"
             type="text"
-            className={`w-full h-[40px] ${
+            className={`w-full !max-w-full h-[40px] ${
               errors.address1 ? "border-red-500" : ""
             }`}
             {...register("address1", {
@@ -189,25 +216,35 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
         </div>
 
         <div className="flex flex-col mt-4">
-          <label htmlFor="address2" className="text-base mb-2 text-gray-700">
-            Address Line 2 <span className="text-gray-400">(Optional)</span>
+          <label
+            htmlFor="address2"
+            className="mb-2 flex items-baseline justify-between gap-2 text-base text-gray-700"
+          >
+            <span>Address Line 2</span>
+            <span className="shrink-0 text-gray-400">(Optional)</span>
           </label>
           <Input
             id="address2"
             type="text"
-            className="w-full h-[40px]"
+            className="w-full !max-w-full h-[40px]"
             {...register("address2")}
           />
         </div>
 
         <div className="flex flex-col mt-4">
-          <label htmlFor="city" className="text-base mb-2 text-gray-700">
+          <label
+            htmlFor="city"
+            className={cn(
+              "mb-2 text-base",
+              errors.city ? "text-red-500" : "text-gray-700"
+            )}
+          >
             City
           </label>
           <Input
             id="city"
             type="text"
-            className={`w-full h-[40px] ${errors.city ? "border-red-500" : ""}`}
+            className={`w-full !max-w-full h-[40px] ${errors.city ? "border-red-500" : ""}`}
             {...register("city", {
               required: "City is required",
             })}
@@ -220,7 +257,13 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
         </div>
 
         <div className="flex flex-col mt-4">
-          <label htmlFor="country" className="text-base mb-2 text-gray-700">
+          <label
+            htmlFor="country"
+            className={cn(
+              "mb-2 text-base",
+              errors.country ? "text-red-500" : "text-gray-700"
+            )}
+          >
             Country
           </label>
           <Controller
@@ -230,7 +273,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             render={({ field }) => (
               <Select onValueChange={field.onChange} value={field.value}>
                 <SelectTrigger
-                  className={`w-full h-[40px] ${
+                  className={`w-full !max-w-full h-[40px] ${
                     errors.country ? "border-red-500" : ""
                   }`}
                 >
@@ -261,19 +304,25 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             <Input
               id="state"
               type="text"
-              className="w-full h-[40px]"
+              className="w-full !max-w-full h-[40px]"
               {...register("state")}
             />
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="zip" className="text-base mb-2 text-gray-700">
+            <label
+              htmlFor="zip"
+              className={cn(
+                "mb-2 text-base",
+                errors.zip ? "text-red-500" : "text-gray-700"
+              )}
+            >
               Postal Code
             </label>
             <Input
               id="zip"
               type="text"
-              className={`w-full h-[40px] ${
+              className={`w-full !max-w-full h-[40px] ${
                 errors.zip ? "border-red-500" : ""
               }`}
               {...register("zip", {
@@ -303,7 +352,12 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
 
       {/* Shipping Method */}
       <div>
-        <h3 className="text-sm font-medium mb-4 text-gray-700">
+        <h3
+          className={cn(
+            "mb-4 text-sm font-medium",
+            errors.shippingMethod ? "text-red-500" : "text-gray-700"
+          )}
+        >
           Shipping Method
         </h3>
 
@@ -330,16 +384,16 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
               className="mt-1"
               disabled={!isShippingComplete}
             />
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
+            <div className="min-w-0 flex-1">
+              <div className="flex w-full items-center justify-between gap-3">
                 <Image
                   src="/checkouticon/fedex.png"
                   alt="FedEx"
                   width={60}
                   height={20}
-                  className="object-contain"
+                  className="shrink-0 object-contain"
                 />
-                <span className="text-sm text-gray-600">
+                <span className="text-right text-sm text-gray-600">
                   (International Economy)
                 </span>
               </div>
@@ -363,16 +417,16 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
               className="mt-1"
               disabled={!isShippingComplete}
             />
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
+            <div className="min-w-0 flex-1">
+              <div className="flex w-full items-center justify-between gap-3">
                 <Image
                   src="/checkouticon/fedex.png"
                   alt="FedEx"
                   width={60}
                   height={20}
-                  className="object-contain"
+                  className="shrink-0 object-contain"
                 />
-                <span className="text-sm text-gray-600">
+                <span className="text-right text-sm text-gray-600">
                   (International Priority)
                 </span>
               </div>

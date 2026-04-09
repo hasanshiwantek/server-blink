@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
+import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectTrigger,
@@ -71,13 +71,19 @@ const BillingStep: React.FC<BillingStepProps> = ({
 
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col">
-          <label htmlFor="billingFirstName" className="text-base mb-2 text-gray-700">
+          <label
+            htmlFor="billingFirstName"
+            className={cn(
+              "mb-2 text-base",
+              errors.billingFirstName ? "text-red-500" : "text-gray-700"
+            )}
+          >
             First Name
           </label>
           <Input
             id="billingFirstName"
             type="text"
-            className={`w-full h-[40px] ${
+            className={`w-full !max-w-full h-[40px] ${
               errors.billingFirstName ? "border-red-500" : ""
             }`}
             {...register("billingFirstName", {
@@ -92,13 +98,19 @@ const BillingStep: React.FC<BillingStepProps> = ({
         </div>
 
         <div className="flex flex-col">
-          <label htmlFor="billingLastName" className="text-base mb-2 text-gray-700">
+          <label
+            htmlFor="billingLastName"
+            className={cn(
+              "mb-2 text-base",
+              errors.billingLastName ? "text-red-500" : "text-gray-700"
+            )}
+          >
             Last Name
           </label>
           <Input
             id="billingLastName"
             type="text"
-            className={`w-full h-[40px] ${
+            className={`w-full !max-w-full h-[40px] ${
               errors.billingLastName ? "border-red-500" : ""
             }`}
             {...register("billingLastName", {
@@ -114,37 +126,51 @@ const BillingStep: React.FC<BillingStepProps> = ({
       </div>
 
       <div className="flex flex-col">
-        <label htmlFor="billingCompany" className="text-base mb-2 text-gray-700">
-          Company Name <span className="text-gray-400">(Optional)</span>
+        <label
+          htmlFor="billingCompany"
+          className="mb-2 flex items-baseline justify-between gap-2 text-base text-gray-700"
+        >
+          <span>Company Name</span>
+          <span className="shrink-0 text-gray-400">(Optional)</span>
         </label>
         <Input
           id="billingCompany"
           type="text"
-          className="w-full h-[40px]"
+          className="w-full !max-w-full h-[40px]"
           {...register("billingCompany")}
         />
       </div>
 
       <div className="flex flex-col">
-        <label htmlFor="billingPhone" className="text-base mb-2 text-gray-700">
-          Phone Number <span className="text-gray-400">(Optional)</span>
+        <label
+          htmlFor="billingPhone"
+          className="mb-2 flex items-baseline justify-between gap-2 text-base text-gray-700"
+        >
+          <span>Phone Number</span>
+          <span className="shrink-0 text-gray-400">(Optional)</span>
         </label>
         <Input
           id="billingPhone"
           type="text"
-          className="w-full h-[40px]"
+          className="w-full !max-w-full h-[40px]"
           {...register("billingPhone")}
         />
       </div>
 
       <div className="flex flex-col">
-        <label htmlFor="billingAddress1" className="text-base mb-2 text-gray-700">
+        <label
+          htmlFor="billingAddress1"
+          className={cn(
+            "mb-2 text-base",
+            errors.billingAddress1 ? "text-red-500" : "text-gray-700"
+          )}
+        >
           Address Line 1
         </label>
         <Input
           id="billingAddress1"
           type="text"
-          className={`w-full h-[40px] ${
+          className={`w-full !max-w-full h-[40px] ${
             errors.billingAddress1 ? "border-red-500" : ""
           }`}
           {...register("billingAddress1", {
@@ -159,25 +185,35 @@ const BillingStep: React.FC<BillingStepProps> = ({
       </div>
 
       <div className="flex flex-col">
-        <label htmlFor="billingAddress2" className="text-base mb-2 text-gray-700">
-          Address Line 2 <span className="text-gray-400">(Optional)</span>
+        <label
+          htmlFor="billingAddress2"
+          className="mb-2 flex items-baseline justify-between gap-2 text-base text-gray-700"
+        >
+          <span>Address Line 2</span>
+          <span className="shrink-0 text-gray-400">(Optional)</span>
         </label>
         <Input
           id="billingAddress2"
           type="text"
-          className="w-full h-[40px]"
+          className="w-full !max-w-full h-[40px]"
           {...register("billingAddress2")}
         />
       </div>
 
       <div className="flex flex-col">
-        <label htmlFor="billingCity" className="text-base mb-2 text-gray-700">
+        <label
+          htmlFor="billingCity"
+          className={cn(
+            "mb-2 text-base",
+            errors.billingCity ? "text-red-500" : "text-gray-700"
+          )}
+        >
           City
         </label>
         <Input
           id="billingCity"
           type="text"
-          className={`w-full h-[40px] ${
+          className={`w-full !max-w-full h-[40px] ${
             errors.billingCity ? "border-red-500" : ""
           }`}
           {...register("billingCity", {
@@ -192,7 +228,13 @@ const BillingStep: React.FC<BillingStepProps> = ({
       </div>
 
       <div className="flex flex-col">
-        <label htmlFor="billingCountry" className="text-base mb-2 text-gray-700">
+        <label
+          htmlFor="billingCountry"
+          className={cn(
+            "mb-2 text-base",
+            errors.billingCountry ? "text-red-500" : "text-gray-700"
+          )}
+        >
           Country
         </label>
         <Controller
@@ -202,7 +244,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
           render={({ field }) => (
             <Select onValueChange={field.onChange} value={field.value}>
               <SelectTrigger
-                className={`w-full h-[40px] ${
+                className={`w-full !max-w-full h-[40px] ${
                   errors.billingCountry ? "border-red-500" : ""
                 }`}
               >
@@ -233,19 +275,25 @@ const BillingStep: React.FC<BillingStepProps> = ({
           <Input
             id="billingState"
             type="text"
-            className="w-full h-[40px]"
+            className="w-full !max-w-full h-[40px]"
             {...register("billingState")}
           />
         </div>
 
         <div className="flex flex-col">
-          <label htmlFor="billingZip" className="text-base mb-2 text-gray-700">
+          <label
+            htmlFor="billingZip"
+            className={cn(
+              "mb-2 text-base",
+              errors.billingZip ? "text-red-500" : "text-gray-700"
+            )}
+          >
             Postal Code
           </label>
           <Input
             id="billingZip"
             type="text"
-            className={`w-full h-[40px] ${
+            className={`w-full !max-w-full h-[40px] ${
               errors.billingZip ? "border-red-500" : ""
             }`}
             {...register("billingZip", {

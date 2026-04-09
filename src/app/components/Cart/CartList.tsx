@@ -5,13 +5,12 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import Link from "next/link";
 import {
-  clearCart,
   decreaseQty,
   increaseQty,
   removeFromCart,
   updateQty,
 } from "@/redux/slices/cartSlice";
-import { ChevronDown, ChevronUp, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -105,11 +104,11 @@ const CartList = () => {
                   />
                 </div>
                 <div className="w-full xl:w-[63.1%] 2xl:w-[71%] mx-4">
-                 <Link href={`/brand/${item?.brand?.slug || "#"}`}>
+                 {/* <Link href={`/brand/${item?.brand?.slug || "#"}`}> */}
                   <p className="text-xl text-center xl:text-start">
                      {item?.brand?.name || "N/A"}
                   </p>
-                 </Link>
+                 {/* </Link> */}
                  <Link href={`/${item?.sku || "#"}`}>
                  <p className="text-xl text-[#D42020] text-center lg:mx-auto md:mx-auto sm:mx-auto w-[100%] sm:w-[60%]  md:w-[70%] lg:w-[80%] xl:text-start xl:w-[100%] 2xl:w-[100%]">
                     {item.name}
@@ -119,7 +118,7 @@ const CartList = () => {
                 </div>
               </div>
 
-              <div className="relative flex items-center gap-4 xl:gap-0 xl:w-[66%]  2xl:w-[68%] justify-between">
+              <div className="flex w-full flex-wrap items-center gap-4 xl:gap-0 xl:w-[66%] 2xl:w-[68%] xl:flex-nowrap xl:justify-between">
                 <p className="text-xl">${Number(item.price).toFixed(2)}</p>
        <div className="flex items-center border border-gray-300 overflow-hidden">
   
@@ -178,20 +177,22 @@ const CartList = () => {
   </button>
 </div>
 
-                {/* Trash / Delete Button */}
-                <button
-                  onClick={() => {
-                    setItemToDelete(item);
-                    setIsDialogOpen(true);
-                  }}
-                  className="absolute -right-7 xl:right-0 xl:bottom-14 2xl:right-1 2xl:bottom-18 ml-auto text-gray-500 hover:text-red-700 transition"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
-
-                <p className="text-xl">
-                  ${Number(item.price * item.quantity).toFixed(2)}
-                </p>
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <p className="text-xl">
+                    ${Number(item.price * item.quantity).toFixed(2)}
+                  </p>
+                  <button
+                    type="button"
+                    aria-label="Remove item from cart"
+                    onClick={() => {
+                      setItemToDelete(item);
+                      setIsDialogOpen(true);
+                    }}
+                    className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#CAC9C9] text-[#D42020] transition hover:bg-[#B8B7B7] hover:text-[#b81a1a]"
+                  >
+                    <X className="h-4 w-4" strokeWidth={2.25} />
+                  </button>
+                </div>
               </div>
             </div>
 

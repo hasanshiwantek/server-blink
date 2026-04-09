@@ -55,6 +55,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <div className="bg-[#F2F2F2] rounded shadow hover:shadow-md transition flex flex-col h-full">
       {/* Image */}
+      <Link href={`/${product?.sku}`}>
       <div className="relative w-full h-72 mb-2 bg-white">
         <Image
           src={imageSrc}
@@ -63,7 +64,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           className="object-contain"
         />
       </div>
-
+      </Link>
       {/* Info Wrapper */}
       <div className="px-3 pb-3 flex flex-col flex-1">
            <Link href={`/brand/${brandSlug || ""}`}>

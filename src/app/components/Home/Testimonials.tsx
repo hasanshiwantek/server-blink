@@ -1,9 +1,7 @@
 "use client";
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import Image from "next/image";
 import { IoStarSharp } from "react-icons/io5";
-import { GoArrowLeft, GoArrowRight } from "react-icons/go";
-import { FaQuoteLeft } from "react-icons/fa";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
@@ -44,13 +42,17 @@ const Carousel = dynamic(
     ssr: false,
   }
 );
+const SWIPE_THRESHOLD_PX = 45;
+
 const Testimonials = () => {
   const dispatch = useAppDispatch();
   const { reviews, reviewsLoading, reviewsError, stats } = useAppSelector(
     (state) => state.home
   );
-  const [pageIndex, setPageIndex] = useState(0);
   const [visibleItems, setVisibleItems] = useState(3); // dynamically set numVisible
+  const carouselWrapRef = useRef<HTMLDivElement>(null);
+  const dragStartX = useRef(0);
+  const dragActive = useRef(false);
 
   const responsiveOptions = useMemo(
     () => [
@@ -68,14 +70,6 @@ const Testimonials = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (reviews.length > 0) {
-      setPageIndex(0);
-    }
-  }, [reviews.length]);
-
-  useEffect(() => {
-    // setReviews(reviewData);
-
     const handleResize = () => {
       const width = window.innerWidth;
       const resp = responsiveOptions.find((r) => width <= r.breakpoint);
@@ -88,33 +82,45 @@ const Testimonials = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [responsiveOptions]);
 
-  const totalPages = useMemo(() => {
-    if (!reviews.length) {
-      return 1;
-    }
+  const clickCarouselNav = useCallback((direction: "next" | "prev") => {
+    const root = carouselWrapRef.current;
+    if (!root) return;
+    const sel =
+      direction === "next" ? "button.p-carousel-next" : "button.p-carousel-prev";
+    const btn = root.querySelector<HTMLButtonElement>(sel);
+    if (btn && !btn.disabled) btn.click();
+  }, []);
 
-    return Math.max(1, Math.ceil(reviews.length / visibleItems));
-  }, [reviews.length, visibleItems]);
+  const handleCarouselPointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (e.pointerType === "touch") return;
+      dragActive.current = true;
+      dragStartX.current = e.clientX;
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    },
+    []
+  );
 
-  useEffect(() => {
-    setPageIndex((prev) => {
-      if (prev > totalPages - 1) {
-        return totalPages - 1;
+  const handleCarouselPointerUp = useCallback(
+    (e: React.PointerEvent) => {
+      if (e.pointerType === "touch") return;
+      if (!dragActive.current) return;
+      dragActive.current = false;
+      try {
+        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
       }
-      return prev;
-    });
-  }, [totalPages]);
-
-  const navigateLeft = useCallback(
-    () => setPageIndex((prev) => (prev > 0 ? prev - 1 : totalPages - 1)),
-    [totalPages]
+      const diff = e.clientX - dragStartX.current;
+      if (Math.abs(diff) < SWIPE_THRESHOLD_PX) return;
+      if (diff < 0) {
+        clickCarouselNav("next");
+      } else {
+        clickCarouselNav("prev");
+      }
+    },
+    [clickCarouselNav]
   );
-  const navigateRight = useCallback(
-    () => setPageIndex((prev) => (prev < totalPages - 1 ? prev + 1 : 0)),
-    [totalPages]
-  );
-
-
 
   const reviewTemplate = (review: Review) => (
     <div className="text-left p-4 flex flex-col gap-3 w-full md:w-[250px] lg:w-[280px] xl:w-[330px] h-[218px]">
@@ -229,23 +235,29 @@ const Testimonials = () => {
               </p>
             </div>
           ) : (
-            <Carousel
-              value={reviews}
-              numVisible={visibleItems}
-              numScroll={1}
-              responsiveOptions={responsiveOptions.map((r) => ({
-                breakpoint: r.breakpoint + "px",
-                numVisible: r.numVisible,
-                numScroll: 1,
-              }))}
-              circular
-              autoplayInterval={4000}
-              itemTemplate={reviewTemplate}
-              showIndicators={false}
-              showNavigators={false}
-            />
-
-
+            <div
+              ref={carouselWrapRef}
+              className="cursor-grab touch-pan-y select-none active:cursor-grabbing [&_button.p-carousel-prev]:sr-only [&_button.p-carousel-next]:sr-only"
+              onPointerDown={handleCarouselPointerDown}
+              onPointerUp={handleCarouselPointerUp}
+              onPointerCancel={handleCarouselPointerUp}
+            >
+              <Carousel
+                value={reviews}
+                numVisible={visibleItems}
+                numScroll={1}
+                responsiveOptions={responsiveOptions.map((r) => ({
+                  breakpoint: r.breakpoint + "px",
+                  numVisible: r.numVisible,
+                  numScroll: 1,
+                }))}
+                circular
+                autoplayInterval={4000}
+                itemTemplate={reviewTemplate}
+                showIndicators={false}
+                showNavigators={true}
+              />
+            </div>
           )}
         </div>
       </div>
