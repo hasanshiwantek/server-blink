@@ -314,8 +314,14 @@ const CheckoutForm = () => {
 
     return "desktop";
   };
+
+  const user: any = localStorage.getItem("persist:auth");
+  const parsedAuth = auth ? JSON.parse(user) : null;
+  const token = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
+
   const buildOrderPayload = useCallback(
     (data: CheckoutFormValues & { paymentIntentId?: string | null }) => ({
+      userType: token ? null : "guest",
       deviceType: getDeviceType(),
       firstName: data.firstName,
       lastName: data.lastName,
