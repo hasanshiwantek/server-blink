@@ -56,6 +56,15 @@ const BrandsSidebar: React.FC<BrandsSidebarProps> = ({ activeBrandId }) => {
             No brands available
           </div>
         )}
+
+        <Link href="/brands">
+          <button
+            type="button"
+            className="w-full px-3 py-1 text-left text-[15px] font-normal flex items-center gap-3 transition-colors text-[#545454] hover:text-[var(--primary-color)]"
+          >
+            <span>View all brands</span>
+          </button>
+        </Link>
       </div>
     </div>
   );

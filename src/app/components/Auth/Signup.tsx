@@ -1,7 +1,6 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import countries from "world-countries";
 import {
   Select,
@@ -10,7 +9,6 @@ import {
   SelectItem,
   SelectContent,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
@@ -115,11 +113,11 @@ const SignupPage = () => {
               <Input
                 id="email"
                 type="email"
-                className="w-full h-12 max-w-full"
+                className="h-[42px] min-h-[42px] w-full max-w-full"
                 {...register("email", { required: "Email is required" })}
               />
               {errors.email && (
-                <p className="text-sm text-red-500 mt-1">
+                <p className="mt-1 text-[14px] text-red-500">
                   {errors.email.message}
                 </p>
               )}
@@ -136,12 +134,11 @@ const SignupPage = () => {
               <Input
                 id="password"
                 type="password"
-                className="w-full h-12 
-                max-w-full"
+                className="h-[42px] min-h-[42px] w-full max-w-full"
                 {...register("password", { required: "Password is required" })}
               />
               {errors.password && (
-                <p className="text-sm text-red-500 mt-1">
+                <p className="mt-1 text-[14px] text-red-500">
                   {errors.password.message}
                 </p>
               )}
@@ -158,7 +155,7 @@ const SignupPage = () => {
               <Input
                 id="confirmPassword"
                 type="password"
-                className="w-full h-12 max-w-full"
+                className="h-[42px] min-h-[42px] w-full max-w-full"
                 {...register("password_confirmation", {
                   required: "Please confirm your password",
                   validate: (value) =>
@@ -166,7 +163,7 @@ const SignupPage = () => {
                 })}
               />
               {errors.password_confirmation && (
-                <p className="text-sm text-red-500 mt-1">
+                <p className="mt-1 text-[14px] text-red-500">
                   {errors.password_confirmation.message}
                 </p>
               )}
@@ -182,13 +179,13 @@ const SignupPage = () => {
               </label>
               <Input
                 id="firstName"
-                className="w-full h-12 max-w-full"
+                className="h-[42px] min-h-[42px] w-full max-w-full"
                 {...register("firstName", {
                   required: "First name is required",
                 })}
               />
               {errors.firstName && (
-                <p className="text-sm text-red-500 mt-1">
+                <p className="mt-1 text-[14px] text-red-500">
                   {errors.firstName.message}
                 </p>
               )}
@@ -204,11 +201,11 @@ const SignupPage = () => {
               </label>
               <Input
                 id="lastName"
-                className="w-full h-12 max-w-full"
+                className="h-[42px] min-h-[42px] w-full max-w-full"
                 {...register("lastName", { required: "Last name is required" })}
               />
               {errors.lastName && (
-                <p className="text-sm text-red-500 mt-1">
+                <p className="mt-1 text-[14px] text-red-500">
                   {errors.lastName.message}
                 </p>
               )}
@@ -224,7 +221,7 @@ const SignupPage = () => {
               </label>
               <Input
                 id="companyName"
-                className="w-full h-12 max-w-full"
+                className="h-[42px] min-h-[42px] w-full max-w-full"
                 {...register("companyName")}
               />
             </div>
@@ -240,7 +237,7 @@ const SignupPage = () => {
               <Input
                 id="phoneNumber"
                 type="tel"
-                className="w-full h-12 max-w-full"
+                className="h-[42px] min-h-[42px] w-full max-w-full"
                 {...register("phoneNumber")}
               />
             </div>
@@ -255,13 +252,13 @@ const SignupPage = () => {
               </label>
               <Input
                 id="addressLine1"
-                className="w-full h-12 max-w-full"
+                className="h-[42px] min-h-[42px] w-full max-w-full"
                 {...register("addressLine1", {
                   required: "Address is required",
                 })}
               />
               {errors.addressLine1 && (
-                <p className="text-sm text-red-500 mt-1">
+                <p className="mt-1 text-[14px] text-red-500">
                   {errors.addressLine1.message}
                 </p>
               )}
@@ -277,7 +274,7 @@ const SignupPage = () => {
               </label>
               <Input
                 id="addressLine2"
-                className="w-full h-12 max-w-full"
+                className="h-[42px] min-h-[42px] w-full max-w-full"
                 {...register("addressLine2")}
               />
             </div>
@@ -292,11 +289,11 @@ const SignupPage = () => {
               </label>
               <Input
                 id="suburb"
-                className="w-full h-12 max-w-full"
+                className="h-[42px] min-h-[42px] w-full max-w-full"
                 {...register("suburb", { required: "Suburb/City is required" })}
               />
               {errors.suburb && (
-                <p className="text-sm text-red-500 mt-1">
+                <p className="mt-1 text-[14px] text-red-500">
                   {errors.suburb.message}
                 </p>
               )}
@@ -311,7 +308,7 @@ const SignupPage = () => {
                 Country
               </label>
               <Select onValueChange={(value) => setValue("country", value)}>
-                <SelectTrigger className="w-full h-12 max-w-full">
+                <SelectTrigger className="h-[42px] min-h-[42px] w-full max-w-full">
                   <SelectValue placeholder="Choose a Country" />
                 </SelectTrigger>
                 <SelectContent>
@@ -323,7 +320,7 @@ const SignupPage = () => {
                 </SelectContent>
               </Select>
               {errors.country && (
-                <p className="text-sm text-red-500 mt-1">Country is required</p>
+                <p className="mt-1 text-[14px] text-red-500">Country is required</p>
               )}
             </div>
 
@@ -337,13 +334,13 @@ const SignupPage = () => {
               </label>
               <Input
                 id="state"
-                className="w-full h-12 max-w-full"
+                className="h-[42px] min-h-[42px] w-full max-w-full"
                 {...register("state", {
                   required: "State/Province is required",
                 })}
               />
               {errors.state && (
-                <p className="text-sm text-red-500 mt-1">
+                <p className="mt-1 text-[14px] text-red-500">
                   {errors.state.message}
                 </p>
               )}
@@ -360,11 +357,11 @@ const SignupPage = () => {
             </label>
             <Input
               id="zip"
-              className="w-full h-12 max-w-full"
+              className="h-[42px] min-h-[42px] w-full max-w-full"
               {...register("zip", { required: "Zip/Postcode is required" })}
             />
             {errors.zip && (
-              <p className="text-sm text-red-500 mt-1">{errors.zip.message}</p>
+              <p className="mt-1 text-[14px] text-red-500">{errors.zip.message}</p>
             )}
           </div>
 
