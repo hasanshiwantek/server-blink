@@ -9,7 +9,7 @@ export const fetchCategories = async () => {
       storeId: "10",
     },
     // ✅ ISR: cache once, refresh every 5 min
-    next: { revalidate: 300},
+    next: { revalidate: 300 },
   });
 
   if (!res.ok) throw new Error("Failed to fetch categories");
@@ -20,19 +20,24 @@ export const fetchCategories = async () => {
 
 
 
-export const fetchCategoryById = async (id: number | string ) => {
-  const res = await fetch(`${baseURL}web/categories/categories/${id}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      storeId: "10",
-    },
-    // ✅ ISR: cache once, refresh every 5 min
-    next: { revalidate: 300 },
-  });
+export async function fetchCategoryById(id: number | string) {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${id}`, {
+      next: { revalidate: 3600 },
+    });
 
-  if (!res.ok) throw new Error(`Failed to fetch category with id ${id}`);
+    if (res.status === 404) return null;
 
-  const data = await res.json();
-  return data || null;
-};
+    if (!res.ok) {
+      console.error(`Category API error: ${res.status} for id ${id}`);
+      return null;
+    }
+
+    const data = await res.json();
+    return data || null;
+
+  } catch (err) {
+    console.error(`fetchCategoryById failed for id ${id}:`, err);
+    return null;
+  }
+}
