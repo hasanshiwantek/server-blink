@@ -33,6 +33,9 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
     dispatch(fetchStats());
   }, [dispatch]);
 
+
+  console.log(product?.condition);
+
   return (
     <>
       <section className="product-middle flex flex-col h-full w-full max-w-full  xl:max-w-[50%] 2xl:max-w-[50%] ">
@@ -205,14 +208,14 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
                 {product?.sku || "N/A"}
               </span>
             </div>
-            <div className="flex gap-2">
+            {product?.condition && <div className="flex gap-2">
               <span className="text-[12px] sm:text-[14px] font-bold text-[#545454] ">
                 Condition:
               </span>
               <span className="text-[12px] sm:text-[14px] text-[#545454]">
-                {product?.condition || "N/A"}
+                {product?.condition || ""}
               </span>
-            </div>
+            </div>}
 
             <div className="flex gap-2">
               <span className="text-[12px] sm:text-[14px] font-bold text-[#545454] ">
