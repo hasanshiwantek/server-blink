@@ -35,7 +35,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
 
   return (
     <>
-      <section className="product-middle flex flex-col h-full w-[80%] max-w-full  xl:max-w-[50%] 2xl:max-w-[50%] ">
+      <section className="product-middle flex flex-col h-full w-full max-w-full  xl:max-w-[50%] 2xl:max-w-[50%] ">
         {/* Title Section */}
         <div className="flex flex-col gap-2 mb-4">
           <h1 className="font-bold text-[18px] sm:text-[18px] md:text-[18px] lg:text-[20px] xl:text-[20px] 2xl:text-[20px] leading-tight text-[#545454] border-b-1 border-[#8b8b8b] pb-3">
@@ -165,7 +165,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
               );
               router.push("/cart")
             }}
-            className="btn-primary lg:!w-[51.7%] !py-3.5"
+            className="btn-primary !w-full sm:!w-[51.7%] !py-3.5"
           >
             ADD TO CART
           </button>

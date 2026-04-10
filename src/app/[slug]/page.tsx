@@ -120,9 +120,9 @@ export default async function ProductPage({
         role="main"
         className="w-full max-w-[1170px] mx-auto px-4 lg:px-6 xl:px-0"
       >
-        <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
+        <div className="flex flex-col md:flex-row gap-4 lg:gap-6">
           {/* Left Sidebar - Fixed 235px on desktop */}
-          <aside className="hidden lg:block lg:w-[20%] flex-shrink-0">
+          <aside className="hidden lg:block md:w-[20%] flex-shrink-0">
             <CategoriesSidebar activeCategoryId={product?.categoryIds[0]} />
             <BrandsSidebar activeBrandId={product?.brand?.id} />
           </aside>
