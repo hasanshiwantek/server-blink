@@ -108,7 +108,7 @@ const ProductCard = ({ product }: { product: any }) => {
           </React.Fragment> */}
         </nav>
 
-        <div className="flex flex-wrap justify-center  lg:justify-normal lg:flex-nowrap gap-6 lg:gap-8 xl:gap-8">
+        <div className="flex flex-wrap justify-center  lg:justify-normal md:flex-nowrap gap-6 lg:gap-8 xl:gap-8">
           <ProductLeft
             images={images}
             selectedImage={selectedImage}

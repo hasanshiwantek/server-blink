@@ -6,7 +6,7 @@ import React from "react";
 const ProductOverview = ({ product }: { product: any }) => {
 
   return (
-    <section className="py-10   xl:px-0 2xl:px-0 w-[85%] lg:w-full max-w-[1170px] mx-auto px-4 lg:px-0 border-b-2 border-[#545454]" aria-labelledby="product-overview-heading">
+    <section className="py-10   xl:px-0 2xl:px-0 w-[100%] lg:w-full max-w-[1170px] mx-autu px-0 border-b-2 border-[#545454]" aria-labelledby="product-overview-heading">
       <div className="w-full  flex flex-col">
         <div className="flex flex-col">
           {/* Main Overview Heading */}

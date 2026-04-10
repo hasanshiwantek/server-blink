@@ -84,7 +84,7 @@ const ProductLeft = ({
   };
 
   return (
-    <div className="product-left flex w-full flex-col px-10 md:px-0 lg:w-[50%]">
+    <div className="product-left flex w-full md:w-[70%] flex-col px-10 md:px-0  lg:w-[50%]">
       <div className="flex flex-col items-center gap-8">
         {/* Main Image — opens lightbox on click */}
         <div className="flex h-auto w-full items-center justify-center rounded-2xl border-1 border-[#8b8b8b] bg-white p-4 aspect-square lg:h-[455px] lg:w-[76.7%]">
@@ -205,7 +205,7 @@ const ProductLeft = ({
 
         <TooltipProvider>
           {/* Trust Badges */}
-          <div className="mx-auto mt-2 flex w-fit items-center gap-0 overflow-x-auto border-2 border-[#545454]">
+          <div className="mx-auto mt-2 flex w-fit items-center gap-0 overflow-x-auto border-2 border-[#545454] hidden sm:flex">
             {/* Trustpilot Badge */}
             <Tooltip>
               <TooltipTrigger asChild>
