@@ -236,6 +236,7 @@ const GlobalSearchBar: React.FC = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { searchData, loading } = useAppSelector((state: any) => state.home);
 
@@ -291,6 +292,23 @@ const GlobalSearchBar: React.FC = () => {
     }
   };
 
+  const handleOnChange = (value?: string) => {
+    const trimmed = (value ?? query).trim();
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+
+    if (trimmed.length > 1) {
+      debounceRef.current = setTimeout(() => {
+        const cacheKey = trimmed.toLowerCase();
+        if (searchCache[cacheKey]) {
+          setResults(searchCache[cacheKey]);
+          setShowDropdown(true);
+        } else {
+          dispatch(globalSearch({ query: trimmed }));
+          setShowDropdown(true);
+        }
+      }, 500);
+    }
+  };
   const handleSelect = (url: string) => {
     setQuery("");
     setShowDropdown(false);
@@ -305,7 +323,11 @@ const GlobalSearchBar: React.FC = () => {
           type="search"
           placeholder="SEARCH"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {
+
+            handleOnChange(e.target.value)
+            setQuery(e.target.value)
+          }}
           onKeyDown={(e) => {
             if (e.key === "Enter") handleSearch();
           }}
