@@ -48,12 +48,13 @@ const ProductCard = ({ product }: { product: any }) => {
 
   const increment = () => {
     if (
-      !product.currentStock ||
-      quantity < product.currentStock
+      !product.maxPurchaseQuantity ||
+      quantity < product.maxPurchaseQuantity
     ) {
       setQuantity(quantity + 1);
     }
   };
+
 
   const decrement = () => quantity > 1 && setQuantity(quantity - 1);
 

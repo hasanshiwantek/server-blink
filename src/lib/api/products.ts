@@ -39,7 +39,6 @@ export const fetchProductBySlugAndUrl = async (slug?: string) => {
       console.warn(`⚠️ No product found for slug: ${slug}`);
       return null;
     }
-    console.log("Slug data response: ", data?.data);
 
     return data.data;
   } catch (err) {
