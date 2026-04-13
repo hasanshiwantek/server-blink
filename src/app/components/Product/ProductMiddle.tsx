@@ -34,7 +34,8 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
   }, [dispatch]);
 
 
-  console.log(product?.condition);
+  console.log(product);
+
 
   return (
     <>
@@ -208,7 +209,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
                 {product?.sku || "N/A"}
               </span>
             </div>
-            {product?.condition && <div className="flex gap-2">
+            {product?.showCondition && product?.condition && <div className="flex gap-2">
               <span className="text-[12px] sm:text-[14px] font-bold text-[#545454] ">
                 Condition:
               </span>
@@ -240,7 +241,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
                 Shipping:
               </span>
               <span className="text-[12px] sm:text-[14px] text-[#545454]">
-                {product?.fixedShippingCost || "Calculated at Checkout"}
+                {product?.freeShipping || Number(product?.fixedShippingCost) == 0 ? "Free Shipping" : Number(product?.fixedShippingCost) > 0 ? `$${product?.fixedShippingCost}` : "Calculated at Checkout"}
               </span>
             </div>
           </div>

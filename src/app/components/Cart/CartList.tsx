@@ -25,13 +25,13 @@ const CartList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<any | null>(null);
 
-  const handleChange = (id: string, value: string, currentStock?: number) => {
+  const handleChange = (id: string, value: string, maxPurchaseQuantity?: number) => {
     if (value === "" || /^\d*$/.test(value)) {
       const parsed = Number(value);
 
-      if (currentStock && parsed > currentStock) {
-        setQuantities((prev) => ({ ...prev, [id]: currentStock }));
-        dispatch(updateQty({ id, quantity: currentStock }));
+      if (maxPurchaseQuantity && parsed > maxPurchaseQuantity) {
+        setQuantities((prev) => ({ ...prev, [id]: maxPurchaseQuantity }));
+        dispatch(updateQty({ id, quantity: maxPurchaseQuantity }));
         return;
       }
 
@@ -56,15 +56,15 @@ const CartList = () => {
   const handleManualQtyUpdate = (
     e: React.KeyboardEvent<HTMLInputElement>,
     id: string,
-    currentStock?: number
+    maxPurchaseQuantity?: number
   ) => {
     if (e.key === "Enter") {
       e.preventDefault();
       const inputValue = quantities[id];
       const parsed = Number(inputValue);
 
-      const newQty = currentStock
-        ? Math.min(parsed > 0 ? parsed : 1, currentStock)
+      const newQty = maxPurchaseQuantity
+        ? Math.min(parsed > 0 ? parsed : 1, maxPurchaseQuantity)
         : parsed > 0
           ? parsed
           : 1;
@@ -148,19 +148,19 @@ const CartList = () => {
                         ? item.quantity
                         : quantities[item.id]
                     }
-                    onChange={(e) => handleChange(item.id, e.target.value, item?.currentStock)}
+                    onChange={(e) => handleChange(item.id, e.target.value, item?.maxPurchaseQuantity)}
                     onBlur={(e) => {
                       const parsed = Number(quantities[item.id]);
                       if (!parsed || parsed <= 0) {
                         dispatch(updateQty({ id: item.id, quantity: 1 }));
                         setQuantities((prev) => ({ ...prev, [item.id]: 1 }));
-                      } else if (item.currentStock && parsed > item.currentStock) {
-                        dispatch(updateQty({ id: item.id, quantity: item.currentStock }));
-                        setQuantities((prev) => ({ ...prev, [item.id]: item.currentStock }));
+                      } else if (item.maxPurchaseQuantity && parsed > item.maxPurchaseQuantity) {
+                        dispatch(updateQty({ id: item.id, quantity: item.maxPurchaseQuantity }));
+                        setQuantities((prev) => ({ ...prev, [item.id]: item.maxPurchaseQuantity }));
                       }
                     }}
                     onKeyDown={(e) =>
-                      handleManualQtyUpdate(e, item.id, item.currentStock)
+                      handleManualQtyUpdate(e, item.id, item.maxPurchaseQuantity)
                     }
                     className="
       w-10 bg-white text-center py-2 outline-none
@@ -176,8 +176,8 @@ const CartList = () => {
                     type="button"
                     onClick={() => {
                       if (
-                        !item.currentStock ||
-                        item.quantity < item.currentStock
+                        !item.maxPurchaseQuantity ||
+                        item.quantity < item.maxPurchaseQuantity
                       ) {
                         dispatch(increaseQty(item.id));
                       }
