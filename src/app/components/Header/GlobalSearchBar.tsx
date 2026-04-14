@@ -283,7 +283,8 @@ const GlobalSearchBar: React.FC = () => {
     if (trimmed.length > 1) {
       const cacheKey = trimmed.toLowerCase();
       if (searchCache[cacheKey]) {
-        setResults(searchCache[cacheKey]);
+        // setResults(searchCache[cacheKey]);
+        dispatch(globalSearch({ query: trimmed }));
         setShowDropdown(true);
       } else {
         dispatch(globalSearch({ query: trimmed }));
@@ -300,7 +301,9 @@ const GlobalSearchBar: React.FC = () => {
       debounceRef.current = setTimeout(() => {
         const cacheKey = trimmed.toLowerCase();
         if (searchCache[cacheKey]) {
-          setResults(searchCache[cacheKey]);
+          // setResults(searchCache[cacheKey]);
+          dispatch(globalSearch({ query: trimmed }));
+
           setShowDropdown(true);
         } else {
           dispatch(globalSearch({ query: trimmed }));
@@ -329,6 +332,8 @@ const GlobalSearchBar: React.FC = () => {
             setQuery(e.target.value)
           }}
           onKeyDown={(e) => {
+            console.log(e.key);
+
             if (e.key === "Enter") handleSearch();
           }}
           className="
