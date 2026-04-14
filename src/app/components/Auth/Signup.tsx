@@ -104,12 +104,15 @@ const SignupPage = () => {
 
             {/* Email Address */}
             <div>
-              <label
-                htmlFor="email"
-                className="block text-[1rem] font-normal text-[#545454] mb-2"
-              >
-                Email Address
-              </label>
+              <div className="flex justify-between items-center">
+                <label
+                  htmlFor="email"
+                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                >
+                  Email Address
+                </label>
+                <span className="text-[#545454]">*</span>
+              </div>
               <Input
                 id="email"
                 type="email"
@@ -125,12 +128,15 @@ const SignupPage = () => {
 
             {/* Password */}
             <div>
-              <label
-                htmlFor="password"
-                className="block text-[1rem] font-normal text-[#545454] mb-2"
-              >
-                Password
-              </label>
+              <div className="flex justify-between items-center">
+                <label
+                  htmlFor="password"
+                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                >
+                  Password
+                </label>
+                <span className="text-[#545454]">*</span>
+              </div>
               <Input
                 id="password"
                 type="password"
@@ -146,12 +152,17 @@ const SignupPage = () => {
 
             {/* Confirm Password */}
             <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-[1rem] font-normal text-[#545454] mb-2"
-              >
-                Confirm Password
-              </label>
+              <div className="flex justify-between items-center">
+
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                >
+                  Confirm Password
+                </label>
+                <span className="text-[#545454]">*</span>
+              </div>
+
               <Input
                 id="confirmPassword"
                 type="password"
@@ -171,12 +182,16 @@ const SignupPage = () => {
 
             {/* First Name */}
             <div>
-              <label
-                htmlFor="firstName"
-                className="block text-[1rem] font-normal text-[#545454] mb-2"
-              >
-                First Name
-              </label>
+              <div className="flex justify-between items-center">
+                <label
+                  htmlFor="firstName"
+                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                >
+                  First Name
+                </label>
+                <span className="text-[#545454]">*</span>
+              </div>
+
               <Input
                 id="firstName"
                 className="h-[42px] min-h-[42px] w-full max-w-full"
@@ -193,12 +208,16 @@ const SignupPage = () => {
 
             {/* Last Name */}
             <div>
-              <label
-                htmlFor="lastName"
-                className="block text-[1rem] font-normal text-[#545454] mb-2"
-              >
-                Last Name
-              </label>
+              <div className="flex justify-between items-center">
+
+                <label
+                  htmlFor="lastName"
+                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                >
+                  Last Name
+                </label>
+                <span className="text-[#545454]">*</span>
+              </div>
               <Input
                 id="lastName"
                 className="h-[42px] min-h-[42px] w-full max-w-full"
@@ -244,12 +263,17 @@ const SignupPage = () => {
 
             {/* Address Line 1 */}
             <div>
-              <label
-                htmlFor="addressLine1"
-                className="block text-[1rem] font-normal text-[#545454] mb-2"
-              >
-                Address Line 1
-              </label>
+              <div className="flex justify-between items-center">
+
+                <label
+                  htmlFor="addressLine1"
+                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                >
+                  Address Line 1
+                </label>
+                <span className="text-[#545454]">*</span>
+              </div>
+
               <Input
                 id="addressLine1"
                 className="h-[42px] min-h-[42px] w-full max-w-full"
@@ -266,12 +290,18 @@ const SignupPage = () => {
 
             {/* Address Line 2 */}
             <div>
-              <label
-                htmlFor="addressLine2"
-                className="block text-[1rem] font-normal text-[#545454] mb-2"
-              >
-                Address Line 2
-              </label>
+              <div className="flex justify-between items-center">
+
+                <label
+                  htmlFor="addressLine2"
+                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                >
+                  Address Line 2
+                </label>
+                <span className="text-[#545454]">*</span>
+
+              </div>
+
               <Input
                 id="addressLine2"
                 className="h-[42px] min-h-[42px] w-full max-w-full"
@@ -281,12 +311,18 @@ const SignupPage = () => {
 
             {/* Suburb/City */}
             <div>
-              <label
-                htmlFor="suburb"
-                className="block text-[1rem] font-normal text-[#545454] mb-2"
-              >
-                Suburb/City
-              </label>
+              <div className="flex justify-between items-center">
+
+                <label
+                  htmlFor="suburb"
+                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                >
+                  Suburb/City
+                </label>
+                <span className="text-[#545454]">*</span>
+
+              </div>
+
               <Input
                 id="suburb"
                 className="h-[42px] min-h-[42px] w-full max-w-full"
@@ -301,12 +337,16 @@ const SignupPage = () => {
 
             {/* Country */}
             <div>
-              <label
-                htmlFor="country"
-                className="block text-[1rem] font-normal text-[#545454] mb-2"
-              >
-                Country
-              </label>
+              <div className="flex justify-between items-center">
+                <label
+                  htmlFor="country"
+                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                >
+                  Country
+                </label>
+                <span className="text-[#545454]">*</span>
+
+              </div>
               <Select onValueChange={(value) => setValue("country", value)}>
                 <SelectTrigger className="h-[42px] min-h-[42px] w-full max-w-full">
                   <SelectValue placeholder="Choose a Country" />
@@ -326,12 +366,16 @@ const SignupPage = () => {
 
             {/* State/Province */}
             <div>
-              <label
-                htmlFor="state"
-                className="block text-[1rem] font-normal text-[#545454] mb-2"
-              >
-                State/Province
-              </label>
+              <div className="flex justify-between items-center">
+                <label
+                  htmlFor="state"
+                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                >
+                  State/Province
+                </label>
+                <span className="text-[#545454]">*</span>
+              </div>
+
               <Input
                 id="state"
                 className="h-[42px] min-h-[42px] w-full max-w-full"
@@ -349,12 +393,18 @@ const SignupPage = () => {
 
           {/* Zip/Postcode - Full Width */}
           <div className="max-w-[calc(50%-1rem)]">
-            <label
-              htmlFor="zip"
-              className="block text-[1rem] font-normal text-[#545454] mb-2"
-            >
-              Zip/Postcode
-            </label>
+            <div className="flex justify-between items-center">
+
+              <label
+                htmlFor="zip"
+                className="block text-[1rem] font-normal text-[#545454] mb-2"
+              >
+                Zip/Postcode
+              </label>
+              <span className="text-[#545454]">*</span>
+
+            </div>
+
             <Input
               id="zip"
               className="h-[42px] min-h-[42px] w-full max-w-full"
