@@ -1,3 +1,5 @@
+import SortDropdown from "./SortDropdown";
+
 interface Props {
   total: number;
   view: "list" | "grid";
@@ -41,68 +43,42 @@ export default function SortingBar({
   };
 
   return (
-   <div className="flex flex-col xl:flex-row justify-between items-center border 2xl:py-[20px] 2xl:px-[30px] xl:py-[15px] xl:px-[22.5px] p-5 w-full">
+    <div className="flex flex-col xl:flex-row justify-between items-center border 2xl:py-[20px] 2xl:px-[30px] xl:py-[15px] xl:px-[22.5px] p-5 w-full">
 
-  {/* ✅ Dynamic Heading Placeholder */}
-  {/* <h4 className="h3-regular">{getFilterTitle()}</h4> */}
+      {/* ✅ Dynamic Heading Placeholder */}
+      {/* <h4 className="h3-regular">{getFilterTitle()}</h4> */}
 
-  <div className="flex flex-col md:flex-row xl:flex-row items-center w-full gap-3 justify-between">
+      <div className="flex flex-col md:flex-row xl:flex-row items-center w-full gap-3 justify-between">
 
-    {/* View Toggle */}
-    <div className="flex items-center space-x-2">
-      <button
-        onClick={() => setView("grid")}
-        className={`px-3 py-2 rounded-md border transition-colors text-base font-medium ${
-          view === "grid"
-            ? "bg-[var(--primary-color)] text-white border-orange-500 shadow-md"
-            : "bg-white text-gray-600 border-gray-300 hover:bg-gray-100"
-        }`}
-      >
-        ▭▭
-      </button>
-      <button
-        onClick={() => setView("list")}
-        className={`px-3 py-2 rounded-md border transition-colors text-base font-medium ${
-          view === "list"
-            ? "bg-[var(--primary-color)] text-white border-orange-500 shadow-md"
-            : "bg-white text-gray-600 border-gray-300 hover:bg-gray-100"
-        }`}
-      >
-        ☰
-      </button>
+        {/* View Toggle */}
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => setView("grid")}
+            className={`px-3 py-2 rounded-md border transition-colors text-base font-medium ${view === "grid"
+              ? "bg-[var(--primary-color)] text-white border-orange-500 shadow-md"
+              : "bg-white text-gray-600 border-gray-300 hover:bg-gray-100"
+              }`}
+          >
+            ▭▭
+          </button>
+          <button
+            onClick={() => setView("list")}
+            className={`px-3 py-2 rounded-md border transition-colors text-base font-medium ${view === "list"
+              ? "bg-[var(--primary-color)] text-white border-orange-500 shadow-md"
+              : "bg-white text-gray-600 border-gray-300 hover:bg-gray-100"
+              }`}
+          >
+            ☰
+          </button>
+        </div>
+
+        {/* Centered Sort Section */}
+        <div className="flex items-center gap-2 justify-center flex-1 mt-3 md:mt-0">
+          <span className="text-[13px] whitespace-nowrap">Sort By: </span>
+          <SortDropdown filters={filters} setFilters={setFilters} />
+        </div>
+      </div>
     </div>
-
-    {/* Centered Sort Section */}
-    <div className="flex items-center gap-2 justify-center flex-1 mt-3 md:mt-0">
-      <span className="text-[13px] whitespace-nowrap">Sort by</span>
-      <select
-        value={filters.sortBy || ""}
-        onChange={(e) =>
-          setFilters((prev: any) => ({
-            ...prev,
-            sortBy: e.target.value,
-            page: 1,
-          }))
-        }
-        className="px-3 py-1 text-[12px] lg:w-80
-          border border-gray-300 rounded-md shadow-sm 
-          bg-white cursor-pointer
-          focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)]
-          hover:border-gray-400 transition-all"
-      >
-        <option value="">Sort By</option>
-        <option value="bestSelling">Best Selling</option>
-        <option value="nameAsc">A TO Z</option>
-        <option value="nameDesc">Z TO A</option>
-        <option value="featured">FEATURE ITEMS</option>
-        <option value="newest">NEWEST ITEMS</option>
-        <option value="priceLowToHigh">PRICE ASSENDING</option>
-        <option value="priceHighToLow">PRICE DESENDING</option>
-      </select>
-    </div>
-
-  </div>
-</div>
 
   );
 }

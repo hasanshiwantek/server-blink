@@ -31,6 +31,7 @@ const ProductLeft = ({
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [modalIndex, setModalIndex] = useState(0);
   const [zoomed, setZoomed] = useState(false);
+  const [expanded, setExpanded] = useState(false); // NEW: fullscreen toggle
 
   const imageList = useMemo(() => {
     if (Array.isArray(images) && images.length > 0) {
@@ -43,6 +44,7 @@ const ProductLeft = ({
     const idx = imageList.findIndex((u) => u === selectedImage);
     setModalIndex(idx >= 0 ? idx : 0);
     setZoomed(false);
+    setExpanded(false); // reset on open
     setLightboxOpen(true);
   }, [imageList, selectedImage]);
 
@@ -80,7 +82,10 @@ const ProductLeft = ({
 
   const handleOpenChange = (open: boolean) => {
     setLightboxOpen(open);
-    if (!open) setZoomed(false);
+    if (!open) {
+      setZoomed(false);
+      setExpanded(false);
+    }
   };
 
   return (
@@ -172,16 +177,27 @@ const ProductLeft = ({
 
               {/* Center image panel */}
               <div className="flex flex-1 items-center justify-center px-4 pb-8 pt-16 sm:px-8 sm:pt-20">
+                {/* 
+                  CHANGED: 
+                  - When expanded=false → normal constrained size (original behavior)
+                  - When expanded=true  → nearly fullscreen (like BigCommerce)
+                  - Click on image toggles expanded state
+                  - cursor changes to zoom-in/zoom-out to hint the behavior
+                */}
                 <div
                   className={cn(
-                    "flex max-h-[min(72vh,640px)] max-w-[min(82vw,640px)] items-center justify-center bg-white p-4 shadow-lg sm:p-5",
-                    zoomed && "max-h-[85vh] max-w-[92vw] overflow-auto"
+                    "flex items-center justify-center bg-white p-4 shadow-lg sm:p-5 transition-all duration-300",
+                    expanded
+                      ? "max-h-[90vh] max-w-[90vw] w-[90vw] h-[90vh]"
+                      : "max-h-[min(72vh,640px)] max-w-[min(82vw,640px)]",
+                    zoomed && !expanded && "max-h-[85vh] max-w-[92vw] overflow-auto"
                   )}
                 >
                   <div
                     className={cn(
                       "relative flex min-h-[160px] min-w-[160px] max-w-full items-center justify-center",
-                      zoomed && "min-h-[45vh]"
+                      zoomed && !expanded && "min-h-[45vh]",
+                      expanded && "w-full h-full"
                     )}
                   >
                     <Image
@@ -189,9 +205,15 @@ const ProductLeft = ({
                       alt=""
                       width={1200}
                       height={1200}
+                      onClick={() => setExpanded((e) => !e)}
                       className={cn(
-                        "h-auto max-h-[56vh] w-auto max-w-[min(78vw,560px)] object-contain transition-transform duration-200",
-                        zoomed && "max-h-none max-w-none scale-[1.45] sm:scale-[1.6]"
+                        "object-contain transition-all duration-300",
+                        expanded
+                          ? "h-full w-full max-h-[calc(90vh-2.5rem)] max-w-full cursor-zoom-out"
+                          : cn(
+                              "h-auto max-h-[56vh] w-auto max-w-[min(78vw,560px)] cursor-zoom-in",
+                              zoomed && "max-h-none max-w-none scale-[1.45] sm:scale-[1.6]"
+                            )
                       )}
                       sizes="90vw"
                       quality={95}
