@@ -90,7 +90,7 @@
 import { MetadataRoute } from "next";
 
 const BACKEND_SITEMAP_URL = "https://backend.sparemicro.com/xmlsitemap";
-const FRONTEND_BASE_URL = "http://localhost:3001";
+const FRONTEND_BASE_URL = "https://server-blink.vercel.app";
 // const FRONTEND_BASE_URL = "https://server-blink.vercel.app";
 
 // Parses the XML sitemap index and extracts all <loc> URLs
