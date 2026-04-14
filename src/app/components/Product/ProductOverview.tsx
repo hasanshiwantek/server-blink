@@ -10,7 +10,10 @@ const ProductOverview = ({ product }: { product: any }) => {
       <div className="w-full  flex flex-col">
         <div className="flex flex-col">
           {/* Main Overview Heading */}
-          <h2 className="text-[13px] bg-[#F2F2F2] p-2 w-48 text-center text-black font-bold">Overview</h2>
+          <div className="flex justify-center sm:justify-start  ">
+
+            <h2 className="text-[13px]  bg-[#F2F2F2] p-2 sm:w-48 w-full text-center text-black font-bold">Overview</h2>
+          </div>
           <h3 className="text-[20px] bg-[#F2F2F2] px-5 text-[#545454] py-2 font-bold">PRODUCT DESCRIPTION</h3>
           <div className="w-[97%] mx-auto h-[1px] bg-[#545454]"></div>
 
