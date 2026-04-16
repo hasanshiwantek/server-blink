@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
         try {
             const backendRes = await fetch(
                 'https://backend.sparemicro.com/api/sitemap/xmlsitemap',
-                { next: { revalidate: 3600 } }
+                { next: { revalidate: 10 } }
             );
 
             if (!backendRes.ok) {
@@ -127,7 +127,7 @@ export async function GET(request: NextRequest) {
 
     try {
         const res = await fetch(backendUrl, {
-            next: { revalidate: 3600 },
+            next: { revalidate: 10 },
         });
 
         if (!res.ok) {
