@@ -38,6 +38,7 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
     (sum, item: any) => sum + (item?.quantity ?? 1),
     0
   );
+  
 
   return (
     <div className="bg-white border-[1px] border-[#8b8b8b] rounded-sm shadow-sm py-6 h-fit sticky top-9">
