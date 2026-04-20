@@ -104,11 +104,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   }, [city, country, zip, state]);
 
 
-
-  console.log("shippingRates, ratesLoader", shippingRates
-    , ratesLoader);
-
-
   if (isCompleted && !isActive) {
     return (
       <div className="flex items-start justify-between">
