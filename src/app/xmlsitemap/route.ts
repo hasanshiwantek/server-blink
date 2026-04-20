@@ -1,52 +1,3 @@
-// // app/xmlsitemap/route.ts
-// import { NextRequest } from 'next/server';
-
-// const BACKEND_BASE = 'https://backend.sparemicro.com/api/sitemap';
-
-// export async function GET(request: NextRequest) {
-//   const { searchParams } = new URL(request.url);
-//   const type = searchParams.get('type');
-//   const page = searchParams.get('page') || '1';
-
-//   if (!type) {
-//     return new Response('Type parameter is required', { status: 400 });
-//   }
-
-//   let backendUrl = '';
-
-//   if (type === 'pages') {
-//     backendUrl = `${BACKEND_BASE}/pages`;
-//   } else if (type === 'products') {
-//     backendUrl = `${BACKEND_BASE}/products/${page}`;
-//   } else if (type === 'categories') {
-//     backendUrl = `${BACKEND_BASE}/categories/${page}`;
-//   } else if (type === 'brands') {
-//     backendUrl = `${BACKEND_BASE}/brands/${page}`;
-//   } else {
-//     return new Response('Invalid type', { status: 400 });
-//   }
-
-//   try {
-//     const res = await fetch(backendUrl, {
-//       next: { revalidate: 3600 },
-//     });
-
-//     if (!res.ok) throw new Error(`Backend error ${res.status}`);
-
-//     const xml = await res.text();
-
-//     return new Response(xml, {
-//       headers: {
-//         'Content-Type': 'application/xml; charset=utf-8',
-//         'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
-//       },
-//     });
-//   } catch (error) {
-//     console.error(`Error fetching ${type} sitemap:`, error);
-//     return new Response(`Failed to load ${type} sitemap`, { status: 500 });
-//   }
-// }
-// app/xmlsitemap/route.ts
 import { NextRequest } from 'next/server';
 
 const BACKEND_BASE = 'https://backend.sparemicro.com/api/sitemap';
@@ -56,8 +7,6 @@ export async function GET(request: NextRequest) {
     const type = searchParams.get('type');
     const page = searchParams.get('page') || '1';
 
-    // ==================== MAIN SITEMAP INDEX ====================
-    // When user opens: /xmlsitemap   (no type parameter)
     if (!type) {
         try {
             const backendRes = await fetch(
@@ -107,9 +56,6 @@ export async function GET(request: NextRequest) {
             return new Response('Error loading sitemap index', { status: 500 });
         }
     }
-
-    // ==================== INDIVIDUAL SITEMAPS ====================
-    // When user opens: /xmlsitemap?type=products&page=1
 
     let backendUrl = '';
 
