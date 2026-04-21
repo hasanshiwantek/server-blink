@@ -182,22 +182,24 @@ const CheckoutForm = () => {
     );
   }, [cart]);
 
+
+  // temp comment
   // const shipping = useMemo(() => {
   //   if (cart.length === 0) return 0;
-
   //   return cart.reduce((sum, item) => {
   //     const cost = Number(item.fixedShippingCost || 0);
   //     return sum + cost;
   //   }, 0);
   // }, [cart]);
+
+
   const shipping = useMemo(() => {
     if (!watchedShippingMethod || !shippingRates?.length) return 0;
-    const selected = shippingRates.find(
-      (rate) => String(rate.method_id) === String(watchedShippingMethod)
+    const selected = shippingRates.find((rate) =>
+      rate.service_type === watchedShippingMethod
     );
-    return selected ? Number(selected.total_charge) : 0;
+    return selected ? Number(selected?.total_charge) : 0;
   }, [watchedShippingMethod, shippingRates]);
-
 
   const tax = 0;
 
@@ -741,6 +743,8 @@ const CheckoutForm = () => {
                   country: watch("country"),
                   zip: watch("zip"),
                 }}
+                watchedShippingMethod={watchedShippingMethod}
+
               />
             </div>
 

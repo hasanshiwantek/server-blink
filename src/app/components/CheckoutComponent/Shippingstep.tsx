@@ -39,6 +39,7 @@ interface ShippingStepProps {
     country: string;
     zip: string;
   };
+  watchedShippingMethod?: string;
 }
 
 const ShippingStep: React.FC<ShippingStepProps> = ({
@@ -51,6 +52,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   isCompleted,
   onEdit,
   shippingInfo,
+  watchedShippingMethod
 }) => {
   const { shippingRates, ratesLoader } = useAppSelector((state) => state.shippingZone);
   const dispatch = useAppDispatch()
@@ -396,72 +398,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
           </p>
         )}
 
-        {/* <div className="space-y-3">
-          <label
-            className={`flex items-start gap-3 border rounded p-4 ${isShippingComplete
-              ? "cursor-pointer has-[:checked]:border-red-600"
-              : "cursor-not-allowed opacity-50 bg-gray-50"
-              }`}
-          >
-            <input
-              type="radio"
-              value="fedex_economy"
-              {...register("shippingMethod", {
-                required: "Please select a shipping method",
-              })}
-              className="mt-1"
-              disabled={!isShippingComplete}
-            />
-            <div className="min-w-0 flex-1">
-              <div className="flex w-full items-center justify-between gap-3">
-                <Image
-                  src="/checkouticon/fedex.png"
-                  alt="FedEx"
-                  width={60}
-                  height={20}
-                  className="shrink-0 object-contain"
-                />
-                <span className="text-right text-sm text-gray-600">
-                  (International Economy)
-                </span>
-              </div>
-              <div className="text-lg font-bold mt-1">$409.75</div>
-            </div>
-          </label>
-
-          <label
-            className={`flex items-start gap-3 border rounded p-4 ${isShippingComplete
-              ? "cursor-pointer has-[:checked]:border-red-600"
-              : "cursor-not-allowed opacity-50 bg-gray-50"
-              }`}
-          >
-            <input
-              type="radio"
-              value="fedex_priority"
-              {...register("shippingMethod", {
-                required: "Please select a shipping method",
-              })}
-              className="mt-1"
-              disabled={!isShippingComplete}
-            />
-            <div className="min-w-0 flex-1">
-              <div className="flex w-full items-center justify-between gap-3">
-                <Image
-                  src="/checkouticon/fedex.png"
-                  alt="FedEx"
-                  width={60}
-                  height={20}
-                  className="shrink-0 object-contain"
-                />
-                <span className="text-right text-sm text-gray-600">
-                  (International Priority)
-                </span>
-              </div>
-              <div className="text-lg font-bold mt-1">$459.68</div>
-            </div>
-          </label>
-        </div> */}
-        <div className="space-y-3">
+        {shippingRates?.length > 0 && <div className=" border border-black">
           {ratesLoader ? (
             // Skeleton
             Array.from({ length: 2 }).map((_, i) => (
@@ -473,26 +410,29 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                 </div>
               </div>
             ))
-          ) : shippingRates?.map((rate) => (
-            <label
-              key={rate.method_id}
-              className={`flex items-start gap-3 border rounded p-4 ${isShippingComplete
-                  ? "cursor-pointer has-[:checked]:border-red-600"
-                  : "cursor-not-allowed opacity-50 bg-gray-50"
+          ) : shippingRates?.map((rate, i) => {
+            return <label
+              key={`${rate.method_id}-${rate.service_type}`}
+              className={`flex items-start gap-3 border rounded p-4 transition-colors ${isShippingComplete
+                ? "cursor-pointer"
+                : "cursor-not-allowed opacity-50"
+                } ${watchedShippingMethod == rate.service_type
+                  ? "border-black  !bg-[#ffffff]"
+                  : ""
                 }`}
             >
               <input
                 type="radio"
-                value={rate.method_id}
+                value={rate.service_type}
                 {...register("shippingMethod", {
                   required: "Please select a shipping method",
                 })}
                 className="mt-1"
                 disabled={!isShippingComplete}
               />
-              <div className="min-w-0 flex-1">
-                <div className="flex w-full items-center justify-between gap-3">
-                  {rate.is_fedex ? (
+              <div className="min-w-0 flex-1 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  {rate.is_fedex && (
                     <Image
                       src="/checkouticon/fedex.png"
                       alt="FedEx"
@@ -500,29 +440,18 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                       height={20}
                       className="shrink-0 object-contain"
                     />
-                  ) : (
-                    <span className="text-sm font-medium text-gray-700">
-                      {rate.display_name}
-                    </span>
                   )}
-                  {rate.transit_days && (
-                    <span className="text-right text-sm text-gray-500">
-                      {rate.transit_days} days
-                    </span>
-                  )}
+                  <span className="text-base font-medium text-gray-700">
+                    {rate.is_fedex ? `(${rate.service_name})` : rate.display_name}
+                  </span>
                 </div>
-                <div className="text-lg font-bold mt-1">
-                  {rate.total_charge === 0 ? "Free" : `$${rate.total_charge.toFixed(2)}`}
+                <div className="text-base font-bold flex-shrink-0">
+                  {rate.total_charge === 0 ? "Free" : `$${Number(rate.total_charge).toFixed(2)}`}
                 </div>
-                {rate.delivery_date && (
-                  <div className="text-xs text-gray-500 mt-0.5">
-                    Delivery by {rate.delivery_date}
-                  </div>
-                )}
               </div>
             </label>
-          ))}
-        </div>
+          })}
+        </div>}
 
         {errors.shippingMethod && (
           <p className="text-sm text-red-500 mt-2">
