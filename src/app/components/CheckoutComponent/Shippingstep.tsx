@@ -20,6 +20,7 @@ import {
 } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { fetchShippingRates } from "@/redux/slices/shippingSlice";
+import { RootState } from "@/redux/store";
 
 interface ShippingStepProps {
   register: UseFormRegister<any>;
@@ -42,6 +43,57 @@ interface ShippingStepProps {
   watchedShippingMethod?: string;
 }
 
+// Har product = apna alag package
+function buildFedExPackages(products: any[]) {
+  return products.map((p) => ({
+    weight: {
+      value: parseFloat(p.dimensions?.weight) || 1,
+      units: "LB",
+    },
+    dimensions: {
+      length: parseFloat(p.dimensions?.depth) || 10,
+      width: parseFloat(p.dimensions?.width) || 6,
+      height: parseFloat(p.dimensions?.height) || 4,
+      units: "IN",
+    },
+    declaredValue: {
+      amount: parseFloat(p.price) || 0,
+      currency: "USD",
+    },
+  }));
+}
+function calculatePackage(products: any[]) {
+  const totalWeight = products.reduce((sum, p) => {
+    const weight = parseFloat(p.dimensions?.weight) || 0;
+    const qty = p.quantity || 1;
+    return sum + (weight * qty);
+  }, 0);
+
+  const orderTotal = products.reduce((sum, p) => {
+    const price = parseFloat(p.price) || 0;
+    const qty = p.quantity || 1;
+    return sum + (price * qty);
+  }, 0);
+
+  const itemCount = products.reduce((sum, p) => sum + (p.quantity || 1), 0);
+
+
+  const maxLength = Math.max(...products.map(p => parseFloat(p.dimensions?.depth) || 0));
+  const maxWidth = Math.max(...products.map(p => parseFloat(p.dimensions?.width) || 0));
+  const maxHeight = Math.max(...products.map(p => parseFloat(p.dimensions?.height) || 0));
+
+  return {
+    total_weight: totalWeight,   // fallback if data missing
+    weight_unit: "LB",
+    package_length: maxLength,
+    package_width: maxWidth,
+    package_height: maxHeight,
+    dimension_unit: "IN",
+    order_total: orderTotal,
+    item_count: itemCount,
+    package_value: orderTotal,
+  };
+}
 const ShippingStep: React.FC<ShippingStepProps> = ({
   register,
   errors,
@@ -56,6 +108,8 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
 }) => {
   const { shippingRates, ratesLoader } = useAppSelector((state) => state.shippingZone);
   const dispatch = useAppDispatch()
+  const cart = useAppSelector((state: RootState) => state?.cart?.items);
+
   // Watch form values to check if shipping address is complete
   const firstName = useWatch({ control, name: "firstName" });
   const lastName = useWatch({ control, name: "lastName" });
@@ -78,6 +132,9 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   }, [firstName, lastName, address1, city, country, zip]);
   useEffect(() => {
     if (!city?.trim() && !country?.trim() && !zip?.trim() && !state?.trim()) return;
+    const pkg = calculatePackage(cart);
+    console.log('pkg ', pkg);
+
     const timer = setTimeout(() => {
       dispatch(fetchShippingRates({
         data: {
@@ -87,17 +144,18 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             "state": state.trim(),
             postal_code: zip.trim(),
           },
-          "package": {
-            "total_weight": 2.5,
-            "weight_unit": "LB",
-            "package_length": 10,
-            "package_width": 6,
-            "package_height": 4,
-            "dimension_unit": "IN",
-            "order_total": 75.00,
-            "item_count": 1,
-            "package_value": 75.00
-          }
+          package: pkg,
+          // "package": {
+          //   "total_weight": 2.5,
+          //   "weight_unit": "LB",
+          //   "package_length": 10,
+          //   "package_width": 6,
+          //   "package_height": 4,
+          //   "dimension_unit": "IN",
+          //   "order_total": 75.00,
+          //   "item_count": 1,
+          //   "package_value": 75.00
+          // }
         },
       }));
     }, 600);

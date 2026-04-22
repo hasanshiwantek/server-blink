@@ -92,7 +92,7 @@ interface CheckoutFormValues {
 // Inner component that uses Stripe hooks
 const CheckoutForm = () => {
   const dispatch = useAppDispatch();
-  const cart = useAppSelector((state: RootState) => state.cart.items);
+  const cart = useAppSelector((state: RootState) => state?.cart?.items);
   const auth = useAppSelector((state: RootState) => state?.auth);
 
   // ADD COUPON STATE FROM REDUX
@@ -744,7 +744,6 @@ const CheckoutForm = () => {
                   zip: watch("zip"),
                 }}
                 watchedShippingMethod={watchedShippingMethod}
-
               />
             </div>
 

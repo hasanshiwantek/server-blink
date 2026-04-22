@@ -87,31 +87,6 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  // async rewrites() {
-  //   return [
-  //     {
-  //       source: "/robots.txt",
-  //       destination: "/api/robots", // Points to your App Router API route
-  //     },
-  //   ];
-  // },
-  // async rewrites() {
-  //   return [
-  //     {
-  //       source: "/robots.txt",
-  //       destination: "/api/robots",
-  //     },
-  //     // Only rewrites if no real page exists
-  //     {
-  //       source: "/:slug/:path+",
-  //       destination: "/:slug",
-  //       missing: [
-  //         { type: "header", key: "x-invoke-status" },
-  //       ],
-  //     },
-  //   ];
-  // },
-
   async rewrites() {
     return {
       beforeFiles: [
