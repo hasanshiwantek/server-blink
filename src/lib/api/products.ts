@@ -83,8 +83,6 @@ export async function fetchFilteredProducts(filters: {
   sortBy?: string;
 }) {
   const params = new URLSearchParams();
-  console.log("params", params);
-
 
   if (filters.page) params.append("page", filters.page.toString());
   if (filters.pageSize) params.append("pageSize", filters.pageSize.toString());
