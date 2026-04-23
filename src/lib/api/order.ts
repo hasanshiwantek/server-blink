@@ -1,4 +1,6 @@
-const baseURL = process.env.NEXT_PUBLIC_API_URL;
+import { baseURL } from "../axiosInstance";
+
+// const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
 export const fetchOrderDetails = async (orderId: string) => {
   try {
@@ -15,7 +17,6 @@ export const fetchOrderDetails = async (orderId: string) => {
 
     if (!res.ok) throw new Error("Failed to fetch order details");
     const data = await res.json();
-    console.log("Order details: ", data?.order);
 
     return data?.order || [];
   } catch (error) {
