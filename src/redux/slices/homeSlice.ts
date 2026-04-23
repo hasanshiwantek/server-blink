@@ -8,7 +8,6 @@ export const globalSearch = createAsyncThunk(
       const res = await axiosInstance.get(
         `web/products/search-product?query=${query}`
       );
-      console.log("Main Search Data: ", res?.data);
       return res.data;
     } catch (err: any) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,8 +23,6 @@ export const getBrands = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const res = await axiosInstance.get(`web/brands/brands`);
-      console.log("brands data: ", res.data);
-
       return res.data;
     } catch (err: any) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -41,8 +38,6 @@ export const fetchPopularProducts = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const res = await axiosInstance.get(`web/products/popular-products`);
-      console.log("Popular products: ", res.data);
-
       return res.data;
     } catch (err: any) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -58,7 +53,6 @@ export const fetchProductsData = createAsyncThunk(
   async (endpoint: string, thunkAPI) => {
     try {
       const res = await axiosInstance.get(endpoint);
-      console.log(`Products from ${endpoint}:   sssss`, res.data);
       return res.data;
     } catch (err: any) {
       return thunkAPI.rejectWithValue(

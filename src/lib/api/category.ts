@@ -1,6 +1,6 @@
 // // lib/api/categories.ts
-const baseURL = process.env.NEXT_PUBLIC_API_URL;
-
+import { baseURL } from "../axiosInstance";
+// const baseURL = process.env.NEXT_PUBLIC_API_URL;
 export const fetchCategories = async () => {
   const res = await fetch(`${baseURL}web/categories/get-categories`, {
     method: "GET",
@@ -22,7 +22,8 @@ export const fetchCategories = async () => {
 
 export async function fetchCategoryById(id: number | string) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${id}`, {
+    // const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${id}`, {
+    const res = await fetch(`${baseURL}categories/${id}`, {
       next: { revalidate: 3600 },
     });
 

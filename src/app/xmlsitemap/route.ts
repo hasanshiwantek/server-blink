@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
-
-const BACKEND_BASE = 'https://backend.sparemicro.com/api/sitemap';
+import { baseURL } from '@/lib/axiosInstance';
+const BACKEND_BASE = baseURL;
 
 export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     if (!type) {
         try {
             const backendRes = await fetch(
-                'https://backend.sparemicro.com/api/sitemap/xmlsitemap',
+                `${BACKEND_BASE}sitemap/xmlsitemap`,
                 {
                     next: { revalidate: 10 }
                 }
@@ -51,10 +51,10 @@ export async function GET(request: NextRequest) {
     }
 
     let backendUrl = '';
-    if (type === 'pages') backendUrl = `${BACKEND_BASE}/pages`;
-    else if (type === 'products') backendUrl = `${BACKEND_BASE}/products/${page}`;
-    else if (type === 'categories') backendUrl = `${BACKEND_BASE}/categories/${page}`;
-    else if (type === 'brands') backendUrl = `${BACKEND_BASE}/brands/${page}`;
+    if (type === 'pages') backendUrl = `${BACKEND_BASE}sitemap/pages`;
+    else if (type === 'products') backendUrl = `${BACKEND_BASE}sitemap/products/${page}`;
+    else if (type === 'categories') backendUrl = `${BACKEND_BASE}sitemap/categories/${page}`;
+    else if (type === 'brands') backendUrl = `${BACKEND_BASE}sitemap/brands/${page}`;
     else return new Response('Invalid type', { status: 400 });
 
     try {
