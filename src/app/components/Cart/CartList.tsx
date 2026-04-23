@@ -112,7 +112,7 @@ const CartList = () => {
                     <p className="text-xl text-center xl:text-start">
                       {item?.brand?.name || "N/A"}
                     </p>
-                  <Link href={`/${item?.sku || "#"}`}>
+                  <Link href={`${item?.productUrl || "#"}`}>
                     <p className="text-xl text-[#D42020] text-center lg:mx-auto md:mx-auto sm:mx-auto w-[100%] sm:w-[60%]  md:w-[70%] lg:w-[80%] xl:text-start xl:w-[100%] 2xl:w-[100%]">
                       {item.name}
                     </p>
