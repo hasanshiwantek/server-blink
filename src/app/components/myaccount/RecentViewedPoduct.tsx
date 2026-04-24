@@ -13,7 +13,7 @@ const RecentViewedProduct = () => {
 
   // Get recent viewed products from Redux
   const recentProducts = useAppSelector((state: any) => state.recent.items);
-   
+
   // Clear all recent viewed products after 2 minutes
   useEffect(() => {
     if (!recentProducts || recentProducts.length === 0) return;

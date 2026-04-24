@@ -33,6 +33,7 @@ const ProductCard = ({ product }: { product: any }) => {
         id: product.id,
         sku: product.sku,
         slug: product.slug,
+        productUrl: product.productUrl,
 
         brand: product.brand,
 
