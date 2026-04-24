@@ -17,6 +17,7 @@ export interface Product {
   msrp?: number;
   image?: { path?: string }[];
   slug: string;
+  productUrl?: string;
 }
 
 
