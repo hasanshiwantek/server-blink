@@ -116,6 +116,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   const { shippingRates, ratesLoader } = useAppSelector((state) => state.shippingZone);
   const dispatch = useAppDispatch()
   const cart = useAppSelector((state: RootState) => state?.cart?.items);
+  const [completedDestinations, setCompletedDestinations] = useState<any[]>([]);
 
   // Watch form values to check if shipping address is complete
   const firstName = useWatch({ control, name: "firstName" });
@@ -208,21 +209,74 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   // console.log("zipSuggestions", zipSuggestions);
 
   if (isCompleted && !isActive) {
+    // ✅ Check karo agar multi address tha
+    if (isMultiAddress) {
+      return (
+        <div className="flex items-start justify-between">
+          <div className="space-y-6">
+            {/* Destinations list — pass from parent */}
+            {completedDestinations?.map((dest: any, index: number) => {
+              const grouped: Record<string, number> = {};
+              dest.allocatedItems?.forEach((slot: string) => {
+                const id = slot.split("-")[0];
+                grouped[id] = (grouped[id] || 0) + 1;
+              });
+
+              return (
+                <div key={dest.id} className="space-y-1">
+                  <p className="font-bold text-gray-800 text-base">Destination #{index + 1}</p>
+                  {dest.address && (
+                    <>
+                      <p className="text-sm text-gray-600">
+                        {dest.address.firstName} {dest.address.lastName}
+                      </p>
+                      <p className="text-sm text-gray-600">{dest.address.address1}</p>
+                      <p className="text-sm text-gray-600">
+                        {dest.address.city && `${dest.address.city}, `}
+                        {dest.address.state && `${dest.address.state}, `}
+                        {dest.address.country}
+                        {dest.address.zip && ` ${dest.address.zip}`}
+                      </p>
+                    </>
+                  )}
+                  <p className="text-sm text-gray-600 mt-2">
+                    {dest.allocatedItems?.length} Items
+                  </p>
+                  {Object.entries(grouped).map(([itemId, count]) => {
+                    const item = cart.find((c: any) => String(c.id) === itemId);
+                    return item ? (
+                      <p key={itemId} className="text-xs text-gray-600">
+                        {count} x {item.name}
+                      </p>
+                    ) : null;
+                  })}
+                  {dest.selectedShippingMethod && (
+                    <div className="mt-1">
+                      <p className="text-xs text-gray-600">{dest.selectedShippingMethod}</p>
+                      <p className="text-xs text-gray-600 ml-2">$0.00</p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          <button type="button" onClick={onEdit} className="btn-primary flex-shrink-0">
+            EDIT
+          </button>
+        </div>
+      );
+    }
+
+    // Single address completed view
     return (
       <div className="flex items-start justify-between">
         <div className="text-base text-gray-600">
-          <p>
-            {shippingInfo?.firstName} {shippingInfo?.lastName}
-          </p>
+          <p>{shippingInfo?.firstName} {shippingInfo?.lastName}</p>
           <p>{shippingInfo?.address}</p>
-          <p>
-            {shippingInfo?.city}, {shippingInfo?.state} {shippingInfo?.zip}
-          </p>
+          <p>{shippingInfo?.city}, {shippingInfo?.state} {shippingInfo?.zip}</p>
           <p>{shippingInfo?.country}</p>
         </div>
-        <button type="button" onClick={onEdit} className="btn-primary">
-          EDIT
-        </button>
+        <button type="button" onClick={onEdit} className="btn-primary">EDIT</button>
       </div>
     );
   }
@@ -253,7 +307,10 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
           <MultiAddressShipping
             cart={cart}
             shippingRates={shippingRates || []}
-            onComplete={(destinations) => console.log("destinations:", destinations)}
+            onComplete={(destinations) => {
+              setCompletedDestinations(destinations); // ✅ save karo
+            }}
+            // onComplete={(destinations) => console.log("destinations:", destinations)}
             onSingleAddress={() => setIsMultiAddress(false)}
             onContinue={onContinue}
           />
