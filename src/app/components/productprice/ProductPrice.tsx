@@ -38,7 +38,7 @@ const currencySymbols: Record<string, string> = {
 
 
  const symbol = currencySymbols[selectedCurrency] || selectedCurrency;
- const formattedPrice = `${symbol} ${(price * rate).toFixed(2)}`;
+ const formattedPrice = `${symbol}${(price * rate).toFixed(2)}`;
  const baseClasses = "xl:text-[13.3px] 2xl:text-[16.6px] font-bold";
  const combinedClasses = className ? `${baseClasses} ${className}` : baseClasses;
 

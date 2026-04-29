@@ -21,8 +21,6 @@ const GlobalSearchBar: React.FC = () => {
   // Map API results and store in cache
   useEffect(() => {
     if (searchData?.data) {
-      console.log('searchData.data', searchData.data);
-
       const mapped = searchData.data.map((item: any) => ({
         id: item.id,
         name: item.name,
