@@ -193,6 +193,24 @@ const CheckoutForm = () => {
       name: c.name,
     }));
   }, [watchedCountry, watchedState]);
+
+  const watchedBillingCountry = watch("billingCountry");
+  const watchedBillingState = watch("billingState");
+
+  const billingStateList = useMemo(() => {
+    if (!watchedBillingCountry) return [];
+    return State.getStatesOfCountry(watchedBillingCountry).map((s) => ({
+      name: s.name,
+      code: s.isoCode,
+    }));
+  }, [watchedBillingCountry]);
+
+  const billingCityList = useMemo(() => {
+    if (!watchedBillingCountry || !watchedBillingState) return [];
+    return City.getCitiesOfState(watchedBillingCountry, watchedBillingState).map((c) => ({
+      name: c.name,
+    }));
+  }, [watchedBillingCountry, watchedBillingState]);
   // 2. watchedShippingMethod add 
   const watchedShippingMethod = watch("shippingMethod");
   // Memoized calculations
@@ -228,7 +246,6 @@ const CheckoutForm = () => {
       try {
         const res = await fetch("/api/detect-country");
         const data = await res.json();
-        console.log("Detected location:", data);
 
         if (data.country_code) {
           setValue("country", data.country_code);
@@ -780,7 +797,40 @@ const CheckoutForm = () => {
       setIsProcessing(false);
     }
   };
+  // watchedBillingSame ke saath useEffect add karo
+  useEffect(() => {
+    if (watchedBillingSame) {
+      // ✅ Shipping values billing mein copy karo
+      setValue("billingFirstName", watch("firstName"));
+      setValue("billingLastName", watch("lastName"));
+      setValue("billingCompany", watch("company"));
+      setValue("billingPhone", watch("phone"));
+      setValue("billingAddress1", watch("address1"));
+      setValue("billingAddress2", watch("address2"));
+      setValue("billingCity", watch("city"));
+      setValue("billingState", watch("state"));
+      setValue("billingCountry", watch("country"));
+      setValue("billingZip", watch("zip"));
 
+      // ✅ Step 3 skip karke step 4 pe ja
+      setCompletedSteps((prev) => [...new Set([...prev, 3])]);
+    } else {
+      // ✅ Uncheck — billing fields clear karo
+      setValue("billingFirstName", "");
+      setValue("billingLastName", "");
+      setValue("billingCompany", "");
+      setValue("billingPhone", "");
+      setValue("billingAddress1", "");
+      setValue("billingAddress2", "");
+      setValue("billingCity", "");
+      setValue("billingState", "");
+      setValue("billingCountry", "");
+      setValue("billingZip", "");
+
+      // ✅ Step 3 completed se hatao
+      setCompletedSteps((prev) => prev.filter((s) => s !== 3));
+    }
+  }, [watchedBillingSame]);
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
       {paymentRequest && (
@@ -846,13 +896,16 @@ const CheckoutForm = () => {
               <h2 className="text-[1.92308rem] font-normal mb-4 text-[#545454]">
                 Billing
               </h2>
-              {!watchedBillingSame && (
+              {/* {!watchedBillingSame && (
                 <BillingStep
                   register={register}
                   errors={errors}
                   control={control}
+                  setValue={setValue}
                   onContinue={handleContinueToPayment}
                   countryList={countryList}
+                  stateList={stateList}
+                  cityList={cityList}
                   isActive={currentStep === 3}
                   isCompleted={completedSteps.includes(3)}
                   onEdit={handleEditBilling}
@@ -866,7 +919,31 @@ const CheckoutForm = () => {
                     zip: watch("billingZip"),
                   }}
                 />
-              )}
+              )} */}
+              {/* {!watchedBillingSame && ( */}
+                <BillingStep
+                  register={register}
+                  errors={errors}
+                  control={control}
+                  setValue={setValue}
+                  onContinue={handleContinueToPayment}
+                  countryList={countryList}
+                  stateList={billingStateList}
+                  cityList={billingCityList}
+                  isActive={currentStep === 3}
+                  isCompleted={completedSteps.includes(3)}
+                  onEdit={handleEditBilling}
+                  billingInfo={{
+                    firstName: watch("billingFirstName"),
+                    lastName: watch("billingLastName"),
+                    address: watch("billingAddress1"),
+                    city: watch("billingCity"),
+                    state: watch("billingState"),
+                    country: watch("billingCountry"),
+                    zip: watch("billingZip"),
+                  }}
+                />
+              {/* )} */}
             </div>
 
             {/* STEP 4: Payment */}
