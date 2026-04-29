@@ -1,8 +1,7 @@
 "use client";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import {
   Select,
@@ -17,6 +16,7 @@ import {
   Control,
   Controller,
   useWatch,
+  UseFormSetValue,
 } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { fetchShippingRates } from "@/redux/slices/shippingSlice";
@@ -26,8 +26,11 @@ interface ShippingStepProps {
   register: UseFormRegister<any>;
   errors: FieldErrors;
   control: Control<any>;
+  setValue: UseFormSetValue<any>;
   onContinue: () => void;
   countryList: Array<{ name: string; code: string }>;
+  stateList: Array<{ name: string; code: string }>;
+  cityList: Array<{ name: string }>;
   isActive: boolean;
   isCompleted: boolean;
   onEdit?: () => void;
@@ -98,8 +101,11 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   register,
   errors,
   control,
+  setValue,
   onContinue,
   countryList,
+  stateList,
+  cityList,
   isActive,
   isCompleted,
   onEdit,
@@ -118,7 +124,8 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   const country = useWatch({ control, name: "country" });
   const zip = useWatch({ control, name: "zip" });
   const state = useWatch({ control, name: "state" });
-
+  // const [zipSuggestions, setZipSuggestions] = useState<string[]>([]);
+  // const [zipLoading, setZipLoading] = useState(false);
   // Check if all required fields are filled
   const isShippingComplete = useMemo(() => {
     return !!(
@@ -132,37 +139,70 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   }, [firstName, lastName, address1, city, country, zip]);
   useEffect(() => {
     if (!city?.trim() && !country?.trim() && !zip?.trim() && !state?.trim()) return;
-    const pkg = calculatePackage(cart);
-    console.log('pkg ', pkg);
-
-    const timer = setTimeout(() => {
-      dispatch(fetchShippingRates({
-        data: {
-          destination: {
-            country_code: country.trim(),
-            city: city.trim(),
-            "state": state.trim(),
-            postal_code: zip.trim(),
+    if (city?.trim() && country?.trim() && zip?.trim() && state?.trim()) {
+      const pkg = calculatePackage(cart);
+      const timer = setTimeout(() => {
+        dispatch(fetchShippingRates({
+          data: {
+            destination: {
+              country_code: country?.trim(),
+              city: city?.trim(),
+              "state": state?.trim(),
+              postal_code: zip?.trim(),
+            },
+            package: pkg,
+            // "package": {
+            //   "total_weight": 2.5,
+            //   "weight_unit": "LB",
+            //   "package_length": 10,
+            //   "package_width": 6,
+            //   "package_height": 4,
+            //   "dimension_unit": "IN",
+            //   "order_total": 75.00,
+            //   "item_count": 1,
+            //   "package_value": 75.00
+            // }
           },
-          package: pkg,
-          // "package": {
-          //   "total_weight": 2.5,
-          //   "weight_unit": "LB",
-          //   "package_length": 10,
-          //   "package_width": 6,
-          //   "package_height": 4,
-          //   "dimension_unit": "IN",
-          //   "order_total": 75.00,
-          //   "item_count": 1,
-          //   "package_value": 75.00
-          // }
-        },
-      }));
-    }, 600);
+        }));
+      }, 600);
 
-    return () => clearTimeout(timer);
+      return () => clearTimeout(timer);
+    }
+
   }, [city, country, zip, state]);
 
+  // useEffect(() => {
+  //   const fetchByCity = async () => {
+  //     if (!city?.trim() || !country?.trim()) {
+  //       setZipSuggestions([]);
+  //       return;
+  //     }
+  //     setZipLoading(true);
+  //     try {
+  //       const res = await fetch(
+  //         `/api/city-zip?city=${encodeURIComponent(city.trim())}&country=${encodeURIComponent(country.trim())}`
+  //       );
+  //       const data = await res.json();
+  //       const codes: string[] = data.codes || [];
+  //       setZipSuggestions(codes);
+
+  //       // ✅ Sirf ek code aaya to auto-fill
+  //       if (codes.length === 1) {
+  //         setValue("zip", codes[0]);
+  //       }
+  //     } catch {
+  //       setZipSuggestions([]);
+  //     } finally {
+  //       setZipLoading(false);
+  //     }
+  //   };
+
+  //   const timer = setTimeout(fetchByCity, 800);
+  //   return () => clearTimeout(timer);
+  // }, [city, country]);
+
+
+  // console.log("zipSuggestions", zipSuggestions);
 
   if (isCompleted && !isActive) {
     return (
@@ -321,32 +361,36 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             {...register("address2")}
           />
         </div>
-
         <div className="flex flex-col mt-4">
-          <label
-            htmlFor="city"
-            className={cn(
-              "mb-2 text-base",
-              errors.city ? "text-red-500" : "text-gray-700"
-            )}
-          >
+          <label className={cn("mb-2 text-base", errors.city ? "text-red-500" : "text-gray-700")}>
             City
           </label>
-          <Input
-            id="city"
-            type="text"
-            className={`w-full !max-w-full h-[40px] ${errors.city ? "border-red-500" : ""}`}
-            {...register("city", {
-              required: "City is required",
-            })}
+
+          <Controller
+            name="city"
+            disabled={!state?.trim()}
+            control={control}
+            rules={{ required: "City is required" }}
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} value={field.value}>
+                <SelectTrigger className={`w-full !max-w-full h-[40px] ${errors.city ? "border-red-500" : ""}`}>
+                  <SelectValue placeholder="Select city" />
+                </SelectTrigger>
+                <SelectContent>
+                  {cityList?.map((city) => (
+                    <SelectItem key={city.name} value={city.name}>
+                      {city.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           />
+
           {errors.city && (
-            <p className="text-sm text-red-500 mt-1">
-              {errors.city.message as string}
-            </p>
+            <p className="text-sm text-red-500 mt-1">{errors.city.message as string}</p>
           )}
         </div>
-
         <div className="flex flex-col mt-4">
           <label
             htmlFor="country"
@@ -362,7 +406,15 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             control={control}
             rules={{ required: "Country is required" }}
             render={({ field }) => (
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select
+                // onValueChange={field.onChange} 
+                onValueChange={(val) => {
+                  field.onChange(val);
+                  setValue("state", "");  // ✅ state reset
+                  setValue("city", "");   // ✅ city reset
+                  setValue("zip", "");    // ✅ zip reset
+                }}
+                value={field.value}>
                 <SelectTrigger
                   className={`w-full !max-w-full h-[40px] ${errors.country ? "border-red-500" : ""
                     }`}
@@ -387,36 +439,65 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
         </div>
 
         <div className="grid grid-cols-2 gap-4 mt-4">
-          <div className="flex flex-col">
-            <label htmlFor="state" className="text-base mb-2 text-gray-700">
+          <div className="flex flex-col ">
+            <label
+              htmlFor="country"
+              className={cn(
+                "mb-2 text-base",
+                errors.state ? "text-red-500" : "text-gray-700"
+              )}
+            >
               State/Province
             </label>
-            <Input
-              id="state"
-              type="text"
-              className="w-full !max-w-full h-[40px]"
-              {...register("state")}
+            <Controller
+              name="state"
+              disabled={!country?.trim()}
+              control={control}
+              rules={{ required: "State/Province is required" }}
+              render={({ field }) => (
+                <Select onValueChange={(val) => {
+                  field.onChange(val);
+                  setValue("city", "");
+                  setValue("zip", "");
+                }} value={field.value}>
+                  <SelectTrigger
+                    className={`w-full !max-w-full h-[40px] ${errors.state ? "border-red-500" : ""
+                      }`}
+                  >
+                    <SelectValue placeholder="Select state/province" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {stateList.map((state) => (
+                      <SelectItem key={state.code} value={state.code}>
+                        {state.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             />
+            {errors.state && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.state.message as string}
+              </p>
+            )}
           </div>
 
           <div className="flex flex-col">
             <label
               htmlFor="zip"
-              className={cn(
-                "mb-2 text-base",
-                errors.zip ? "text-red-500" : "text-gray-700"
-              )}
+              className="mb-2 flex items-baseline justify-between gap-2 text-base text-gray-700"
             >
-              Postal Code
+              <span> Postal Code</span>
+              <span className="shrink-0 text-gray-400">(Optional)</span>
             </label>
             <Input
               id="zip"
               type="text"
               className={`w-full !max-w-full h-[40px] ${errors.zip ? "border-red-500" : ""
                 }`}
-              {...register("zip", {
-                required: "Postal code is required",
-              })}
+              {...register("zip")}
+
             />
             {errors.zip && (
               <p className="text-sm text-red-500 mt-1">
@@ -482,9 +563,10 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
               <input
                 type="radio"
                 value={rate.service_type}
-                {...register("shippingMethod", {
-                  required: "Please select a shipping method",
-                })}
+                {...register("shippingMethod")}
+                // {...register("shippingMethod", {
+                //   required: "Please select a shipping method",
+                // })}
                 className="mt-1"
                 disabled={!isShippingComplete}
               />

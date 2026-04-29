@@ -1,6 +1,6 @@
 // /app/api/robots/route.ts
 
-import axiosInstance from "@/lib/axiosInstance";
+import axiosInstance, { storeId } from "@/lib/axiosInstance";
 
 export async function GET() {
   try {
@@ -8,7 +8,7 @@ export async function GET() {
       "web/store-setting/get-store-setting",
       {
         headers: {
-          "storeId": "10",
+          "storeId": storeId,
         },
       }
     );

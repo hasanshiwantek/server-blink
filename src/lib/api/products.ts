@@ -1,5 +1,5 @@
 // lib/api/products.ts
-import { baseURL } from "../axiosInstance";
+import { baseURL, storeId } from "../axiosInstance";
 import serverAxios from "../serverAxios";
 import { redirect } from "next/navigation";
 // const baseURL = process.env.NEXT_PUBLIC_API_URL;
@@ -27,7 +27,7 @@ export const fetchProductBySlugAndUrl = async (slug?: string) => {
   try {
     const res = await fetch(`${baseURL}web/products/get-product-by-url${slug}`, {
       cache: "no-store",
-      headers: { storeId: "10" },
+      headers: { storeId: storeId },
     });
 
     if (!res.ok) {
@@ -51,7 +51,7 @@ export const fetchProductBySlug = async (slug: string) => {
   try {
     const res = await fetch(`${baseURL}web/products/get-product/${slug}`, {
       cache: "no-store",
-      headers: { storeId: "10" },
+      headers: { storeId: storeId },
     });
 
     if (!res.ok) {
@@ -100,7 +100,7 @@ export async function fetchFilteredProducts(filters: {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      storeId: "10",
+      storeId: storeId,
     },
     cache: "no-store", // or "no-cache" for fresh data
   });
@@ -121,7 +121,7 @@ export const getBlogByIdServer = async (id: string) => {
     const res = await fetch(`${baseURL}web/blogs/blog-posts/${id}`, {
       next: { revalidate: 3600 }, // Example: revalidate every hour
       headers: {
-        storeId: "10",
+        storeId: storeId,
       },
     });
 

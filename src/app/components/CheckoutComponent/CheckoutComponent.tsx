@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import countries from "world-countries";
+import { Country, State, City } from "country-state-city";
 import { useForm } from "react-hook-form";
 import { loadStripe } from "@stripe/stripe-js";
 import type { PaymentRequest as StripePaymentRequest } from "@stripe/stripe-js";
@@ -53,12 +54,16 @@ const stripePromise = loadStripe(
 );
 
 // Pre-compute country list at module level
-const countryList = countries
-  .map((country) => ({
-    name: country.name.common,
-    code: country.cca2,
-  }))
-  .sort((a, b) => a.name.localeCompare(b.name));
+// const countryList = countries
+//   .map((country) => ({
+//     name: country.name.common,
+//     code: country.cca2,
+//   }))
+//   .sort((a, b) => a.name.localeCompare(b.name));
+const countryList = Country.getAllCountries().map((c) => ({
+  name: c.name,
+  code: c.isoCode,
+}));
 
 interface CheckoutFormValues {
   email: string;
@@ -121,6 +126,7 @@ const CheckoutForm = () => {
   }>({ applePay: false, googlePay: false });
   const [pendingWalletForm, setPendingWalletForm] =
     useState<CheckoutFormValues | null>(null);
+
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
@@ -161,18 +167,33 @@ const CheckoutForm = () => {
       company: auth?.user?.companyName || "",
       phone: auth?.user?.phone || "",
       state: auth?.user?.state || "",
-      country: "US",
-      billingCountry: "US",
+      country: "",
+      billingCountry: "",
     },
   });
+  const watchedCountry = watch("country");
+  const watchedState = watch("state");
 
   const watchedPaymentMethod = watch("paymentMethod") || "credit_card";
   const watchedBillingSame = watch("billingSame");
   const stripeCardMethods = ["credit_card"];
   const walletMethods = ["google_pay", "apple_pay"];
   const { shippingRates } = useAppSelector((state) => state.shippingZone);
-
-  // 2. watchedShippingMethod add karo
+  const stateList = useMemo(() => {
+    if (!watchedCountry) return [];
+    return State.getStatesOfCountry(watchedCountry).map((s) => ({
+      name: s.name,
+      code: s.isoCode,
+    }));
+  }, [watchedCountry]);
+  // ✅ State change hone pe cities
+  const cityList = useMemo(() => {
+    if (!watchedCountry || !watchedState) return [];
+    return City.getCitiesOfState(watchedCountry, watchedState).map((c) => ({
+      name: c.name,
+    }));
+  }, [watchedCountry, watchedState]);
+  // 2. watchedShippingMethod add 
   const watchedShippingMethod = watch("shippingMethod");
   // Memoized calculations
   const subtotal = useMemo(() => {
@@ -182,6 +203,58 @@ const CheckoutForm = () => {
     );
   }, [cart]);
 
+  // useEffect(() => {
+  //   const detectCountry = async () => {
+  //     try {
+  //       const res = await fetch("/api/detect-country"); // apna Next.js route
+  //       const data = await res.json();
+  //       console.log("Detected country:", data.country_code);
+
+  //       if (data.country_code) {
+  //         setValue("country", data.country_code);
+  //         setValue("billingCountry", data.country_code);
+  //       }
+  //     } catch {
+  //       setValue("country", "US");
+  //       setValue("billingCountry", "US");
+  //     }
+  //   };
+
+  //   detectCountry();
+  // }, [setValue]);
+
+  useEffect(() => {
+    const detectLocation = async () => {
+      try {
+        const res = await fetch("/api/detect-country");
+        const data = await res.json();
+        console.log("Detected location:", data);
+
+        if (data.country_code) {
+          setValue("country", data.country_code);
+          setValue("billingCountry", data.country_code);
+        }
+        if (data.state_code) {
+          setValue("state", data.state_code);
+          setValue("billingState", data.state_code);
+        }
+        // for future if needed
+        // if (data.city) {
+        //   setValue("city", data.city);
+        //   setValue("billingCity", data.city);
+        // }
+        // if (data.zip) {
+        //   setValue("zip", data.zip);
+        //   setValue("billingZip", data.zip);
+        // }
+      } catch {
+        setValue("country", "US");
+        setValue("billingCountry", "US");
+      }
+    };
+
+    detectLocation();
+  }, [setValue]);
 
   // temp comment
   // const shipping = useMemo(() => {
@@ -193,13 +266,28 @@ const CheckoutForm = () => {
   // }, [cart]);
 
 
-  const shipping = useMemo(() => {
+  // const shipping = useMemo(() => {
+  //   if (!watchedShippingMethod || !shippingRates?.length) return 0;
+  //   const selected = shippingRates.find((rate) =>
+  //     rate.service_type === watchedShippingMethod
+  //   );
+  //   return selected ? Number(selected?.total_charge) : 0;
+  // }, [watchedShippingMethod, shippingRates]);
+  const shipping = watchedShippingMethod ? useMemo(() => {
     if (!watchedShippingMethod || !shippingRates?.length) return 0;
     const selected = shippingRates.find((rate) =>
       rate.service_type === watchedShippingMethod
     );
     return selected ? Number(selected?.total_charge) : 0;
-  }, [watchedShippingMethod, shippingRates]);
+  }, [watchedShippingMethod, shippingRates]) : useMemo(() => {
+    if (cart.length === 0) return 0;
+
+    return cart.reduce((sum, item) => {
+      const cost = Number(item.fixedShippingCost || 0);
+      return sum + cost;
+    }, 0);
+  }, [cart]);
+
 
   const tax = 0;
 
@@ -729,8 +817,11 @@ const CheckoutForm = () => {
                 register={register}
                 errors={errors}
                 control={control}
+                setValue={setValue}
                 onContinue={handleContinueToBilling}
                 countryList={countryList}
+                stateList={stateList}
+                cityList={cityList}
                 isActive={currentStep === 2}
                 isCompleted={completedSteps.includes(2)}
                 onEdit={handleEditShipping}

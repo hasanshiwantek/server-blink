@@ -21,8 +21,6 @@ const initialState = {
     error: null as string | null,
 };
 
-// ─── Slice ────────────────────────────────────────────────────────────────────
-
 const shippingZoneSlice = createSlice({
     name: "shippingZone",
     initialState,

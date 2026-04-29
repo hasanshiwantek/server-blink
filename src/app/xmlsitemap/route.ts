@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { baseURL } from '@/lib/axiosInstance';
+import { baseURL, storeId } from '@/lib/axiosInstance';
 const BACKEND_BASE = baseURL;
 
 export async function GET(request: NextRequest) {
@@ -12,8 +12,12 @@ export async function GET(request: NextRequest) {
             const backendRes = await fetch(
                 `${BACKEND_BASE}sitemap/xmlsitemap`,
                 {
-                    next: { revalidate: 10 }
+                    next: { revalidate: 10 },
+                    headers: {
+                        'storeid': storeId
+                    }
                 }
+
             );
 
             if (!backendRes.ok) throw new Error(`Backend returned ${backendRes.status}`);
@@ -59,7 +63,10 @@ export async function GET(request: NextRequest) {
 
     try {
         const res = await fetch(backendUrl, {
-            next: { revalidate: 10 }        // ← 10 seconds revalidation
+            next: { revalidate: 10 },      // ← 10 seconds revalidation
+            headers: {
+                'storeid': storeId
+            }
         });
 
         if (!res.ok) throw new Error(`Backend error ${res.status}`);
