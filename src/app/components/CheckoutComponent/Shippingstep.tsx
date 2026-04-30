@@ -22,6 +22,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { fetchShippingRates } from "@/redux/slices/shippingSlice";
 import { RootState } from "@/redux/store";
 import MultiAddressShipping from "./MultiAddressShipping";
+import { setIsMultiAddress, setCompletedDestinations } from "@/redux/slices/multiAddressSlice";
 
 interface ShippingStepProps {
   register: UseFormRegister<any>;
@@ -116,8 +117,10 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   const { shippingRates, ratesLoader } = useAppSelector((state) => state.shippingZone);
   const dispatch = useAppDispatch()
   const cart = useAppSelector((state: RootState) => state?.cart?.items);
-  const [completedDestinations, setCompletedDestinations] = useState<any[]>([]);
-
+  // const [completedDestinations, setCompletedDestinations] = useState<any[]>([]);
+  const { isMultiAddress, completedDestinations } = useAppSelector(
+    (state) => state.multiAddress
+  );
   // Watch form values to check if shipping address is complete
   const firstName = useWatch({ control, name: "firstName" });
   const lastName = useWatch({ control, name: "lastName" });
@@ -126,7 +129,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   const country = useWatch({ control, name: "country" });
   const zip = useWatch({ control, name: "zip" });
   const state = useWatch({ control, name: "state" });
-  const [isMultiAddress, setIsMultiAddress] = useState(false);
+  // const [isMultiAddress, setIsMultiAddress] = useState(false);
 
   // const [zipSuggestions, setZipSuggestions] = useState<string[]>([]);
   // const [zipLoading, setZipLoading] = useState(false);
@@ -295,7 +298,9 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
           {cart?.reduce((sum, item) => sum + (item.quantity || 1), 0) > 1 && (
             <button
               type="button"
-              onClick={() => setIsMultiAddress(!isMultiAddress)}
+              // onClick={() => setIsMultiAddress(!isMultiAddress)}
+              onClick={() => dispatch(setIsMultiAddress(!isMultiAddress))}
+
               className="text-sm text-red-600 hover:underline font-medium"
             >
               {isMultiAddress ? "Ship to single address" : "Ship to multiple addresses"}
@@ -307,12 +312,17 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
           <MultiAddressShipping
             cart={cart}
             shippingRates={shippingRates || []}
-            onComplete={(destinations) => {
-              setCompletedDestinations(destinations); // ✅ save karo
-            }}
-            // onComplete={(destinations) => console.log("destinations:", destinations)}
-            onSingleAddress={() => setIsMultiAddress(false)}
+            // onComplete={(destinations) => {
+            //   setCompletedDestinations(destinations); // ✅ save karo
+            // }}
+            // // onComplete={(destinations) => console.log("destinations:", destinations)}
+            // onSingleAddress={() => setIsMultiAddress(false)}
             onContinue={onContinue}
+            // ✅ MultiAddressShipping
+            onSingleAddress={() => dispatch(setIsMultiAddress(false))}
+            onComplete={(destinations) => {
+              dispatch(setCompletedDestinations(destinations));
+            }}
           />
         ) : (<>
           <div className="grid grid-cols-2 gap-4">
@@ -683,22 +693,24 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
       </div>
 
       {/* Order Comments */}
-      <div className="flex flex-col">
-        <label htmlFor="orderComment" className="text-base mb-2 text-gray-700">
-          Order Comments
-        </label>
-        <textarea
-          id="orderComment"
-          rows={4}
-          className="w-full border-[1px] border-gray-400 rounded-md p-3 text-sm"
-          {...register("orderComment")}
-          placeholder="Add any special instructions..."
-        />
-      </div>
+      {!isMultiAddress && <>
+        <div className="flex flex-col">
+          <label htmlFor="orderComment" className="text-base mb-2 text-gray-700">
+            Order Comments
+          </label>
+          <textarea
+            id="orderComment"
+            rows={4}
+            className="w-full border-[1px] border-gray-400 rounded-md p-3 text-sm"
+            {...register("orderComment")}
+            placeholder="Add any special instructions..."
+          />
+        </div>
 
-      <button type="button" onClick={onContinue} className="btn-primary">
-        CONTINUE
-      </button>
+        <button type="button" onClick={onContinue} className="btn-primary">
+          CONTINUE
+        </button>
+      </>}
     </div>
   );
 };
