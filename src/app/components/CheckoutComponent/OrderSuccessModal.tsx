@@ -10,8 +10,7 @@ export default function OrderSuccessPage() {
   const dispatch = useAppDispatch();
   const [localOrder] = useState(order); // ✅ copy to local state
 
-
-  conosle.log("order",order,localOrder)
+console.log("order",order,localOrder)
   if (!localOrder) {
     return (
       <div className="p-8 text-center">
