@@ -1007,7 +1007,7 @@ useEffect(() => {
     setValue("billingZip", "");
     setCompletedSteps((prev) => prev.filter((s) => s !== 3));
   }
-}, [watchedBillingSame]);
+  }, [watchedBillingSame, watchedState, watchedCountry, watchedFirstName, watchedLastName, watchedZip, watchedAddress2, watchedAddress1, watchedCompany, watchedPhone, watchedCity]);
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
       {paymentRequest && (
