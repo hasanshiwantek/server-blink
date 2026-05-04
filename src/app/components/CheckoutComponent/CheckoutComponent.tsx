@@ -237,10 +237,10 @@ const CheckoutForm = () => {
         const res = await fetch("/api/detect-country"); // apna Next.js route
         const data = await res.json();
         if (data.country_code) {
-          setValue("country", data.country_code);
-          setValue("billingCountry", data.country_code);
-          
+            setValue("country", data.country_code);
           setValue("state", data.state);
+          
+          setValue("billingCountry", data.country_code);
           setValue("billingState", data.state);
         }
       } catch {
@@ -999,8 +999,8 @@ const CheckoutForm = () => {
       setValue("billingAddress1", "");
       setValue("billingAddress2", "");
       setValue("billingCity", "");
-      setValue("billingState", "");
-      setValue("billingCountry", "");
+      // setValue("billingState", "");
+      // setValue("billingCountry", "");
       setValue("billingZip", "");
 
       // ✅ Step 3 completed se hatao
