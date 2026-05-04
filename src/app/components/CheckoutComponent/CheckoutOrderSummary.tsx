@@ -73,13 +73,13 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
                 height={80}
                 className="object-cover rounded"
               />
-              <span className="absolute -top-2 -right-2 bg-gray-700 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              {/* <span className="absolute -top-2 -right-2 bg-gray-700 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 {item.quantity}
-              </span>
+              </span> */}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-base font-medium line-clamp-2 mb-1 text-gray-800">
-                {item.name}
+                {item.quantity} x {item.name}
               </p>
               <p className="text-base font-semibold text-gray-900">
                 ${Number(item.price).toFixed(2)}
