@@ -236,8 +236,6 @@ const CheckoutForm = () => {
       try {
         const res = await fetch("/api/detect-country"); // apna Next.js route
         const data = await res.json();
-        console.log("Detected country:", data.country_code);
-
         if (data.country_code) {
           setValue("country", data.country_code);
           setValue("billingCountry", data.country_code);
@@ -977,7 +975,7 @@ const CheckoutForm = () => {
 
   // watchedBillingSame ke saath useEffect add karo
   useEffect(() => {
-    if (watchedBillingSame) {
+    if (watchedBillingSame && !isMultiAddress)) {
       // ✅ Shipping values billing mein copy karo
       setValue("billingFirstName", watch("firstName"));
       setValue("billingLastName", watch("lastName"));
