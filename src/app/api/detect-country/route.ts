@@ -37,14 +37,15 @@ export async function GET(req: NextRequest) {
             "";
 
         const res = await fetch(
-            `http://ip-api.com/json/${ip}?fields=countryCode,regionName,city,zip`
+             `http://ip-api.com/json/${ip}?fields=countryCode,region,regionName,city,zip`
         );
         const data = await res.json();
 
         if (data.countryCode) {
             return NextResponse.json({
                 country_code: data.countryCode,  // "PK"
-                state: data.regionName,           // "Sindh"
+              state: data.region,              // "SD"  ← code
+    state_name: data.regionName, 
                 city: data.city,                  // "Karachi"
                 zip: data.zip,                    // "75500"
                 ip,
