@@ -711,6 +711,7 @@ const CheckoutForm = () => {
         event.complete("success");
 
         skipEmptyCartCheckRef.current = true;
+        console.log(orderData, "Order data after wallet payment");
         dispatch(setLastOrder(orderData));
         dispatch(clearCart());
         dispatch(removeCoupon());
@@ -771,7 +772,7 @@ const CheckoutForm = () => {
     ]);
     if (isValid) {
       setCompletedSteps((prev) => [...new Set([...prev, 2])]);
-      if (watchedBillingSame) {
+      if (watchedBillingSame && !isMultiAddress) {
         setCurrentStep(4);
       } else {
         setCurrentStep(3);
@@ -957,6 +958,7 @@ const CheckoutForm = () => {
 
       const orderData = await placeOrder({ ...data, paymentIntentId });
       skipEmptyCartCheckRef.current = true;
+           console.log(orderData, "Order data after wallet payment");
       dispatch(setLastOrder(orderData));
       dispatch(clearCart());
       dispatch(removeCoupon());
