@@ -771,7 +771,7 @@ const CheckoutForm = () => {
     ]);
     if (isValid) {
       setCompletedSteps((prev) => [...new Set([...prev, 2])]);
-      if (watchedBillingSame) {
+         if (watchedBillingSame && !isMultiAddress) {
         setCurrentStep(4);
       } else {
         setCurrentStep(3);
