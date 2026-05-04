@@ -241,6 +241,9 @@ const CheckoutForm = () => {
         if (data.country_code) {
           setValue("country", data.country_code);
           setValue("billingCountry", data.country_code);
+          
+          setValue("state", data.state);
+          setValue("billingState", data.state);
         }
       } catch {
         setValue("country", "US");

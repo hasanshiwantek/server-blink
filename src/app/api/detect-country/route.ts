@@ -1,5 +1,32 @@
 
 // only for country select
+// import { NextRequest, NextResponse } from "next/server";
+
+// export async function GET(req: NextRequest) {
+//     try {
+//         const ip =
+//             req.headers.get("x-forwarded-for")?.split(",")[0] ||
+//             req.headers.get("x-real-ip") ||
+//             "";
+
+//         // ip2c.org - completely free, no rate limit
+//         const res = await fetch(`https://ip2c.org/${ip || "s"}`);
+//         const text = await res.text();
+//         const parts = text.split(";");
+//         // Response format: 1;PK;PAK;Pakistan
+//         const countryCode = parts[1];
+
+//         if (countryCode && countryCode.length === 2) {
+//             return NextResponse.json({ country_code: countryCode, ip });
+//         }
+
+//         return NextResponse.json({ country_code: "US", ip });
+//     } catch {
+//         return NextResponse.json({ country_code: "US" });
+//     }
+// }
+
+
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -9,20 +36,24 @@ export async function GET(req: NextRequest) {
             req.headers.get("x-real-ip") ||
             "";
 
-        // ip2c.org - completely free, no rate limit
-        const res = await fetch(`https://ip2c.org/${ip || "s"}`);
-        const text = await res.text();
-        const parts = text.split(";");
-        // Response format: 1;PK;PAK;Pakistan
-        const countryCode = parts[1];
+        const res = await fetch(
+            `http://ip-api.com/json/${ip}?fields=countryCode,regionName,city,zip`
+        );
+        const data = await res.json();
 
-        if (countryCode && countryCode.length === 2) {
-            return NextResponse.json({ country_code: countryCode, ip });
+        if (data.countryCode) {
+            return NextResponse.json({
+                country_code: data.countryCode,  // "PK"
+                state: data.regionName,           // "Sindh"
+                city: data.city,                  // "Karachi"
+                zip: data.zip,                    // "75500"
+                ip,
+            });
         }
 
-        return NextResponse.json({ country_code: "US", ip });
+        return NextResponse.json({ country_code: "US", state: "", city: "", zip: "" });
     } catch {
-        return NextResponse.json({ country_code: "US" });
+        return NextResponse.json({ country_code: "US", state: "", city: "", zip: "" });
     }
 }
 
