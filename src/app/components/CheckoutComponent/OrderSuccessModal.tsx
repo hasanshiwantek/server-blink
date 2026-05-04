@@ -6,7 +6,7 @@ import { clearLastOrder } from "@/redux/slices/orderslice";
 import Link from "next/link";
 
 export default function OrderSuccessPage() {
-  const order = useAppSelector((state) => state.order.lastOrder);
+  const order = useAppSelector((state) => state.order.lastOrder)?.[0];
   const dispatch = useAppDispatch();
   const [localOrder] = useState(order); // ✅ copy to local state
 
