@@ -984,31 +984,31 @@ dispatch(setIsMultiAddress(false));
   };
 
   // watchedBillingSame ke saath useEffect add karo
-useEffect(() => {
-  if (watchedBillingSame && !isMultiAddress) {
-    setValue("billingFirstName", watchedFirstName);
-    setValue("billingLastName", watchedLastName);
-    setValue("billingCompany", watchedCompany);
-    setValue("billingPhone", watchedPhone);
-    setValue("billingAddress1", watchedAddress1);
-    setValue("billingAddress2", watchedAddress2);
-    setValue("billingCity", watchedCity);
-    setValue("billingState", watchedState);
-    setValue("billingCountry", watchedCountry);
-    setValue("billingZip", watchedZip);
-    setCompletedSteps((prev) => [...new Set([...prev, 3])]);
-  } else if (!watchedBillingSame) {
-    setValue("billingFirstName", "");
-    setValue("billingLastName", "");
-    setValue("billingCompany", "");
-    setValue("billingPhone", "");
-    setValue("billingAddress1", "");
-    setValue("billingAddress2", "");
-    setValue("billingCity", "");
-    setValue("billingZip", "");
-    setCompletedSteps((prev) => prev.filter((s) => s !== 3));
-  }
-}, [watchedBillingSame]);
+// useEffect(() => {
+//   if (watchedBillingSame && !isMultiAddress) {
+//     setValue("billingFirstName", watchedFirstName);
+//     setValue("billingLastName", watchedLastName);
+//     setValue("billingCompany", watchedCompany);
+//     setValue("billingPhone", watchedPhone);
+//     setValue("billingAddress1", watchedAddress1);
+//     setValue("billingAddress2", watchedAddress2);
+//     setValue("billingCity", watchedCity);
+//     setValue("billingState", watchedState);
+//     setValue("billingCountry", watchedCountry);
+//     setValue("billingZip", watchedZip);
+//     setCompletedSteps((prev) => [...new Set([...prev, 3])]);
+//   } else if (!watchedBillingSame) {
+//     setValue("billingFirstName", "");
+//     setValue("billingLastName", "");
+//     setValue("billingCompany", "");
+//     setValue("billingPhone", "");
+//     setValue("billingAddress1", "");
+//     setValue("billingAddress2", "");
+//     setValue("billingCity", "");
+//     setValue("billingZip", "");
+//     setCompletedSteps((prev) => prev.filter((s) => s !== 3));
+//   }
+// }, [watchedBillingSame]);
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
       {paymentRequest && (
