@@ -199,7 +199,14 @@ const CheckoutForm = () => {
 
   const watchedBillingCountry = watch("billingCountry");
   const watchedBillingState = watch("billingState");
-
+  const watchedFirstName = watch("firstName");
+  const watchedLastName = watch("lastName");
+  const watchedCompany = watch("company");
+  const watchedPhone = watch("phone");
+  const watchedAddress1 = watch("address1");
+  const watchedAddress2 = watch("address2");
+  const watchedCity = watch("city");
+  const watchedZip = watch("zip");
   const billingStateList = useMemo(() => {
     if (!watchedBillingCountry) return [];
     return State.getStatesOfCountry(watchedBillingCountry).map((s) => ({
@@ -563,7 +570,7 @@ const CheckoutForm = () => {
           paymentMethod: data.paymentMethod,
           discountAmount: discountAmount ? finalTotal : 0,
           shippingCost: shipping,
-          comments: data.orderComment  || "",
+          comments: data.orderComment || "",
           paymentIntentId: data.paymentIntentId ?? "",
 
           // ✅ Multi destination array
@@ -964,6 +971,7 @@ const CheckoutForm = () => {
       setIsProcessing(false);
     }
   };
+
   // watchedBillingSame ke saath useEffect add karo
   useEffect(() => {
     if (watchedBillingSame) {
@@ -997,7 +1005,7 @@ const CheckoutForm = () => {
       // ✅ Step 3 completed se hatao
       setCompletedSteps((prev) => prev.filter((s) => s !== 3));
     }
-  }, [watchedBillingSame]);
+  }, [watchedBillingSame, watchedState, watchedCountry, watchedFirstName, watchedLastName, watchedZip, watchedAddress2, watchedAddress1, watchedCompany, watchedPhone, watchedCity]);
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
       {paymentRequest && (

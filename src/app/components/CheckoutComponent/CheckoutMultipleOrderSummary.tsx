@@ -156,7 +156,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
             {/* Header */}
             <div className="flex items-center justify-between mb-6 px-6 border-b-[1px] border-[#8b8b8b]">
                 <h2 className="text-xl font-semibold text-gray-800 p-2">
-                    {isMultiAddress ? "Multiple Order Summary" : "Order Summary"}
+                    Multiple  Order Summary
                 </h2>
                 <Link href="/cart" className="text-base text-[var(--primary-color)] hover:underline">
                     Edit Cart
@@ -180,7 +180,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                                 <div className="relative w-20 h-25 flex-shrink-0">
 
                                     <Image
-                                        src={primaryImage}
+                                        src={item.image?.[0]?.path || "/checkouticon/orderimg.png"}
                                         alt={item.name}
                                         width={80}
                                         height={80}
@@ -230,7 +230,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                                 </>
                             ) : (
                                 <>
-                                    SEE MORE 
+                                    SEE MORE
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                                     </svg>

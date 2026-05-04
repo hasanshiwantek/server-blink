@@ -89,40 +89,40 @@ const AddressModal: React.FC<{
                 <div className="space-y-4 pt-2">
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="text-sm text-gray-700 mb-1 block">First Name <span className="text-red-500">*</span></label>
+                            <label className="text-[16px] text-gray-700 mb-1 block">First Name <span className="text-red-500">*</span></label>
                             <Input value={value.firstName} onChange={(e) => { onChange({ ...value, firstName: e.target.value }); setErrors(p => ({ ...p, firstName: "" })); }} className={`h-[42px] bg-white ${errors.firstName ? "border-red-500" : ""}`} />
                             {errors.firstName && <p className="text-xs text-red-500 mt-1">{errors.firstName}</p>}
                         </div>
                         <div>
-                            <label className="text-sm text-gray-700 mb-1 block">Last Name <span className="text-red-500">*</span></label>
+                            <label className="text-[16px] text-gray-700 mb-1 block">Last Name <span className="text-red-500">*</span></label>
                             <Input value={value.lastName} onChange={(e) => { onChange({ ...value, lastName: e.target.value }); setErrors(p => ({ ...p, lastName: "" })); }} className={`h-[42px] bg-white ${errors.lastName ? "border-red-500" : ""}`} />
                             {errors.lastName && <p className="text-xs text-red-500 mt-1">{errors.lastName}</p>}
                         </div>
                     </div>
                     <div>
-                        <label className="text-sm text-gray-700 mb-1 flex justify-between"><span>Company Name</span><span className="text-gray-400">(Optional)</span></label>
+                        <label className="text-[16px] text-gray-700 mb-1 flex justify-between"><span>Company Name</span><span className="text-gray-400">(Optional)</span></label>
                         <Input value={value.company} onChange={(e) => onChange({ ...value, company: e.target.value })} className="h-[42px] bg-white max-w-full" />
                     </div>
                     <div>
-                        <label className="text-sm text-gray-700 mb-1 flex justify-between"><span>Phone Number</span><span className="text-gray-400">(Optional)</span></label>
+                        <label className="text-[16px] text-gray-700 mb-1 flex justify-between"><span>Phone Number</span><span className="text-gray-400">(Optional)</span></label>
                         <Input value={value.phone} onChange={(e) => onChange({ ...value, phone: e.target.value })} className="h-[42px] bg-white max-w-full" />
                     </div>
                     <div>
-                        <label className="text-sm text-gray-700 mb-1 block">Address Line 1 <span className="text-red-500">*</span></label>
+                        <label className="text-[16px] text-gray-700 mb-1 block">Address Line 1 <span className="text-red-500">*</span></label>
                         <Input value={value.address1} onChange={(e) => { onChange({ ...value, address1: e.target.value }); setErrors(p => ({ ...p, address1: "" })); }} className={`h-[42px] bg-white max-w-full ${errors.address1 ? "border-red-500" : ""}`} />
                         {errors.address1 && <p className="text-xs text-red-500 mt-1">{errors.address1}</p>}
                     </div>
                     <div>
-                        <label className="text-sm text-gray-700 mb-1 flex justify-between"><span>Address Line 2</span><span className="text-gray-400">(Optional)</span></label>
+                        <label className="text-[16px] text-gray-700 mb-1 flex justify-between"><span>Address Line 2</span><span className="text-gray-400">(Optional)</span></label>
                         <Input value={value.address2} onChange={(e) => onChange({ ...value, address2: e.target.value })} className="h-[42px] bg-white max-w-full" />
                     </div>
                     <div>
-                        <label className="text-sm text-gray-700 mb-1 block">City <span className="text-red-500">*</span></label>
+                        <label className="text-[16px] text-gray-700 mb-1 block">City <span className="text-red-500">*</span></label>
                         <Input value={value.city} onChange={(e) => { onChange({ ...value, city: e.target.value }); setErrors(p => ({ ...p, city: "" })); }} className={`h-[42px] bg-white max-w-full ${errors.city ? "border-red-500" : ""}`} />
                         {errors.city && <p className="text-xs text-red-500 mt-1">{errors.city}</p>}
                     </div>
                     <div>
-                        <label className="text-sm text-gray-700 mb-1 block">Country</label>
+                        <label className="text-[16px] text-gray-700 mb-1 block">Country</label>
                         <Select value={value.country} onValueChange={(v) => onChange({ ...value, country: v, state: "", city: "", zip: "" })}>
                             <SelectTrigger className="h-[42px] bg-white max-w-full"><SelectValue placeholder="Select a country" /></SelectTrigger>
                             <SelectContent>{countryList.map((c) => <SelectItem key={c.code} value={c.code}>{c.name}</SelectItem>)}</SelectContent>
@@ -132,7 +132,7 @@ const AddressModal: React.FC<{
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="text-sm text-gray-700 mb-1 flex justify-between"><span>State/Province</span></label>
+                            <label className="text-[16px] text-gray-700 mb-1 flex justify-between"><span>State/Province</span></label>
                             <Select value={value.state} onValueChange={(v) => onChange({ ...value, state: v, city: "", zip: "" })}>
                                 <SelectTrigger className="h-[42px] bg-white"><SelectValue placeholder="Select a state" /></SelectTrigger>
                                 <SelectContent>{stateList.map((s) => <SelectItem key={s.code} value={s.code}>{s.name}</SelectItem>)}</SelectContent>
@@ -140,7 +140,7 @@ const AddressModal: React.FC<{
                             {errors.state && <p className="text-xs text-red-500 mt-1">{errors.state}</p>}
                         </div>
                         <div>
-                            <label className="text-sm text-gray-700 mb-1 block">Postal Code</label>
+                            <label className="text-[16px] text-gray-700 mb-1 block">Postal Code</label>
                             <Input value={value.zip} onChange={(e) => onChange({ ...value, zip: e.target.value })} className="h-[42px] bg-white" />
                             {errors.zip && <p className="text-xs text-red-500 mt-1">{errors.zip}</p>}
                         </div>
@@ -193,7 +193,7 @@ const AllocateModal: React.FC<{
                 <div className="px-6 py-4 border-b">
                     <h2 className="text-lg font-semibold text-center">Destination #{destIndex + 1}</h2>
                     {currentDest?.address && (
-                        <p className="text-sm text-gray-500 text-center mt-1">
+                        <p className="text-[16px] text-gray-500 text-center mt-1">
                             {currentDest.address.firstName} {currentDest.address.lastName},{" "}
                             {currentDest.address.address1},{" "}
                             {currentDest.address.city && `${currentDest.address.city}, `}
@@ -204,13 +204,13 @@ const AllocateModal: React.FC<{
                     )}
                 </div>
                 <div className="px-6 py-3 bg-gray-50 border-b flex justify-between items-center">
-                    <span className="text-sm text-gray-600">{totalLeft} item{totalLeft !== 1 ? "s" : ""} left to allocate</span>
+                    <span className="text-[16px] text-gray-600">{totalLeft} item{totalLeft !== 1 ? "s" : ""} left to allocate</span>
                     <div className="flex gap-4">
-                        <button type="button" onClick={() => { const c: Record<string, number> = {}; cart.forEach((i) => { c[String(i.id)] = 0; }); setQuantities(c); }} className="text-sm text-red-600 hover:underline">Clear all</button>
-                        <button type="button" onClick={() => { const a: Record<string, number> = {}; cart.forEach((i) => { a[String(i.id)] = getLeft(i.id); }); setQuantities(a); }} className="text-sm text-red-600 hover:underline">Select all items left</button>
+                        <button type="button" onClick={() => { const c: Record<string, number> = {}; cart.forEach((i) => { c[String(i.id)] = 0; }); setQuantities(c); }} className="text-[16px] text-red-600 hover:underline">Clear all</button>
+                        <button type="button" onClick={() => { const a: Record<string, number> = {}; cart.forEach((i) => { a[String(i.id)] = getLeft(i.id); }); setQuantities(a); }} className="text-[16px] text-red-600 hover:underline">Select all items left</button>
                     </div>
                 </div>
-                <div className="px-6 py-2 bg-gray-50 border-b grid grid-cols-12 text-sm font-medium text-gray-600">
+                <div className="px-6 py-2 bg-gray-50 border-b grid grid-cols-12 text-[16px] font-medium text-gray-600">
                     <div className="col-span-6">Item</div>
                     <div className="col-span-3 text-center">Left to allocate</div>
                     <div className="col-span-3 text-center">Quantity</div>
@@ -224,21 +224,21 @@ const AllocateModal: React.FC<{
                             <div key={String(item.id)} className="grid grid-cols-12 gap-2 px-6 py-4 border-b items-center">
                                 <div className="col-span-6 flex items-center gap-3">
                                     {img ? <img src={img} alt={item.name} className="w-12 h-12 object-contain border rounded flex-shrink-0" /> : <div className="w-12 h-12 bg-gray-100 rounded flex-shrink-0" />}
-                                    <span className="text-sm text-gray-700 line-clamp-3">{item.name}</span>
+                                    <span className="text-[16px] text-gray-700 line-clamp-3">{item.name}</span>
                                 </div>
-                                <div className="col-span-3 text-center text-sm text-gray-600">{left}</div>
+                                <div className="col-span-3 text-center text-[16px] text-gray-600">{left}</div>
                                 <div className="col-span-3 flex justify-center">
                                     <input type="number" min={0} max={left} value={qty}
                                         onChange={(e) => { const v = Math.min(Math.max(0, parseInt(e.target.value) || 0), left); setQuantities((prev) => ({ ...prev, [String(item.id)]: v })); }}
-                                        className="w-16 h-9 border border-gray-300 rounded text-center text-sm" />
+                                        className="w-16 h-9 border border-gray-300 rounded text-center text-[16px]" />
                                 </div>
                             </div>
                         );
                     })}
                 </div>
                 <div className="px-6 py-4 bg-gray-50 border-t flex justify-end gap-3">
-                    <button type="button" onClick={onClose} className="px-6 py-2 text-sm border border-gray-300 rounded text-gray-600 hover:bg-gray-100">CANCEL</button>
-                    <button type="button" onClick={() => { onAllocate(cart.map((item) => ({ itemId: item.id, qty: quantities[String(item.id)] || 0 }))); onClose(); }} className="px-6 py-2 text-sm bg-gray-200 text-gray-600 rounded hover:bg-gray-300 font-medium uppercase">ALLOCATE</button>
+                    <button type="button" onClick={onClose} className="px-6 py-2 text-[16px] border border-gray-300 rounded text-gray-600 hover:bg-gray-100">CANCEL</button>
+                    <button type="button" onClick={() => { onAllocate(cart.map((item) => ({ itemId: item.id, qty: quantities[String(item.id)] || 0 }))); onClose(); }} className="px-6 py-2 text-[16px] bg-gray-200 text-gray-600 rounded hover:bg-gray-300 font-medium uppercase">ALLOCATE</button>
                 </div>
             </DialogContent>
         </Dialog>
@@ -419,12 +419,12 @@ const MultiAddressShipping = ({
         <div className="space-y-4">
             {/* Allocation status */}
             {unallocatedCount > 0 ? (
-                <div className="flex items-center gap-2 bg-white border border-gray-200 rounded p-3 text-sm text-gray-700">
+                <div className="flex items-center gap-2 bg-white border border-gray-200 rounded p-3 text-[16px] text-gray-700">
                     <Info size={16} className="text-gray-500 flex-shrink-0" />
                     <span>{unallocatedCount} item{unallocatedCount > 1 ? "s" : ""} left to allocate</span>
                 </div>
             ) : (
-                <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded p-3 text-sm text-green-700">
+                <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded p-3 text-[16px] text-green-700">
                     <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -441,7 +441,7 @@ const MultiAddressShipping = ({
                 return (
                     <div key={dest.id} className="border border-gray-300 rounded ">
                         <div className="flex items-center justify-between px-4 pt-4 pb-2">
-                            <h4 className="font-bold text-base text-gray-800">Destination #{index + 1}</h4>
+                            <h4 className="font-bold text-2xl text-gray-800">Destination #{index + 1}</h4>
                             {destinations.length > 1 && (
                                 <button type="button" onClick={() => handleRemoveDestination(dest.id)} className="text-gray-400 hover:text-gray-600">
                                     <X size={18} />
@@ -451,7 +451,7 @@ const MultiAddressShipping = ({
                         <div className="px-4 pb-4 space-y-3">
                             {dest.address ? (
                                 <div className="flex items-start gap-2">
-                                    <p className="text-sm text-gray-600 flex-1 leading-snug">
+                                    <p className="text-[16px] text-gray-600 flex-1 leading-snug">
                                         {dest.address.firstName} {dest.address.lastName},{" "}
                                         {dest.address.address1},{" "}
                                         {dest.address.city && `${dest.address.city}, `}
@@ -465,8 +465,8 @@ const MultiAddressShipping = ({
                                 </div>
                             ) : (
                                 <div className="flex items-center gap-2">
-                                    <span className="text-sm text-gray-600 font-medium">No shipping address entered</span>
-                                    <button type="button" onClick={() => openAddressModal(dest.id)} className="text-sm text-red-600 hover:underline">Enter shipping address</button>
+                                    <span className="text-[16px] text-gray-600 font-medium">No shipping address entered</span>
+                                    <button type="button" onClick={() => openAddressModal(dest.id)} className="text-[16px] text-red-600 hover:underline">Enter shipping address</button>
                                 </div>
                             )}
 
@@ -475,7 +475,7 @@ const MultiAddressShipping = ({
                                     {totalAllocatedSlots > 0 ? (
                                         <div>
                                             <div className="flex items-center justify-between">
-                                                <span className="text-sm font-bold text-gray-800">
+                                                <span className="text-[16px] font-bold text-gray-800">
                                                     {totalAllocatedSlots} item{totalAllocatedSlots > 1 ? "s" : ""} allocated
                                                 </span>
                                                 <div className="flex gap-4">
@@ -498,17 +498,17 @@ const MultiAddressShipping = ({
                                         </div>
                                     ) : (
                                         <div className="flex items-center gap-2">
-                                            <span className="text-sm font-bold text-gray-700">No item allocated</span>
-                                            <button type="button" onClick={() => { setEditingDestId(dest.id); setAllocateModalOpen(true); }} className="text-sm text-red-600 hover:underline">Allocate items</button>
+                                            <span className="text-[16px] font-bold text-gray-700">No item allocated</span>
+                                            <button type="button" onClick={() => { setEditingDestId(dest.id); setAllocateModalOpen(true); }} className="text-[16px] text-red-600 hover:underline">Allocate items</button>
                                         </div>
                                     )}
 
                                     {totalAllocatedSlots > 0 && (
                                         <div>
-                                            <h5 className="text-sm font-bold text-gray-800 mb-2">Shipping Method</h5>
+                                            <h5 className="text-[16px] font-bold text-gray-800 mb-2">Shipping Method</h5>
                                             {/* <div className="space-y-2">
                                                 {activeRates.map((rate: any) => (
-                                                    <label key={rate.service_type} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                                                    <label key={rate.service_type} className="flex items-center gap-2 text-[16px] text-gray-700 cursor-pointer">
                                                         <input type="radio" name={`shipping-${dest.id}`} value={rate.service_type}
                                                             checked={dest.selectedShippingMethod === rate.service_type}
                                                             onChange={() => dispatch(updateDestinationShippingMethod({ destId: dest.id, method: rate.service_type }))}
@@ -530,7 +530,7 @@ const MultiAddressShipping = ({
                                             ) : (
                                                 <div className="space-y-2">
                                                     {activeRates.map((rate: any) => (
-                                                        <label key={rate.service_type} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                                                        <label key={rate.service_type} className="flex items-center gap-2 text-[16px] text-gray-700 cursor-pointer">
                                                             <input
                                                                 type="radio"
                                                                 name={`shipping-${dest.id}`}
@@ -568,7 +568,7 @@ const MultiAddressShipping = ({
 
             {unallocatedCount > 0 && (<button type="button"
                 disabled={!lastDestComplete}
-                onClick={handleAddDestination} className="bg-[var(--primary-color)] text-white text-sm font-medium px-4 py-2 uppercase hover:opacity-90">
+                onClick={handleAddDestination} className="bg-[var(--primary-color)] text-white text-[16px] font-medium px-4 py-2 uppercase hover:opacity-90">
                 ADD NEW DESTINATION
             </button>)
 
@@ -580,10 +580,10 @@ const MultiAddressShipping = ({
                 </p>
             )}
             <div className="flex flex-col">
-                <label className="text-sm font-medium text-gray-700 mb-1">Order Comments</label>
+                <label className="text-[16px] font-medium text-gray-700 mb-1">Order Comments</label>
                 <textarea rows={2} value={orderComment}
                     onChange={(e) => dispatch(setOrderComment(e.target.value))}
-                    className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none resize-none" />
+                    className="w-full border border-gray-300 rounded px-3 py-2 text-[16px] focus:outline-none resize-none" />
             </div>
 
             <button type="button"
@@ -596,7 +596,7 @@ const MultiAddressShipping = ({
                     }
                 }}
                 disabled={!canContinue}
-                className={`px-6 py-2 text-sm font-medium uppercase ${canContinue ? "bg-[var(--primary-color)] text-white cursor-pointer hover:opacity-90" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}>
+                className={`px-6 py-2 text-[16px] font-medium uppercase ${canContinue ? "bg-[var(--primary-color)] text-white cursor-pointer hover:opacity-90" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}>
                 CONTINUE
             </button>
 

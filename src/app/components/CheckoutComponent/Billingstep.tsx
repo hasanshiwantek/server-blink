@@ -48,7 +48,11 @@ const BillingStep: React.FC<BillingStepProps> = ({
   onEdit,
   billingInfo,
 }) => {
-  if (isCompleted && !isActive) {
+  if (isCompleted && !isActive &&
+    billingInfo?.firstName &&
+    billingInfo?.city &&
+    billingInfo?.country &&
+    billingInfo?.zip && billingInfo?.state) {
     // Show completed state with billing info and edit button
     return (
       <div className="flex items-start justify-between">
@@ -222,27 +226,27 @@ const BillingStep: React.FC<BillingStepProps> = ({
             required: "City is required",
           })}
         /> */}
-        
-                  <Controller
-                    name="billingCity"
-                    control={control}
-                    rules={{ required: "City is required" }}
-                    render={({ field }) => (
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <SelectTrigger className={`w-full !max-w-full h-[40px] ${errors.billingCity ? "border-red-500" : ""}`}>
-                          <SelectValue placeholder="Select city" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {cityList?.map((city) => (
-                            <SelectItem key={city.name} value={city.name}>
-                              {city.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-        
+
+        <Controller
+          name="billingCity"
+          control={control}
+          rules={{ required: "City is required" }}
+          render={({ field }) => (
+            <Select onValueChange={field.onChange} value={field.value}>
+              <SelectTrigger className={`w-full !max-w-full h-[40px] ${errors.billingCity ? "border-red-500" : ""}`}>
+                <SelectValue placeholder="Select city" />
+              </SelectTrigger>
+              <SelectContent>
+                {cityList?.map((city) => (
+                  <SelectItem key={city.name} value={city.name}>
+                    {city.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
+
         {errors.billingCity && (
           <p className="text-sm text-red-500 mt-1">
             {errors.billingCity.message as string}

@@ -3,27 +3,27 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  try {
-    const ip =
-      req.headers.get("x-forwarded-for")?.split(",")[0] ||
-      req.headers.get("x-real-ip") ||
-      "";
+    try {
+        const ip =
+            req.headers.get("x-forwarded-for")?.split(",")[0] ||
+            req.headers.get("x-real-ip") ||
+            "";
 
-    // ip2c.org - completely free, no rate limit
-    const res = await fetch(`https://ip2c.org/${ip || "s"}`);
-    const text = await res.text();
-    const parts = text.split(";");
-    // Response format: 1;PK;PAK;Pakistan
-    const countryCode = parts[1];
+        // ip2c.org - completely free, no rate limit
+        const res = await fetch(`https://ip2c.org/${ip || "s"}`);
+        const text = await res.text();
+        const parts = text.split(";");
+        // Response format: 1;PK;PAK;Pakistan
+        const countryCode = parts[1];
 
-    if (countryCode && countryCode.length === 2) {
-      return NextResponse.json({ country_code: countryCode });
+        if (countryCode && countryCode.length === 2) {
+            return NextResponse.json({ country_code: countryCode, ip });
+        }
+
+        return NextResponse.json({ country_code: "US", ip });
+    } catch {
+        return NextResponse.json({ country_code: "US" });
     }
-
-    return NextResponse.json({ country_code: "US" });
-  } catch {
-    return NextResponse.json({ country_code: "US" });
-  }
 }
 
 // import { NextRequest, NextResponse } from "next/server";
