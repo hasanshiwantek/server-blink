@@ -975,7 +975,7 @@ const CheckoutForm = () => {
 
   // watchedBillingSame ke saath useEffect add karo
   useEffect(() => {
-    if (watchedBillingSame && !isMultiAddress)) {
+    if (watchedBillingSame && !isMultiAddress) {
       // ✅ Shipping values billing mein copy karo
       setValue("billingFirstName", watch("firstName"));
       setValue("billingLastName", watch("lastName"));
