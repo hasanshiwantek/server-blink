@@ -40,7 +40,8 @@ import {
 } from "@stripe/react-stripe-js";
 import { useRouter } from "next/navigation";
 import { setLastOrder } from "@/redux/slices/orderslice";
-
+import { resetMultiAddress, setIsMultiAddress } from "@/redux/slices/multiAddressSlice";
+import { resetShippingRates } from "@/redux/slices/shippingSlice";
 // Import step components
 import CustomerStep from "./CustomerStep";
 import ShippingStep from "./Shippingstep";
@@ -714,6 +715,9 @@ const CheckoutForm = () => {
         dispatch(setLastOrder(orderData));
         dispatch(clearCart());
         dispatch(removeCoupon());
+        dispatch(resetMultiAddress());       // ✅ ADD
+dispatch(resetShippingRates());      // ✅ ADD
+dispatch(setIsMultiAddress(false));
         router.push("/order-success");
       } catch (err: any) {
         console.error("❌ Wallet payment failed:", err);
@@ -960,6 +964,9 @@ const CheckoutForm = () => {
       dispatch(setLastOrder(orderData));
       dispatch(clearCart());
       dispatch(removeCoupon());
+      dispatch(resetMultiAddress());       // ✅ ADD
+dispatch(resetShippingRates());      // ✅ ADD
+dispatch(setIsMultiAddress(false)); 
       router.push("/order-success");
     } catch (err: any) {
       console.error("❌ Error processing order:", err);
