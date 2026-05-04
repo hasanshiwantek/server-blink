@@ -116,10 +116,19 @@ const AddressModal: React.FC<{
                         <label className="text-[16px] text-gray-700 mb-1 flex justify-between"><span>Address Line 2</span><span className="text-gray-400">(Optional)</span></label>
                         <Input value={value.address2} onChange={(e) => onChange({ ...value, address2: e.target.value })} className="h-[42px] bg-white max-w-full" />
                     </div>
-                    <div>
+                    {/* <div>
                         <label className="text-[16px] text-gray-700 mb-1 block">City <span className="text-red-500">*</span></label>
                         <Input value={value.city} onChange={(e) => { onChange({ ...value, city: e.target.value }); setErrors(p => ({ ...p, city: "" })); }} className={`h-[42px] bg-white max-w-full ${errors.city ? "border-red-500" : ""}`} />
                         {errors.city && <p className="text-xs text-red-500 mt-1">{errors.city}</p>}
+                    </div> */}
+                     <div>
+                        <label className="text-[16px] text-gray-700 mb-1 block">City <span className="text-red-500">*</span></label>
+                        <Select value={value.city} onValueChange={(v) => onChange({ ...value, city: v })}>
+                            <SelectTrigger className="h-[42px] bg-white max-w-full"><SelectValue placeholder="Select a city" /></SelectTrigger>
+                            <SelectContent>{cityList.map((c) => <SelectItem key={c.code} value={c.code}>{c.name}</SelectItem>)}</SelectContent>
+                        </Select>
+                        {errors.city && <p className="text-xs text-red-500 mt-1">{errors.city}</p>}
+
                     </div>
                     <div>
                         <label className="text-[16px] text-gray-700 mb-1 block">Country</label>
