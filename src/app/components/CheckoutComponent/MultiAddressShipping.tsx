@@ -574,7 +574,7 @@ const MultiAddressShipping = ({
 
             }
             {!lastDestComplete && destinations.length > 0 && (
-                <p className="text-xs text-red-500 flex items-center gap-1">
+                <p className="text-[13px] text-red-500 flex items-center gap-1">
                     <span>✕</span>
                     Please complete the address, item allocation, and method selection for Destination #{destinations.length}.
                 </p>
