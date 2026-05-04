@@ -712,6 +712,7 @@ const CheckoutForm = () => {
         event.complete("success");
 
         skipEmptyCartCheckRef.current = true;
+        console.log("orderData 1",orderData)
         dispatch(setLastOrder(orderData));
         dispatch(clearCart());
         dispatch(removeCoupon());
@@ -962,6 +963,7 @@ dispatch(setIsMultiAddress(false));
       const orderData = await placeOrder({ ...data, paymentIntentId });
       skipEmptyCartCheckRef.current = true;
       dispatch(setLastOrder(orderData));
+      console.log("orderData 2",orderData)
       dispatch(clearCart());
       dispatch(removeCoupon());
       dispatch(resetMultiAddress());       // ✅ ADD
