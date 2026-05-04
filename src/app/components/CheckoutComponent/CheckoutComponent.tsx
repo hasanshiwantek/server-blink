@@ -40,7 +40,8 @@ import {
 } from "@stripe/react-stripe-js";
 import { useRouter } from "next/navigation";
 import { setLastOrder } from "@/redux/slices/orderslice";
-
+import { resetMultiAddress, setIsMultiAddress } from "@/redux/slices/multiAddressSlice";
+import { resetShippingRates } from "@/redux/slices/shippingSlice";
 // Import step components
 import CustomerStep from "./CustomerStep";
 import ShippingStep from "./Shippingstep";
@@ -163,7 +164,7 @@ const CheckoutForm = () => {
   } = useForm<CheckoutFormValues>({
     defaultValues: {
       paymentMethod: "credit_card",
-      billingSame: true,
+        billingSame: isMultiAddress ? false : true,
       email: auth?.user?.email || "",
       firstName: auth?.user?.firstName || "",
       lastName: auth?.user?.lastName || "",
@@ -237,10 +238,10 @@ const CheckoutForm = () => {
         const res = await fetch("/api/detect-country"); // apna Next.js route
         const data = await res.json();
         if (data.country_code) {
-          setValue("country", data.country_code);
-          setValue("billingCountry", data.country_code);
-          
+            setValue("country", data.country_code);
           setValue("state", data.state);
+          
+          setValue("billingCountry", data.country_code);
           setValue("billingState", data.state);
         }
       } catch {
@@ -711,10 +712,13 @@ const CheckoutForm = () => {
         event.complete("success");
 
         skipEmptyCartCheckRef.current = true;
-        console.log(orderData, "Order data after wallet payment");
+        console.log("orderData 1",orderData)
         dispatch(setLastOrder(orderData));
         dispatch(clearCart());
         dispatch(removeCoupon());
+        dispatch(resetMultiAddress());       // ✅ ADD
+dispatch(resetShippingRates());      // ✅ ADD
+dispatch(setIsMultiAddress(false));
         router.push("/order-success");
       } catch (err: any) {
         console.error("❌ Wallet payment failed:", err);
@@ -772,7 +776,7 @@ const CheckoutForm = () => {
     ]);
     if (isValid) {
       setCompletedSteps((prev) => [...new Set([...prev, 2])]);
-      if (watchedBillingSame && !isMultiAddress) {
+         if (watchedBillingSame && !isMultiAddress) {
         setCurrentStep(4);
       } else {
         setCurrentStep(3);
@@ -960,8 +964,12 @@ const CheckoutForm = () => {
       skipEmptyCartCheckRef.current = true;
            console.log(orderData, "Order data after wallet payment");
       dispatch(setLastOrder(orderData));
+      console.log("orderData 2",orderData)
       dispatch(clearCart());
       dispatch(removeCoupon());
+      dispatch(resetMultiAddress());       // ✅ ADD
+dispatch(resetShippingRates());      // ✅ ADD
+dispatch(setIsMultiAddress(false)); 
       router.push("/order-success");
     } catch (err: any) {
       console.error("❌ Error processing order:", err);
@@ -976,39 +984,31 @@ const CheckoutForm = () => {
   };
 
   // watchedBillingSame ke saath useEffect add karo
-  useEffect(() => {
-    if (watchedBillingSame && !isMultiAddress) {
-      // ✅ Shipping values billing mein copy karo
-      setValue("billingFirstName", watch("firstName"));
-      setValue("billingLastName", watch("lastName"));
-      setValue("billingCompany", watch("company"));
-      setValue("billingPhone", watch("phone"));
-      setValue("billingAddress1", watch("address1"));
-      setValue("billingAddress2", watch("address2"));
-      setValue("billingCity", watch("city"));
-      setValue("billingState", watch("state"));
-      setValue("billingCountry", watch("country"));
-      setValue("billingZip", watch("zip"));
-
-      // ✅ Step 3 skip karke step 4 pe ja
-      setCompletedSteps((prev) => [...new Set([...prev, 3])]);
-    } else {
-      // ✅ Uncheck — billing fields clear karo
-      setValue("billingFirstName", "");
-      setValue("billingLastName", "");
-      setValue("billingCompany", "");
-      setValue("billingPhone", "");
-      setValue("billingAddress1", "");
-      setValue("billingAddress2", "");
-      setValue("billingCity", "");
-      setValue("billingState", "");
-      setValue("billingCountry", "");
-      setValue("billingZip", "");
-
-      // ✅ Step 3 completed se hatao
-      setCompletedSteps((prev) => prev.filter((s) => s !== 3));
-    }
-  }, [watchedBillingSame, watchedState, watchedCountry, watchedFirstName, watchedLastName, watchedZip, watchedAddress2, watchedAddress1, watchedCompany, watchedPhone, watchedCity]);
+useEffect(() => {
+  if (watchedBillingSame && !isMultiAddress) {
+    setValue("billingFirstName", watchedFirstName);
+    setValue("billingLastName", watchedLastName);
+    setValue("billingCompany", watchedCompany);
+    setValue("billingPhone", watchedPhone);
+    setValue("billingAddress1", watchedAddress1);
+    setValue("billingAddress2", watchedAddress2);
+    setValue("billingCity", watchedCity);
+    setValue("billingState", watchedState);
+    setValue("billingCountry", watchedCountry);
+    setValue("billingZip", watchedZip);
+    setCompletedSteps((prev) => [...new Set([...prev, 3])]);
+  } else if (!watchedBillingSame) {
+    setValue("billingFirstName", "");
+    setValue("billingLastName", "");
+    setValue("billingCompany", "");
+    setValue("billingPhone", "");
+    setValue("billingAddress1", "");
+    setValue("billingAddress2", "");
+    setValue("billingCity", "");
+    setValue("billingZip", "");
+    setCompletedSteps((prev) => prev.filter((s) => s !== 3));
+  }
+}, [watchedBillingSame]);
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
       {paymentRequest && (
