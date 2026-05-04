@@ -279,7 +279,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
       <div>
         <div className="flex justify-between items-center">
 
-          <h3 className="text-sm font-medium mb-4 text-gray-700">
+          <h3 className="text-[16px] font-medium mb-4 text-gray-700">
             {isMultiAddress ? "Choose where to ship each item" : "Shipping Address"}
           </h3>
           {cart?.reduce((sum, item) => sum + (item.quantity || 1), 0) > 1 && (
@@ -294,7 +294,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                   dispatch(setIsMultiAddress(true));
                 }
               }}
-              className="text-sm text-red-600 hover:underline font-medium"
+              className="text-[16px] text-red-600 hover:underline font-medium"
             >
               {isMultiAddress ? "Ship to single address" : "Ship to multiple addresses"}
             </button>
