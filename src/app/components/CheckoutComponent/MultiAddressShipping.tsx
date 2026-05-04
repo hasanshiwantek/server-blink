@@ -125,7 +125,7 @@ const AddressModal: React.FC<{
                         <label className="text-[16px] text-gray-700 mb-1 block">City <span className="text-red-500">*</span></label>
                         <Select value={value.city} onValueChange={(v) => onChange({ ...value, city: v })}>
                             <SelectTrigger className="h-[42px] bg-white max-w-full"><SelectValue placeholder="Select a city" /></SelectTrigger>
-                            <SelectContent>{cityList.map((c) => <SelectItem key={c.code} value={c.code}>{c.name}</SelectItem>)}</SelectContent>
+                            <SelectContent>{cityList.map((c) => <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>)}</SelectContent>
                         </Select>
                         {errors.city && <p className="text-xs text-red-500 mt-1">{errors.city}</p>}
 
