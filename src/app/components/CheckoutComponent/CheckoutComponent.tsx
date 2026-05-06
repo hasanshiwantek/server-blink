@@ -928,18 +928,19 @@ dispatch(setIsMultiAddress(false));
             type: "card",
             card: cardNumberElement,
             billing_details: {
-              name: `${data.firstName} ${data.lastName}`,
+              name: `${data.billingFirstName} ${data.billingLastName}`,
               email: data.email,
-              phone: data.phone,
+              phone: data.billingPhone,
               address: {
-                line1: data.address1,
-                line2: data.address2,
-                city: data.city,
-                state: data.state,
-                postal_code: data.zip,
-                country: data.country,
+                line1: data.billingAddress1,
+                line2: data.billingAddress2,
+                city: data.billingCity,
+                state: data.billingState,
+                postal_code: data.billingZip,
+                country: data.billingCountry,
               },
             },
+
           });
 
         if (pmError) {
@@ -963,7 +964,6 @@ dispatch(setIsMultiAddress(false));
       const orderData = await placeOrder({ ...data, paymentIntentId });
       skipEmptyCartCheckRef.current = true;
       dispatch(setLastOrder(orderData));
-      console.log("orderData 2",orderData)
       dispatch(clearCart());
       dispatch(removeCoupon());
       dispatch(resetMultiAddress());       // ✅ ADD
