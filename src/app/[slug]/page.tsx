@@ -101,7 +101,7 @@ export default async function ProductPage({
     notFound(); // 🔥 THIS IS THE KEY
   }
   const backendSchema = product?.schema;
-
+  
   return (
     <>
       {/* ✅ Structured Data (SEO safe) */}
