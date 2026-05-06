@@ -156,7 +156,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
             {/* Header */}
             <div className="flex items-center justify-between mb-6 px-6 border-b-[1px] border-[#8b8b8b]">
                 <h2 className="text-xl font-semibold text-gray-800 p-2">
-                  Order Summary
+                    Order Summary
                 </h2>
                 <Link href="/cart" className="text-base text-[var(--primary-color)] hover:underline">
                     Edit Cart
@@ -308,13 +308,13 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
             </div>
 
             {/* Total */}
-            <div className="flex flex-col mt-4 pt-4 px-6 border-t-[1px] border-[#8b8b8b] text-gray-900">
+            <div className="flex flex-col mt-4 pt-4 px-6 border-t-[1px] border-[#8b8b8b] text-gray-700">
                 <div className="flex justify-between items-center text-lg font-bold">
-                    <span>Total (USD)</span>
+                    <span>Total <br /> (USD)</span>
                     <span>${finalTotal.toFixed(2)}</span>
                 </div>
                 {appliedCoupon && discountAmount > 0 && (
-                    <div className="text-sm mt-1 self-end">You saved ${discountAmount.toFixed(2)} in total!</div>
+                    <div className="text-[#333] font-medium  mt-1 self-end">You saved <span className="!text-[#2aab3f] ">${discountAmount.toFixed(2)}</span> in total!</div>
                 )}
             </div>
         </div>

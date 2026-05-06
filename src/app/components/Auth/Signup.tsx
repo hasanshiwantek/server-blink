@@ -36,12 +36,16 @@ interface SignupFormValues {
 }
 
 const SignupPage = () => {
-  const countryList = countries
-    .map((country) => ({
-      name: country.name.common,
-      code: country.cca2,
-    }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+  // const countryList = countries
+  //   .map((country) => ({
+  //     name: country.name.common,
+  //     code: country.cca2,
+  //   }))
+  //   .sort((a, b) => a.name.localeCompare(b.name));
+  const countryList = Country.getAllCountries().map((c) => ({
+    name: c.name,
+    code: c.isoCode,
+  }));
 
   const {
     register,
@@ -98,6 +102,9 @@ const SignupPage = () => {
       try {
         const res = await fetch("/api/detect-country"); // apna Next.js route
         const data = await res.json();
+
+        console.log("data", data);
+
         if (data.country_code) {
           setValue("country", data.country_code);
           setValue("state", data.state);
@@ -378,7 +385,11 @@ const SignupPage = () => {
                 <span className="text-[#545454]">*</span>
 
               </div>
-              <Select onValueChange={(value) => setValue("country", value)}>
+              <Select value={watchedCountry}
+                onValueChange={(value) => {
+                  setValue("country", value);
+                  setValue("state", "");
+                }}>
                 <SelectTrigger className="h-[42px] min-h-[42px] w-full max-w-full">
                   <SelectValue placeholder="Choose a Country" />
                 </SelectTrigger>
@@ -404,9 +415,19 @@ const SignupPage = () => {
                 >
                   State/Province
                 </label>
-                <span className="text-[#545454]">*</span>
+                {stateList?.length > 0 && <span className="text-[#545454]">*</span>}
               </div>
-              {stateList?.length > 0 ? <Select onValueChange={(value) => setValue("state", value)}>
+              <input
+                type="hidden"
+                {...register("state", {
+                  validate: (value) => {
+                    if (stateList.length > 0 && !value) return "State/Province is required";
+                    return true;
+                  },
+                })}
+              />
+              {stateList?.length > 0 ? <Select value={watchedState} onValueChange={(value) => setValue("state", value, { shouldValidate: true })
+              }>
                 <SelectTrigger className="h-[42px] min-h-[42px] w-full max-w-full">
                   <SelectValue placeholder="Choose a State/Province" />
                 </SelectTrigger>
@@ -467,8 +488,8 @@ const SignupPage = () => {
             )}
           </div>
         </form>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 

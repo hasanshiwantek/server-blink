@@ -111,6 +111,7 @@ const Banner = () => {
                   </p>
                   <button
                     type="button"
+                    onClick={() => window.location.reload()}
                     className="rounded bg-[var(--primary-color)] px-5 py-2 text-base font-bold uppercase tracking-wide text-white shadow-md transition-colors duration-200"
                   >
                     {slide.buttonText}
@@ -128,6 +129,7 @@ const Banner = () => {
                     </p>
                     <button
                       type="button"
+                      onClick={() => window.location.reload()}
                       className="rounded bg-[var(--primary-color)] px-5 py-2.5 text-base font-bold uppercase tracking-wide text-white shadow-xl transition-colors duration-200 md:py-2 md:text-[15px]"
                     >
                       {slide.buttonText}
@@ -147,11 +149,10 @@ const Banner = () => {
             <button
               key={index}
               onClick={() => api?.scrollTo(index)}
-              className={`w-4 h-4 rounded-full transition-all duration-300 ${
-                current === index
+              className={`w-4 h-4 rounded-full transition-all duration-300 ${current === index
                   ? "bg-red-600 w-3"
                   : "bg-white/60 hover:bg-white/90"
-              }`}
+                }`}
               aria-label={`Go to slide ${index + 1}`}
             />
           ))}

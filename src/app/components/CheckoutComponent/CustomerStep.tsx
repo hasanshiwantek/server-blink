@@ -55,9 +55,8 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
               <Input
                 id="email"
                 type="email"
-                className={`flex-1 h-[40px] ${
-                  errors.email ? "border-red-500" : ""
-                }`}
+                className={`flex-1 h-[40px] ${errors.email ? "border-red-500" : ""
+                  }`}
                 {...register("email", {
                   required: "Email is required",
                   pattern: {
@@ -81,7 +80,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
             )}
           </div>
 
-          {/* <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
             <input
               type="checkbox"
               id="newsletter"
@@ -91,7 +90,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
             <label htmlFor="newsletter" className="text-base text-gray-700">
               Subscribe to our newsletter.
             </label>
-          </div> */}
+          </div>
 
           <div className="text-base text-gray-700">
             Already have an account?{" "}
@@ -100,10 +99,8 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
             </Link>
           </div>
 
-          <div className="text-base text-gray-600">Or continue with</div>
-
           {/* Apple Pay Button */}
- 
+
           {/* Apple Pay Button */}
           <button
             type="button"
@@ -120,7 +117,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
           </button>
 
           {/* Google Pay Button */}
-     <button
+          <button
             type="button"
             onClick={() => onWalletClick("google_pay")}
             className={`w-full h-[48px] bg-black text-white rounded flex items-center justify-center hover:bg-gray-900 transition ${!walletSupport.googlePay ? "hidden" : ""}`}
@@ -132,7 +129,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
               height={30}
             />
           </button>
-          
+
         </div>
       ) : null}
     </>

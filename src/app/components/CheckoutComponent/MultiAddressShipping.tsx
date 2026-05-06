@@ -116,12 +116,12 @@ const AddressModal: React.FC<{
                         <label className="text-[16px] text-gray-700 mb-1 flex justify-between"><span>Address Line 2</span><span className="text-gray-400">(Optional)</span></label>
                         <Input value={value.address2} onChange={(e) => onChange({ ...value, address2: e.target.value })} className="h-[42px] bg-white max-w-full" />
                     </div>
-                    {/* <div>
+                    <div>
                         <label className="text-[16px] text-gray-700 mb-1 block">City <span className="text-red-500">*</span></label>
                         <Input value={value.city} onChange={(e) => { onChange({ ...value, city: e.target.value }); setErrors(p => ({ ...p, city: "" })); }} className={`h-[42px] bg-white max-w-full ${errors.city ? "border-red-500" : ""}`} />
                         {errors.city && <p className="text-xs text-red-500 mt-1">{errors.city}</p>}
-                    </div> */}
-                     <div>
+                    </div>
+                    {/* <div>
                         <label className="text-[16px] text-gray-700 mb-1 block">City <span className="text-red-500">*</span></label>
                         <Select value={value.city} onValueChange={(v) => onChange({ ...value, city: v })}>
                             <SelectTrigger className="h-[42px] bg-white max-w-full"><SelectValue placeholder="Select a city" /></SelectTrigger>
@@ -129,7 +129,7 @@ const AddressModal: React.FC<{
                         </Select>
                         {errors.city && <p className="text-xs text-red-500 mt-1">{errors.city}</p>}
 
-                    </div>
+                    </div> */}
                     <div>
                         <label className="text-[16px] text-gray-700 mb-1 block">Country</label>
                         <Select value={value.country} onValueChange={(v) => onChange({ ...value, country: v, state: "", city: "", zip: "" })}>
@@ -141,11 +141,13 @@ const AddressModal: React.FC<{
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="text-[16px] text-gray-700 mb-1 flex justify-between"><span>State/Province</span></label>
-                            <Select value={value.state} onValueChange={(v) => onChange({ ...value, state: v, city: "", zip: "" })}>
+                            <label className="text-[16px] text-gray-700 mb-1 flex justify-between"><span>State/Province</span>{!stateList.length && <span className="text-gray-400">(Optional)</span>}</label>
+                            {/* <label className="text-[16px] text-gray-700 mb-1 flex justify-between"><span>State/Province</span></label> */}
+                            {stateList.length > 0 ? <Select value={value.state} onValueChange={(v) => onChange({ ...value, state: v, })}>
                                 <SelectTrigger className="h-[42px] bg-white"><SelectValue placeholder="Select a state" /></SelectTrigger>
                                 <SelectContent>{stateList.map((s) => <SelectItem key={s.code} value={s.code}>{s.name}</SelectItem>)}</SelectContent>
-                            </Select>
+                            </Select> : <Input value={value.state} onChange={(e) => { onChange({ ...value, state: e.target.value }); setErrors(p => ({ ...p, state: "" })); }} className={`h-[42px] bg-white max-w-full ${errors.state ? "border-red-500" : ""}`} />
+                            }
                             {errors.state && <p className="text-xs text-red-500 mt-1">{errors.state}</p>}
                         </div>
                         <div>
@@ -460,7 +462,7 @@ const MultiAddressShipping = ({
                         <div className="px-4 pb-4 space-y-3">
                             {dest.address ? (
                                 <div className="flex items-start gap-2">
-                                    <p className="text-[16px] text-gray-600 flex-1 leading-snug">
+                                    <p className="text-[1rem] text-gray-600 flex-1 leading-snug">
                                         {dest.address.firstName} {dest.address.lastName},{" "}
                                         {dest.address.address1},{" "}
                                         {dest.address.city && `${dest.address.city}, `}
@@ -474,8 +476,8 @@ const MultiAddressShipping = ({
                                 </div>
                             ) : (
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[16px] text-gray-600 font-medium">No shipping address entered</span>
-                                    <button type="button" onClick={() => openAddressModal(dest.id)} className="text-[16px] text-red-600 hover:underline">Enter shipping address</button>
+                                    <span className="text-[1rem] text-gray-600 font-medium">No shipping address entered</span>
+                                    <button type="button" onClick={() => openAddressModal(dest.id)} className="text-[1rem] text-red-600 hover:underline">Enter shipping address</button>
                                 </div>
                             )}
 
@@ -484,10 +486,10 @@ const MultiAddressShipping = ({
                                     {totalAllocatedSlots > 0 ? (
                                         <div>
                                             <div className="flex items-center justify-between">
-                                                <span className="text-[16px] font-bold text-gray-800">
+                                                <span className="text-[1rem] font-bold text-gray-800">
                                                     {totalAllocatedSlots} item{totalAllocatedSlots > 1 ? "s" : ""} allocated
                                                 </span>
-                                                <div className="flex gap-4">
+                                                <div className="flex gap-4 text-[1rem]">
                                                     <button type="button" onClick={() => dispatch(toggleShowItems(dest.id))} className="text-xs text-red-600 hover:underline">
                                                         {dest.showItems ? "Hide items ▲" : "Show items ▼"}
                                                     </button>
@@ -500,21 +502,21 @@ const MultiAddressShipping = ({
                                                 <div className="mt-1 space-y-0.5">
                                                     {Object.entries(grouped).map(([itemId, count]) => {
                                                         const item = cart.find((c: any) => String(c.id) === itemId);
-                                                        return item ? <p key={itemId} className="text-xs text-gray-600">{count} x {item.name}</p> : null;
+                                                        return item ? <p key={itemId} className="text-[1rem] text-gray-600">{count} x {item.name}</p> : null;
                                                     })}
                                                 </div>
                                             )}
                                         </div>
                                     ) : (
                                         <div className="flex items-center gap-2">
-                                            <span className="text-[16px] font-bold text-gray-700">No item allocated</span>
-                                            <button type="button" onClick={() => { setEditingDestId(dest.id); setAllocateModalOpen(true); }} className="text-[16px] text-red-600 hover:underline">Allocate items</button>
+                                            <span className="text-[1rem] font-bold text-gray-700">No item allocated</span>
+                                            <button type="button" onClick={() => { setEditingDestId(dest.id); setAllocateModalOpen(true); }} className="text-[1rem] text-red-600 hover:underline">Allocate items</button>
                                         </div>
                                     )}
 
                                     {totalAllocatedSlots > 0 && (
                                         <div>
-                                            <h5 className="text-[16px] font-bold text-gray-800 mb-2">Shipping Method</h5>
+                                            <h5 className="text-[1rem] font-bold text-gray-800 mb-2">Shipping Method</h5>
                                             {/* <div className="space-y-2">
                                                 {activeRates.map((rate: any) => (
                                                     <label key={rate.service_type} className="flex items-center gap-2 text-[16px] text-gray-700 cursor-pointer">
@@ -539,7 +541,7 @@ const MultiAddressShipping = ({
                                             ) : (
                                                 <div className="space-y-2">
                                                     {activeRates.map((rate: any) => (
-                                                        <label key={rate.service_type} className="flex items-center gap-2 text-[16px] text-gray-700 cursor-pointer">
+                                                        <label key={rate.service_type} className="flex items-center gap-2 text-[1rem] text-gray-700 cursor-pointer">
                                                             <input
                                                                 type="radio"
                                                                 name={`shipping-${dest.id}`}
@@ -577,7 +579,7 @@ const MultiAddressShipping = ({
 
             {unallocatedCount > 0 && (<button type="button"
                 disabled={!lastDestComplete}
-                onClick={handleAddDestination} className="bg-[var(--primary-color)] text-white text-[16px] font-medium px-4 py-2 uppercase hover:opacity-90">
+                onClick={handleAddDestination} className="bg-[var(--primary-color)] text-white text-[16px] font-medium px-3 py-2 uppercase hover:opacity-90">
                 ADD NEW DESTINATION
             </button>)
 

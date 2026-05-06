@@ -33,6 +33,7 @@ export async function generateMetadata({
 
   const url = `https://server-blink.vercel.app/${slug}`;
 
+
   return {
     title: `${product.pageTitle || product.name} | Server Blink`,
     description:
@@ -101,7 +102,7 @@ export default async function ProductPage({
     notFound(); // 🔥 THIS IS THE KEY
   }
   const backendSchema = product?.schema;
-  
+
   return (
     <>
       {/* ✅ Structured Data (SEO safe) */}

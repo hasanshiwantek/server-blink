@@ -25,7 +25,7 @@ const ShopNow = () => {
               customer service and technical support, ensuring that our
               customers get the best possible experience when shopping with us.
             </p>
-            <Link href="/shop">
+            <Link href="/">
               <button
                 type="button"
                 className="bg-[#444444] hover:bg-red-700 transition text-white px-4 py-3 rounded text-2xl"
@@ -62,7 +62,7 @@ const ShopNow = () => {
                 us.
               </p>
 
-              <Link href="/shop">
+              <Link href="/">
                 <button
                   type="button"
                   className="bg-[#444444] hover:bg-red-700 transition text-white px-4 py-3 rounded text-xl md:text-[1.7rem]"

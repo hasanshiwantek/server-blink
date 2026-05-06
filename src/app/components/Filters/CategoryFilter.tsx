@@ -44,13 +44,12 @@ export default function CategoryFilter({
           <li key={cat.id}>
             {/* Row */}
             <div
-               className={`
+              className={`
     flex items-center justify-between text-[15px] transition-colors bg-white hover:bg-[#f9f9f9]
-    ${
-      isActive
-        ? "text-[#D42020] font-medium"   // ✅ ACTIVE
-        : "text-[#545454] hover:text-[var(--primary-color)]"
-    }
+    ${isActive
+                  ? "text-[#D42020] font-medium"   // ✅ ACTIVE
+                  : "text-[#545454] hover:text-[var(--primary-color)]"
+                }
   `}
               style={{ paddingLeft: `${level * 12 + 12}px` }}
             >

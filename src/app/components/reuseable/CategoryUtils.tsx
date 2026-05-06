@@ -35,27 +35,28 @@ export const CategoryItem = ({
 
   return (
     <div>
-     <Link href={`/category/${category.slug}`}>
-  <button
-    className={`w-full px-3 py-1 flex items-center justify-between transition-colors text-[13px] lg:text-[15px] font-normal
-      ${isActive ? "text-[#d40511]" : "text-[#545454] hover:text-[var(--primary-color)]"}`}
-    style={{ paddingLeft: `${level * 6 + 6}px` }}
-  >
-    <span>{category.name}</span>
+      <button
+        className={`w-full px-3 py-1 flex items-center justify-between transition-colors text-[13px] lg:text-[14px] font-normal
+            ${isActive ? "text-[#d40511]" : "text-[#545454] hover:text-[var(--primary-color)]"}`}
+        style={{ paddingLeft: `${level * 12 + 8}px`, paddingRight: "8px" }}
 
-    {hasChildren && (
-      <span
-        onClick={(e) => {
-          e.stopPropagation(); // link navigation ko stop kare
-          e.preventDefault();  // optional
-          toggle(category.id);
-        }}
       >
-        {isOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-      </span>
-    )}
-  </button>
-</Link>
+        <Link href={`/category/${category.slug}`} className="flex-1 py-1 text-left">
+          <span>{category.name}</span>
+        </Link>
+
+        {hasChildren && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); // link navigation ko stop kare
+              e.preventDefault();  // optional
+              toggle(category.id);
+            }} className="p-1 flex-shrink-0"
+          >
+            {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
+        )}
+      </button>
 
 
       {/* Render children only if open */}

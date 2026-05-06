@@ -449,28 +449,12 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             <label className={cn("mb-2 text-base", errors.city ? "text-red-500" : "text-gray-700")}>
               City
             </label>
-
-            <Controller
-              name="city"
-              disabled={!state?.trim()}
-              control={control}
-              rules={{ required: "City is required" }}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className={`w-full !max-w-full h-[40px] ${errors.city ? "border-red-500" : ""}`}>
-                    <SelectValue placeholder="Select city" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {cityList?.map((city) => (
-                      <SelectItem key={city.name} value={city.name}>
-                        {city.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
+            <Input
+              id="city"
+              type="text"
+              className="w-full !max-w-full h-[40px]"
+              {...register("city", { required: "City is required" })}
             />
-
             {errors.city && (
               <p className="text-sm text-red-500 mt-1">{errors.city.message as string}</p>
             )}
@@ -495,8 +479,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                   onValueChange={(val) => {
                     field.onChange(val);
                     setValue("state", "");  // ✅ state reset
-                    setValue("city", "");   // ✅ city reset
-                    setValue("zip", "");    // ✅ zip reset
                   }}
                   value={field.value}>
                   <SelectTrigger
@@ -527,13 +509,18 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
               <label
                 htmlFor="country"
                 className={cn(
-                  "mb-2 text-base",
+                  "mb-2 text-base flex items-baseline justify-between",
                   errors.state ? "text-red-500" : "text-gray-700"
                 )}
               >
-                State/Province
+                <span className="">
+                  State/Province
+                </span>
+                {!stateList.length && (
+                  <span className="shrink-0 text-gray-400">(Optional)</span>
+                )}
               </label>
-              <Controller
+              {stateList.length > 0 ? <Controller
                 name="state"
                 disabled={!country?.trim()}
                 control={control}
@@ -541,8 +528,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                 render={({ field }) => (
                   <Select onValueChange={(val) => {
                     field.onChange(val);
-                    setValue("city", "");
-                    setValue("zip", "");
                   }} value={field.value}>
                     <SelectTrigger
                       className={`w-full !max-w-full h-[40px] ${errors.state ? "border-red-500" : ""
@@ -559,7 +544,13 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     </SelectContent>
                   </Select>
                 )}
-              />
+              /> : <Input
+                id="state"
+                type="text"
+                className={`w-full !max-w-full h-[40px] ${errors.state ? "border-red-500" : ""
+                  }`}
+                {...register("state")}
+              />}
               {errors.state && (
                 <p className="text-sm text-red-500 mt-1">
                   {errors.state.message as string}
@@ -573,15 +564,13 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                 className="mb-2 flex items-baseline justify-between gap-2 text-base text-gray-700"
               >
                 <span> Postal Code</span>
-                <span className="shrink-0 text-gray-400">(Optional)</span>
               </label>
               <Input
                 id="zip"
                 type="text"
                 className={`w-full !max-w-full h-[40px] ${errors.zip ? "border-red-500" : ""
                   }`}
-                {...register("zip")}
-
+                {...register("zip", { required: "Postal code is required" })}
               />
               {errors.zip && (
                 <p className="text-sm text-red-500 mt-1">
