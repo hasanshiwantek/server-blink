@@ -103,11 +103,9 @@ const SignupPage = () => {
         const res = await fetch("/api/detect-country"); // apna Next.js route
         const data = await res.json();
 
-        console.log("data", data);
-
         if (data.country_code) {
           setValue("country", data.country_code);
-          setValue("state", data.state);
+          // setValue("state", data.state);
         }
       } catch {
         setValue("country", "US");
