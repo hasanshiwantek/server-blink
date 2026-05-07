@@ -110,7 +110,6 @@ export async function fetchFilteredProducts(filters: {
   }
 
   const data = await res.json();
-  console.log("Filtered Data:", data);
 
   return data; // {status, message, data: []}
 }

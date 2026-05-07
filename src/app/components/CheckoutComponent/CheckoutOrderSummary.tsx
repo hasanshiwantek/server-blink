@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -38,7 +38,12 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
     (sum, item: any) => sum + (item?.quantity ?? 1),
     0
   );
-  
+
+  useEffect(() => {
+    if (appliedCoupon && discountAmount > 0) {
+      setDiscountOpen(true);
+    }
+  }, [appliedCoupon, discountAmount])
 
   return (
     <div className="bg-white border-[1px] border-[#8b8b8b] rounded-sm shadow-sm py-6 h-fit sticky top-9">
@@ -160,9 +165,8 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
                 Discounts
                 {/* Arrow */}
                 <svg
-                  className={`w-4 h-4 transition-transform ${
-                    discountOpen ? "rotate-180" : "rotate-0"
-                  }`}
+                  className={`w-4 h-4 transition-transform ${discountOpen ? "rotate-180" : "rotate-0"
+                    }`}
                   fill="none"
                   stroke="currentColor"
                   strokeWidth={2}
@@ -208,17 +212,15 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
       </div>
 
       {/* Total */}
-      <div className="flex flex-col mt-4 pt-4 px-6 border-t-[1px] border-[#8b8b8b] text-gray-900">
+      <div className="flex flex-col mt-4 pt-4 px-6 border-t-[1px] border-[#8b8b8b] text-gray-700">
         <div className="flex justify-between items-center text-lg font-bold">
-          <span>Total (USD)</span>
+          <span>Total <br /> (USD)</span>
           <span>${finalTotal.toFixed(2)}</span>
         </div>
 
         {/* Savings message */}
         {appliedCoupon && discountAmount > 0 && (
-          <div className="text-sm mt-1 self-end">
-            You saved ${discountAmount.toFixed(2)} in total!
-          </div>
+          <div className="text-[#333] font-medium  mt-1 self-end">You saved <span className="!text-[#2aab3f] ">${discountAmount.toFixed(2)}</span> in total!</div>
         )}
       </div>
     </div>

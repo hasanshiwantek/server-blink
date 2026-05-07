@@ -74,8 +74,8 @@ export const fetchReviews = createAsyncThunk(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return thunkAPI.rejectWithValue(
         err?.response?.data?.message ??
-          err?.message ??
-          "Unable to load testimonials. Please try again."
+        err?.message ??
+        "Unable to load testimonials. Please try again."
       );
     }
   }
@@ -111,7 +111,6 @@ export const bulkInquiry = createAsyncThunk(
       );
 
       if (res?.data?.status && res?.data?.data) {
-        console.log("Bulk inquiry response:", res?.data);
         return res.data;
       }
 
@@ -119,6 +118,29 @@ export const bulkInquiry = createAsyncThunk(
     } catch (err: any) {
       console.error("Error sending bulk inquiry:", err);
       return null;
+    }
+  }
+);
+export const addReview = createAsyncThunk(
+  "home/addReview",
+  async (payload: any, thunkAPI) => {
+    try {
+      const res = await axiosInstance.post(
+        `web/reviews/add`,
+        payload
+      );
+
+      if (res?.data?.status && res?.data?.data) {
+        return res.data;
+      }
+
+      return thunkAPI.rejectWithValue(res?.data);
+    } catch (err: any) {
+      console.error("Error sending review:", err);
+
+      return thunkAPI.rejectWithValue(
+        err?.response?.data || "Something went wrong"
+      );
     }
   }
 );
@@ -186,12 +208,12 @@ const homeSlice = createSlice({
       })
       .addCase(getBrands.pending, (state) => {
         state.loading = true;
-          state.error = null; 
+        state.error = null;
       })
       .addCase(getBrands.fulfilled, (state, action) => {
         state.loading = false;
         state.getBrand = action.payload;
-          state.error = null; 
+        state.error = null;
       })
       .addCase(getBrands.rejected, (state, action) => {
         state.loading = false;

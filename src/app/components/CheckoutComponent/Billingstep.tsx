@@ -217,7 +217,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
         >
           City
         </label>
-        {/* <Input
+        <Input
           id="billingCity"
           type="text"
           className={`w-full !max-w-full h-[40px] ${errors.billingCity ? "border-red-500" : ""
@@ -225,28 +225,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
           {...register("billingCity", {
             required: "City is required",
           })}
-        /> */}
-
-        <Controller
-          name="billingCity"
-          control={control}
-          rules={{ required: "City is required" }}
-          render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value}>
-              <SelectTrigger className={`w-full !max-w-full h-[40px] ${errors.billingCity ? "border-red-500" : ""}`}>
-                <SelectValue placeholder="Select city" />
-              </SelectTrigger>
-              <SelectContent>
-                {cityList?.map((city) => (
-                  <SelectItem key={city.name} value={city.name}>
-                    {city.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
         />
-
         {errors.billingCity && (
           <p className="text-sm text-red-500 mt-1">
             {errors.billingCity.message as string}
@@ -269,7 +248,10 @@ const BillingStep: React.FC<BillingStepProps> = ({
           control={control}
           rules={{ required: "Country is required" }}
           render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value}>
+            <Select onValueChange={(val) => {
+              field.onChange(val);
+              setValue("state", "");
+            }} value={field.value}>
               <SelectTrigger
                 className={`w-full !max-w-full h-[40px] ${errors.billingCountry ? "border-red-500" : ""
                   }`}
@@ -295,8 +277,13 @@ const BillingStep: React.FC<BillingStepProps> = ({
 
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col">
-          <label htmlFor="billingState" className="text-base mb-2 text-gray-700">
-            State/Province
+          <label htmlFor="billingState" className="text-base mb-2 text-gray-700 flex items-baseline justify-between" >
+            <span className="">
+              State/Province
+            </span>
+            {!stateList.length && (
+              <span className="shrink-0 text-gray-400">(Optional)</span>
+            )}
           </label>
           {/* <Input
             id="billingState"
@@ -304,7 +291,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
             className="w-full !max-w-full h-[40px]"
             {...register("billingState")}
           /> */}
-          <Controller
+          {stateList.length > 0 ? <Controller
             name="billingState"
             control={control}
             rules={{ required: "State/Province is required" }}
@@ -329,7 +316,12 @@ const BillingStep: React.FC<BillingStepProps> = ({
                 </SelectContent>
               </Select>
             )}
-          />
+          /> : <Input
+            id="billingState"
+            type="text"
+            className="w-full !max-w-full h-[40px]"
+            {...register("billingState")}
+          />}
         </div>
 
         <div className="flex flex-col">

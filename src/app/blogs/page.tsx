@@ -5,8 +5,8 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   metadataBase: new URL("https://server-blink.vercel.app"),
   title: {
-    default: "Blogs | Server Blink",
-    template: "%s | Blogs | Server Blink",
+    default: "Blogs",
+    template: "%s | Blogs ",
   },
   description:
     "Read the latest articles and insights on servers, networking equipment, and IT solutions at Server Blink. Stay informed with tech trends and product guides.",

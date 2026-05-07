@@ -164,7 +164,7 @@ const CheckoutForm = () => {
   } = useForm<CheckoutFormValues>({
     defaultValues: {
       paymentMethod: "credit_card",
-        billingSame: isMultiAddress ? false : true,
+      billingSame: isMultiAddress ? false : true,
       email: auth?.user?.email || "",
       firstName: auth?.user?.firstName || "",
       lastName: auth?.user?.lastName || "",
@@ -238,9 +238,9 @@ const CheckoutForm = () => {
         const res = await fetch("/api/detect-country"); // apna Next.js route
         const data = await res.json();
         if (data.country_code) {
-            setValue("country", data.country_code);
+          setValue("country", data.country_code);
           setValue("state", data.state);
-          
+
           setValue("billingCountry", data.country_code);
           setValue("billingState", data.state);
         }
@@ -712,13 +712,13 @@ const CheckoutForm = () => {
         event.complete("success");
 
         skipEmptyCartCheckRef.current = true;
-        console.log("orderData 1",orderData)
+        console.log("orderData 1", orderData)
         dispatch(setLastOrder(orderData));
         dispatch(clearCart());
         dispatch(removeCoupon());
         dispatch(resetMultiAddress());       // ✅ ADD
-dispatch(resetShippingRates());      // ✅ ADD
-dispatch(setIsMultiAddress(false));
+        dispatch(resetShippingRates());      // ✅ ADD
+        dispatch(setIsMultiAddress(false));
         router.push("/order-success");
       } catch (err: any) {
         console.error("❌ Wallet payment failed:", err);
@@ -776,7 +776,7 @@ dispatch(setIsMultiAddress(false));
     ]);
     if (isValid) {
       setCompletedSteps((prev) => [...new Set([...prev, 2])]);
-         if (watchedBillingSame && !isMultiAddress) {
+      if (watchedBillingSame && !isMultiAddress) {
         setCurrentStep(4);
       } else {
         setCurrentStep(3);
@@ -928,18 +928,19 @@ dispatch(setIsMultiAddress(false));
             type: "card",
             card: cardNumberElement,
             billing_details: {
-              name: `${data.firstName} ${data.lastName}`,
+              name: `${data.billingFirstName} ${data.billingLastName}`,
               email: data.email,
-              phone: data.phone,
+              phone: data.billingPhone,
               address: {
-                line1: data.address1,
-                line2: data.address2,
-                city: data.city,
-                state: data.state,
-                postal_code: data.zip,
-                country: data.country,
+                line1: data.billingAddress1,
+                line2: data.billingAddress2,
+                city: data.billingCity,
+                state: data.billingState,
+                postal_code: data.billingZip,
+                country: data.billingCountry,
               },
             },
+
           });
 
         if (pmError) {
@@ -964,12 +965,11 @@ dispatch(setIsMultiAddress(false));
       skipEmptyCartCheckRef.current = true;
            console.log(orderData, "Order data after wallet payment");
       dispatch(setLastOrder(orderData));
-      console.log("orderData 2",orderData)
       dispatch(clearCart());
       dispatch(removeCoupon());
       dispatch(resetMultiAddress());       // ✅ ADD
-dispatch(resetShippingRates());      // ✅ ADD
-dispatch(setIsMultiAddress(false)); 
+      dispatch(resetShippingRates());      // ✅ ADD
+      dispatch(setIsMultiAddress(false));
       router.push("/order-success");
     } catch (err: any) {
       console.error("❌ Error processing order:", err);
@@ -984,31 +984,31 @@ dispatch(setIsMultiAddress(false));
   };
 
   // watchedBillingSame ke saath useEffect add karo
-// useEffect(() => {
-//   if (watchedBillingSame && !isMultiAddress) {
-//     setValue("billingFirstName", watchedFirstName);
-//     setValue("billingLastName", watchedLastName);
-//     setValue("billingCompany", watchedCompany);
-//     setValue("billingPhone", watchedPhone);
-//     setValue("billingAddress1", watchedAddress1);
-//     setValue("billingAddress2", watchedAddress2);
-//     setValue("billingCity", watchedCity);
-//     setValue("billingState", watchedState);
-//     setValue("billingCountry", watchedCountry);
-//     setValue("billingZip", watchedZip);
-//     setCompletedSteps((prev) => [...new Set([...prev, 3])]);
-//   } else if (!watchedBillingSame) {
-//     setValue("billingFirstName", "");
-//     setValue("billingLastName", "");
-//     setValue("billingCompany", "");
-//     setValue("billingPhone", "");
-//     setValue("billingAddress1", "");
-//     setValue("billingAddress2", "");
-//     setValue("billingCity", "");
-//     setValue("billingZip", "");
-//     setCompletedSteps((prev) => prev.filter((s) => s !== 3));
-//   }
-// }, [watchedBillingSame]);
+  useEffect(() => {
+    if (watchedBillingSame && !isMultiAddress) {
+      setValue("billingFirstName", watchedFirstName);
+      setValue("billingLastName", watchedLastName);
+      setValue("billingCompany", watchedCompany);
+      setValue("billingPhone", watchedPhone);
+      setValue("billingAddress1", watchedAddress1);
+      setValue("billingAddress2", watchedAddress2);
+      setValue("billingCity", watchedCity);
+      setValue("billingState", watchedState);
+      setValue("billingCountry", watchedCountry);
+      setValue("billingZip", watchedZip);
+      setCompletedSteps((prev) => [...new Set([...prev, 3])]);
+    } else if (!watchedBillingSame) {
+      setValue("billingFirstName", "");
+      setValue("billingLastName", "");
+      setValue("billingCompany", "");
+      setValue("billingPhone", "");
+      setValue("billingAddress1", "");
+      setValue("billingAddress2", "");
+      setValue("billingCity", "");
+      setValue("billingZip", "");
+      setCompletedSteps((prev) => prev.filter((s) => s !== 3));
+    }
+  }, [watchedBillingSame, watchedState, watchedCountry, watchedFirstName, watchedLastName, watchedZip, watchedAddress2, watchedAddress1, watchedCompany, watchedPhone, watchedCity]);
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
       {paymentRequest && (

@@ -11,7 +11,6 @@ export async function GET(req: NextRequest) {
              `http://ip-api.com/json/${ip}?fields=countryCode,region,regionName,city,zip`
         );
         const data = await res.json();
-
         if (data.countryCode) {
             return NextResponse.json({
                 country_code: data.countryCode,  // "PK"

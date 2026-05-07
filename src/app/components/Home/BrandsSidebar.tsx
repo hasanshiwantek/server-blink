@@ -33,14 +33,13 @@ const BrandsSidebar: React.FC<BrandsSidebarProps> = ({ activeBrandId }) => {
         {loading ? (
           <CategoriesSidebarSkeleton />
         ) : data && data.length > 0 ? (
-          data.map((brand: any) => (
+          data?.slice(0, 11).map((brand: any) => (
             <Link href={`/brand/${brand?.slug}`} key={brand.id}>
               <button
                 className={`w-full px-3 py-1 text-left text-[13px] lg:text-[15px] font-normal flex items-center gap-3 transition-colors
-                  ${
-                    brand.id === activeBrandId
-                      ? "text-[var(--primary-color)]"
-                      : "text-[#545454] hover:text-[var(--primary-color)]"
+                  ${brand.id === activeBrandId
+                    ? "text-[var(--primary-color)]"
+                    : "text-[#545454] hover:text-[var(--primary-color)]"
                   }`}
               >
                 <span>{brand.name}</span>

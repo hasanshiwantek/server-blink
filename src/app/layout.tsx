@@ -54,8 +54,10 @@ const roboto = Roboto({
 export const metadata: Metadata = {
   metadataBase: new URL("https://server-blink.vercel.app"),
   title: {
-    default: "Server Blink",
-    template: "%s | Server Blink",
+    // default: "Server Blink",
+    // template: "%s | Server Blink",
+    default: "Server Blink LLC",
+    template: "%s | Server Blink ",
   },
   description:
     "Buy servers, networking equipment, and IT solutions online at Server Blink. Quality products at affordable prices with fast shipping.",
@@ -104,7 +106,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${roboto.className} antialiased`}>
+      <body className={`${roboto.className} antialiased`} suppressHydrationWarning>
         <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>

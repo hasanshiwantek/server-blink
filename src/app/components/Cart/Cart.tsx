@@ -29,19 +29,23 @@ const Cart = () => {
               Your Cart
             </span></h2>
 
-          <h1 className="text-2xl lg:text-4xl mt-5">Your Cart ({cartItemCount} items)
+          <h1 className="text-[1.8rem] mt-5 text-[#545454] font-light">Your Cart ({cartItemCount} items)
           </h1>
+          {cartItemCount === 0 && (
+            <h1 className="text-[1.4rem] mt-5 text-[#545454] font-light">Your cart is empty
+            </h1>
+          )}
         </div>
 
         {/* Cart List */}
-        <div className="w-full">
+        {cartItemCount > 0 && <div className="w-full">
           <CartList />
-        </div>
+        </div>}
 
         {/* Order Summary */}
-        <div className="w-full md:w-[45%] xl:self-end">
+        {cartItemCount > 0 && <div className="w-full md:w-[45%] xl:self-end">
           <OrderSummary />
-        </div>
+        </div>}
       </div>
     </main>
 

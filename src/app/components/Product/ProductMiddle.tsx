@@ -11,9 +11,11 @@ import { fetchReviews, fetchStats } from "@/redux/slices/homeSlice";
 import Link from "next/link";
 import { RootState } from "@/redux/store";
 import BulkInquiryModal from "../modal/BulkInquiryModal";
+import AddReviewModal from "../modal/AddReviewModal";
 
 const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const cart = useAppSelector((state: RootState) => state.cart.items);
@@ -173,25 +175,24 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
           {/* Bulk Quote Link */}
           <p className="text-[15px] sm:text-[18px] text-[#545454] mt-3 font-normal">
             Looking for a large quantity?{" "}
-            <a
-              href="#"
-              className="text-[var(--primary-color)] hover:underline font-normal"
+            <span
+              className="text-[var(--primary-color)] hover:underline font-normal cursor-pointer"
               onClick={() => setIsModalOpen(true)}
             >
               Request A Bulk Quote
-            </a>
+            </span>
           </p>
         </div>
 
         {/* Write a Review */}
         <div className="mb-3 pb-3 border-b border-[#e5e5e5]">
-          <a
-            href="#"
-            onClick={handleSeeMore}
+          <button
+            type="button"
+            onClick={() => setIsReviewModalOpen(true)}
             className="text-[#393939] font-bold text-[13px] sm:text-[20px] hover:text-[#d40511] underline transition inline-block"
           >
             Write a Review
-          </a>
+          </button>
         </div>
 
         {/* Product Details */}
@@ -223,21 +224,21 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
               </span>
             </div>
 
-            <div className="flex gap-2">
+            {product?.dimensions?.weight && <div className="flex gap-2">
               <span className="text-[12px] sm:text-[14px] font-bold text-[#545454] ">
                 Weight:
               </span>
               <span className="text-[12px] sm:text-[14px] text-[#545454]">
-                {product?.dimensions?.weight || "N/A"}
+                {product?.dimensions?.weight + " LBS"}
               </span>
             </div>
-
+            }
             <div className="flex gap-2">
               <span className="text-[12px] sm:text-[14px] font-bold text-[#545454] ">
                 Shipping:
               </span>
               <span className="text-[12px] sm:text-[14px] text-[#545454]">
-                {product?.freeShipping ? "Free Shipping" : Number(product?.fixedShippingCost) > 0 ? `$${product?.fixedShippingCost}` : "Calculated at Checkout"}
+                {product?.freeShipping ? "Free Shipping" : Number(product?.fixedShippingCost) > 0 ? `$${product?.fixedShippingCost} (Fixed Shipping Cost)` : "Calculated at Checkout"}
               </span>
             </div>
           </div>
@@ -259,6 +260,20 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
             : undefined
         }
       />
+      {isReviewModalOpen && <AddReviewModal
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
+        product={
+          product
+            ? {
+              name: product.name ?? "",
+              image: product.image[0].path,
+              sku: product.sku ?? "",
+              id: product.id ,
+            }
+            : undefined
+        }
+      />}
     </>
   );
 };

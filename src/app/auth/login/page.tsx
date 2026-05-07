@@ -4,7 +4,7 @@ import { Metadata } from 'next';
 import React from 'react'
 
 export const metadata: Metadata = {
-  title: "Sign In - ServerBlink",
+  title: "Sign In",
   description:
     "Login to your ServerBlink account to manage orders, track purchases, and access exclusive member features.",
   keywords: [

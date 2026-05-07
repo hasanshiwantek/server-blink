@@ -15,6 +15,8 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import { registerUser } from "@/redux/slices/authSlice";
 import { useRouter } from "next/navigation";
+import { useEffect, useMemo } from "react";
+import { Country, State, City } from "country-state-city";
 
 interface SignupFormValues {
   firstName: string;
@@ -34,12 +36,16 @@ interface SignupFormValues {
 }
 
 const SignupPage = () => {
-  const countryList = countries
-    .map((country) => ({
-      name: country.name.common,
-      code: country.cca2,
-    }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+  // const countryList = countries
+  //   .map((country) => ({
+  //     name: country.name.common,
+  //     code: country.cca2,
+  //   }))
+  //   .sort((a, b) => a.name.localeCompare(b.name));
+  const countryList = Country.getAllCountries().map((c) => ({
+    name: c.name,
+    code: c.isoCode,
+  }));
 
   const {
     register,
@@ -53,7 +59,23 @@ const SignupPage = () => {
   const dispatch = useAppDispatch();
   const { registerLoading } = useAppSelector((state: RootState) => state?.auth);
   const router = useRouter();
-
+  const password = watch("password");
+  const watchedCountry = watch("country");
+  const watchedState = watch("state");
+  const stateList = useMemo(() => {
+    if (!watchedCountry) return [];
+    return State.getStatesOfCountry(watchedCountry).map((s) => ({
+      name: s.name,
+      code: s.isoCode,
+    }));
+  }, [watchedCountry]);
+  // ✅ State change hone pe cities
+  const cityList = useMemo(() => {
+    if (!watchedCountry || !watchedState) return [];
+    return City.getCitiesOfState(watchedCountry, watchedState).map((c) => ({
+      name: c.name,
+    }));
+  }, [watchedCountry, watchedState]);
   const onSubmit = async (data: SignupFormValues) => {
     try {
       const payload = {
@@ -75,7 +97,25 @@ const SignupPage = () => {
     }
   };
 
-  const password = watch("password");
+  useEffect(() => {
+    const detectCountry = async () => {
+      try {
+        const res = await fetch("/api/detect-country"); // apna Next.js route
+        const data = await res.json();
+
+        console.log("data", data);
+
+        if (data.country_code) {
+          setValue("country", data.country_code);
+          setValue("state", data.state);
+        }
+      } catch {
+        setValue("country", "US");
+      }
+    };
+
+    detectCountry();
+  }, [setValue]);
 
   return (
     <div className="">
@@ -298,8 +338,6 @@ const SignupPage = () => {
                 >
                   Address Line 2
                 </label>
-                <span className="text-[#545454]">*</span>
-
               </div>
 
               <Input
@@ -347,7 +385,11 @@ const SignupPage = () => {
                 <span className="text-[#545454]">*</span>
 
               </div>
-              <Select onValueChange={(value) => setValue("country", value)}>
+              <Select value={watchedCountry}
+                onValueChange={(value) => {
+                  setValue("country", value);
+                  setValue("state", "");
+                }}>
                 <SelectTrigger className="h-[42px] min-h-[42px] w-full max-w-full">
                   <SelectValue placeholder="Choose a Country" />
                 </SelectTrigger>
@@ -373,17 +415,35 @@ const SignupPage = () => {
                 >
                   State/Province
                 </label>
-                <span className="text-[#545454]">*</span>
+                {stateList?.length > 0 && <span className="text-[#545454]">*</span>}
               </div>
-
-              <Input
-                id="state"
-                className="h-[42px] min-h-[42px] w-full max-w-full"
+              <input
+                type="hidden"
                 {...register("state", {
-                  required: "State/Province is required",
+                  validate: (value) => {
+                    if (stateList.length > 0 && !value) return "State/Province is required";
+                    return true;
+                  },
                 })}
               />
-              {errors.state && (
+              {stateList?.length > 0 ? <Select value={watchedState} onValueChange={(value) => setValue("state", value, { shouldValidate: true })
+              }>
+                <SelectTrigger className="h-[42px] min-h-[42px] w-full max-w-full">
+                  <SelectValue placeholder="Choose a State/Province" />
+                </SelectTrigger>
+                <SelectContent>
+                  {stateList.map((state) => (
+                    <SelectItem key={state.code} value={state.code}>
+                      {state.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select> : <Input
+                id="state"
+                className="h-[42px] min-h-[42px] w-full max-w-full"
+                {...register("state")}
+              />}
+              {errors.state && stateList?.length > 0 && (
                 <p className="mt-1 text-[14px] text-red-500">
                   {errors.state.message}
                 </p>
@@ -428,8 +488,8 @@ const SignupPage = () => {
             )}
           </div>
         </form>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 

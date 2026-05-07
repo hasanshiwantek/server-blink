@@ -1,6 +1,6 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import React, { useMemo, useCallback, useState } from "react";
+import React, { useMemo, useCallback, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/select";
 import countries from "world-countries";
 import { applyCoupon, removeCoupon } from "@/redux/slices/couponSlice";
+import { Country, State, City } from "country-state-city";
+
+
 
 const OrderSummary = () => {
   const dispatch = useAppDispatch();
@@ -35,12 +38,17 @@ const OrderSummary = () => {
     zip: "",
   });
 
-  const countryList = countries
-    .map((country) => ({
-      name: country.name.common,
-      code: country.cca2,
-    }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+  const countryList = Country.getAllCountries().map((c) => ({
+    name: c.name,
+    code: c.isoCode,
+  }));
+  const stateList = useMemo(() => {
+    if (!shippingData.country) return [];
+    return State.getStatesOfCountry(shippingData.country).map((s) => ({
+      name: s.name,
+      code: s.isoCode,
+    }));
+  }, [shippingData.country]);
 
   const subtotal = useMemo(() => {
     return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -102,7 +110,27 @@ const OrderSummary = () => {
 
     router.push("/checkout");
   }, [cart.length, router]);
+  useEffect(() => {
+    const detectCountry = async () => {
+      try {
+        const res = await fetch("/api/detect-country"); // apna Next.js route
+        const data = await res.json();
+        if (data.country_code) {
+          setShippingData((prev) => ({
+            ...prev,
+            country: data.country_code,
+            state: data.state ?? "",
+            city: data.city ?? "",
+            zip: data.zip ?? "",
+          }));
+        }
+      } catch {
+        setShippingData({ ...shippingData, country: "US" });
+      }
+    };
 
+    detectCountry();
+  }, []);
   return (
     <div className="border rounded-lg 2xl:w-full">
       {/* Header */}
@@ -140,6 +168,7 @@ const OrderSummary = () => {
                 <label className="w-full md:w-1/3 text-xl">Country</label>
 
                 <Select
+                  value={shippingData.country}
                   onValueChange={(value) =>
                     setShippingData({ ...shippingData, country: value })
                   }
@@ -162,18 +191,41 @@ const OrderSummary = () => {
                 <label className="w-full md:w-1/3 text-xl">
                   State/Province
                 </label>
-                <Input
+                {stateList.length > 0 ? <Select
+                  value={shippingData.state}
+                  onValueChange={(value) =>
+                    setShippingData({ ...shippingData, state: value })
+                  }
+                >
+                  <SelectTrigger className="w-full md:w-2/3 border-none outline-none">
+                    <SelectValue placeholder="Choose a State" />
+                  </SelectTrigger>
+                  <SelectContent className="w-full md:w-2/3 border-none outline-none">
+                    {stateList.map((state) => (
+                      <SelectItem key={state.code} value={state.code}>
+                        {state.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select> : <Input
                   className="w-full md:w-2/3"
                   onChange={(e) =>
                     setShippingData({ ...shippingData, state: e.target.value })
                   }
-                />
+                />}
+                {/* <Input
+                  className="w-full md:w-2/3"
+                  onChange={(e) =>
+                    setShippingData({ ...shippingData, state: e.target.value })
+                  }
+                /> */}
               </div>
 
               {/* City */}
               <div className="flex flex-col md:flex-row items-center gap-4">
                 <label className="w-full md:w-1/3 text-xl">Suburb/City</label>
                 <Input
+                  value={shippingData.city}
                   className="w-full md:w-2/3"
                   onChange={(e) =>
                     setShippingData({ ...shippingData, city: e.target.value })
@@ -186,6 +238,7 @@ const OrderSummary = () => {
                 <label className="w-full md:w-1/3 text-xl">Zip/Postcode</label>
                 <Input
                   className="w-full md:w-2/3"
+                  value={shippingData.zip}
                   onChange={(e) =>
                     setShippingData({ ...shippingData, zip: e.target.value })
                   }
