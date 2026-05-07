@@ -119,9 +119,9 @@ const OrderSummary = () => {
           setShippingData((prev) => ({
             ...prev,
             country: data.country_code,
-            state: data.state ?? "",
-            city: data.city ?? "",
-            zip: data.zip ?? "",
+            // state: data.state ?? "",
+            // city: data.city ?? "",
+            // zip: data.zip ?? "",
           }));
         }
       } catch {

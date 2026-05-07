@@ -47,6 +47,7 @@ const GlobalSearchBar: React.FC = () => {
     const handleClickOutside = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setShowDropdown(false);
+        setQuery("");
       }
     };
     document.addEventListener("mousedown", handleClickOutside);

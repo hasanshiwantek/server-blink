@@ -963,6 +963,7 @@ const CheckoutForm = () => {
 
       const orderData = await placeOrder({ ...data, paymentIntentId });
       skipEmptyCartCheckRef.current = true;
+           console.log(orderData, "Order data after wallet payment");
       dispatch(setLastOrder(orderData));
       dispatch(clearCart());
       dispatch(removeCoupon());
