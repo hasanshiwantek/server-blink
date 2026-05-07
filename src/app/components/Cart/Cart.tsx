@@ -31,8 +31,10 @@ const Cart = () => {
 
           <h1 className="text-[1.8rem] mt-5 text-[#545454] font-light">Your Cart ({cartItemCount} items)
           </h1>
-          <h1 className="text-[1.4rem] mt-5 text-[#545454] font-light">Your cart is empty
-          </h1>
+          {cartItemCount === 0 && (
+            <h1 className="text-[1.4rem] mt-5 text-[#545454] font-light">Your cart is empty
+            </h1>
+          )}
         </div>
 
         {/* Cart List */}

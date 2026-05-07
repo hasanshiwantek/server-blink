@@ -25,13 +25,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const category = findCategoryBySlug(categories, slug);
 
   const formattedCategory =
-    category?.name ||
-    slug.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+    category?.seo?.page_title || slug.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 
-  console.log("formattedCategory", formattedCategory, category);
-
-
-  const title = `${formattedCategory} | Server Blink`;
+  const title = `${formattedCategory} `;
   const description = `Browse our collection of ${formattedCategory}. Genuine components, affordable prices, and fast shipping.`;
 
   return {

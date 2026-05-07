@@ -13,7 +13,7 @@ export default function BrandFilter({
 }: BrandFilterProps) {
   return (
     <ul className="space-y-1 bg-white">
-      {brands.map((b: any) => {
+      {brands.slice(0, 11).map((b: any) => {
         const isActive = activeBrandId === b.brand.id;
         return (
           <li key={b.brand.id}>

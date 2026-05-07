@@ -3,7 +3,7 @@ import SignupPage from "@/app/components/Auth/Signup";
 import { Metadata } from "next";
 import ProtectedRoute from "@/app/components/ProtectedPages/ProtectedRoute";
 export const metadata: Metadata = {
-  title: "Signup - ServerBlink",
+  title: "Sign up",
   description: "Create your account at ServerBlink to access premium services.",
   keywords: ["signup", "register", "server blink", "create account"],
   robots: { index: true, follow: true },

@@ -3,7 +3,9 @@ import Cart from '../components/Cart/Cart'
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Shopping Cart",
+  title: {
+    absolute: "Server Blink LLC - Shopping Cart"
+  },
   description:
     "View and manage your items in the shopping cart at Server Blink. Add, remove, or update quantities before checkout.",
   keywords: [

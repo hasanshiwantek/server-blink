@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { X } from "lucide-react";
 import {
@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/hooks/useReduxHooks";
 import { bulkInquiry } from "@/redux/slices/homeSlice";
+import { toast } from "react-toastify";
 interface BulkInquiryModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -38,6 +39,7 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
     comments: "",
   });
   const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(false);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -46,9 +48,18 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
       [e.target.name]: e.target.value,
     });
   };
-
+  useEffect(() => {
+    setFormData({
+      fullName: "",
+      email: "",
+      phone: "",
+      quantity: "",
+      comments: "",
+    })
+  }, [isOpen])
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true)
     const payload = {
       sku: product?.sku ?? "",
       ...formData,
@@ -56,15 +67,15 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
     const result = await dispatch(bulkInquiry(payload))
     try {
       if (bulkInquiry.fulfilled.match(result)) {
-        console.log("Request for quote send✅", result?.payload);
-        setTimeout(() => {
-          onClose();
-        }, 2000);
+        onClose();
+        toast.success("Bulk inquiry submitted successfully!");
       } else {
-        console.log("Error Sending Quote: ", result?.payload);
+        console.error("Failed to submit bulk inquiry");
       }
     } catch (err) {
       console.log("Something went wrong: ", err);
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -101,73 +112,74 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
             )}
           </div>
 
-      {/* Right Side - Form */}
-<div className="md:w-3/5 p-8 bg-white relative flex flex-col items-center">
-  {/* Red Banner with Title + Close */}
-  <div style={{borderRadius:"49% 51% 51% 49% / 0% 0% 50% 50%"}} className="absolute top-0 right-0 bg-[#d40511] text-white px-6 py-5 w-full flex justify-center items-center">
-    <h2 className="text-3xl">Request A Bulk Quote</h2>
-  </div>
+          {/* Right Side - Form */}
+          <div className="md:w-3/5 p-8 bg-white relative flex flex-col items-center">
+            {/* Red Banner with Title + Close */}
+            <div style={{ borderRadius: "49% 51% 51% 49% / 0% 0% 50% 50%" }} className="absolute top-0 right-0 bg-[#d40511] text-white px-6 py-5 w-full flex justify-center items-center">
+              <h2 className="text-3xl">Request A Bulk Quote</h2>
+            </div>
 
-  {/* Push the form down so it doesn't overlap banner */}
-  <form onSubmit={handleSubmit} className="mt-16 w-full space-y-4">
-    <Input
-      type="text"
-      name="fullName"
-      placeholder="Full Name"
-      value={formData.fullName}
-      onChange={handleChange}
-      required
-      className="w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939]"
-    />
+            {/* Push the form down so it doesn't overlap banner */}
+            <form onSubmit={handleSubmit} className="mt-16 w-full space-y-4">
+              <Input
+                type="text"
+                name="fullName"
+                placeholder="Full Name"
+                value={formData.fullName}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939]"
+              />
 
-    <Input
-      type="email"
-      name="email"
-      placeholder="Email"
-      value={formData.email}
-      onChange={handleChange}
-      required
-      className="w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939]"
-    />
+              <Input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939]"
+              />
 
-    <Input
-      type="tel"
-      name="phone"
-      placeholder="Phone"
-      value={formData.phone}
-      onChange={handleChange}
-      required
-      className="w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939]"
-    />
+              <Input
+                type="tel"
+                name="phone"
+                placeholder="Phone"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939]"
+              />
 
-    <Input
-      type="number"
-      name="quantity"
-      placeholder="Quantity"
-      value={formData.quantity}
-      onChange={handleChange}
-      required
-      min={1}
-      className="w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939]"
-    />
+              <Input
+                type="number"
+                name="quantity"
+                placeholder="Quantity"
+                value={formData.quantity}
+                onChange={handleChange}
+                required
+                min={1}
+                className="w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939]"
+              />
 
-    <Textarea
-      name="comments"
-      placeholder="Comments"
-      value={formData.comments}
-      onChange={handleChange}
-      rows={4}
-      className="w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939] resize-none"
-    />
+              <Textarea
+                name="comments"
+                placeholder="Comments"
+                value={formData.comments}
+                onChange={handleChange}
+                rows={4}
+                className="w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939] resize-none"
+              />
 
-    <Button
-      type="submit"
-      className="w-full bg-[#d40511] border-b border-black text-white px-6 py-5 text-2xl rounded-md font-medium hover:bg-[#d94d30] transition-colors duration-200"
-    >
-      Submit Form
-    </Button>
-  </form>
-</div>
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-[#d40511] border-b border-black text-white px-6 py-5 text-2xl rounded-md font-medium hover:bg-[#d94d30] transition-colors duration-200"
+              >
+                {loading ? "Submitting..." : "Submit Form"}
+              </Button>
+            </form>
+          </div>
 
         </div>
       </DialogContent>

@@ -120,6 +120,8 @@ const OrderSummary = () => {
             ...prev,
             country: data.country_code,
             state: data.state ?? "",
+            city: data.city ?? "",
+            zip: data.zip ?? "",
           }));
         }
       } catch {
@@ -223,6 +225,7 @@ const OrderSummary = () => {
               <div className="flex flex-col md:flex-row items-center gap-4">
                 <label className="w-full md:w-1/3 text-xl">Suburb/City</label>
                 <Input
+                  value={shippingData.city}
                   className="w-full md:w-2/3"
                   onChange={(e) =>
                     setShippingData({ ...shippingData, city: e.target.value })
@@ -235,6 +238,7 @@ const OrderSummary = () => {
                 <label className="w-full md:w-1/3 text-xl">Zip/Postcode</label>
                 <Input
                   className="w-full md:w-2/3"
+                  value={shippingData.zip}
                   onChange={(e) =>
                     setShippingData({ ...shippingData, zip: e.target.value })
                   }

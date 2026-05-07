@@ -134,7 +134,7 @@ export default async function ProductPage({
             <ProductOverview product={product} />
 
             {/* Client-side component */}
-            <Suspense
+            {product?.relatedProductsEnabled && <Suspense
               fallback={
                 <div className="py-10 text-center text-sm text-gray-500">
                   Loading...
@@ -142,7 +142,7 @@ export default async function ProductPage({
               }
             >
               <ProductExtras product={product} />
-            </Suspense>
+            </Suspense>}
           </article>
         </div>
       </main>

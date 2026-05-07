@@ -132,8 +132,6 @@ export default function ProductsClientWrapper({
     categoryName: initialCategoryName || undefined,
   });
 
-  console.log("Filters: ", filters);
-
   useEffect(() => {
     const fetchData = async () => {
       try {

@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     brand?.brand?.name ||
     slug.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 
-  const title = `${formattedBrand} | ServerBlink`;
+  const title = `${formattedBrand}`;
   const description = `Browse our collection of ${formattedBrand}. Genuine components, affordable prices, and fast shipping.`;
 
   return {
@@ -65,7 +65,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BrandPage({ params }: Props) {
   const { slug } = await params; // 👈 matching slug
-  console.log("Category Slug:", slug);
 
   const brands = await fetchBrands();
 

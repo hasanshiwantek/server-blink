@@ -65,18 +65,18 @@ const FooterBottom = () => {
           <form
             action="/subscribe"
             method="get"   // or "post" if you plan to handle server-side
-            className="w-[80%] md:w-[50%] 2xl:max-w-[30%] flex items-center gap-2 mt-4 md:mt-0"
+            className="w-[80%] md:w-[50%] 2xl:max-w-[30%] flex items-center gap-2 mt-4 md:mt-0 p-2"
           >
             <input
               type="email"
               name="email"
               placeholder="Email"
               required
-              className="w-full px-4 py-3 border border-white text-[#545454] bg-white focus:outline-none rounded-xs text-sm md:text-base"
+              className="w-full h-[32px] px-4 py-3 border border-white text-[#545454] bg-white focus:outline-none rounded-xs text-sm md:text-base"
             />
             <button
               type="submit"
-              className="btn-primary !p-3 !rounded-sm w-[40%] md:w-[30%] max-w-[9rem]"
+              className="btn-primary h-[32px] !p-3 !rounded-sm w-[40%] md:w-[30%] max-w-[9rem]"
             >
               JOIN
             </button>

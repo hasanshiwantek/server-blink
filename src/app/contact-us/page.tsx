@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import ContactUs from "../components/ContactUs/ContactUs";
 
 export const metadata: Metadata = {
-  title: "Contact Us | Server Blink",
+  title: "Contact Us",
   description:
     "Get in touch with Server Blink for product inquiries, customer support, sales questions, and technical assistance. Contact us via phone, email, or visit our website.",
   keywords: [

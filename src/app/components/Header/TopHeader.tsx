@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 import { Search, User, Menu, X, ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import MobileSearchBar from "./MobileSearchBar";
 import { fetchCategories } from "@/lib/api/category";
+import { globalSearch } from "@/redux/slices/homeSlice";
 
 interface Category {
   id: number;
@@ -25,10 +26,18 @@ const TopHeader = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
+  const [searchCache, setSearchCache] = useState<{ [key: string]: any[] }>({});
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [query, setQuery] = useState("");
+  const { searchData, loading } = useAppSelector((state: any) => state.home);
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const dispatch = useAppDispatch();
   const router = useRouter();
   const cartItemCount =
     cart?.reduce((sum, item: any) => sum + (item?.quantity ?? 1), 0) ?? 0;
+  const [results, setResults] = useState<any[]>([]);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleLogout = () => {
     const confirm = window.confirm("Confirm Logout?");
@@ -57,9 +66,20 @@ const TopHeader = () => {
     };
   }, []);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Searching:", searchQuery);
+  const handleSearch = (e?: any) => {
+    e?.preventDefault();
+    const trimmed = query.trim();
+    if (trimmed.length > 1) {
+      const cacheKey = trimmed.toLowerCase();
+      if (searchCache[cacheKey]) {
+        // setResults(searchCache[cacheKey]);
+        dispatch(globalSearch({ query: trimmed }));
+        setShowDropdown(true);
+      } else {
+        dispatch(globalSearch({ query: trimmed }));
+        setShowDropdown(true);
+      }
+    }
   };
 
 
@@ -74,7 +94,63 @@ const TopHeader = () => {
   const toggleCategory = (categoryId: number) => {
     setExpandedCategory(expandedCategory === categoryId ? null : categoryId);
   };
+  const handleSelect = (url: string) => {
+    setQuery("");
+    setShowDropdown(false);
+    router.push(url);
+  };
+  useEffect(() => {
+    if (searchData?.data) {
+      const mapped = searchData.data.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        slug: item.categories?.[0]?.slug || item.slug,
+        brand: item.brand?.name || "N/A",
+        sku: item.sku || "N/A",
+        price: item.price || item.costPrice || "0.00",
+        url: `/${item?.sku}`,
+        productUrl: `${item?.productUrl}`,
+      }));
 
+      setResults(mapped);
+      setShowDropdown(true);
+
+      const cacheKey = query.trim().toLowerCase();
+      if (cacheKey.length > 1) {
+        setSearchCache((prev) => ({ ...prev, [cacheKey]: mapped }));
+      }
+    }
+  }, [searchData]);
+  // Hide dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+        setQuery("");
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+  const handleOnChange = (value?: string) => {
+    const trimmed = (value ?? query).trim();
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+
+    if (trimmed.length > 1) {
+      debounceRef.current = setTimeout(() => {
+        const cacheKey = trimmed.toLowerCase();
+        if (searchCache[cacheKey]) {
+          // setResults(searchCache[cacheKey]);
+          dispatch(globalSearch({ query: trimmed }));
+
+          setShowDropdown(true);
+        } else {
+          dispatch(globalSearch({ query: trimmed }));
+          setShowDropdown(true);
+        }
+      }, 500);
+    }
+  };
   return (
     <>
       <header
@@ -82,10 +158,10 @@ const TopHeader = () => {
           }`}
       >
         <div className="w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto px-4 xl:px-4 2xl:px-2">
-          <div className="flex items-center md:justify-between justify-center gap-4 sm:py-2">
+          <div className="flex items-center md:justify-between justify-between gap-4 sm:py-2">
             {/* Left: Promo Text (hidden when scrolled) */}
             <div
-              className={`md:flex hidden items-center whitespace-nowrap space-x-2 md:space-x-3 transition-all duration-300 ${isScrolled ? "hidden" : "flex"
+              className={`md:flex hidden items-center whitespace-nowrap space-x-2 md:space-x-3 transition-all duration-300 flex-1 ${isScrolled ? "hidden" : "flex"
                 }`}
             >
               <p className="ml-2 font-bold text-[14px]">
@@ -94,15 +170,22 @@ const TopHeader = () => {
             </div>
 
             {/* Center: Search Bar (visible when scrolled) */}
-            {/* <div
-              className={`flex-1 max-w-[400px] transition-all duration-300 
+            <div ref={containerRef}
+              className={`relative flex-1 flex justify-center transition-all duration-300 
     ${isScrolled ? "block" : "hidden"}`}
             >
-              <form onSubmit={handleSearch} className="relative  ">
+              <form onSubmit={handleSearch} className="relative w-full max-w-[300px]">
                 <input
                   type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  value={query}
+                  onChange={(e) => {
+                    handleOnChange(e.target.value)
+                    setQuery(e.target.value)
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleSearch(e);
+                  }}
+                  // onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="SEARCH"
                   className="w-full text-white placeholder-white px-4 pr-10 focus:outline-none text-sm font-semibold border-b border-white bg-transparent"
                 />
@@ -114,15 +197,46 @@ const TopHeader = () => {
                   <Search className="w-5 h-5" />
                 </button>
               </form>
-            </div> */}
+              {showDropdown && query.trim().length > 1 && (
+                <div className="absolute top-full left-0 w-full mt-2 bg-white text-[#4A4A4A] shadow-lg rounded-md overflow-hidden z-50 max-h-[400px] overflow-y-auto">
+                  {loading && <div className="p-3 text-gray/80">Searching...</div>}
 
+                  {!loading && results.length === 0 && (
+                    <div className="p-3 text-gray/80">No Products found.</div>
+                  )}
+
+                  {!loading &&
+                    results.map((item: any) => (
+                      <div
+                        key={item.id}
+                        onClick={() => handleSelect(item.productUrl)}
+                        className="
+                  flex items-start gap-3 p-3 border-b border-gray/50
+                  hover:bg-[var(--primary-color)] hover:text-white
+                  transition-colors cursor-pointer
+                "
+                      >
+                        <div className="flex flex-col flex-grow overflow-hidden">
+                          <p className="text-sm font-semibold truncate">
+                            {item?.brand || "Brand"} | <span>SKU: {item?.sku || "N/A"}</span>
+                          </p>
+                          <p className="text-[15px] font-medium leading-tight line-clamp-2">
+                            {item?.name}
+                          </p>
+                          <p className="text-sm font-semibold mt-1">
+                            {item?.price ? `$${item?.price}` : "$0.00"}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              )}
+            </div>
 
             {/* Right: Login/Signup + Cart */}
-
-            <div className="flex items-center md:justify-end justify-between w-full whitespace-nowrap md:w-0 gap-5 md:gap-5">
+            <div className="flex items-center md:justify-end justify-between whitespace-nowrap flex-1 gap-5 md:gap-5">
               {/* Hamburger */}
               <div className="md:hidden block">
-
                 <button
                   aria-label="hamburger"
                   onClick={() => setMobileOpen(!mobileOpen)}
@@ -137,7 +251,7 @@ const TopHeader = () => {
               </div>
 
               {/* User & Auth */}
-              <div className="flex items-center gap-2 ml-16 sm:ml-0">
+              <div className="flex items-center gap-2 ml-auto">
                 <Link
                   href={
                     auth?.isAuthenticated ? "/my-account/orders" : "/auth/login"
@@ -181,8 +295,6 @@ const TopHeader = () => {
                 </Link>
               </div>
             </div>
-
-
           </div>
         </div>
       </header>
