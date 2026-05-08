@@ -15,6 +15,9 @@ import {
 import countries from "world-countries";
 import { applyCoupon, removeCoupon } from "@/redux/slices/couponSlice";
 import { Country, State, City } from "country-state-city";
+import { fetchShippingRates } from "@/redux/slices/shippingSlice";
+import { calculatePackage } from "../CheckoutComponent/Shippingstep";
+import Image from "next/image";
 
 
 
@@ -70,10 +73,20 @@ const OrderSummary = () => {
 
   // Final total after discount
   const finalTotal = Math.max(totalBeforeDiscount - discountAmount, 0);
-
+  const { shippingRates, ratesLoader } = useAppSelector((state) => state.shippingZone);
   const handleShippingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Shipping Form Data:", shippingData);
+    const pkg = calculatePackage(cart);
+    dispatch(fetchShippingRates({
+      data: {
+        destination: {
+          ...shippingData,
+          country_code: shippingData?.country?.trim(),
+          postal_code: shippingData?.zip?.trim(),
+        },
+        package: pkg,
+      },
+    }));
   };
 
   const handleCouponSubmit = async (e: React.FormEvent) => {
@@ -254,6 +267,65 @@ const OrderSummary = () => {
                   Estimate Shipping
                 </button>
               </div>
+
+              {shippingRates?.length > 0 && <div className="  ">
+                {ratesLoader ? (
+                  // Skeleton
+                  Array.from({ length: 2 }).map((_, i) => (
+                    <div key={i} className="flex items-start gap-3 border rounded p-4 animate-pulse">
+                      <div className="w-4 h-4 mt-1 bg-gray-200 rounded-full flex-shrink-0" />
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 bg-gray-200 rounded w-3/4" />
+                        <div className="h-5 bg-gray-200 rounded w-16" />
+                      </div>
+                    </div>
+                  ))
+                ) : shippingRates?.map((rate, i) => {
+                  return <label
+                    key={`${rate.method_id}-${rate.service_type}`}
+                    className={`flex items-start gap-3 border rounded p-4 transition-colors ${true
+                      // className={`flex items-start gap-3 border rounded p-4 transition-colors ${isShippingComplete
+                      ? "cursor-pointer"
+                      : "cursor-not-allowed opacity-50"
+                      // } ${watchedShippingMethod == rate.service_type
+                      } ${true
+                        ? "border-black  "
+                        : ""
+                      }`}
+                  >
+                    <input
+                      type="radio"
+                      value={rate.service_type}
+                      // {...register("shippingMethod")}
+                      // {...register("shippingMethod", {
+                      //   required: "Please select a shipping method",
+                      // })}
+                      className="mt-1"
+                    // disabled={!isShippingComplete}
+                    />
+                    <div className="min-w-0 flex-1 flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2">
+                        {rate.is_fedex && (
+                          <Image
+                            src="/checkouticon/fedex.png"
+                            alt="FedEx"
+                            width={60}
+                            height={20}
+                            className="shrink-0 object-contain"
+                          />
+                        )}
+                        <span className="text-base font-medium text-gray-700">
+                          {rate.is_fedex ? `(${rate.service_name})` : rate.display_name}
+                        </span>
+                      </div>
+                      <div className="text-base font-bold flex-shrink-0">
+                        {rate.total_charge === 0 ? "Free" : `$${Number(rate.total_charge).toFixed(2)}`}
+                      </div>
+                    </div>
+                  </label>
+                })}
+              </div>}
+
             </form>
           )}
 

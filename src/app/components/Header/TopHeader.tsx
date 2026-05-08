@@ -31,7 +31,8 @@ const TopHeader = () => {
   const [query, setQuery] = useState("");
   const { searchData, loading } = useAppSelector((state: any) => state.home);
   const containerRef = useRef<HTMLDivElement>(null);
-
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const cartItemCount =
@@ -97,6 +98,7 @@ const TopHeader = () => {
   const handleSelect = (url: string) => {
     setQuery("");
     setShowDropdown(false);
+    setIsOpen(false);
     router.push(url);
   };
   useEffect(() => {
@@ -151,6 +153,17 @@ const TopHeader = () => {
       }, 500);
     }
   };
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <>
       <header
@@ -285,14 +298,88 @@ const TopHeader = () => {
 
               {/* Cart */}
               <div className="relative">
-                <Link href="/cart" className="transition block">
-                  <div className="bg-red-600 p-2 rounded hover:bg-red-700 transition">
-                    <FaShoppingCart className="w-7 h-7 text-white" />
-                    <span className="absolute -top-1 -right-1 bg-white text-red-600 text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                      {cartItemCount || "0"}
-                    </span>
+                {/* <Link href="/cart" className="transition block"> */}
+                <div className="bg-red-600 p-2 bottom-2 hover:bg-red-700 transition cursor-pointer" onClick={() => setIsOpen((prev) => !prev)}>
+                  <FaShoppingCart className="w-8 h-8 text-white" />
+                  <span className="absolute -top-1 -right-1 bg-[#eaeaea] text-red-600 text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                    {cartItemCount || "0"}
+                  </span>
+                </div>
+                {isOpen && (
+                  <div ref={dropdownRef} className="absolute right-0 top-full mt-2 w-96 bg-[#eaeaea]  shadow-2xl border border-gray-200  z-[9999]">
+                    <div className="absolute -top-2 right-3 w-4 h-4 bg-[#eaeaea] border-l border-t border-gray-200 rotate-45" />
+
+                    {cart.length === 0 ? (
+                      <div className="p-8 text-center">
+                        <p className="text-gray-600 text-base font-medium">Your cart is empty</p>
+                      </div>
+                    ) : (
+                      <div className="relative">
+                        <div className="max-h-96 overflow-y-auto p-4 space-y-5 pb-2">
+                          {Object.values(
+                            cart.reduce((acc: Record<string, any>, item: any) => {
+                              const key = item?.id;
+                              if (acc[key]) {
+                                acc[key].quantity += item?.quantity ?? 1;
+                              } else {
+                                acc[key] = { ...item, quantity: item?.quantity ?? 1 };
+                              }
+                              return acc;
+                            }, {})
+                          ).map((item) => (
+                            <Link key={item?.id} href={item?.productUrl} onClick={() => setIsOpen(false)} className="flex gap-3 items-center cursor-pointer">
+                              <div className="w-16 h-16 flex-shrink-0 border border-gray-100 rounded">
+                                <img
+                                  src={item?.image?.[0]?.path || "/default-product-image.svg"}
+                                  alt={item?.name}
+                                  className="w-full h-full object-contain"
+                                />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                {item?.brand?.name && (
+                                  <p className="text-[13px] text-[#393939] font-medium uppercase">
+                                    {item?.brand?.name}
+                                  </p>
+                                )}
+                                <p className="text-[13px] font-light text-[#d42020] leading-snug whitespace-pre-line break-words">
+                                  {item?.name}
+                                </p>
+                                <p className="text-[#393939] text-[13px] mt-1">
+                                  {item?.quantity > 1 && (
+                                    <span className=" font-medium">
+                                      {item?.quantity} ×{" "}
+                                    </span>
+                                  )}
+                                  ${item?.price}
+                                </p>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+
+                        <div className="flex gap-2 p-4 pt-2">
+                          <button
+                            className="flex-1 bg-[#d42020] hover:bg-red-700 text-white text-[1rem] font-bold py-2.5 px-4  transition uppercase tracking-wide"
+                            onClick={() => {
+                              handleSelect("/checkout");
+                            }}
+                          >
+                            Check Out Now
+                          </button>
+                          <button
+                            className="flex-1 bg-[#d42020] hover:bg-red-700 text-white text-[1rem] font-bold py-2.5 px-4  transition uppercase tracking-wide"
+                            onClick={() => {
+                              handleSelect("/cart");
+                            }}
+                          >
+                            View Cart
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </Link>
+                )}
+                {/* </Link> */}
               </div>
             </div>
           </div>
@@ -300,92 +387,94 @@ const TopHeader = () => {
       </header>
 
       {/* Mobile Sidebar Menu */}
-      {mobileOpen && (
-        <>
-          {/* Overlay */}
-          <div
-            className="fixed inset-0  bg-opacity-50 z-999"
-            onClick={() => setMobileOpen(false)}
-          />
+      {
+        mobileOpen && (
+          <>
+            {/* Overlay */}
+            <div
+              className="fixed inset-0  bg-opacity-50 z-999"
+              onClick={() => setMobileOpen(false)}
+            />
 
-          {/* Sidebar */}
-          <div className="fixed top-0 left-0 h-full w-full bg-[#2d2d2d] text-white z-999 overflow-y-auto">
-            {/* Close Button */}
-            <div className="flex justify-between items-center p-4 border-b border-gray-600">
-              <h2 className="text-lg font-bold">MAIN MENU</h2>
-              <button onClick={() => setMobileOpen(false)}>
-                <X className="w-6 h-6" />
-              </button>
-            </div>
+            {/* Sidebar */}
+            <div className="fixed top-0 left-0 h-full w-full bg-[#2d2d2d] text-white z-999 overflow-y-auto">
+              {/* Close Button */}
+              <div className="flex justify-between items-center p-4 border-b border-gray-600">
+                <h2 className="text-lg font-bold">MAIN MENU</h2>
+                <button onClick={() => setMobileOpen(false)}>
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
 
-            {/* Menu Items */}
-            <nav className="p-4 space-y-2">
-              {/* ✅ Dynamic Categories - First 3 Only */}
-              {visibleCategories.map((category) => (
-                <div key={category.id}>
-                  <div
-                    className="flex items-center justify-between py-3 px-4 hover:bg-gray-700 rounded transition cursor-pointer"
-                    onClick={() => {
-                      if (category.subcategories?.length > 0) {
-                        toggleCategory(category.id);
-                      } else {
-                        router.push(`/category/${category.slug}`);
-                        setMobileOpen(false);
-                      }
-                    }}
-                  >
-                    <span className="font-medium">{category.name}</span>
-                    {category.subcategories?.length > 0 && (
-                      <>
-                        {expandedCategory === category.id ? (
-                          <ChevronUp className="w-4 h-4" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4" />
-                        )}
-                      </>
-                    )}
+              {/* Menu Items */}
+              <nav className="p-4 space-y-2">
+                {/* ✅ Dynamic Categories - First 3 Only */}
+                {visibleCategories?.map((category) => (
+                  <div key={category.id}>
+                    <div
+                      className="flex items-center justify-between py-3 px-4 hover:bg-gray-700 rounded transition cursor-pointer"
+                      onClick={() => {
+                        if (category?.subcategories?.length > 0) {
+                          toggleCategory(category?.id);
+                        } else {
+                          router.push(`/category/${category.slug}`);
+                          setMobileOpen(false);
+                        }
+                      }}
+                    >
+                      <span className="font-medium">{category.name}</span>
+                      {category.subcategories?.length > 0 && (
+                        <>
+                          {expandedCategory === category.id ? (
+                            <ChevronUp className="w-4 h-4" />
+                          ) : (
+                            <ChevronDown className="w-4 h-4" />
+                          )}
+                        </>
+                      )}
+                    </div>
+
+                    {/* Subcategories */}
+                    {expandedCategory === category.id &&
+                      category?.subcategories?.length > 0 && (
+                        <div className="ml-4 space-y-1">
+                          {category?.subcategories?.map((subcat) => (
+                            <Link
+                              key={subcat?.id}
+                              href={`/category/${subcat?.slug}`}
+                              className="block py-2 px-4 text-sm hover:bg-gray-700 rounded transition"
+                              onClick={() => setMobileOpen(false)}
+                            >
+                              {subcat?.name}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
                   </div>
+                ))}
 
-                  {/* Subcategories */}
-                  {expandedCategory === category.id &&
-                    category.subcategories?.length > 0 && (
-                      <div className="ml-4 space-y-1">
-                        {category.subcategories.map((subcat) => (
-                          <Link
-                            key={subcat.id}
-                            href={`/category/${subcat.slug}`}
-                            className="block py-2 px-4 text-sm hover:bg-gray-700 rounded transition"
-                            onClick={() => setMobileOpen(false)}
-                          >
-                            {subcat.name}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                </div>
-              ))}
-
-              {/* Static Links */}
-              <Link
-                href="/contact-us"
-                className="block py-3 px-4 hover:bg-gray-700 rounded transition font-medium"
-                onClick={() => setMobileOpen(false)}
-              >
-                Contact Us
-              </Link>
-              <Link
-                href="/blogs"
-                className="block py-3 px-4 hover:bg-gray-700 rounded transition font-medium"
-                onClick={() => setMobileOpen(false)}
-              >
-                Blog
-              </Link>
-            </nav>
+                {/* Static Links */}
+                <Link
+                  href="/contact-us"
+                  className="block py-3 px-4 hover:bg-gray-700 rounded transition font-medium"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Contact Us
+                </Link>
+                <Link
+                  href="/blogs"
+                  className="block py-3 px-4 hover:bg-gray-700 rounded transition font-medium"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Blog
+                </Link>
+              </nav>
 
 
-          </div>
-        </>
-      )}
+            </div>
+          </>
+        )
+      }
     </>
   );
 };
