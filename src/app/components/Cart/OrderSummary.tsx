@@ -142,6 +142,10 @@ const OrderSummary = () => {
             // zip: data.zip ?? "",
           }));
         }
+        const shippingDataLocal = localStorage.getItem("shippingData"); // Clear any previously saved shipping cost when component mounts
+        if (shippingDataLocal) {
+          setShippingData(JSON.parse(shippingDataLocal));
+        }
       } catch {
         setShippingData({ ...shippingData, country: "US" });
       }
@@ -149,6 +153,8 @@ const OrderSummary = () => {
 
     detectCountry();
   }, []);
+
+
   return (
     <div className="border rounded-lg 2xl:w-full">
       {/* Header */}
@@ -273,7 +279,7 @@ const OrderSummary = () => {
                   {loading ? "Loading..." : "Estimate Shipping"}
                 </button>
               </div>
-           
+
               {shippingRates?.length > 0 && <div className="">
                 {ratesLoader ? (
                   Array.from({ length: 2 }).map((_, i) => (
@@ -332,6 +338,7 @@ const OrderSummary = () => {
                       );
                       const cost = selectedRate ? Number(selectedRate.total_charge).toFixed(2) : "0";
                       localStorage.setItem("shippingCost", cost);
+                      localStorage.setItem("shippingData", JSON.stringify(shippingData));
                       window.location.reload(); // Refresh to update totals with new shipping cost
                     }}
                     className="w-full md:w-[65%] p-2 border-b border-black rounded bg-[#D42020] text-white text-xl font-bold"
