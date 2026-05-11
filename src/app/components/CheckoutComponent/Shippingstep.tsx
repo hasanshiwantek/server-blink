@@ -293,6 +293,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                 } else {
                   dispatch(setIsMultiAddress(true));
                 }
+                localStorage.removeItem("shippingCost")
               }}
               className="text-[13px] text-red-600 hover:underline font-medium"
             >
