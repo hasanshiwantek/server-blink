@@ -196,7 +196,10 @@ const TopHeader = () => {
                     setQuery(e.target.value)
                   }}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") handleSearch(e);
+                    if (e.key === "Enter") {
+                      router.push(`/advanced-search?q=${query.trim()}`);
+                      // handleSearch(e);
+                    }
                   }}
                   // onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="SEARCH"

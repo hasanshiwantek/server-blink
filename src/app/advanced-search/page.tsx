@@ -1,0 +1,138 @@
+"use client";
+// import type { Metadata, ResolvingMetadata } from "next";
+import Script from "next/script";
+// import { headers } from "next/headers";
+import dynamic from "next/dynamic";
+import { fetchProductBySlug, fetchProductBySlugAndUrl, fetchProducts } from "@/lib/api/products";
+import ProductCard from "@/app/components/Product/ProductCard";
+import ProductOverview from "@/app/components/Product/ProductOverview";
+import ProductExtras from "@/app/components/Product/ProductExtras";
+import { Suspense, useEffect, useState } from "react";
+import CategoriesSidebar from "../components/Home/CategoriesSidebar";
+import BrandsSidebar from "../components/Home/BrandsSidebar";
+import { notFound, redirect } from "next/navigation";
+import BrandsSection from "../components/advanced-search/BrandsSection";
+import CategoriesSection from "../components/advanced-search/CategoriesSection";
+import { fetchCategories } from "@/lib/api/category";
+import { fetchBrands } from "@/lib/api/brand";
+import ProductsClientWrapper from "../components/advanced-search/ProductsClientWrapper";
+import Breadcrumb from "../components/Product/Breadcrumb";
+import ProductTabs from "../components/advanced-search/ProductTabs";
+import AdvancedSearchForm from "../components/advanced-search/AdvancedSearchForm";
+import NoResults from "../components/advanced-search/NoResults";
+
+export default function ProductPage({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}) {
+    const [categories, setCategories] = useState([]);
+    const [brands, setBrands] = useState([]);
+    const [showAdvancedSearch, setShowAdvancedSearch] = useState(0);
+
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                // Categories (you already have this)
+                const catData = await fetchCategories();
+                setCategories(catData);
+
+                // Brands - Add this API call
+                const brandData = await fetchBrands(); // Create this function
+                setBrands(brandData);
+            } catch (error) {
+                console.error("Failed to load categories/brands", error);
+            }
+        };
+
+        loadData();
+    }, []);
+
+    return (
+        <>
+            <main
+                role="main"
+                className="w-full max-w-[1170px] mx-auto px-4 lg:px-6 xl:px-0"
+            >
+                <div className="flex flex-col md:flex-row gap-4 lg:gap-6">
+                    {/* Left Sidebar - Fixed 235px on desktop */}
+                    <aside className="hidden lg:block md:w-[20%] flex-shrink-0">
+                        <CategoriesSidebar />
+                        <BrandsSidebar />
+                    </aside>
+
+                    {/* Main Product Content - Fixed 912px max on desktop */}
+                    <article className="w-full lg:max-w-[78%]">
+                        <div className="mb-4 px-4 md:px-0">
+                            <h2>
+                                <span className="text-[11px]" itemProp="name">
+                                    Home
+                                </span>
+                                <span>
+                                    <span
+                                        className="mt-2 mx-3 text-gray-400 text-[11px]"
+                                        aria-hidden="true"
+                                    >
+                                        /
+                                    </span>
+                                    <span
+                                        className={`text-[11px] 
+                   !text-[#D42020]
+                    `}
+                                        itemProp="name"
+                                    >
+                                        Search
+                                    </span>
+                                </span>
+                            </h2>
+                        </div>
+                        <div>
+                            <h1 className="text-[28px] text-[#545454]">
+                                10000 results for lap
+                            </h1>
+                        </div>
+                        <div>
+                            <ProductTabs
+                                tabs={[
+                                    { label: "PRODUCTS", count: 10000 },
+                                    { label: "NEWS & INFORMATION", count: 0 },
+                                    { label: showAdvancedSearch == 2 ? "HIDE SEARCH FORM" : "SHOW SEARCH FORM", isDivided: true },
+                                ]}
+                                activeTab={showAdvancedSearch}
+                                onTabChange={(index) => {
+                                    setShowAdvancedSearch(index);
+                                }}
+                            />
+                        </div>
+
+
+                        {showAdvancedSearch ? <div>
+                            <AdvancedSearchForm categories={categories.slice(0, 10)} brands={brands} />
+                        </div> : <div>
+                            <div className="bg-[#cac9c9] p-6 rounded">
+                                <div className="flex justify-between items-center  pb-1 mb-5">
+                                    <h2 className=" text-[22px] text-[#545454] font-light">Categories</h2>
+                                </div>
+                                <CategoriesSection categories={categories.slice(0, 6)} />
+                                <div className="flex justify-between items-center  pb-1 mt-6">
+                                    <h2 className=" text-[22px] text-[#545454] font-light">Brands</h2>
+                                </div>
+                                <BrandsSection brands={brands?.slice(0, 6)} />
+                            </div>
+                            <div>
+                                <ProductsClientWrapper />
+                            </div>
+                        </div>}
+                        {/* {products?.length === 0 && ( */}
+                        <NoResults
+                            searchTerm="sdfsdf"
+                            suggestedTerm="sdsdq"
+                            onRefineSearch={() => setShowAdvancedSearch(2)}
+                        />
+                        {/* )} */}
+                    </article>
+                </div>
+            </main>
+        </>
+    );
+}

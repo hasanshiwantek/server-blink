@@ -30,8 +30,7 @@ export const fetchProductBySlugAndUrl = async (slug?: string) => {
       headers: { storeId: storeId },
     });
 
-    if (!res.ok) {
-      console.error(`❌ API failed for slug: ${slug}, status: ${res.status}`);
+    if (!res?.ok) {
       return null;
     }
 

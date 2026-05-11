@@ -22,9 +22,6 @@ export default function ProductsClientWrapper({
   const [pagination, setPagination] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  console.log("Filtered Products data from frontend: ", products);
-  console.log("Pagination: ", pagination);
-
   // Detect if we're on brand or category page
   const isBrandPage = pathname?.startsWith("/brand/");
   const isCategoryPage = pathname?.startsWith("/category/");

@@ -108,7 +108,10 @@ const GlobalSearchBar: React.FC = () => {
             setQuery(e.target.value)
           }}
           onKeyDown={(e) => {
-            if (e.key === "Enter") handleSearch();
+            if (e.key === "Enter") {
+              router.push(`/advanced-search?q=${query.trim()}`);
+              // handleSearch()
+            };
           }}
           className="
             w-full px-4 md:px-5 lg:px-6
