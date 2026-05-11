@@ -122,7 +122,7 @@ const CategoriesSidebar: React.FC<CategoriesSidebarProps> = ({ activeCategoryId 
       </div>
 
       <div className="py-2 px-2 bg-white text-[#545454]">
-        {categories.map((category) => (
+        {categories?.slice(0, 10).map((category) => (
           <CategoryItem
             key={category.id}
             category={category}

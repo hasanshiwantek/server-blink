@@ -17,6 +17,7 @@ interface CustomerStepProps {
   isCompleted: boolean;
   onEdit?: () => void;
   emailValue?: string;
+  newsletter?: boolean;
 }
 
 const CustomerStep: React.FC<CustomerStepProps> = ({
