@@ -267,6 +267,7 @@ const OrderSummary = () => {
               <div className="flex justify-end">
                 <button
                   type="submit"
+                  disabled={loading}
                   className="w-full md:w-[65%] p-2 border-b border-black rounded bg-[#D42020] text-white text-xl font-bold"
                 >
                   {loading ? "Loading..." : "Estimate Shipping"}
