@@ -399,6 +399,11 @@ const CheckoutForm = () => {
       );
       return selected ? Number(selected.total_charge) : 0;
     }
+    // ✅ Cart page se localStorage mein saved cost
+    if (typeof window !== "undefined") {
+      const savedCost = localStorage.getItem("shippingCost");
+      if (savedCost) return Number(savedCost);
+    }
 
     if (cart.length === 0) return 0;
     return cart.reduce((sum, item) => sum + Number(item.fixedShippingCost || 0), 0);
@@ -658,7 +663,7 @@ const CheckoutForm = () => {
         orderPayload
       );
       const orderData = orderResponse.data?.data || orderResponse.data;
-
+      localStorage.removeItem("shippingCost"); // ✅ Clear saved shipping cost after order is placed
       return orderData || null;
     },
     [buildOrderPayload]
