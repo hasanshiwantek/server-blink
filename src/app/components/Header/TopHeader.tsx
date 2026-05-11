@@ -297,14 +297,7 @@ const TopHeader = () => {
               </div>
 
               {/* Cart */}
-              <div className="relative" ref={dropdownRef}>
-                {/* <div className="bg-red-600 p-2 bottom-2 hover:bg-red-700 transition cursor-pointer" onClick={() => setIsOpen((prev) => !prev)}>
-                  <FaShoppingCart className="w-8 h-8 text-white" />
-                  <span className="absolute -top-1 -right-1 bg-[#eaeaea] text-red-600 text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                    {cartItemCount || "0"}
-                  </span>
-                </div> */}
-                {/* <div className="absolute  -top-6  z-[9999]   bg-[#d42020] p-1.5 hover:bg-[#860d09] transition cursor-pointer" onClick={() => setIsOpen((prev) => !prev)}> */}
+              <div className="relative sm:flex hidden" ref={dropdownRef}>
                 <div className="absolute -top-6 z-[9999] bg-[#d42020] p-1.5 hover:bg-[#860d09] transition cursor-pointer" >
 
                   <div className="p-1.5  transition cursor-pointer relative" onClick={() => setIsOpen((prev) => !prev)}>
@@ -389,6 +382,16 @@ const TopHeader = () => {
                     </div>
                   )}
                 </div>
+              </div>
+              <div className="relative   sm:hidden flex" >
+                <Link href="/cart" className="transition block">
+                  <div className="bg-red-600 p-2 rounded hover:bg-red-700 transition">
+                    <FaShoppingCart className="w-7 h-7 text-white" />
+                    <span className="absolute -top-1 -right-1 bg-white text-red-600 text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                      {cartItemCount || "0"}
+                    </span>
+                  </div>
+                </Link>
               </div>
             </div>
           </div>
