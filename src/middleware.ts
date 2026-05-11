@@ -7,6 +7,7 @@ export function middleware(request: NextRequest) {
     requestHeaders.set("x-pathname", request.nextUrl.pathname);
     return NextResponse.next({ request: { headers: requestHeaders } });
 }
+
 export const config = {
     matcher: ["/((?!_next|api|favicon|.*\\..*).*)"],
 };
