@@ -775,18 +775,19 @@ const CheckoutForm = () => {
       const newsletter = getValues("newsletter");
 
       // API call - apni endpoint laga lo
-      try {
-        await fetch("/api/checkout/customer", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, newsletter: !!newsletter }),
-        });
-      } catch (error) {
-        console.error("Customer API error:", error);
-      }
-
+      // try {
+      //   await fetch("/api/checkout/customer", {
+      //     method: "POST",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify({ email, newsletter: !!newsletter }),
+      //   });
+      // } catch (error) {
+      //   console.error("Customer API error:", error);
+      // }
       setCompletedSteps((prev) => [...new Set([...prev, 1])]);
       setCurrentStep(2);
+
+
     }
   };
 
