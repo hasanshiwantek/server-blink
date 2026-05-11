@@ -115,6 +115,7 @@ const nextConfig: NextConfig = {
         { source: "/subscribe/:path+", destination: "/subscribe/:path+" },
         { source: "/terms-conditions/:path+", destination: "/terms-conditions/:path+" },
         { source: "/warranty/:path+", destination: "/warranty/:path+" },
+        { source: "/advanced-search/:path+", destination: "/advanced-search/:path+" },
 
         // Unknown nested URLs → pass original path as query param
         {

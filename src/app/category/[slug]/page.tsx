@@ -69,8 +69,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CategoryPage({ params }: Props) {
   const { slug } = await params; // 👈 matching slug
-  console.log("Category Slug:", slug);
-
   const categories = await fetchCategories();
 
   // Find category by slug
