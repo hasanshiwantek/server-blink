@@ -94,6 +94,7 @@ interface CheckoutFormValues {
   billingCountry: string;
   billingState: string;
   billingZip: string;
+  newsletter?: boolean;
 }
 
 // Inner component that uses Stripe hooks
@@ -160,6 +161,7 @@ const CheckoutForm = () => {
     setValue,
     control,
     trigger,
+    getValues,
     formState: { errors },
   } = useForm<CheckoutFormValues>({
     defaultValues: {
@@ -173,6 +175,7 @@ const CheckoutForm = () => {
       state: auth?.user?.state || "",
       country: "",
       billingCountry: "",
+      newsletter: false,
     },
   });
   const watchedCountry = watch("country");
@@ -574,7 +577,7 @@ const CheckoutForm = () => {
           shippingCost: shipping,
           comments: data.orderComment || "",
           paymentIntentId: data.paymentIntentId ?? "",
-
+          newsletter: data.newsletter || false,
           // ✅ Multi destination array
           isMultiAddress: true,
           destinations: destinations.map((dest) => {
@@ -604,6 +607,7 @@ const CheckoutForm = () => {
               zip: dest.address?.zip || "",
               country: dest.address?.country || "",
               shippingMethod: dest.selectedShippingMethod,
+
               shippingCost: selectedRate ? Number(selectedRate.total_charge) : 0,
               products: Object.entries(allocatedProducts).map(([productId, quantity]) => ({
                 product_id: Number(productId),
@@ -634,6 +638,7 @@ const CheckoutForm = () => {
         discountAmount: discountAmount ? finalTotal : 0,
         shippingCost: shipping,
         comments: data.orderComment || "",
+        newsletter: data.newsletter || false,
         paymentIntentId: data.paymentIntentId ?? "",
         isMultiAddress: false,
         products: cart.map((item) => ({
@@ -756,9 +761,30 @@ const CheckoutForm = () => {
   ]);
 
   // Step navigation handlers
+  // const handleContinueToShipping = async () => {
+  //   const isValid = await trigger(["email", "newsletter"]);
+  //   if (isValid) {
+  //     setCompletedSteps((prev) => [...new Set([...prev, 1])]);
+  //     setCurrentStep(2);
+  //   }
+  // };
   const handleContinueToShipping = async () => {
-    const isValid = await trigger(["email"]);
+    const isValid = await trigger(["email", "newsletter"]);
     if (isValid) {
+      const email = getValues("email");
+      const newsletter = getValues("newsletter");
+
+      // API call - apni endpoint laga lo
+      try {
+        await fetch("/api/checkout/customer", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, newsletter: !!newsletter }),
+        });
+      } catch (error) {
+        console.error("Customer API error:", error);
+      }
+
       setCompletedSteps((prev) => [...new Set([...prev, 1])]);
       setCurrentStep(2);
     }
@@ -963,7 +989,7 @@ const CheckoutForm = () => {
 
       const orderData = await placeOrder({ ...data, paymentIntentId });
       skipEmptyCartCheckRef.current = true;
-           console.log(orderData, "Order data after wallet payment");
+      console.log(orderData, "Order data after wallet payment");
       dispatch(setLastOrder(orderData));
       dispatch(clearCart());
       dispatch(removeCoupon());

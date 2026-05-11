@@ -265,13 +265,13 @@ const TopHeader = () => {
 
               {/* User & Auth */}
               <div className="flex items-center gap-2 ml-auto">
-                <Link
+                {auth?.isAuthenticated && <Link
                   href={
                     auth?.isAuthenticated ? "/my-account/orders" : "/auth/login"
                   }
                 >
                   <User className="w-8 h-8 text-white" fill="currentColor" />
-                </Link>
+                </Link>}
                 {auth?.isAuthenticated ? (
                   <button
                     onClick={handleLogout}
@@ -297,89 +297,98 @@ const TopHeader = () => {
               </div>
 
               {/* Cart */}
-              <div className="relative">
-                {/* <Link href="/cart" className="transition block"> */}
-                <div className="bg-red-600 p-2 bottom-2 hover:bg-red-700 transition cursor-pointer" onClick={() => setIsOpen((prev) => !prev)}>
+              <div className="relative" ref={dropdownRef}>
+                {/* <div className="bg-red-600 p-2 bottom-2 hover:bg-red-700 transition cursor-pointer" onClick={() => setIsOpen((prev) => !prev)}>
                   <FaShoppingCart className="w-8 h-8 text-white" />
                   <span className="absolute -top-1 -right-1 bg-[#eaeaea] text-red-600 text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                     {cartItemCount || "0"}
                   </span>
-                </div>
-                {isOpen && (
-                  <div ref={dropdownRef} className="absolute right-0 top-full mt-2 w-96 bg-[#eaeaea]  shadow-2xl border border-gray-200  z-[9999]">
-                    <div className="absolute -top-2 right-3 w-4 h-4 bg-[#eaeaea] border-l border-t border-gray-200 rotate-45" />
+                </div> */}
+                {/* <div className="absolute  -top-6  z-[9999]   bg-[#d42020] p-1.5 hover:bg-[#860d09] transition cursor-pointer" onClick={() => setIsOpen((prev) => !prev)}> */}
+                <div className="absolute -top-6 z-[9999] bg-[#d42020] p-1.5 hover:bg-[#860d09] transition cursor-pointer" >
 
-                    {cart.length === 0 ? (
-                      <div className="p-8 text-center">
-                        <p className="text-gray-600 text-base font-medium">Your cart is empty</p>
-                      </div>
-                    ) : (
-                      <div className="relative">
-                        <div className="max-h-96 overflow-y-auto p-4 space-y-5 pb-2">
-                          {Object.values(
-                            cart.reduce((acc: Record<string, any>, item: any) => {
-                              const key = item?.id;
-                              if (acc[key]) {
-                                acc[key].quantity += item?.quantity ?? 1;
-                              } else {
-                                acc[key] = { ...item, quantity: item?.quantity ?? 1 };
-                              }
-                              return acc;
-                            }, {})
-                          ).map((item) => (
-                            <Link key={item?.id} href={item?.productUrl} onClick={() => setIsOpen(false)} className="flex gap-3 items-center cursor-pointer">
-                              <div className="w-16 h-16 flex-shrink-0 border border-gray-100 rounded">
-                                <img
-                                  src={item?.image?.[0]?.path || "/default-product-image.svg"}
-                                  alt={item?.name}
-                                  className="w-full h-full object-contain"
-                                />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                {item?.brand?.name && (
-                                  <p className="text-[13px] text-[#393939] font-medium uppercase">
-                                    {item?.brand?.name}
-                                  </p>
-                                )}
-                                <p className="text-[13px] font-light text-[#d42020] leading-snug whitespace-pre-line break-words">
-                                  {item?.name}
-                                </p>
-                                <p className="text-[#393939] text-[13px] mt-1">
-                                  {item?.quantity > 1 && (
-                                    <span className=" font-medium">
-                                      {item?.quantity} ×{" "}
-                                    </span>
-                                  )}
-                                  ${item?.price}
-                                </p>
-                              </div>
-                            </Link>
-                          ))}
-                        </div>
-
-                        <div className="flex gap-2 p-4 pt-2">
-                          <button
-                            className="flex-1 bg-[#d42020] hover:bg-red-700 text-white text-[1rem] font-bold py-2.5 px-4  transition uppercase tracking-wide"
-                            onClick={() => {
-                              handleSelect("/checkout");
-                            }}
-                          >
-                            Check Out Now
-                          </button>
-                          <button
-                            className="flex-1 bg-[#d42020] hover:bg-red-700 text-white text-[1rem] font-bold py-2.5 px-4  transition uppercase tracking-wide"
-                            onClick={() => {
-                              handleSelect("/cart");
-                            }}
-                          >
-                            View Cart
-                          </button>
-                        </div>
-                      </div>
-                    )}
+                  <div className="p-1.5  transition cursor-pointer relative" onClick={() => setIsOpen((prev) => !prev)}>
+                    <FaShoppingCart className="w-7 h-7 text-white" />
+                    <span className="absolute top-1 -right-4 bg-[#eaeaea] text-[#d42020]  text-[10px] rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                      {cartItemCount || "0"}
+                    </span>
                   </div>
-                )}
-                {/* </Link> */}
+
+                  {isOpen && (
+                    <div className="absolute right-0 top-full  w-96 bg-[#eaeaea]  shadow-2xl border border-gray-200  z-[9999]">
+                      {/* <div className="absolute -top-2 right-1 w-4 h-4 bg-[#eaeaea] border-l border-t border-gray-200 rotate-45" /> */}
+
+                      {cart.length === 0 ? (
+                        <div className="p-8 text-center">
+                          <p className="text-gray-600 text-base font-medium">Your cart is empty</p>
+                        </div>
+                      ) : (
+                        <div className="relative">
+                          <div className="max-h-96 overflow-y-auto p-4 space-y-5 pb-2">
+                            {Object.values(
+                              cart.reduce((acc: Record<string, any>, item: any) => {
+                                const key = item?.id;
+                                if (acc[key]) {
+                                  acc[key].quantity += item?.quantity ?? 1;
+                                } else {
+                                  acc[key] = { ...item, quantity: item?.quantity ?? 1 };
+                                }
+                                return acc;
+                              }, {})
+                            ).map((item) => (
+                              <Link key={item?.id} href={item?.productUrl} onClick={() => setIsOpen(false)} className="flex gap-3 items-center cursor-pointer">
+                                <div className="w-16 h-16 flex-shrink-0 border border-gray-100 rounded">
+                                  <img
+                                    src={item?.image?.[0]?.path || "/default-product-image.svg"}
+                                    alt={item?.name}
+                                    className="w-full h-full object-contain"
+                                  />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  {item?.brand?.name && (
+                                    <p className="text-[13px] text-[#393939] font-medium uppercase">
+                                      {item?.brand?.name}
+                                    </p>
+                                  )}
+                                  <p className="text-[13px] font-light text-[#d42020] leading-snug whitespace-pre-line break-words">
+                                    {item?.name}
+                                  </p>
+                                  <p className="text-[#393939] text-[13px] mt-1">
+                                    {item?.quantity > 1 && (
+                                      <span className=" font-medium">
+                                        {item?.quantity} ×{" "}
+                                      </span>
+                                    )}
+                                    ${item?.price}
+                                  </p>
+                                </div>
+                              </Link>
+                            ))}
+                          </div>
+
+                          <div className="flex gap-2 p-4 pt-2">
+                            <button
+                              className="flex-1 bg-[#d42020] hover:bg-red-700 text-white text-[1rem] font-bold py-2.5 px-4  transition uppercase tracking-wide"
+                              onClick={() => {
+                                handleSelect("/checkout");
+                              }}
+                            >
+                              Check Out Now
+                            </button>
+                            <button
+                              className="flex-1 bg-[#d42020] hover:bg-red-700 text-white text-[1rem] font-bold py-2.5 px-4  transition uppercase tracking-wide"
+                              onClick={() => {
+                                handleSelect("/cart");
+                              }}
+                            >
+                              View Cart
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
