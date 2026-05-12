@@ -18,6 +18,8 @@ interface Category {
   slug: string;
   subcategories: Category[];
 }
+const isMobile = window.innerWidth < 768;
+
 const TopHeader = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -183,11 +185,11 @@ const TopHeader = () => {
             </div>
 
             {/* Center: Search Bar (visible when scrolled) */}
-            <div ref={containerRef}
-              className={`relative flex-1 flex justify-center transition-all duration-300 
+            {!isMobile && <div ref={containerRef}
+              className={`relative flex-1 flex  justify-center transition-all duration-300 
     ${isScrolled ? "block" : "hidden"}`}
             >
-              <form onSubmit={handleSearch} className="relative w-full max-w-[300px]">
+              <form className="relative w-full max-w-[300px]">
                 <input
                   type="text"
                   value={query}
@@ -199,6 +201,8 @@ const TopHeader = () => {
                     if (e.key === "Enter") {
                       router.push(`/advanced-search?q=${query.trim()}`);
                       // handleSearch(e);
+                      setIsOpen(false);
+                      setShowDropdown(false);
                     }
                   }}
                   // onChange={(e) => setSearchQuery(e.target.value)}
@@ -206,7 +210,8 @@ const TopHeader = () => {
                   className="w-full text-white placeholder-white px-4 pr-10 focus:outline-none text-sm font-semibold border-b border-white bg-transparent"
                 />
                 <button
-                  type="submit"
+
+                  onClick={handleSearch}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-white"
                   aria-label="search"
                 >
@@ -247,7 +252,7 @@ const TopHeader = () => {
                     ))}
                 </div>
               )}
-            </div>
+            </div>}
 
             {/* Right: Login/Signup + Cart */}
             <div className="flex items-center md:justify-end justify-between whitespace-nowrap flex-1 gap-5 md:gap-5">
@@ -301,17 +306,18 @@ const TopHeader = () => {
 
               {/* Cart */}
               <div className="relative sm:flex hidden" ref={dropdownRef}>
-                <div className="absolute -top-6 z-[9999] bg-[#d42020] p-1.5 hover:bg-[#860d09] transition cursor-pointer" >
-
-                  <div className="p-1.5  transition cursor-pointer relative" onClick={() => setIsOpen((prev) => !prev)}>
-                    <FaShoppingCart className="w-7 h-7 text-white" />
-                    <span className="absolute top-1 -right-4 bg-[#eaeaea] text-[#d42020]  text-[10px] rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                <div className="relative w-[40px]">
+                  <div className="absolute z-[9999] -top-6 -bottom-7 right-0 left-0 bg-[#d42020] hover:bg-[#860d09] transition cursor-pointer flex items-center justify-center"
+                    onClick={() => setIsOpen((prev) => !prev)}
+                  >
+                    <FaShoppingCart className="w-6 h-6 text-white" />
+                    <span className="absolute top-3 -right-1.5 bg-[#eaeaea] text-[#d42020] text-[10px] rounded-full w-5 h-5 flex items-center justify-center font-bold">
                       {cartItemCount || "0"}
                     </span>
                   </div>
 
                   {isOpen && (
-                    <div className="absolute right-0 top-full  w-96 bg-[#eaeaea]  shadow-2xl border border-gray-200  z-[9999]">
+                    <div className="absolute right-0 top-7  w-96 bg-[#eaeaea]  shadow-2xl border border-gray-200  z-[9999]">
                       {/* <div className="absolute -top-2 right-1 w-4 h-4 bg-[#eaeaea] border-l border-t border-gray-200 rotate-45" /> */}
 
                       {cart.length === 0 ? (
@@ -386,11 +392,11 @@ const TopHeader = () => {
                   )}
                 </div>
               </div>
-              <div className="relative   sm:hidden flex" >
+              <div className="relative top-[3px] z-[999] sm:hidden flex" >
                 <Link href="/cart" className="transition block">
                   <div className="bg-red-600 p-2 rounded hover:bg-red-700 transition">
                     <FaShoppingCart className="w-7 h-7 text-white" />
-                    <span className="absolute -top-1 -right-1 bg-white text-red-600 text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                    <span className="absolute top-2 -right-2 bg-white text-red-600 text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                       {cartItemCount || "0"}
                     </span>
                   </div>
