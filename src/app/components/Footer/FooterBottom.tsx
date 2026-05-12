@@ -4,9 +4,11 @@ import Link from "next/link";
 import { fetchCategories } from "@/lib/api/category";
 import Image from "next/image";
 import FooterSkeleton from "../loader/FooterSkeleton";
+import { subscribeNewsletter } from "@/redux/slices/contactSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { getBlogs } from "@/redux/slices/storeFrontSlice";
 import { RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
 interface Category {
   id: number;
   name: string;
@@ -19,10 +21,14 @@ const FooterBottom = () => {
   const auth = useAppSelector((state: RootState) => state?.auth);
   const [filters, setFilters] = useState({ page: 1, perPage: 20 });
   const dispatch = useAppDispatch();
+  const [email, setEmail] = useState("");
+  const { newsletterLoading, newsletterSuccess, newsletterError } = useSelector((state: any) => state.contact);
   const { blogs, error, loading } = useAppSelector(
     (state: any) => state.storeFront
   );
+
   const blogPosts = blogs?.data || [];
+
   useEffect(() => {
     dispatch(getBlogs(filters));
   }, [dispatch]);
@@ -63,22 +69,30 @@ const FooterBottom = () => {
           </div>
 
           <form
-            action="/subscribe"
-            method="get"   // or "post" if you plan to handle server-side
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (email.trim()) {
+                dispatch(subscribeNewsletter({ email: email.trim() })).unwrap().then(() => {
+                  setEmail("")
+                });
+              }
+            }}
             className="w-[80%] md:w-[50%] 2xl:max-w-[30%] flex items-center gap-2 mt-4 md:mt-0 p-2"
           >
             <input
               type="email"
               name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
               required
               className="w-full h-[32px] px-4 py-3 border border-white text-[#545454] bg-white focus:outline-none rounded-xs text-sm md:text-base"
             />
             <button
-              type="submit"
+              type="submit" disabled={newsletterLoading}
               className="btn-primary h-[32px] !p-3 !rounded-sm w-[40%] md:w-[30%] max-w-[9rem]"
             >
-              JOIN
+              {newsletterLoading ? "..." : "JOIN"}
             </button>
           </form>
 

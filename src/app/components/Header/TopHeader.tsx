@@ -10,7 +10,9 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import MobileSearchBar from "./MobileSearchBar";
 import { fetchCategories } from "@/lib/api/category";
-import { globalSearch } from "@/redux/slices/homeSlice";
+import { clearSearch, globalSearch, setSearchQuery, setShowSearchDropdown } from "@/redux/slices/homeSlice";
+import { usePathname } from "next/navigation";
+
 
 interface Category {
   id: number;
@@ -22,7 +24,6 @@ const isMobile = window.innerWidth < 768;
 
 const TopHeader = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const cart = useAppSelector((state: RootState) => state?.cart?.items);
   const auth = useAppSelector((state: RootState) => state?.auth);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -31,7 +32,7 @@ const TopHeader = () => {
   const [searchCache, setSearchCache] = useState<{ [key: string]: any[] }>({});
   const [showDropdown, setShowDropdown] = useState(false);
   const [query, setQuery] = useState("");
-  const { searchData, loading } = useAppSelector((state: any) => state.home);
+  // const { searchData, loading } = useAppSelector((state: any) => state.home);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -41,6 +42,8 @@ const TopHeader = () => {
     cart?.reduce((sum, item: any) => sum + (item?.quantity ?? 1), 0) ?? 0;
   const [results, setResults] = useState<any[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pathname = usePathname();
+  const { searchQuery, showSearchDropdown, searchData, loading } = useAppSelector((state: any) => state.home);
 
   const handleLogout = () => {
     const confirm = window.confirm("Confirm Logout?");
@@ -69,22 +72,14 @@ const TopHeader = () => {
     };
   }, []);
 
+
   const handleSearch = (e?: any) => {
     e?.preventDefault();
-    const trimmed = query.trim();
+    const trimmed = searchQuery.trim();
     if (trimmed.length > 1) {
-      const cacheKey = trimmed.toLowerCase();
-      if (searchCache[cacheKey]) {
-        // setResults(searchCache[cacheKey]);
-        dispatch(globalSearch({ query: trimmed }));
-        setShowDropdown(true);
-      } else {
-        dispatch(globalSearch({ query: trimmed }));
-        setShowDropdown(true);
-      }
+      dispatch(globalSearch({ query: trimmed }));
     }
   };
-
 
   // Fetch categories
   useEffect(() => {
@@ -98,6 +93,7 @@ const TopHeader = () => {
     setExpandedCategory(expandedCategory === categoryId ? null : categoryId);
   };
   const handleSelect = (url: string) => {
+    dispatch(clearSearch());
     setQuery("");
     setShowDropdown(false);
     setIsOpen(false);
@@ -131,40 +127,42 @@ const TopHeader = () => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setShowDropdown(false);
         setQuery("");
+        dispatch(setShowSearchDropdown(false));
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  const handleOnChange = (value?: string) => {
-    const trimmed = (value ?? query).trim();
+
+  const handleOnChange = (value: string) => {
+    dispatch(setSearchQuery(value));
     if (debounceRef.current) clearTimeout(debounceRef.current);
-
-    if (trimmed.length > 1) {
+    if (value.trim()) {
       debounceRef.current = setTimeout(() => {
-        const cacheKey = trimmed.toLowerCase();
-        if (searchCache[cacheKey]) {
-          // setResults(searchCache[cacheKey]);
-          dispatch(globalSearch({ query: trimmed }));
-
-          setShowDropdown(true);
-        } else {
-          dispatch(globalSearch({ query: trimmed }));
-          setShowDropdown(true);
-        }
-      }, 500);
+        dispatch(globalSearch({ query: value.trim() }));
+        dispatch(setShowSearchDropdown(true));
+      }, 100);
     }
   };
+
+  useEffect(() => {
+    if (pathname === "/advanced-search") {
+      setIsOpen(false);
+      dispatch(clearSearch());
+    }
+  }, [pathname]);
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
+        dispatch(setShowSearchDropdown(false));
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
 
   return (
     <>
@@ -192,45 +190,57 @@ const TopHeader = () => {
               <form className="relative w-full max-w-[300px]">
                 <input
                   type="text"
-                  value={query}
-                  onChange={(e) => {
-                    handleOnChange(e.target.value)
-                    setQuery(e.target.value)
-                  }}
+                  value={searchQuery}
+                  onChange={(e) => handleOnChange(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      router.push(`/advanced-search?q=${query.trim()}`);
-                      // handleSearch(e);
-                      setIsOpen(false);
-                      setShowDropdown(false);
+                      e.preventDefault();
+                      const q = searchQuery.trim();
+                      dispatch(clearSearch());
+                      router.push(`/advanced-search?q=${q}`);
                     }
                   }}
-                  // onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="SEARCH"
                   className="w-full text-white placeholder-white px-4 pr-10 focus:outline-none text-sm font-semibold border-b border-white bg-transparent"
                 />
                 <button
 
-                  onClick={handleSearch}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const q = searchQuery.trim();
+                    dispatch(clearSearch());
+                    if(q){
+                      router.push(`/advanced-search?q=${q}`);
+                    }
+                  }}
+                  // onClick={handleSearch}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-white"
                   aria-label="search"
                 >
                   <Search className="w-5 h-5" />
                 </button>
               </form>
-              {showDropdown && query.trim().length > 1 && (
+              {showSearchDropdown && searchQuery.trim().length > 1 && (
                 <div className="absolute top-full left-0 w-full mt-2 bg-white text-[#4A4A4A] shadow-lg rounded-md overflow-hidden z-50 max-h-[400px] overflow-y-auto">
                   {loading && <div className="p-3 text-gray/80">Searching...</div>}
 
-                  {!loading && results.length === 0 && (
+                  {!loading && searchData?.data?.length === 0 && (
                     <div className="p-3 text-gray/80">No Products found.</div>
                   )}
 
                   {!loading &&
-                    results.map((item: any) => (
+                    searchData?.data?.map((item: any) => (
                       <div
                         key={item.id}
-                        onClick={() => handleSelect(item.productUrl)}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          const url = item?.productUrl;
+                          if (url) {
+                            dispatch(setShowSearchDropdown(false));
+                            handleSelect(url)
+                          }
+                        }}
                         className="
                   flex items-start gap-3 p-3 border-b border-gray/50
                   hover:bg-[var(--primary-color)] hover:text-white
@@ -239,7 +249,7 @@ const TopHeader = () => {
                       >
                         <div className="flex flex-col flex-grow overflow-hidden">
                           <p className="text-sm font-semibold truncate">
-                            {item?.brand || "Brand"} | <span>SKU: {item?.sku || "N/A"}</span>
+                            {item?.brand?.name || "Brand"} | <span>SKU: {item?.sku || "N/A"}</span>
                           </p>
                           <p className="text-[15px] font-medium leading-tight line-clamp-2">
                             {item?.name}
@@ -490,8 +500,6 @@ const TopHeader = () => {
                   Blog
                 </Link>
               </nav>
-
-
             </div>
           </>
         )

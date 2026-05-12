@@ -6,14 +6,17 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
 import { X } from "lucide-react";
+import { contactRequests } from "@/redux/slices/contactSlice";
+import { useAppDispatch } from "@/hooks/useReduxHooks";
+import { useSelector } from "react-redux";
 type ContactFormData = {
-  fullName: string;
-  phoneNumber: string;
+  full_name: string;
+  phone_number: string;
   email: string;
-  orderNumber: string;
-  companyName: string;
-  rmaNumber: string;
-  message: string;
+  order_number?: string;
+  company_name?: string;
+  rma_number?: string;
+  comments: string;
 };
 
 const ContactForm = () => {
@@ -23,14 +26,16 @@ const ContactForm = () => {
     formState: { errors },
     reset,
   } = useForm<ContactFormData>();
+  const dispatch = useAppDispatch()
+  const { loading } = useSelector((state: any) => state.contact);
 
   const onSubmit = (data: ContactFormData) => {
-    console.log("Form Data:", data);
     // You can also log it in a more formatted way
-    console.table(data);
+    dispatch(contactRequests(data)).unwrap().then(() => {
+      reset();
+    })
 
     // Optionally reset the form after submission
-    // reset();
   };
 
   return (
@@ -68,20 +73,20 @@ const ContactForm = () => {
           SMS Disclaimer:
         </p>
         <p className="text-[10px] text-[#545454] font-normal">
-        By providing my phone number to Server Blink LLC, I agree and acknowledge 
-        that Server Blink may send text messages to my wireless phone number
-         for any purpose. Message frequency will vary, and Message and data 
-         rates may apply. If you need further assistance, please reply “HELP”. 
-         You can also opt out by replying “STOP.” For more information on how 
-         your data will be handled, please visit 
-         <a
-           href="/privacy-Policy"
-           className="text-[#D40511] underline cursor-pointer"
-           target="_blank"
-           rel="noopener noreferrer"
-         >
-           https://www.serverblink.com/privacy-policy.
-         </a>
+          By providing my phone number to Server Blink LLC, I agree and acknowledge
+          that Server Blink may send text messages to my wireless phone number
+          for any purpose. Message frequency will vary, and Message and data
+          rates may apply. If you need further assistance, please reply “HELP”.
+          You can also opt out by replying “STOP.” For more information on how
+          your data will be handled, please visit
+          <a
+            href="/privacy-Policy"
+            className="text-[#D40511] underline cursor-pointer"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            https://www.serverblink.com/privacy-policy.
+          </a>
         </p>
       </div>
 
@@ -91,30 +96,30 @@ const ContactForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label
-              htmlFor="fullName"
+              htmlFor="full_name"
               className="block text-[1rem] text-[#545454] font-normal mb-2"
             >
               Full Name
             </label>
             <Input
               type="text"
-              id="fullName"
-              {...register("fullName")}
+              id="full_name"
+              {...register("full_name")}
               className="mt-1 block w-full max-w-full h- max-w-full h-[40px] px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-red-500 focus:border-red-500"
             />
           </div>
 
           <div>
             <label
-              htmlFor="phoneNumber"
+              htmlFor="phone_number"
               className="block text-[1rem] text-[#545454] font-normal mb-2"
             >
               Phone Number
             </label>
             <Input
               type="tel"
-              id="phoneNumber"
-              {...register("phoneNumber")}
+              id="phone_number"
+              {...register("phone_number")}
               className="mt-1 block w-full h- max-w-full h-[40px] px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-red-500 focus:border-red-500"
             />
           </div>
@@ -157,15 +162,15 @@ const ContactForm = () => {
 
           <div>
             <label
-              htmlFor="orderNumber"
+              htmlFor="order_number"
               className="block text-[1rem] text-[#545454] font-normal mb-2"
             >
               Order Number
             </label>
             <Input
               type="text"
-              id="orderNumber"
-              {...register("orderNumber")}
+              id="order_number"
+              {...register("order_number")}
               className="mt-1 block w-full h- max-w-full h-[40px] px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-red-500 focus:border-red-500"
             />
           </div>
@@ -175,30 +180,30 @@ const ContactForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label
-              htmlFor="companyName"
+              htmlFor="company_name"
               className="block text-[1rem] text-[#545454] font-normal mb-2"
             >
               Company Name
             </label>
             <Input
               type="text"
-              id="companyName"
-              {...register("companyName")}
+              id="company_name"
+              {...register("company_name")}
               className="mt-1 block w-full h- max-w-full h-[40px] px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-red-500 focus:border-red-500"
             />
           </div>
 
           <div>
             <label
-              htmlFor="rmaNumber"
+              htmlFor="rma_number"
               className="block text-[1rem] text-[#545454] font-normal mb-2"
             >
               RMA Number
             </label>
             <Input
               type="text"
-              id="rmaNumber"
-              {...register("rmaNumber")}
+              id="rma_number"
+              {...register("rma_number")}
               className="mt-1 block w-full h- max-w-full h-[40px] px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-red-500 focus:border-red-500"
             />
           </div>
@@ -207,7 +212,7 @@ const ContactForm = () => {
         {/* Comments/Questions */}
         <div>
           <label
-            htmlFor="message"
+            htmlFor="comments"
             className="mb-2 flex items-baseline justify-between gap-2 text-[1rem] font-normal text-[#545454]"
           >
             <span>Comments/Questions</span>
@@ -216,18 +221,18 @@ const ContactForm = () => {
             </span>
           </label>
           <Textarea
-            id="message"
-            {...register("message", {
+            id="comments"
+            {...register("comments", {
               required: "Message is required",
             })}
             rows={6}
             className="mt-1 block  max-w-full h-50 px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-red-500 focus:border-red-500 resize-none"
           />
-          {errors.message && (
+          {errors.comments && (
             <div
               className="mt-1 text-red-600"
               role="alert"
-              aria-label={String(errors.message.message)}
+              aria-label={String(errors.comments.message)}
             >
               <X className="h-4 w-4" strokeWidth={2.5} aria-hidden />
             </div>
@@ -236,8 +241,8 @@ const ContactForm = () => {
 
         {/* Submit Button */}
         <div className="pt-2">
-          <button type="submit" className="btn-primary">
-            SUBMIT FORM
+          <button disabled={loading} type="submit" className="btn-primary">
+            {loading ? "LOADING..." : "SUBMIT FORM"}
           </button>
         </div>
       </form>
