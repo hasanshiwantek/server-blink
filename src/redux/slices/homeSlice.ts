@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "@/lib/axiosInstance";
 
 export const globalSearch = createAsyncThunk(
@@ -184,23 +184,39 @@ const initialState = {
   loading: false,
   error: null as string | null,
   popularProductsLoading: false,
+
+  searchQuery: "",
+  showSearchDropdown: false,
 };
 
 // 3. Slice
 const homeSlice = createSlice({
   name: "home",
   initialState,
-  reducers: {},
+  reducers: {
+    setSearchQuery: (state, action: PayloadAction<string>) => {
+      state.searchQuery = action.payload;
+    },
+    setShowSearchDropdown: (state, action: PayloadAction<boolean>) => {
+      state.showSearchDropdown = action.payload;
+    },
+    clearSearch: (state) => {
+      state.searchQuery = "";
+      state.showSearchDropdown = false;
+    },
+  },
 
   extraReducers: (builder) => {
     builder
       // GLOBAL SEARCH
       .addCase(globalSearch.pending, (state) => {
         state.loading = true;
+        state.showSearchDropdown = true;
       })
       .addCase(globalSearch.fulfilled, (state, action) => {
         state.loading = false;
         state.searchData = action.payload;
+        state.showSearchDropdown = true;
       })
       .addCase(globalSearch.rejected, (state, action) => {
         state.loading = false;
@@ -266,8 +282,26 @@ const homeSlice = createSlice({
       .addCase(fetchStats.rejected, (state) => {
         state.statsLoading = false;
         // Stats error is not critical, so we don't set error state
-      });
+      })
+
+
+
+    // search query
+    // .addCase(globalSearch.pending, (state) => {
+    //   state.loading = true;
+    //   state.error = null;
+    // })
+    // .addCase(globalSearch.fulfilled, (state, action) => {
+    //   state.loading = false;
+    //   state.searchData = action.payload;
+    //   state.showSearchDropdown = true;
+    // })
+    // .addCase(globalSearch.rejected, (state, action) => {
+    //   state.loading = false;
+    //   state.error = action.payload as string;
+    // });
   },
 });
+export const { setSearchQuery, setShowSearchDropdown, clearSearch } = homeSlice.actions;
 
 export default homeSlice.reducer;

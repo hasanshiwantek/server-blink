@@ -1,22 +1,12 @@
 "use client";
-// import type { Metadata, ResolvingMetadata } from "next";
-import Script from "next/script";
-// import { headers } from "next/headers";
-import dynamic from "next/dynamic";
-import { fetchProductBySlug, fetchProductBySlugAndUrl, fetchProducts } from "@/lib/api/products";
-import ProductCard from "@/app/components/Product/ProductCard";
-import ProductOverview from "@/app/components/Product/ProductOverview";
-import ProductExtras from "@/app/components/Product/ProductExtras";
 import { Suspense, useEffect, useState } from "react";
 import CategoriesSidebar from "../components/Home/CategoriesSidebar";
 import BrandsSidebar from "../components/Home/BrandsSidebar";
-import { notFound, redirect } from "next/navigation";
 import BrandsSection from "../components/advanced-search/BrandsSection";
 import CategoriesSection from "../components/advanced-search/CategoriesSection";
 import { fetchCategories } from "@/lib/api/category";
 import { fetchBrands } from "@/lib/api/brand";
 import ProductsClientWrapper from "../components/advanced-search/ProductsClientWrapper";
-import Breadcrumb from "../components/Product/Breadcrumb";
 import ProductTabs from "../components/advanced-search/ProductTabs";
 import AdvancedSearchForm from "../components/advanced-search/AdvancedSearchForm";
 import NoResults from "../components/advanced-search/NoResults";
@@ -28,7 +18,8 @@ export default function ProductPage({
 }) {
     const [categories, setCategories] = useState([]);
     const [brands, setBrands] = useState([]);
-    const [showAdvancedSearch, setShowAdvancedSearch] = useState(0);
+    const [currentTab, setCurrentTab] = useState(0);
+    const [searchForm, setSearchForm] = useState(false);
 
     useEffect(() => {
         const loadData = async () => {
@@ -96,19 +87,24 @@ export default function ProductPage({
                                 tabs={[
                                     { label: "PRODUCTS", count: 10000 },
                                     { label: "NEWS & INFORMATION", count: 0 },
-                                    { label: showAdvancedSearch == 2 ? "HIDE SEARCH FORM" : "SHOW SEARCH FORM", isDivided: true },
+                                    { label: searchForm ? "HIDE SEARCH FORM" : "SHOW SEARCH FORM", isDivided: true },
                                 ]}
-                                activeTab={showAdvancedSearch}
+                                activeTab={currentTab}
                                 onTabChange={(index) => {
-                                    setShowAdvancedSearch(index);
+                                    if (index == 2) {
+                                        setSearchForm(!searchForm)
+                                        return
+                                    }
+                                    setCurrentTab(index);
                                 }}
                             />
                         </div>
 
 
-                        {showAdvancedSearch ? <div>
+                        {searchForm && <div>
                             <AdvancedSearchForm categories={categories.slice(0, 10)} brands={brands} />
-                        </div> : <div>
+                        </div>}
+                        <div>
                             <div className="bg-[#cac9c9] p-6 rounded">
                                 <div className="flex justify-between items-center  pb-1 mb-5">
                                     <h2 className=" text-[22px] text-[#545454] font-light">Categories</h2>
@@ -122,12 +118,12 @@ export default function ProductPage({
                             <div>
                                 <ProductsClientWrapper />
                             </div>
-                        </div>}
+                        </div>
                         {/* {products?.length === 0 && ( */}
                         <NoResults
                             searchTerm="sdfsdf"
                             suggestedTerm="sdsdq"
-                            onRefineSearch={() => setShowAdvancedSearch(2)}
+                            onRefineSearch={() => setCurrentTab(2)}
                         />
                         {/* )} */}
                     </article>
