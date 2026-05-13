@@ -41,7 +41,7 @@ export const CategoryItem = ({
         style={{ paddingLeft: `${level * 12 + 8}px`, paddingRight: "8px" }}
 
       >
-        <Link href={`/category/${category.slug}`} className="flex-1 py-1 text-left">
+        <Link href={`/category/${category.slug}`} className="flex-1  text-left">
           <span>{category.name}</span>
         </Link>
 
