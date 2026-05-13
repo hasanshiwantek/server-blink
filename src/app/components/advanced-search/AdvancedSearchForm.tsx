@@ -2,16 +2,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchCategories } from "@/lib/api/category";
-import { fetchBrands } from "@/lib/api/brand";
 import CategoryTree from "./CategoryTree";
-
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 interface AdvancedSearchFormProps {
     initialKeyword?: string;
     onSearch?: (filters: any) => void;
 }
 
 export default function AdvancedSearchForm({ initialKeyword = "", onSearch, categories, brands }: AdvancedSearchFormProps & { categories: any[], brands: any[] }) {
+    const router = useRouter();
     const [keyword, setKeyword] = useState(initialKeyword);
 
     const [selectedCategories, setSelectedCategories] = useState<Set<string>>(new Set());
@@ -21,9 +21,9 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
     const [priceTo, setPriceTo] = useState("");
     const [featured, setFeatured] = useState("");
     const [freeShipping, setFreeShipping] = useState("");
-    const [autoSearchSub, setAutoSearchSub] = useState(true);
+    const [autoSearchSub, setAutoSearchSub] = useState<any>(true);
     const [expandedCats, setExpandedCats] = useState<Set<string>>(new Set());
-
+    const searchParams = useSearchParams();
     const toggleExpand = (catId: string) => {
         setExpandedCats((prev) => {
             const next = new Set(prev);
@@ -33,18 +33,69 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
         });
     };
 
+    // const handleSearch = () => {
+    //     onSearch?.({
+    //         keyword,
+    //         categories: selectedCategories,
+    //         "brands[]": selectedBrand,
+    //         price_from: priceFrom,
+    //         price_to: priceTo,
+    //         featured,
+    //         free_shipping: freeShipping,
+    //         search_subcategories: autoSearchSub,
+    //     });
+    // };
+
     const handleSearch = () => {
+
+        if (!keyword) return
+        
+        const params = new URLSearchParams();
+
+        if (keyword.trim()) params.append("q", keyword.trim());
+
+        const catIds = Array.from(selectedCategories);
+        if (catIds.length > 0) params.append("categories", catIds.join(","));
+
+        if (selectedBrand) params.append("brands", selectedBrand);
+
+        if (priceFrom) params.append("price_from", priceFrom);
+        if (priceTo) params.append("price_to", priceTo);
+
+        if (featured) params.append("featured", featured);
+        if (freeShipping) params.append("free_shipping", freeShipping);
+
+        params.append("search_subcategories", autoSearchSub);
+
+        const queryString = params.toString();
+        router.push(`/advanced-search?${queryString}`);
+
+        // Also call parent onSearch if provided
         onSearch?.({
-            keyword,
-            categoryId: selectedCategories,
-            brandId: selectedBrand,
-            priceFrom,
-            priceTo,
+            keyword: keyword.trim(),
+            "categories": catIds.join(","),
+            "brands": selectedBrand,
+            price_from: priceFrom,
+            price_to: priceTo,
             featured,
-            freeShipping,
-            autoSearchSub,
+            free_shipping: freeShipping,
+            search_subcategories: autoSearchSub,
         });
     };
+    useEffect(() => {
+        setKeyword(searchParams.get("q") || "");
+        const cats = searchParams.get("categories");
+        const catsSet: any = cats
+            ? new Set(cats?.split(",")?.map(Number))
+            : new Set<number>();
+        setSelectedCategories(catsSet);
+        setSelectedBrand(searchParams.get("brands") || "");
+        setPriceFrom(searchParams.get("price_from") || "");
+        setPriceTo(searchParams.get("price_to") || "");
+        setFeatured(searchParams.get("featured") || "");
+        setFreeShipping(searchParams.get("free_shipping") || "");
+        setAutoSearchSub(searchParams.get("search_subcategories") !== "false");
+    }, [searchParams]);
 
     return (
         <div className="py-6">
@@ -61,6 +112,7 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
                     <input
                         type="text"
                         value={keyword}
+                        required
                         onChange={(e) => setKeyword(e.target.value)}
                         className="w-full border border-gray-300 rounded px-3 py-2 text-[1rem] focus:outline-none focus:border-gray-500 bg-white h-[3rem]"
                         placeholder=""
@@ -142,8 +194,8 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
                             className="w-full border border-gray-300 rounded px-3 py-2 text-[1rem] bg-white focus:outline-none h-[3rem]"
                         >
                             <option value="">No Preference</option>
-                            <option value="yes">Only Featured Products</option>
-                            <option value="no">Only Non-Featured Products</option>
+                            <option value="only_featured">Only Featured Products</option>
+                            <option value="only_non_featured">Only Non-Featured Products</option>
                         </select>
                     </div>
                     <div className="flex-1">
@@ -154,8 +206,8 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
                             className="w-full border h-[3rem] border-gray-300 rounded px-3 py-2 text-[1rem] bg-white focus:outline-none"
                         >
                             <option value="">No Preference</option>
-                            <option value="yes">Only Free Shipping</option>
-                            <option value="no">Only Paid Shipping</option>
+                            <option value="only_free">Only Free Shipping</option>
+                            <option value="only_paid">Only Paid Shipping</option>
                         </select>
                     </div>
                 </div>

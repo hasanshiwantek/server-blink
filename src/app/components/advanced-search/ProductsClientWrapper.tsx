@@ -139,17 +139,38 @@ export default function ProductsClientWrapper({
                 setIsLoading(true);
                 setError(null);
 
-                const res: any = await dispatch(advancedSearch({ q: query?.toString(), ...filters }));
-                const payloadRes = res?.payload?.data
+                const q = searchParams.get("q") || "";
+                const categoriesIds = searchParams.get("categories") || "";
+                const brandId = searchParams.get("brands") || "";
+                const priceFrom = searchParams.get("price_from") || "";
+                const priceTo = searchParams.get("price_to") || "";
+                const featured = searchParams.get("featured") || "";
+                const freeShipping = searchParams.get("free_shipping") || "";
+                const searchSubcategories = searchParams.get("search_subcategories") || "";
 
+                const res: any = await dispatch(advancedSearch({
+                    q,
+                    perPage: filters.pageSize,
+                    page: filters.page,
+                    sortBy: filters.sortBy,
+                    categoriesIds,
+                    brandId,
+                    priceFrom,
+                    priceTo,
+                    featured,
+                    freeShipping,
+                    searchSubcategories,
+                }));
+
+                const payloadRes = res?.payload?.data;
                 setProducts(applyClientSort(payloadRes?.products?.items || [], filters.sortBy));
 
                 const pagination = {
-                    "total": payloadRes?.products.pagination?.total,
-                    "page": payloadRes?.products.pagination?.currentPage,
-                    "pageSize": payloadRes?.products.pagination?.perPage,
-                    "lastPage": payloadRes?.products.pagination?.lastPage
-                }
+                    total: payloadRes?.products?.pagination?.total,
+                    page: payloadRes?.products?.pagination?.currentPage,
+                    pageSize: payloadRes?.products?.pagination?.perPage,
+                    lastPage: payloadRes?.products?.pagination?.lastPage,
+                };
                 setPagination(pagination || null);
             } catch (err: any) {
                 setError("Failed to load products");
@@ -159,7 +180,7 @@ export default function ProductsClientWrapper({
         };
 
         fetchData();
-    }, [filters, query]);
+    }, [filters, searchParams]);
     // Generate breadcrumb items based on page type
 
 

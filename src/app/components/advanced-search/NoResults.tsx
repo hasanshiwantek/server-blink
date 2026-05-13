@@ -8,7 +8,7 @@ export default function NoResults({ searchTerm, suggestedTerm, onRefineSearch }:
     return (
         <div className="bg-[#d9d9d9]  p-6 mt-6">
             {/* Did you mean */}
-            <div className="flex items-center gap-4 mb-4">
+            {/* <div className="flex items-center gap-4 mb-4">
                 <span className="text-[1rem] text-[#545454]">
                     Did you mean: <strong>{suggestedTerm || searchTerm}</strong>
                 </span>
@@ -18,7 +18,7 @@ export default function NoResults({ searchTerm, suggestedTerm, onRefineSearch }:
                 >
                     Refine Search
                 </button>
-            </div>
+            </div> */}
 
             {/* No match message */}
             <p className="text-[1rem] text-[#545454] mb-4">
