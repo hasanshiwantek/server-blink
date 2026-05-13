@@ -74,7 +74,7 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
                             className="w-full border border-gray-300 rounded px-3 py-2 text-[1rem] focus:outline-none focus:border-gray-500 bg-white h-[3rem]"
                         >
                             <option value="">No Preference</option>
-                            {brands?.map((brand) => (
+                            {brands?.map(({ brand }: any) => (
                                 <option key={brand.id} value={brand.id}>
                                     {brand.name}
                                 </option>
