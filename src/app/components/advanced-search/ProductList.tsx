@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import ProductCategoryCard from "../Product/ProductCategoryCard";
-import SortingBar from "../Product/SortingBar";
+// import SortingBar from "../Product/SortingBar";
 import ProductSkeleton from "../loader/ProductSkeleton";
 // import Pagination from "@/components/ui/pagination";
 import dynamic from "next/dynamic";
 import ProductCard from "../../components/Home/ProductCard";
 import Pagination from "./Pagination";
+import SortingBar from "./SortingBar";
 
 
 // Dynamically import motion.div and AnimatePresence (client only)

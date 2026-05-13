@@ -43,6 +43,13 @@ export default function ProductPage({
 
         loadData();
     }, []);
+
+
+    useEffect(() => {
+        if (query && searchForm) {
+            setSearchForm(false)
+        }
+    }, [query])
     return (
         <>
             <main
@@ -83,7 +90,7 @@ export default function ProductPage({
                         </div>
                         <div>
                             <h1 className="text-[28px] text-[#545454]">
-                                {productCount || 0} results for lap
+                                {productCount || 0} results for {query}
                             </h1>
                         </div>
                         <div>
@@ -106,7 +113,12 @@ export default function ProductPage({
 
 
                         {searchForm && <div>
-                            <AdvancedSearchForm categories={category?.slice(0, 10)} brands={brand} />
+                            <AdvancedSearchForm categories={category?.slice(0, 10)} brands={brand} onSearch={(values) => {
+                                setSearchForm(!searchForm)
+                                // setTimeout(() => {
+                                //     window.location.reload()
+                                // }, 500)
+                            }} />
                         </div>}
                         <div>
                             {(categories?.length > 0 && pagination.currentPage == 1) || (brands?.length > 0 && pagination.currentPage == 1) && <div className="bg-[#cac9c9] p-6 rounded">

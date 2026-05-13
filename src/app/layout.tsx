@@ -4,6 +4,7 @@ import LayoutWrapper from "./components/layout/LayoutWrapper";
 import { Inter, Jost, Roboto } from "next/font/google";
 import localFont from "next/font/local";
 import "../styles/blog/api-content.css";
+import ScriptInjector from "@/components/ScriptInjector";
 const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -107,7 +108,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${roboto.className} antialiased`} suppressHydrationWarning>
-        <LayoutWrapper>{children}</LayoutWrapper>
+        <LayoutWrapper>
+          <ScriptInjector />
+          {children}
+        </LayoutWrapper>
       </body>
     </html>
   );

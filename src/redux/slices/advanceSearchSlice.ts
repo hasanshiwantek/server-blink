@@ -24,20 +24,35 @@ const initialState: AdvanceState = {
 };
 
 interface SearchPayload {
+    // q: any;
+    // perPage?: number;
+    // page?: number;
+    // sortBy?: string;
     q: any;
     perPage?: number;
     page?: number;
     sortBy?: string;
+    categoriesIds?: string;
+    brandId?: string;
+    priceFrom?: string;
+    priceTo?: string;
+    featured?: string;
+    freeShipping?: string;
+    searchSubcategories?: string;
 }
 
 // Search thunk
 // export const advancedSearch = createAsyncThunk(
 //     "advanceSearch/advancedSearch",
-//     async ({ q, perPage = 20, page = 1 }: SearchPayload, thunkAPI) => {
+//     async ({ q, perPage = 12, page = 1, sortBy }: SearchPayload, thunkAPI) => {
 //         try {
-//             const res = await axiosInstance.get(
-//                 `web/search?q=${encodeURIComponent(q)}&perPage=${perPage}&page=${page}`
-//             );
+//             const params = new URLSearchParams();
+//             params.append("q", q);
+//             params.append("perPage", perPage.toString());
+//             params.append("page", page.toString());
+//             if (sortBy) params.append("sortBy", sortBy);
+
+//             const res = await axiosInstance.get(`web/search?${params.toString()}`);
 //             return res.data;
 //         } catch (err: any) {
 //             return thunkAPI.rejectWithValue(
@@ -48,13 +63,20 @@ interface SearchPayload {
 // );
 export const advancedSearch = createAsyncThunk(
     "advanceSearch/advancedSearch",
-    async ({ q, perPage = 12, page = 1, sortBy }: SearchPayload, thunkAPI) => {
+    async ({ q, perPage = 12, page = 1, sortBy, categoriesIds, brandId, priceFrom, priceTo, featured, freeShipping, searchSubcategories }: SearchPayload, thunkAPI) => {
         try {
             const params = new URLSearchParams();
-            params.append("q", q);
+            if (q) params.append("q", q);
             params.append("perPage", perPage.toString());
             params.append("page", page.toString());
             if (sortBy) params.append("sortBy", sortBy);
+            if (categoriesIds) params.append("categories", categoriesIds);
+            if (brandId) params.append("brands", brandId);
+            if (priceFrom) params.append("price_from", priceFrom);
+            if (priceTo) params.append("price_to", priceTo);
+            if (featured) params.append("featured", featured);
+            if (freeShipping) params.append("free_shipping", freeShipping);
+            if (searchSubcategories) params.append("search_subcategories", searchSubcategories);
 
             const res = await axiosInstance.get(`web/search?${params.toString()}`);
             return res.data;
