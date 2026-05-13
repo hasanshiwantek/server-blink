@@ -5,10 +5,10 @@ const BrandsSection = ({ brands }: { brands: any[] }) => {
     return (
         <div className="mt-2.5">
             <div className="flex flex-wrap items-center text-[15px]">
-                {brands.map(({ brand }: any, index: number) => (
-                    <React.Fragment key={brand.id}>
+                {brands?.map((brand, index: number) => (
+                    <React.Fragment key={brand?.id}>
                         <Link
-                            href={`/brand/${brand.slug}`}
+                            href={`/brand/${brand?.slug}`}
                             className="text-[#d42020] underline  whitespace-nowrap"
                         >
                             {brand?.name}

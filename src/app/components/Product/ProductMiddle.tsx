@@ -187,7 +187,6 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
         {/* Write a Review */}
         <div className="mb-3 pb-3 border-b border-[#e5e5e5]">
           <button
-            type="button"
             onClick={() => setIsReviewModalOpen(true)}
             className="text-[#393939] font-bold text-[13px] sm:text-[20px] hover:text-[#d40511] underline transition inline-block"
           >

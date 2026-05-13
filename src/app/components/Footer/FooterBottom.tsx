@@ -92,10 +92,9 @@ const FooterBottom = () => {
               type="submit" disabled={newsletterLoading}
               className="btn-primary h-[32px] !p-3 !rounded-sm w-[40%] md:w-[30%] max-w-[9rem]"
             >
-              {newsletterLoading ? "..." : "JOIN"}
+              {newsletterLoading ? "LOADING.." : "JOIN"}
             </button>
           </form>
-
         </div>
       </section>
 

@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react";
 import ProductCategoryCard from "../Product/ProductCategoryCard";
-// import ProductGridCard from "./ProductGridCard";
 import SortingBar from "../Product/SortingBar";
 import ProductSkeleton from "../loader/ProductSkeleton";
-import Pagination from "@/components/ui/pagination";
+// import Pagination from "@/components/ui/pagination";
 import dynamic from "next/dynamic";
 import ProductCard from "../../components/Home/ProductCard";
+import Pagination from "./Pagination";
 
 
 // Dynamically import motion.div and AnimatePresence (client only)
@@ -21,12 +21,7 @@ const AnimatePresence = dynamic(
     { ssr: false }
 );
 
-interface BreadcrumbItem {
-    name: string;
-    href: string;
-}
 interface ProductListProps {
-    items?: BreadcrumbItem[];
     filters: any;
     setFilters: any;
     products: any[];
@@ -38,7 +33,6 @@ interface ProductListProps {
 }
 
 export default function ProductList({
-    items,
     filters,
     setFilters,
     products,
@@ -96,8 +90,8 @@ export default function ProductList({
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
                     className={`mt-4 ${view === "grid"
-                            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-                            : "space-y-4"
+                        ?   "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+                        : "space-y-4"
                         }`}
                 >
                     {Array.from({ length: 6 }).map((_, idx) => (
@@ -116,8 +110,8 @@ export default function ProductList({
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                     className={`mt-4 ${view === "grid"
-                            ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-                            : "space-y-4"
+                        ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+                        : "space-y-4"
                         }`}
                 >
                     <AnimatePresence mode="wait">

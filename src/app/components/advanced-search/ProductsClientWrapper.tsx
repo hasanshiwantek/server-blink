@@ -1,12 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Sidebar from "../Filters/Sidebar";
-// import ProductList from "../Product/ProductList";
-import Breadcrumb from "../Product/Breadcrumb";
-import { fetchFilteredProducts } from "@/lib/api/products";
 import { ProductFilterPayload } from "@/types/types";
 import { useParams, usePathname } from "next/navigation";
 import ProductList from "./ProductList";
+import { useAppDispatch } from "@/hooks/useReduxHooks";
+import { advancedSearch } from "@/redux/slices/advanceSearchSlice";
+import { useSearchParams } from "next/navigation";
 
 export default function ProductsClientWrapper({
     categories,
@@ -20,16 +19,20 @@ export default function ProductsClientWrapper({
     const params = useParams(); // get slug param
     const pathname = usePathname(); // get current path
     const [products, setProducts] = useState<any[]>([]);
-    const [pagination, setPagination] = useState(null);
+    const [pagination, setPagination] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const searchParams = useSearchParams();
+    const query = searchParams.get("q");
+
     // Detect if we're on brand or category page
     const isBrandPage = pathname?.startsWith("/brand/");
     const isCategoryPage = pathname?.startsWith("/category/");
+    const dispatch = useAppDispatch()
 
     const [filters, setFilters] = useState<ProductFilterPayload>({
         page: 1,
-        pageSize: 20,
+        pageSize: 12,
         categoryIds: initialCategoryId ? [initialCategoryId] : [],
         brandId: initialBrandId || null,
         minPrice: undefined,
@@ -136,11 +139,19 @@ export default function ProductsClientWrapper({
                 setIsLoading(true);
                 setError(null);
 
-                const res = await fetchFilteredProducts(filters);
-                setProducts(applyClientSort(res.data || [], filters.sortBy));
-                setPagination(res.pagination || null);
+                const res: any = await dispatch(advancedSearch({ q: query?.toString(), ...filters }));
+                const payloadRes = res?.payload?.data
+
+                setProducts(applyClientSort(payloadRes?.products?.items || [], filters.sortBy));
+
+                const pagination = {
+                    "total": payloadRes?.products.pagination?.total,
+                    "page": payloadRes?.products.pagination?.currentPage,
+                    "pageSize": payloadRes?.products.pagination?.perPage,
+                    "lastPage": payloadRes?.products.pagination?.lastPage
+                }
+                setPagination(pagination || null);
             } catch (err: any) {
-                console.error("Error fetching products:", err);
                 setError("Failed to load products");
             } finally {
                 setIsLoading(false);
@@ -148,37 +159,16 @@ export default function ProductsClientWrapper({
         };
 
         fetchData();
-    }, [filters]);
+    }, [filters, query]);
     // Generate breadcrumb items based on page type
-    const breadcrumbItems = React.useMemo(() => {
-        const items = [{ name: "Home", href: "/" }];
 
-        if (isCategoryPage && filterMeta.categoryName) {
-            items.push({
-                name: filterMeta.categoryName,
-                href: `/category/${params?.slug || ""}`,
-            });
-        } else if (isBrandPage && filterMeta.brandName) {
-            items.push({
-                name: filterMeta.brandName,
-                href: `/brand/${params?.slug || ""}`,
-            });
-        }
 
-        return items;
-    }, [
-        isCategoryPage,
-        isBrandPage,
-        filterMeta.categoryName,
-        filterMeta.brandName,
-        params?.slug,
-    ]);
+    if (!products?.length) return <></>
 
     return (
         <div className="w-full max-w-[1170px] mx-auto lg:px-6 xl:px-0">
             <div className="py-6">
                 <ProductList
-                    items={breadcrumbItems}
                     filters={filters}
                     setFilters={setFilters}
                     products={products}
