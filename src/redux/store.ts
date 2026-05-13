@@ -15,6 +15,7 @@ import couponReducer from "./slices/couponSlice"
 import shippingZoneReducer from "./slices/shippingSlice"
 import multiAddressReducer from "./slices/multiAddressSlice";
 import contactReducer from "./slices/contactSlice";
+import advanceSearchReducer from "./slices/advanceSearchSlice";
 
 // ✅ only cart persist hoga
 const cartPersistConfig = {
@@ -62,6 +63,7 @@ const rootReducer = combineReducers({
   shippingZone: shippingZoneReducer,
   multiAddress: multiAddressReducer,
   contact: contactReducer,
+  advanceSearch: advanceSearchReducer,
 });
 
 export const store = configureStore({

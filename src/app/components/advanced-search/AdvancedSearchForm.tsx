@@ -74,7 +74,7 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
                             className="w-full border border-gray-300 rounded px-3 py-2 text-[1rem] focus:outline-none focus:border-gray-500 bg-white h-[3rem]"
                         >
                             <option value="">No Preference</option>
-                            {brands?.map(({ brand }: any) => (
+                            {brands?.map((brand) => (
                                 <option key={brand.id} value={brand.id}>
                                     {brand.name}
                                 </option>
@@ -163,12 +163,6 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
 
             {/* Search Button */}
             <div className="mt-6">
-                {/* <button
-                    onClick={handleSearch}
-                    className="bg-red-600 hover:bg-red-700 text-white font-semibold px-8 py-2 rounded text-[1rem] uppercase tracking-wide transition-colors"
-                >
-                    Search
-                </button> */}
                 <button
                     onClick={handleSearch}
                     className="btn-primary h-[32px] !p-3 !rounded-sm w-[40%] md:w-[30%] max-w-[9rem]"

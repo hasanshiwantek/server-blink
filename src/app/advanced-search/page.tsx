@@ -10,27 +10,32 @@ import ProductsClientWrapper from "../components/advanced-search/ProductsClientW
 import ProductTabs from "../components/advanced-search/ProductTabs";
 import AdvancedSearchForm from "../components/advanced-search/AdvancedSearchForm";
 import NoResults from "../components/advanced-search/NoResults";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
+import { advancedSearch } from "@/redux/slices/advanceSearchSlice";
+import { useSearchParams } from "next/navigation";
 
 export default function ProductPage({
     params,
 }: {
     params: Promise<{ slug: string }>;
 }) {
-    const [categories, setCategories] = useState([]);
-    const [brands, setBrands] = useState([]);
     const [currentTab, setCurrentTab] = useState(0);
     const [searchForm, setSearchForm] = useState(false);
-
+    const { loading, products, pagination, categories, brands, error, productCount } = useAppSelector((state: any) => state?.advanceSearch);
+    const searchParams = useSearchParams();
+    const query = searchParams.get("q");
+    const [category, setCategory] = useState([]);
+    const [brand, setBrand] = useState([]);
     useEffect(() => {
         const loadData = async () => {
             try {
                 // Categories (you already have this)
                 const catData = await fetchCategories();
-                setCategories(catData);
+                setCategory(catData);
 
                 // Brands - Add this API call
                 const brandData = await fetchBrands(); // Create this function
-                setBrands(brandData);
+                setBrand(brandData);
             } catch (error) {
                 console.error("Failed to load categories/brands", error);
             }
@@ -38,7 +43,6 @@ export default function ProductPage({
 
         loadData();
     }, []);
-
     return (
         <>
             <main
@@ -79,13 +83,13 @@ export default function ProductPage({
                         </div>
                         <div>
                             <h1 className="text-[28px] text-[#545454]">
-                                10000 results for lap
+                                {productCount || 0} results for lap
                             </h1>
                         </div>
                         <div>
                             <ProductTabs
                                 tabs={[
-                                    { label: "PRODUCTS", count: 10000 },
+                                    { label: "PRODUCTS", count: productCount },
                                     { label: "NEWS & INFORMATION", count: 0 },
                                     { label: searchForm ? "HIDE SEARCH FORM" : "SHOW SEARCH FORM", isDivided: true },
                                 ]}
@@ -102,30 +106,34 @@ export default function ProductPage({
 
 
                         {searchForm && <div>
-                            <AdvancedSearchForm categories={categories.slice(0, 10)} brands={brands} />
+                            <AdvancedSearchForm categories={category?.slice(0, 10)} brands={brand} />
                         </div>}
                         <div>
-                            <div className="bg-[#cac9c9] p-6 rounded">
-                                <div className="flex justify-between items-center  pb-1 mb-5">
-                                    <h2 className=" text-[22px] text-[#545454] font-light">Categories</h2>
-                                </div>
-                                <CategoriesSection categories={categories.slice(0, 6)} />
-                                <div className="flex justify-between items-center  pb-1 mt-6">
-                                    <h2 className=" text-[22px] text-[#545454] font-light">Brands</h2>
-                                </div>
-                                <BrandsSection brands={brands?.slice(0, 6)} />
-                            </div>
+                            {(categories?.length > 0 && pagination.currentPage == 1) || (brands?.length > 0 && pagination.currentPage == 1) && <div className="bg-[#cac9c9] p-6 rounded">
+                                {categories?.length > 0 && <div>
+                                    <div className="flex justify-between items-center  pb-1 mb-5">
+                                        <h2 className=" text-[22px] text-[#545454] font-light">Categories</h2>
+                                    </div>
+                                    <CategoriesSection categories={categories} />
+                                </div>}
+                                {brands?.length > 0 && <div>
+                                    <div className="flex justify-between items-center  pb-1 mt-6">
+                                        <h2 className=" text-[22px] text-[#545454] font-light">Brands</h2>
+                                    </div>
+                                    <BrandsSection brands={brands} />
+                                </div>}
+                            </div>}
                             <div>
                                 <ProductsClientWrapper />
                             </div>
                         </div>
-                        {/* {products?.length === 0 && ( */}
-                        <NoResults
-                            searchTerm="sdfsdf"
-                            suggestedTerm="sdsdq"
-                            onRefineSearch={() => setCurrentTab(2)}
-                        />
-                        {/* )} */}
+                        {products?.length === 0 && (
+                            <NoResults
+                                searchTerm={query || ""}
+                                suggestedTerm="sdsdq"
+                                onRefineSearch={() => setCurrentTab(2)}
+                            />
+                        )}
                     </article>
                 </div>
             </main>
