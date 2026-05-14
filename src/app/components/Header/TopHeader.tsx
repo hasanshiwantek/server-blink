@@ -327,12 +327,10 @@ const TopHeader = () => {
                   </div>
 
                   {isOpen && (
-                    <div className="absolute right-0 top-7  w-96 bg-[#eaeaea]  shadow-2xl border border-gray-200  z-[9999]">
-                      {/* <div className="absolute -top-2 right-1 w-4 h-4 bg-[#eaeaea] border-l border-t border-gray-200 rotate-45" /> */}
-
+                    <div className={`absolute right-0 top-7 w-96 shadow-2xl border border-gray-200 z-[9999] ${cart.length === 0 ? "bg-[#ffffff]" : "bg-[#eaeaea]"}`}>
                       {cart.length === 0 ? (
-                        <div className="p-8 text-center">
-                          <p className="text-gray-600 text-base font-medium">Your cart is empty</p>
+                        <div className="p-12 text-center">
+                          <p className=" text-[#545454] font-bold">Your cart is empty</p>
                         </div>
                       ) : (
                         <div className="relative">
@@ -378,7 +376,7 @@ const TopHeader = () => {
                             ))}
                           </div>
 
-                          
+
                           <div className="flex gap-2 p-4 pt-6">
                             <button
                               className="flex-1 font-[var(--font-roboto-condensed)] font-bold bg-[#d42020] hover:bg-[#b81818] text-white text-[1rem] py-2.5 px-4 border-0 border-b-[3px] border-b-[#860109] transition uppercase tracking-wide"
