@@ -195,7 +195,7 @@ const CartList = () => {
                 </div>
 
                 <div className="flex items-center gap-2 sm:gap-3">
-                  <p className="text-xl">
+                  <p className="text-[15px]">
                     ${Number(item.price * item.quantity).toFixed(2)}
                   </p>
                   <button
