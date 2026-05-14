@@ -138,7 +138,7 @@ export default function Sidebar({
         <ul className="py-2 space-y-2">
           <li>
             <CategoryFilter
-            categories={categories}
+            categories={categories?.slice(0, 10)}
             handleCategoryClick={handleCategoryClick}
             activeCategoryId={filters?.categoryIds?.[0]}
             expandedCategories={expandedCategories}

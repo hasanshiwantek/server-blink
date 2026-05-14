@@ -209,7 +209,7 @@ const TopHeader = () => {
                     e.preventDefault();
                     const q = searchQuery.trim();
                     dispatch(clearSearch());
-                    if(q){
+                    if (q) {
                       router.push(`/advanced-search?q=${q}`);
                     }
                   }}
@@ -317,26 +317,24 @@ const TopHeader = () => {
               {/* Cart */}
               <div className="relative sm:flex hidden" ref={dropdownRef}>
                 <div className="relative w-[40px]">
-                  <div className="absolute z-[9999] -top-6 -bottom-7 right-0 left-0 bg-[#d42020] hover:bg-[#860d09] transition cursor-pointer flex items-center justify-center"
+                  <div className="absolute z-[9999] -top-6 -bottom-7 right-0 left-0 bg-[#d42020] hover:bg-[#860d09] border-0 border-b-[3px] border-b-[#860109] transition cursor-pointer flex items-center justify-center"
                     onClick={() => setIsOpen((prev) => !prev)}
                   >
-                    <FaShoppingCart className="w-6 h-6 text-white" />
-                    <span className="absolute top-3 -right-1.5 bg-[#eaeaea] text-[#d42020] text-[10px] rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                    <FaShoppingCart className="w-7 h-7 text-white" />
+                    <span className="absolute top-2 -right-3 bg-[#ffffff] text-[#d42020] text-[10px] rounded-full w-6 h-6 flex items-center justify-center font-bold">
                       {cartItemCount || "0"}
                     </span>
                   </div>
 
                   {isOpen && (
-                    <div className="absolute right-0 top-7  w-96 bg-[#eaeaea]  shadow-2xl border border-gray-200  z-[9999]">
-                      {/* <div className="absolute -top-2 right-1 w-4 h-4 bg-[#eaeaea] border-l border-t border-gray-200 rotate-45" /> */}
-
+                    <div className={`absolute right-0 top-7 w-96 shadow-2xl border border-gray-200 z-[9999] ${cart.length === 0 ? "bg-[#ffffff]" : "bg-[#eaeaea]"}`}>
                       {cart.length === 0 ? (
-                        <div className="p-8 text-center">
-                          <p className="text-gray-600 text-base font-medium">Your cart is empty</p>
+                        <div className="p-12 text-center">
+                          <p className=" text-[#545454] font-bold">Your cart is empty</p>
                         </div>
                       ) : (
                         <div className="relative">
-                          <div className="max-h-96 overflow-y-auto p-4 space-y-5 pb-2">
+                          <div className="max-h-96 overflow-y-auto  border space-y-1 pb-6">
                             {Object.values(
                               cart.reduce((acc: Record<string, any>, item: any) => {
                                 const key = item?.id;
@@ -348,8 +346,8 @@ const TopHeader = () => {
                                 return acc;
                               }, {})
                             ).map((item) => (
-                              <Link key={item?.id} href={item?.productUrl} onClick={() => setIsOpen(false)} className="flex gap-3 items-center cursor-pointer">
-                                <div className="w-16 h-16 flex-shrink-0 border border-gray-100 rounded">
+                              <Link key={item?.id} href={item?.productUrl} onClick={() => setIsOpen(false)} className=" px-2 flex gap-3 items-center cursor-pointer border-b border-gray-300 pb-1 last:border-b-0">
+                                <div className="w-16 h-16 flex-shrink-0 border border-gray-100 rounded-none">
                                   <img
                                     src={item?.image?.[0]?.path || "/default-product-image.svg"}
                                     alt={item?.name}
@@ -358,16 +356,16 @@ const TopHeader = () => {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   {item?.brand?.name && (
-                                    <p className="text-[13px] text-[#393939] font-medium uppercase">
+                                    <p className="text-[13px] text-[#393939] inline-block font-bold uppercase">
                                       {item?.brand?.name}
                                     </p>
                                   )}
                                   <p className="text-[13px] font-light text-[#d42020] leading-snug whitespace-pre-line break-words">
                                     {item?.name}
                                   </p>
-                                  <p className="text-[#393939] text-[13px] mt-1">
+                                  <p className="text-[#393939] font-bold text-[13px] mt-1">
                                     {item?.quantity > 1 && (
-                                      <span className=" font-medium">
+                                      <span>
                                         {item?.quantity} ×{" "}
                                       </span>
                                     )}
@@ -378,17 +376,16 @@ const TopHeader = () => {
                             ))}
                           </div>
 
-                          <div className="flex gap-2 p-4 pt-2">
+
+                          <div className="flex gap-2 p-4 pt-6">
                             <button
-                              className="flex-1 bg-[#d42020] hover:bg-red-700 text-white text-[1rem] font-bold py-2.5 px-4  transition uppercase tracking-wide"
-                              onClick={() => {
-                                handleSelect("/checkout");
-                              }}
+                              className="flex-1 font-[var(--font-roboto-condensed)] font-bold bg-[#d42020] hover:bg-[#b81818] text-white text-[1rem] py-2.5 px-4 border-0 border-b-[3px] border-b-[#860109] transition uppercase tracking-wide"
+                              onClick={() => handleSelect("/checkout")}
                             >
                               Check Out Now
                             </button>
                             <button
-                              className="flex-1 bg-[#d42020] hover:bg-red-700 text-white text-[1rem] font-bold py-2.5 px-4  transition uppercase tracking-wide"
+                              className="flex-1 font-[var(--font-roboto-condensed)] font-bold bg-[#d42020] hover:bg-[#b81818] text-white text-[1rem] py-2.5 px-4 border-0 border-b-[3px] border-b-[#860109] transition uppercase tracking-wide"
                               onClick={() => {
                                 handleSelect("/cart");
                               }}
