@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import "./globals.css";
 import LayoutWrapper from "./components/layout/LayoutWrapper";
-import { Inter, Jost, Roboto } from "next/font/google";
+import { Inter, Jost, Roboto, Roboto_Condensed } from "next/font/google";
 import localFont from "next/font/local";
-import "../styles/blog/api-content.css";
 import ScriptInjector from "@/components/ScriptInjector";
+import "../styles/blog/api-content.css";
+import "./globals.css";
 const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -17,8 +17,13 @@ const roboto = Roboto({
   weight: ["400", "500", "600", "700"],
   display: "swap",
   preload: true,
+  variable: "--font-roboto",
 });
-
+const robotoCondensed = Roboto_Condensed({
+  subsets: ["latin"],
+  weight: ["300", "400", "700"],
+  variable: "--font-roboto-condensed",
+});
 // // ✅ Recoleta (400–700) - Loading multiple weights
 // const gilroy = localFont({
 //   src: [
@@ -106,8 +111,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${roboto.className} antialiased`} suppressHydrationWarning>
+    <html lang="en" className={`${roboto.variable} ${robotoCondensed.variable}`}>
+      <body className={`antialiased`} suppressHydrationWarning>
         <LayoutWrapper>
           <ScriptInjector />
           {children}
