@@ -108,12 +108,12 @@ const CartList = () => {
                     className="w-full h-[8.1rem] object-contain border m-auto"
                   />
                 </div>
-                <div className="w-full xl:w-[63.1%] 2xl:w-[71%] mx-4">
-                  <p className="text-xl text-center xl:text-start">
+                <div className="w-full text-[15px] xl:w-[63.1%] 2xl:w-[71%] mx-4">
+                  <p className=" text-center xl:text-start">
                     {item?.brand?.name || "N/A"}
                   </p>
                   <Link href={`${item?.productUrl || "#"}`}>
-                    <p className="text-xl text-[#D42020] underline text-center lg:mx-auto md:mx-auto sm:mx-auto w-[100%] sm:w-[60%]  md:w-[70%] lg:w-[80%] xl:text-start xl:w-[100%] 2xl:w-[100%]">
+                    <p className=" text-[#D42020] underline text-center lg:mx-auto md:mx-auto sm:mx-auto w-[100%] sm:w-[60%]  md:w-[70%] lg:w-[80%] xl:text-start xl:w-[100%] 2xl:w-[100%]">
                       {item.name}
                     </p>
                   </Link>
@@ -122,7 +122,7 @@ const CartList = () => {
               </div>
 
               <div className="flex w-full flex-wrap items-center gap-4 xl:gap-0 xl:w-[66%] 2xl:w-[68%] xl:flex-nowrap xl:justify-between">
-                <p className="text-xl">${Number(item.price).toFixed(2)}</p>
+                <p className="text-[15px]">${Number(item.price).toFixed(2)}</p>
                 <div className="flex items-center  border-gray-300 overflow-hidden">
 
                   {/* Down Arrow (Decrease) — Left */}
