@@ -121,7 +121,7 @@ export default function ProductPage({
                             }} />
                         </div>}
                         <div>
-                            {pagination.currentPage == 1 && <div className="bg-[#cac9c9] p-6 rounded">
+                            {pagination?.currentPage == 1 && <div className="bg-[#cac9c9] p-6 rounded">
                                 {categories?.length > 0 && <div>
                                     <div className="flex justify-between items-center  pb-1 mb-5">
                                         <h2 className=" text-[22px] text-[#545454] font-light">Categories</h2>
