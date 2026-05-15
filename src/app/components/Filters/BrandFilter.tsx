@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 interface BrandFilterProps {
   brands: any[];
@@ -16,7 +17,7 @@ export default function BrandFilter({
       {brands.slice(0, 11).map((b: any) => {
         const isActive = activeBrandId === b.brand.id;
         return (
-          <li key={b.brand.id}>
+          <Link href={`/brand/${b?.brand?.slug}`} key={b?.brand.id}>
             <button
               onClick={() =>
                 handleBrandClick(b.brand.id, b.brand.name, b.brand.slug)
@@ -28,7 +29,7 @@ export default function BrandFilter({
             >
               {b.brand.name}
             </button>
-          </li>
+          </Link>
         );
       })}
     </ul>

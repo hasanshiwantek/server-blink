@@ -6,7 +6,7 @@ const CategoriesSection = ({ categories }: { categories: any[] }) => {
   console.log(categories);
 
   categories?.forEach((category: any) => {
-    if (category.subcategories?.length > 0) {
+    if (category?.subcategories?.length > 0) {
       category.subcategories.slice(0, 3).forEach((sub: any) => {
         categoryPairs.push({ parent: category, child: sub })
       })
