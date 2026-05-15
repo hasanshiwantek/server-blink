@@ -37,6 +37,8 @@ const CartList = () => {
 
       setQuantities((prev) => ({ ...prev, [id]: value }));
     }
+    localStorage.removeItem("shippingCost")
+    localStorage.removeItem("shippingData")
   };
   const confirmDelete = () => {
     if (itemToDelete) {
@@ -128,7 +130,11 @@ const CartList = () => {
                   {/* Down Arrow (Decrease) — Left */}
                   <button
                     type="button"
-                    onClick={() => dispatch(decreaseQty(item.id))}
+                    onClick={() => {
+                      dispatch(decreaseQty(item.id))
+                      localStorage.removeItem("shippingCost")
+                      localStorage.removeItem("shippingData")
+                    }}
                     //                 className="
                     //   flex items-center justify-center w-8 h-full
                     //   hover:bg-gray-100
@@ -180,6 +186,8 @@ const CartList = () => {
                         item.quantity < item.maxPurchaseQuantity
                       ) {
                         dispatch(increaseQty(item.id));
+                        localStorage.removeItem("shippingCost")
+                        localStorage.removeItem("shippingData")
                       }
                     }}
                     //                 className="

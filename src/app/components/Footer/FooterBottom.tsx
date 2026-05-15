@@ -9,6 +9,8 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { getBlogs } from "@/redux/slices/storeFrontSlice";
 import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+
 interface Category {
   id: number;
   name: string;
@@ -26,7 +28,7 @@ const FooterBottom = () => {
   const { blogs, error, loading } = useAppSelector(
     (state: any) => state.storeFront
   );
-
+  const router = useRouter();
   const blogPosts = blogs?.data || [];
 
   useEffect(() => {
@@ -45,7 +47,9 @@ const FooterBottom = () => {
 
   //   loadCategories();
   // }, []); 
-
+  const handleSelect = (url: string) => {
+    router.push(url);
+  };
   return (
     <footer className="bg-[#333333] text-white w-full mx-auto">
       {/* 🔹 Newsletter Section */}
@@ -73,6 +77,7 @@ const FooterBottom = () => {
               e.preventDefault();
               if (email.trim()) {
                 dispatch(subscribeNewsletter({ email: email.trim() })).unwrap().then(() => {
+                  handleSelect("/result")
                   setEmail("")
                 });
               }
