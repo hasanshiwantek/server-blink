@@ -18,6 +18,8 @@ const roboto = Roboto({
   display: "swap",
   preload: true,
   variable: "--font-roboto",
+  adjustFontFallback: false,
+
 });
 const robotoCondensed = Roboto_Condensed({
   subsets: ["latin"],
@@ -111,8 +113,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${roboto.variable} ${robotoCondensed.variable}`}>
-      <body className={`antialiased`} suppressHydrationWarning>
+    <html lang="en" className={`${roboto.variable} `}>
+      <body className={`${roboto.className} antialiased`} suppressHydrationWarning>
         <LayoutWrapper>
           <ScriptInjector />
           {children}

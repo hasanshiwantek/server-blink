@@ -123,9 +123,9 @@ input[type="search"]::-webkit-search-results-decoration {
 body {
   overflow-x: hidden;
   background-color: #eaeaea;
-  font-family: var(--font-roboto-condensed), "Roboto", Arial, Helvetica, sans-serif;
-
+    font-family: Roboto, Arial, Helvetica, sans-serif !important;
   /* font-family: "Roboto", Arial, Helvetica, sans-serif; */
+  /* font-family: var(--font-roboto-condensed), "Roboto", Arial, Helvetica, sans-serif; */
   /* font-family: "Recoleta", sans-serif; */
   /* font-family: var(--font-recoleta); */
   /* overflow-y: auto; */
@@ -219,14 +219,15 @@ button {
 
 .btn-primary {
   /* Font styling */
-  font-family: "Roboto Condensed", "Roboto", Arial, Helvetica, sans-serif;
+  font-family: "Roboto Condensed" !important;
+  /* font-family: "Roboto Condensed", "Roboto", Arial, Helvetica, sans-serif; */
   @apply font-bold text-[18px] leading-4 uppercase;
 
   /* Colors */
   @apply bg-[#d42020] text-white;
 
   /* Border styling - no left, right, top borders, bottom border with darker color */
-  @apply border-0 border-b-[3px] border-b-[#860109] rounded-none;
+  @apply border-0 border-b-[4px] border-b-[#860109] rounded-none;
 
   /* Spacing */
   @apply px-[2.28571rem] py-[0.85714rem] my-0;

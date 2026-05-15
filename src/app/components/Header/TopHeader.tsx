@@ -12,6 +12,7 @@ import MobileSearchBar from "./MobileSearchBar";
 import { fetchCategories } from "@/lib/api/category";
 import { clearSearch, globalSearch, setSearchQuery, setShowSearchDropdown } from "@/redux/slices/homeSlice";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 
 interface Category {
@@ -187,7 +188,7 @@ const TopHeader = () => {
               className={`relative flex-1 flex  justify-center transition-all duration-300 
     ${isScrolled ? "block" : "hidden"}`}
             >
-              <form className="relative w-full max-w-[300px]">
+              <form className="relative w-full max-w-[270px]  h-[25px]">
                 <input
                   type="text"
                   value={searchQuery}
@@ -201,7 +202,7 @@ const TopHeader = () => {
                     }
                   }}
                   placeholder="SEARCH"
-                  className="w-full text-white placeholder-white px-4 pr-10 focus:outline-none text-sm font-semibold border-b border-white bg-transparent"
+                  className="w-full text-white placeholder-white px-1 py-1 pr-9 focus:outline-none text-sm font-semibold border-b border-white bg-transparent"
                 />
                 <button
 
@@ -214,49 +215,110 @@ const TopHeader = () => {
                     }
                   }}
                   // onClick={handleSearch}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white"
+                  className="absolute right-1 top-1/2 py-1 -translate-y-1/2 text-white"
                   aria-label="search"
                 >
                   <Search className="w-5 h-5" />
                 </button>
               </form>
               {showSearchDropdown && searchQuery.trim().length > 1 && (
-                <div className="absolute top-full left-0 w-full mt-2 bg-white text-[#4A4A4A] shadow-lg rounded-md overflow-hidden z-50 max-h-[400px] overflow-y-auto">
-                  {loading && <div className="p-3 text-gray/80">Searching...</div>}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-[585px] mt-1 bg-[#f2f2f2] shadow-xl overflow-hidden z-[9999] max-h-[520px] overflow-y-auto border border-gray-300">
+
+                  {loading && <div className="p-6 text-gray-500 text-center">Searching...</div>}
 
                   {!loading && searchData?.data?.length === 0 && (
-                    <div className="p-3 text-gray/80">No Products found.</div>
+                    <div className="p-6 text-gray-500 text-center">No Products found.</div>
                   )}
 
                   {!loading &&
                     searchData?.data?.map((item: any) => (
                       <div
                         key={item.id}
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          const url = item?.productUrl;
-                          if (url) {
-                            dispatch(setShowSearchDropdown(false));
-                            handleSelect(url)
-                          }
+                        className="border-b-4 border-gray-200 last:border-b-2 hover:bg-gray-50 transition-colors cursor-pointer group"
+                        onClick={() => {
+                          const url = item?.productUrl || `/${item.sku}`;
+                          handleSelect(url);
                         }}
-                        className="
-                  flex items-start gap-3 p-3 border-b border-gray/50
-                  hover:bg-[var(--primary-color)] hover:text-white
-                  transition-colors cursor-pointer
-                "
                       >
-                        <div className="flex flex-col flex-grow overflow-hidden">
-                          <p className="text-sm font-semibold truncate">
-                            {item?.brand?.name || "Brand"} | <span>SKU: {item?.sku || "N/A"}</span>
-                          </p>
-                          <p className="text-[15px] font-medium leading-tight line-clamp-2">
-                            {item?.name}
-                          </p>
-                          <p className="text-sm font-semibold mt-1">
-                            {item?.price ? `$${item?.price}` : "$0.00"}
-                          </p>
+                        <div className="flex">
+                          {/* Product Image - Left Side */}
+                          <div className="w-[160px] min-h-[140px] flex-shrink-0 bg-white border-r border-gray-200 p-3 flex items-center justify-center">
+                            <Image
+                              src={item?.image?.[0]?.path || "/default-product-image.svg"}
+                              alt={item?.name || "product"}
+                              width={145}
+                              height={125}
+                              onMouseDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                const url = item?.productUrl || `/${item?.sku}`;
+                                handleSelect(url);
+                              }}
+                              className="object-contain max-w-full max-h-full"
+                            />
+                          </div>
+                          {/* Product Details - Right Side */}
+                          <div className="flex-1 p-4 flex flex-col">
+                            {/* Brand */}
+                            <p onMouseDown={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const url = item?.brand?.slug || `/${item?.sku}`;
+                              handleSelect(url);
+                            }} className="text-[1rem] text-[#545454] uppercase hover:text-[#d42020]">
+                              {item?.brand?.name || "Brand"}
+                            </p>
+
+                            {/* SKU */}
+                            <p onMouseDown={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const url = item?.productUrl || `/${item?.sku}`;
+                              handleSelect(url);
+                            }} className="text-[1rem] text-[#545454] mt-0.5 hover:text-[#d42020]">
+                              Sku: {item?.sku || "N/A"}
+                            </p>
+
+                            {/* Product Name */}
+                            <p onMouseDown={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const url = item?.productUrl || `/${item?.sku}`;
+                              handleSelect(url);
+                            }} className="text-[14px] font-bold text-[#54545F] leading-tight mt-2 line-clamp-2 min-h-[42px] hover:text-[#d42020]">
+                              {item?.name}
+                            </p>
+
+                            {/* Pricing */}
+                            <div className="mt-auto pt-3">
+                              {item?.costPrice && Number(item?.costPrice) > Number(item?.price) && (
+                                <p className="text-[13px] text-gray-500">
+                                  Price{" "}
+                                  <span className="line-through">
+                                    ${Number(item?.costPrice).toFixed(2)}
+                                  </span>
+                                </p>
+                              )}
+
+                              <p className="text-[16px] font-bold text-[#545454]  mt-1">
+                                ${Number(item?.price || 0).toFixed(2)}
+                              </p>
+                            </div>
+
+                            {/* View Details Button */}
+                            <button
+                              onMouseDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                const url = item?.productUrl || `/${item?.sku}`;
+                                handleSelect(url);
+                              }}
+                              // className="mt-4 w-full bg-[#cccccc] hover:bg-[#bbbbbb] text-[#333] font-bold text-[14px] uppercase py-3 tracking-widest transition-all active:bg-gray-400 btn-pri"
+                              className="font-bold text-[14px] font-roboto-condensed leading-4 uppercase font-robot border-b-[4px] border-b-[#393939] bg-[#cac9c9] text-[#393939] rounded-none hover:bg-[#b81818] hover:border-b-[#6b0107] hover:text-white px-[2.28571rem] py-[0.85714rem] my-0"
+                            >
+                              VIEW DETAILS
+                            </button>
+                          </div>
                         </div>
                       </div>
                     ))}

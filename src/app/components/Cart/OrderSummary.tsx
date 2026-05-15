@@ -60,6 +60,12 @@ const OrderSummary = () => {
   }, [cart]);
 
   const shipping = useMemo(() => {
+
+    if (typeof window !== "undefined") {
+      const savedCost = localStorage.getItem("shippingCost");
+      if (savedCost) return Number(savedCost);
+    }
+
     if (cart.length === 0) return 0;
 
     return cart.reduce((sum, item) => {
@@ -173,12 +179,18 @@ const OrderSummary = () => {
           <div className="flex justify-between py-2">
             <span className="text-xl text-[#393939]">Shipping:</span>
 
-            <span
+            {shippingCost ? <span
               className={shippingCost ? "text-xl text-red-500 border-b border-red-500 inline-block cursor-pointer" : "text-xl border-b border-gray-500 inline-block cursor-pointer"}
               onClick={() => setShowShipping(!showShipping)}
             >
-              {shippingCost ? `$${shippingCost.toFixed(2)}` : showShipping ? "" : "Add info"}
-            </span>
+              {!showShipping ? `$${shippingCost.toFixed(2)}` : ""}
+
+            </span> : <span
+              className={showShipping ? " text-xl  border-b hover:border-red-500 border-gray-500 inline-block cursor-pointer italic hover:text-red-500" : "hover:border-red-500 hover:text-red-500 text-xl border-b border-gray-500 inline-block cursor-pointer"}
+              onClick={() => setShowShipping(!showShipping)}
+            >
+              {showShipping ? "Cancel" : "Add info"}
+            </span>}
           </div>
 
           {/* Shipping form */}
@@ -274,7 +286,8 @@ const OrderSummary = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full md:w-[65%] p-2 border-b border-black rounded bg-[#D42020] text-white text-xl font-bold"
+                  className="w-full md:w-[65%] btn-primary"
+                // className="w-full md:w-[65%] p-2 border-b border-black  bg-[#D42020] text-white text-xl font-bold"
                 >
                   {loading ? "Loading..." : "Estimate Shipping"}
                 </button>
@@ -294,7 +307,7 @@ const OrderSummary = () => {
                 ) : shippingRates?.map((rate, i) => {
                   return <label
                     key={`${rate.method_id}-${rate.service_type}`}
-                    className={`flex items-start gap-3 border rounded p-4 transition-colors cursor-pointer ${selectedShippingMethod === rate.service_type ? "" : ""}`}
+                    className={`flex items-start gap-3  p-4 transition-colors cursor-pointer ${selectedShippingMethod === rate.service_type ? "" : ""}`}
                   >
                     <input
                       type="radio"
@@ -304,22 +317,18 @@ const OrderSummary = () => {
                       onChange={(e) => setSelectedShippingMethod(e.target.value)}
                       className="mt-1"
                     />
-                    <div className="min-w-0 flex-1 flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-2">
+                    <div className="min-w-0 flex-1 flex items-center justify-between gap-3 text-[#545454] text-[14px] ">
+                      <div className="flex items-center gap-2 font-normal" >
                         {rate.is_fedex && (
-                          <Image
-                            src="/checkouticon/fedex.png"
-                            alt="FedEx"
-                            width={60}
-                            height={20}
-                            className="shrink-0 object-contain"
-                          />
+                          <span>
+                            FedEx
+                          </span>
                         )}
-                        <span className="text-base font-medium text-gray-700">
+                        <span className="">
                           {rate.is_fedex ? `(${rate.service_name})` : rate.display_name}
                         </span>
                       </div>
-                      <div className="text-base font-bold flex-shrink-0">
+                      <div className=" font-bold flex-shrink-0">
                         {rate.total_charge === 0 ? "Free" : `$${Number(rate.total_charge).toFixed(2)}`}
                       </div>
                     </div>
@@ -341,7 +350,8 @@ const OrderSummary = () => {
                       localStorage.setItem("shippingData", JSON.stringify(shippingData));
                       window.location.reload(); // Refresh to update totals with new shipping cost
                     }}
-                    className="w-full md:w-[65%] p-2 border-b border-black rounded bg-[#D42020] text-white text-xl font-bold"
+                    className="w-full md:w-[55%] text-[18px] btn-primary"
+                  // className="w-full md:w-[65%] p-2 border-b border-black  bg-[#D42020] text-white text-xl font-bold"
                   >
                     Update Shipping Cost
                   </button>

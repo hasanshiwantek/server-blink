@@ -647,21 +647,17 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                   disabled={!isShippingComplete}
                 />
                 <div className="min-w-0 flex-1 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 text-[#545454] text-[14px] font-normal">
                     {rate.is_fedex && (
-                      <Image
-                        src="/checkouticon/fedex.png"
-                        alt="FedEx"
-                        width={60}
-                        height={20}
-                        className="shrink-0 object-contain"
-                      />
+                      <span>
+                        FedEx
+                      </span>
                     )}
-                    <span className="text-base font-medium text-gray-700">
+                    <span>
                       {rate.is_fedex ? `(${rate.service_name})` : rate.display_name}
                     </span>
                   </div>
-                  <div className="text-base font-bold flex-shrink-0">
+                  <div className="text-[14px]  font-bold flex-shrink-0">
                     {rate.total_charge === 0 ? "Free" : `$${Number(rate.total_charge).toFixed(2)}`}
                   </div>
                 </div>

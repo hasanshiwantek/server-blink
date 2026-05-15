@@ -50,6 +50,10 @@ export default function ProductPage({
             setSearchForm(false)
         }
     }, [query])
+
+
+    console.log(categories, pagination);
+
     return (
         <>
             <main

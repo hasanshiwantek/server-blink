@@ -133,7 +133,7 @@ const SignupPage = () => {
 
       {/* Main Content */}
       <div className=" px-10 xl:px-0  w-full  xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-7xl mx-auto  py-8 pb-16">
-        <h1 className="h1-lg mb-12">New Account</h1>
+        <h1 className="h1-lg !font-light text-[28px] mb-2">New Account</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Two Column Grid */}
@@ -145,7 +145,7 @@ const SignupPage = () => {
               <div className="flex justify-between items-center">
                 <label
                   htmlFor="email"
-                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                  className="block text-[14px] font-normal text-[#545454] mb-2"
                 >
                   Email Address
                 </label>
@@ -169,7 +169,7 @@ const SignupPage = () => {
               <div className="flex justify-between items-center">
                 <label
                   htmlFor="password"
-                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                  className="block text-[14px] font-normal text-[#545454] mb-2"
                 >
                   Password
                 </label>
@@ -194,7 +194,7 @@ const SignupPage = () => {
 
                 <label
                   htmlFor="confirmPassword"
-                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                  className="block text-[14px] font-normal text-[#545454] mb-2"
                 >
                   Confirm Password
                 </label>
@@ -223,7 +223,7 @@ const SignupPage = () => {
               <div className="flex justify-between items-center">
                 <label
                   htmlFor="firstName"
-                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                  className="block text-[14px] font-normal text-[#545454] mb-2"
                 >
                   First Name
                 </label>
@@ -250,7 +250,7 @@ const SignupPage = () => {
 
                 <label
                   htmlFor="lastName"
-                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                  className="block text-[14px] font-normal text-[#545454] mb-2"
                 >
                   Last Name
                 </label>
@@ -272,7 +272,7 @@ const SignupPage = () => {
             <div>
               <label
                 htmlFor="companyName"
-                className="block text-[1rem] font-normal text-[#545454] mb-2"
+                className="block text-[14px] font-normal text-[#545454] mb-2"
               >
                 Company Name
               </label>
@@ -287,7 +287,7 @@ const SignupPage = () => {
             <div>
               <label
                 htmlFor="phoneNumber"
-                className="block text-[1rem] font-normal text-[#545454] mb-2"
+                className="block text-[14px] font-normal text-[#545454] mb-2"
               >
                 Phone Number
               </label>
@@ -305,7 +305,7 @@ const SignupPage = () => {
 
                 <label
                   htmlFor="addressLine1"
-                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                  className="block text-[14px] font-normal text-[#545454] mb-2"
                 >
                   Address Line 1
                 </label>
@@ -332,7 +332,7 @@ const SignupPage = () => {
 
                 <label
                   htmlFor="addressLine2"
-                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                  className="block text-[14px] font-normal text-[#545454] mb-2"
                 >
                   Address Line 2
                 </label>
@@ -351,7 +351,7 @@ const SignupPage = () => {
 
                 <label
                   htmlFor="suburb"
-                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                  className="block text-[14px] font-normal text-[#545454] mb-2"
                 >
                   Suburb/City
                 </label>
@@ -376,7 +376,7 @@ const SignupPage = () => {
               <div className="flex justify-between items-center">
                 <label
                   htmlFor="country"
-                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                  className="block text-[14px] font-normal text-[#545454] mb-2"
                 >
                   Country
                 </label>
@@ -409,7 +409,7 @@ const SignupPage = () => {
               <div className="flex justify-between items-center">
                 <label
                   htmlFor="state"
-                  className="block text-[1rem] font-normal text-[#545454] mb-2"
+                  className="block text-[14px] font-normal text-[#545454] mb-2"
                 >
                   State/Province
                 </label>
@@ -455,7 +455,7 @@ const SignupPage = () => {
 
               <label
                 htmlFor="zip"
-                className="block text-[1rem] font-normal text-[#545454] mb-2"
+                className="block text-[14px] font-normal text-[#545454] mb-2"
               >
                 Zip/Postcode
               </label>
@@ -480,7 +480,7 @@ const SignupPage = () => {
                 <div className="w-6 h-6 border-4 border-t-transparent border-red-600 rounded-full animate-spin"></div>
               </div>
             ) : (
-              <button type="submit" className="btn-primary">
+              <button type="submit" className="btn-primary px-[30px]">
                 CREATE ACCOUNT
               </button>
             )}
