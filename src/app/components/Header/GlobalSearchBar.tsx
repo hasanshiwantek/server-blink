@@ -192,7 +192,7 @@ const GlobalSearchBar: React.FC = () => {
                       e.preventDefault();
                       e.stopPropagation();
                       const url = item?.brand?.slug || `/${item?.sku}`;
-                      handleSelect(url);
+                      handleSelect(`/brand/${url}`);
                     }} className="text-[1rem] text-[#545454] uppercase hover:text-[#d42020]">
                       {item?.brand?.name || "Brand"}
                     </p>
