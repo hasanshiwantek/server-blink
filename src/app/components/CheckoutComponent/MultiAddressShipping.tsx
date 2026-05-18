@@ -555,9 +555,11 @@ const MultiAddressShipping = ({
                                                                 }
                                                                 className="accent-blue-600"
                                                             />
-                                                            <span className="flex-1">
+                                                            <span className="flex-1 items-center text-[14px] font-normal">
                                                                 {rate.is_fedex && (
-                                                                    <img src="/checkouticon/fedex.png" alt="FedEx" className="inline h-4 mr-1 object-contain" />
+                                                                    <span>
+                                                                        FedEx
+                                                                    </span>
                                                                 )}
                                                                 {rate.is_fedex ? `(${rate.service_name})` : rate.display_name}
                                                             </span>

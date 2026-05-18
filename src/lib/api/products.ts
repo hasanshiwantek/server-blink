@@ -6,9 +6,9 @@ import { redirect } from "next/navigation";
 export const fetchProducts = async () => {
   try {
     const res = await fetch(`${baseURL}web/products/products`, {
-      next: { revalidate: 60 }, // ✅ revalidate every 60 seconds
+      next: { revalidate: 10 }, // ✅ revalidate every 10 seconds
       headers: {
-        storeId: "10",
+        storeId: storeId,
       },
     });
 
@@ -16,7 +16,6 @@ export const fetchProducts = async () => {
     const data = await res.json();
     return data?.data || [];
   } catch (error) {
-    console.error("Failed to fetch products:", error);
     throw new Error("Failed to load products");
   }
 };
@@ -63,7 +62,6 @@ export const fetchProductBySlug = async (slug: string) => {
       console.warn(`⚠️ No product found for slug: ${slug}`);
       return null;
     }
-    console.log("Slug data response: ", data?.data);
 
     return data.data;
   } catch (err) {
@@ -130,7 +128,6 @@ export const getBlogByIdServer = async (id: string) => {
     const data = await res.json();
     return data?.data || [];
   } catch (error) {
-    console.error(`Failed to fetch blog post with ID ${id}:`, error);
     throw new Error("Failed to load blog post");
   }
 };
