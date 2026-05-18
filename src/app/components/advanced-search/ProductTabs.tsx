@@ -35,17 +35,17 @@ export default function ProductTabs({ tabs, activeTab: controlledActive, onTabCh
   };
 
   return (
-    <div className="flex items-center w-full justify-center gap-3.5 border-b border-gray-200 pb-2 mt-2 text-[1rem] font-light">
+    <div className="flex items-center w-full justify-center gap-3.5 border-b border-gray-200 pb-2 mt-2 text-[14px] font-light">
       {items.map((tab, index) => (
         <div key={index} className="flex items-center gap-3.5">
           {tab.isDivided && (
-            <div className="w-px h-4 bg-gray-400" />
+            <div className="w-px h-7 bg-gray-400" />
           )}
           <button
             onClick={() => handleClick(index)}
             className={`uppercase tracking-wide transition-colors ${
               activeIndex === index
-                ? "text-[#d42020] border-b-2 border-[#d42020] pb-1"
+                ? "text-[#d42020] border-b-1 border-[#d42020] "
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >

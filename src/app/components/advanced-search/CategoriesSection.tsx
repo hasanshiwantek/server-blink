@@ -3,8 +3,6 @@ import React from 'react'
 
 const CategoriesSection = ({ categories }: { categories: any[] }) => {
   const categoryPairs: { parent: any; child: any }[] = []
-  console.log(categories);
-
   categories?.forEach((category: any) => {
     if (category?.subcategories?.length > 0) {
       category.subcategories.slice(0, 3).forEach((sub: any) => {
