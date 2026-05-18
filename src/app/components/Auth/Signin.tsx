@@ -75,7 +75,7 @@ const SigninPage = () => {
               <div>
                 <label
                   htmlFor="email"
-                  className="block md:text-[1rem] text-base font-normal text-[#545454]  mb-2"
+                  className="block text-[1rem]  font-normal text-[#545454]  mb-2"
                 >
                   Email Address:
                 </label>
@@ -96,7 +96,7 @@ const SigninPage = () => {
               <div className="relative">
                 <label
                   htmlFor="password"
-                  className="block md:text-[1rem] text-base font-normal text-[#545454] mb-2"
+                  className="block text-[1rem]  font-normal text-[#545454] mb-2"
                 >
                   Password:
                 </label>
