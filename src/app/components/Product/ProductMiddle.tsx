@@ -53,7 +53,15 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
         </div>
 
         {/* Price Section */}
-        <div className="">
+        {product?.callPricing ? <div className="">
+          <div className="flex flex-col">
+            <h2 className="text-[#545454] flex items-center font-bold !text-[22px]" style={{ color: "#545454" }}>
+              Call for pricing: <Link href="tel:+15022063033" className="text-[#d40511] underline">
+                (502) 206-3033
+              </Link>
+            </h2>
+          </div>
+        </div> : <div className="">
           <div className="flex flex-col">
             {product?.msrp && Number(product?.msrp) > 0 ? (
               <>
@@ -105,11 +113,11 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
             )}
 
           </div>
-        </div>
+        </div>}
 
         {/* Quantity & Add to Cart Section */}
         <div className="mt-8 mb-5">
-          <div className="flex items-center gap-1 mb-8 flex-wrap ">
+          {!product?.callPricing && <div className="flex items-center gap-1 mb-8 flex-wrap ">
             <span className="text-[14px] sm:text-[14px] text-[#545454] font-bold min-w-[70px]">
               Quantity:
             </span>
@@ -139,10 +147,10 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
                 <ChevronUp width={15} height={15} />
               </button>
             </div>
-          </div>
+          </div>}
 
           {/* Add to Cart Button */}
-          <button
+          {!product?.callPricing && <button
             aria-label={`Add ${quantity} ${product?.name} to cart`}
             onClick={() => {
               const existingItem = cart.find(
@@ -170,7 +178,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
             className="btn-primary !w-full sm:!w-[51.7%] !py-3.5"
           >
             ADD TO CART
-          </button>
+          </button>}
 
           {/* Bulk Quote Link */}
           <p className="text-[15px] sm:text-[18px] text-[#545454] mt-3 font-normal">
@@ -268,7 +276,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
               name: product.name ?? "",
               image: product.image[0].path,
               sku: product.sku ?? "",
-              id: product.id ,
+              id: product.id,
             }
             : undefined
         }

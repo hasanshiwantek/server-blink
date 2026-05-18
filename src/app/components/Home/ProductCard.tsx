@@ -25,6 +25,7 @@ interface Product {
   slug: string;
   productUrl?: string; // URL for product page
   maxPurchaseQuantity?: number; // optional max quantity
+  callPricing?: boolean; // optional max quantity
 }
 
 interface ProductCardProps {
@@ -76,7 +77,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <p className="text-[14px] font-medium mb-1 line-clamp-2 hover:text-[#D42020]">{productName}</p>
         </Link>
 
-        <div className="flex flex-col items-start gap-2 mb-2">
+        {product?.callPricing ? <div className="flex flex-col items-start gap-2 mb-2">
+          <>
+            <span className="text-gray-400 text-[1rem]">
+              <span className="line-through !font-normal"></span>
+            </span>
+
+            {/* New Price */}
+            <span className="text-[1rem] font-bold">Call for pricing:<Link href="tel:+15022063033" className="text-[#d40511] underline">
+              (502) 206-3033
+            </Link></span>
+          </>
+
+        </div> : <div className="flex flex-col items-start gap-2 mb-2">
           {product?.msrp && Number(product.msrp) > 0 ? (
             <>
               {/* Old Price */}
@@ -90,15 +103,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           ) : (
             <span className="text-[16px] font-bold">${Number(product.price)}</span>
           )}
-        </div>
+        </div>}
 
         {/* Button pushed to bottom */}
         <button onClick={() => {
           dispatch(addToCart(product));
           toast.success(`${product.name} added to cart!`);
           router.push("/cart")
-        }} className="w-full bg-[#CAC9C9] hover:bg-[#D42020] font-bold text-[#393939] border-b-2 border-[#393939] py-1 hover:text-white rounded text-[14px] mt-auto transition">
-          ADD TO CART
+        }} disabled={product?.callPricing} className="w-full bg-[#CAC9C9] hover:bg-[#D42020] font-bold text-[#393939] border-b-2 border-[#393939] py-1 hover:text-white rounded text-[14px] mt-auto transition">
+          {"ADD TO CART"}
         </button>
       </div>
     </div>

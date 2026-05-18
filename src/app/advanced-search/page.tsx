@@ -1,5 +1,5 @@
 "use client";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CategoriesSidebar from "../components/Home/CategoriesSidebar";
 import BrandsSidebar from "../components/Home/BrandsSidebar";
 import BrandsSection from "../components/advanced-search/BrandsSection";
@@ -10,8 +10,7 @@ import ProductsClientWrapper from "../components/advanced-search/ProductsClientW
 import ProductTabs from "../components/advanced-search/ProductTabs";
 import AdvancedSearchForm from "../components/advanced-search/AdvancedSearchForm";
 import NoResults from "../components/advanced-search/NoResults";
-import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { advancedSearch } from "@/redux/slices/advanceSearchSlice";
+import { useAppSelector } from "@/hooks/useReduxHooks";
 import { useSearchParams } from "next/navigation";
 
 export default function ProductPage({
@@ -32,7 +31,7 @@ export default function ProductPage({
                 const catData = await fetchCategories();
                 setCategory(catData);
 
-                const brandData = await fetchBrands(); 
+                const brandData = await fetchBrands();
                 setBrand(brandData);
             } catch (error) {
                 console.error("Failed to load categories/brands", error);
@@ -108,8 +107,6 @@ export default function ProductPage({
                                 }}
                             />
                         </div>
-
-
                         {searchForm && <div>
                             <AdvancedSearchForm categories={category?.slice(0, 10)} brands={brand} onSearch={(values) => {
                                 setSearchForm(!searchForm)

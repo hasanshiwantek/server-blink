@@ -75,7 +75,7 @@ const SigninPage = () => {
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-[1rem]  font-normal text-[#545454]  mb-2"
+                  className="block text-[14px]  font-normal text-[#545454]  mb-2"
                 >
                   Email Address:
                 </label>
@@ -96,7 +96,7 @@ const SigninPage = () => {
               <div className="relative">
                 <label
                   htmlFor="password"
-                  className="block text-[1rem]  font-normal text-[#545454] mb-2"
+                  className="block text-[14px]  font-normal text-[#545454] mb-2"
                 >
                   Password:
                 </label>
@@ -136,7 +136,7 @@ const SigninPage = () => {
                 )}
                 <Link
                   href="/forgot-password"
-                  className="text-red-600 hover:text-red-700 text-base underline"
+                  className="text-red-600 hover:text-red-700 text-[14px] underline"
                 >
                   Forgot your password?
                 </Link>
@@ -146,28 +146,28 @@ const SigninPage = () => {
 
           {/* Right Column - New Customer Card */}
           <div className="bg-[#cac9c9] p-8 rounded-xs -mt-9">
-            <h2 className="h2-medium  mb-6">New Customer?</h2>
-            <p className="text-[1rem] text-[#545454] mb-4">
+            <h2 className="h2-medium !text-[20px]  mb-6">New Customer?</h2>
+            <p className="text-[14px] text-[#545454] mb-4">
               Create an account with us and you'll be able to:
             </p>
             <ul className="space-y-1 mb-8">
-              <li className="flex items-start text-[1rem] text-[#545454]">
+              <li className="flex items-start text-[14px] text-[#545454]">
                 <span className="mr-2">•</span>
                 <span>Check out faster</span>
               </li>
-              <li className="flex items-start text-[1rem] text-[#545454]">
+              <li className="flex items-start text-[14px] text-[#545454]">
                 <span className="mr-2">•</span>
                 <span> Save multiple shipping addresses</span>
               </li>
-              <li className="flex items-start text-[1rem] text-[#545454]">
+              <li className="flex items-start text-[14px] text-[#545454]">
                 <span className="mr-2">•</span>
                 <span>Access your order history</span>
               </li>
-              <li className="flex items-start text-[1rem] text-[#545454]">
+              <li className="flex items-start text-[14px] text-[#545454]">
                 <span className="mr-2">•</span>
                 <span>Track new orders</span>
               </li>
-              <li className="flex items-start text-[1rem] text-[#545454]">
+              <li className="flex items-start text-[14px] text-[#545454]">
                 <span className="mr-2">•</span>
                 <span>Save items to your wish list</span>
               </li>
