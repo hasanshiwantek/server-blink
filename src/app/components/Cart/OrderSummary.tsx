@@ -170,23 +170,23 @@ const OrderSummary = () => {
         {/* Subtotal + Shipping */}
         <div className="text-sm text-gray-700 space-y-2 mb-2">
           <div className="flex justify-between py-2">
-            <span className="text-xl text-[#393939]">Subtotal:</span>
-            <span className="text-xl">${subtotal.toFixed(2)}</span>
+            <span className="text-[14px] text-[#393939]">Subtotal:</span>
+            <span className="text-[14px]">${subtotal.toFixed(2)}</span>
           </div>
           {/* Divider */}
           <div className="w-full h-[1px] bg-gray-300 my-3"></div>
           {/* Header */}
           <div className="flex justify-between py-2">
-            <span className="text-xl text-[#393939]">Shipping:</span>
+            <span className="text-[14px] text-[#393939]">Shipping:</span>
 
             {shippingCost ? <span
-              className={shippingCost ? "text-xl text-red-500 border-b border-red-500 inline-block cursor-pointer" : "text-xl border-b border-gray-500 inline-block cursor-pointer"}
+              className={shippingCost ? "text-[14px] text-red-500 border-b border-red-500 inline-block cursor-pointer" : "text-[14px] border-b border-gray-500 inline-block cursor-pointer"}
               onClick={() => setShowShipping(!showShipping)}
             >
               {!showShipping ? `$${shippingCost.toFixed(2)}` : ""}
 
             </span> : <span
-              className={showShipping ? " text-xl  border-b hover:border-red-500 border-gray-500 inline-block cursor-pointer italic hover:text-red-500" : "hover:border-red-500 hover:text-red-500 text-xl border-b border-gray-500 inline-block cursor-pointer"}
+              className={showShipping ? " text-[14px]  border-b hover:border-red-500 border-gray-500 inline-block cursor-pointer italic hover:text-red-500" : "hover:border-red-500 hover:text-red-500 text-[14px] border-b border-gray-500 inline-block cursor-pointer"}
               onClick={() => setShowShipping(!showShipping)}
             >
               {showShipping ? "Cancel" : "Add info"}
@@ -201,7 +201,7 @@ const OrderSummary = () => {
             >
               {/* Country */}
               <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <label className="w-full md:w-1/3 text-xl">Country</label>
+                <label className="w-full md:w-1/3 text-[14px]">Country</label>
 
                 <Select
                   value={shippingData.country}
@@ -224,7 +224,7 @@ const OrderSummary = () => {
 
               {/* State */}
               <div className="flex flex-col md:flex-row items-center gap-4">
-                <label className="w-full md:w-1/3 text-xl">
+                <label className="w-full md:w-1/3 text-[14px]">
                   State/Province
                 </label>
                 {stateList.length > 0 ? <Select
@@ -259,7 +259,7 @@ const OrderSummary = () => {
 
               {/* City */}
               <div className="flex flex-col md:flex-row items-center gap-4">
-                <label className="w-full md:w-1/3 text-xl">Suburb/City</label>
+                <label className="w-full md:w-1/3 text-[14px]">Suburb/City</label>
                 <Input
                   value={shippingData.city}
                   className="w-full md:w-2/3"
@@ -271,7 +271,7 @@ const OrderSummary = () => {
 
               {/* Zip */}
               <div className="flex flex-col md:flex-row items-center gap-4">
-                <label className="w-full md:w-1/3 text-xl">Zip/Postcode</label>
+                <label className="w-full md:w-1/3 text-[14px]">Zip/Postcode</label>
                 <Input
                   className="w-full md:w-2/3"
                   value={shippingData.zip}
@@ -287,7 +287,7 @@ const OrderSummary = () => {
                   type="submit"
                   disabled={loading}
                   className="w-full md:w-[65%] btn-primary"
-                // className="w-full md:w-[65%] p-2 border-b border-black  bg-[#D42020] text-white text-xl font-bold"
+                // className="w-full md:w-[65%] p-2 border-b border-black  bg-[#D42020] text-white text-[14px] font-bold"
                 >
                   {loading ? "Loading..." : "Estimate Shipping"}
                 </button>
@@ -351,7 +351,7 @@ const OrderSummary = () => {
                       window.location.reload(); // Refresh to update totals with new shipping cost
                     }}
                     className="w-full md:w-[55%] text-[18px] btn-primary"
-                  // className="w-full md:w-[65%] p-2 border-b border-black  bg-[#D42020] text-white text-xl font-bold"
+                  // className="w-full md:w-[65%] p-2 border-b border-black  bg-[#D42020] text-white text-[14px] font-bold"
                   >
                     Update Shipping Cost
                   </button>
@@ -366,16 +366,16 @@ const OrderSummary = () => {
 
           {/* Coupon Section */}
           <div className="flex justify-between py-2">
-            <span className="text-xl text-[#393939]">Coupon Code: {appliedCoupon ? (appliedCoupon.couponCode.toUpperCase()) : ""}</span>
+            <span className="text-[14px] text-[#393939]">Coupon Code: {appliedCoupon ? (appliedCoupon.couponCode.toUpperCase()) : ""}</span>
 
             {/* If coupon already applied, show it here */}
             {appliedCoupon ? (
-              <span className="text-xl font-medium">
+              <span className="text-[14px] font-medium">
                 -${discountAmount.toFixed(2)}
               </span>
             ) : (
               <span
-                className="text-xl border-b border-gray-500 inline-block cursor-pointer"
+                className="text-[14px] border-b border-gray-500 inline-block cursor-pointer"
                 onClick={() => setShowCoupon(!showCoupon)}
               >
                 {showCoupon ? "Cancel" : "Add Coupon"}
@@ -392,7 +392,7 @@ const OrderSummary = () => {
               </span> */}
               <button
                 onClick={handleRemoveCoupon}
-                className=" text-xl underline text-red-600 hover:text-red-700"
+                className=" text-[14px] underline text-red-600 hover:text-red-700"
               >
                 Remove
               </button>
@@ -415,7 +415,7 @@ const OrderSummary = () => {
 
               <button
                 type="submit"
-                className="border-b border-black px-12 rounded bg-[#D42020] text-white text-xl font-bold disabled:opacity-50"
+                className="border-b border-black px-12 rounded bg-[#D42020] text-white text-[14px] font-bold disabled:opacity-50"
                 disabled={couponLoading}
               >
                 {couponLoading ? "..." : "Apply"}
@@ -430,7 +430,7 @@ const OrderSummary = () => {
                 className="flex justify-between items-center text-gray-700 cursor-pointer select-none py-2"
                 onClick={() => setDiscountOpen((prev) => !prev)}
               >
-                <span className="flex items-center gap-1 text-xl">
+                <span className="flex items-center gap-1 text-[14px]">
                   Discounts
                   <svg
                     className={`w-4 h-4 transition-transform ${
@@ -448,7 +448,7 @@ const OrderSummary = () => {
                     />
                   </svg>
                 </span>
-                <span className="text-xl text-green-600 font-medium">
+                <span className="text-[14px] text-green-600 font-medium">
                   -${discountAmount.toFixed(2)}
                 </span>
               </div>
@@ -473,8 +473,8 @@ const OrderSummary = () => {
 
         {/* Total */}
         <div className="flex justify-between items-center py-2">
-          <span className="text-xl text-[#393939]">Grand total:</span>
-          <span className="text-xl text-[#393939]">
+          <span className="text-[14px] text-[#393939]">Grand total:</span>
+          <span className="text-[14px] text-[#393939]">
             ${finalTotal.toFixed(2)}
           </span>
         </div>

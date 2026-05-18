@@ -49,7 +49,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
         // Show active form
         <div className="space-y-4">
           <div className="flex flex-col">
-            <label htmlFor="email" className="text-sm mb-2 text-gray-700">
+            <label htmlFor="email" className="text-[13px] mb-2 text-gray-700">
               Email Address
             </label>
             <div className="flex gap-2">
@@ -88,12 +88,12 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
               {...register("newsletter")}
               className="w-4 h-4"
             />
-            <label htmlFor="newsletter" className="text-base text-gray-700">
+            <label htmlFor="newsletter" className="text-[13px] text-gray-700">
               Subscribe to our newsletter.
             </label>
           </div>
 
-          <div className="text-base text-gray-700">
+          <div className="text-[13px] text-gray-700">
             Already have an account?{" "}
             <Link href="/auth/login" className="text-[var(--primary-color)]">
               Sign in now

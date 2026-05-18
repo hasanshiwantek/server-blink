@@ -29,12 +29,10 @@ export default function ProductPage({
     useEffect(() => {
         const loadData = async () => {
             try {
-                // Categories (you already have this)
                 const catData = await fetchCategories();
                 setCategory(catData);
 
-                // Brands - Add this API call
-                const brandData = await fetchBrands(); // Create this function
+                const brandData = await fetchBrands(); 
                 setBrand(brandData);
             } catch (error) {
                 console.error("Failed to load categories/brands", error);
@@ -44,15 +42,11 @@ export default function ProductPage({
         loadData();
     }, []);
 
-
     useEffect(() => {
         if (query && searchForm) {
             setSearchForm(false)
         }
     }, [query])
-
-
-    console.log(categories, pagination);
 
     return (
         <>
@@ -119,9 +113,6 @@ export default function ProductPage({
                         {searchForm && <div>
                             <AdvancedSearchForm categories={category?.slice(0, 10)} brands={brand} onSearch={(values) => {
                                 setSearchForm(!searchForm)
-                                // setTimeout(() => {
-                                //     window.location.reload()
-                                // }, 500)
                             }} />
                         </div>}
                         <div>
@@ -146,7 +137,7 @@ export default function ProductPage({
                         {products?.length === 0 && (
                             <NoResults
                                 searchTerm={query || ""}
-                                suggestedTerm="sdsdq"
+                                suggestedTerm=""
                                 onRefineSearch={() => setCurrentTab(2)}
                             />
                         )}

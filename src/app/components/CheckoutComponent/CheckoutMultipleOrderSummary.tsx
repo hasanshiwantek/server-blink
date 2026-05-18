@@ -243,7 +243,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
 
             {/* Promo */}
             <div className="mb-6 border-b-[1px] px-6 border-[#8b8b8b] py-4">
-                <button type="button" className="text-base text-[var(--primary-color)]" onClick={() => setShowPromo((prev) => !prev)}>
+                <button type="button" className="text-[13px] text-[var(--primary-color)]" onClick={() => setShowPromo((prev) => !prev)}>
                     Promo/Gift Certificate
                 </button>
                 {showPromo && (
@@ -271,15 +271,15 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
             </div>
 
             {/* Totals */}
-            <div className="space-y-3 text-sm pt-4 px-6">
-                <div className="flex justify-between text-gray-700">
+            <div className="space-y-3  pt-4 px-6">
+                <div className="flex justify-between text-[13px] text-gray-700">
                     <span>Subtotal</span>
                     <span className="font-medium">${subtotal.toFixed(2)}</span>
                 </div>
 
                 {appliedCoupon && discountAmount > 0 && (
                     <div className="mt-2">
-                        <div className="flex justify-between items-center text-gray-700 cursor-pointer select-none" onClick={() => setDiscountOpen((prev) => !prev)}>
+                        <div className="flex text-[13px]  justify-between items-center text-gray-700 cursor-pointer select-none" onClick={() => setDiscountOpen((prev) => !prev)}>
                             <span className="flex items-center gap-1 font-medium">
                                 Discounts
                                 <svg className={`w-4 h-4 transition-transform ${discountOpen ? "rotate-180" : "rotate-0"}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -289,7 +289,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                             <span className="font-medium">-${discountAmount.toFixed(2)}</span>
                         </div>
                         {discountOpen && (
-                            <div className="flex justify-between text-gray-600 text-sm mt-1">
+                            <div className="flex justify-between text-gray-600 text-[13px] mt-1">
                                 <span>${Number(appliedCoupon.discountAmount).toFixed(2)} off ({appliedCoupon.couponCode.toUpperCase()})</span>
                                 <span className="font-medium">-${discountAmount.toFixed(2)}</span>
                             </div>
@@ -297,11 +297,11 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                     </div>
                 )}
 
-                <div className="flex justify-between text-gray-700">
+                <div className="flex justify-between text-[13px] text-gray-700">
                     <span>Shipping</span>
                     <span className="font-medium">{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
                 </div>
-                <div className="flex justify-between text-gray-700">
+                <div className="flex justify-between text-[13px] text-gray-700">
                     <span>Tax</span>
                     <span className="font-medium">${tax.toFixed(2)}</span>
                 </div>
@@ -309,12 +309,12 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
 
             {/* Total */}
             <div className="flex flex-col mt-4 pt-4 px-6 border-t-[1px] border-[#8b8b8b] text-gray-700">
-                <div className="flex justify-between items-center text-lg font-bold">
+                <div className="flex justify-between items-center text-[15px] font-bold">
                     <span>Total <br /> (USD)</span>
                     <span>${finalTotal.toFixed(2)}</span>
                 </div>
                 {appliedCoupon && discountAmount > 0 && (
-                    <div className="text-[#333] font-medium  mt-1 self-end">You saved <span className="!text-[#2aab3f] ">${discountAmount.toFixed(2)}</span> in total!</div>
+                    <div className="text-[#333] font-medium text-[13px] mt-1 self-end">You saved <span className="!text-[#2aab3f] ">${discountAmount.toFixed(2)}</span> in total!</div>
                 )}
             </div>
         </div>
