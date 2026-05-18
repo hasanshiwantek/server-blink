@@ -18,7 +18,6 @@ import {
 const CartList = () => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state.cart.items);
-  console.log("Cart Items:", cart);
   const [quantities, setQuantities] = useState<{
     [key: string]: number | string;
   }>({});
