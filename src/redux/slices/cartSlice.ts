@@ -37,7 +37,6 @@ export const fetchCartList = createAsyncThunk(
   async (_,thunkAPI) => {
     try {
       const res = await axiosInstance.get(`web/cart/list`);
-      console.log("cart list response: ", res?.data);
       return res.data;
     } catch (err: any) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -54,7 +53,6 @@ export const fetchOrderDetails = createAsyncThunk(
   async ({ orderId }: { orderId: any}, thunkAPI) => {
     try {
       const res = await axiosInstance.post(`web/orders/order-details`, {orderId});
-      console.log("Order details response: ", res?.data);
       return res.data;
     } catch (err: any) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -10,9 +10,10 @@ import { addToCart } from "@/redux/slices/cartSlice";
 import { addRecentView } from "@/redux/slices/recentSlice";
 
 const ProductCard = ({ product }: { product: any }) => {
-  const [quantity, setQuantity] = useState(1);
   const dispatch = useAppDispatch();
-
+  const minQty = product?.minPurchaseQuantity || 1;
+  const maxQty = product?.maxPurchaseQuantity;
+  const [quantity, setQuantity] = useState(minQty);
   const addtocart = () => {
     dispatch(addToCart(product));
     toast.success(`${product?.name} added to cart!`);
@@ -49,15 +50,15 @@ const ProductCard = ({ product }: { product: any }) => {
 
   const increment = () => {
     if (
-      !product.maxPurchaseQuantity ||
-      quantity < product.maxPurchaseQuantity
+      !maxQty ||
+      quantity < maxQty
     ) {
       setQuantity(quantity + 1);
     }
   };
 
 
-  const decrement = () => quantity > 1 && setQuantity(quantity - 1);
+  const decrement = () => quantity > minQty && setQuantity(quantity - 1);
 
   return (
     <div className="max-w-full mx-auto">

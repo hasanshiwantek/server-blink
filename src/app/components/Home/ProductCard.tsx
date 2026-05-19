@@ -2,11 +2,12 @@
 
 import React from "react";
 import Image from "next/image";
-import { useAppDispatch } from "@/hooks/useReduxHooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { addToCart } from "@/redux/slices/cartSlice";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { RootState } from "@/redux/store";
 interface Brand {
   id: number;
   name: string;
@@ -25,8 +26,10 @@ interface Product {
   slug: string;
   productUrl?: string; // URL for product page
   maxPurchaseQuantity?: number; // optional max quantity
+  minPurchaseQuantity?: number; // optional min quantity
   callPricing?: boolean; // optional max quantity
   purchasabilityStatus?: string; // 
+  quantity?: number; // 
 }
 
 interface ProductCardProps {
@@ -36,6 +39,8 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const cart = useAppSelector((state: RootState) => state.cart.items);
+
   // safe brand name
   const brandName =
     typeof product.brand === "string"
@@ -107,13 +112,34 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>}
 
         {/* Button pushed to bottom */}
-        <button onClick={() => {
-          if (availableForSale) {
-            dispatch(addToCart(product));
-            toast.success(`${product.name} added to cart!`);
-          }
-          router.push("/cart")
-        }}
+        <button
+          onClick={() => {
+            if (availableForSale) {
+              const cartItem = cart.find((item) => item.id === product.id);
+              const minQty = product.minPurchaseQuantity || 1;
+              const maxQty = product.maxPurchaseQuantity;
+              const currentQty = cartItem?.quantity || 0;
+              const remaining = maxQty ? maxQty - currentQty : Infinity;
+              if (remaining <= 0) {
+                toast.error(`You have already reached the maximum limit (${maxQty}) for this product.`);
+                return;
+              }
+              // dispatch(addToCart(product));
+              // Add only up to the allowed maximum
+              const quantityToAdd = Math.min(minQty, remaining);
+
+              dispatch(
+                addToCart({
+                  ...product,
+                  quantity: quantityToAdd,
+                  minPurchaseQuantity: minQty,
+                  maxPurchaseQuantity: maxQty,
+                })
+              );
+              toast.success(`${product.name} added to cart!`);
+            }
+            router.push("/cart")
+          }}
           className="w-full bg-[#CAC9C9] hover:bg-[#D42020] font-bold text-[#393939] border-b-2 border-[#393939] py-1 hover:text-white rounded text-[14px] mt-auto transition">
           {"ADD TO CART"}
         </button>

@@ -18,6 +18,8 @@ import {
 const CartList = () => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state.cart.items);
+  console.log("cart", cart);
+
   const [quantities, setQuantities] = useState<{
     [key: string]: number | string;
   }>({});
@@ -92,8 +94,11 @@ const CartList = () => {
         </span>
       </div>
       {cart?.length > 0 ? (
-        cart?.map((item, index) => (
-          <>
+        cart?.map((item, index) => {
+          const minQty = item.minPurchaseQuantity;
+          const maxQty = item.maxPurchaseQuantity;
+
+          return <>
             {/* Example product row */}
             <div
               key={item?.id}
@@ -130,9 +135,11 @@ const CartList = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      dispatch(decreaseQty(item.id))
-                      localStorage.removeItem("shippingCost")
-                      localStorage.removeItem("shippingData")
+                      if (item.quantity > minQty) {
+                        dispatch(decreaseQty(item.id))
+                        localStorage.removeItem("shippingCost")
+                        localStorage.removeItem("shippingData")
+                      }
                     }}
                     //                 className="
                     //   flex items-center justify-center w-8 h-full
@@ -140,7 +147,7 @@ const CartList = () => {
                     //   text-black
                     // "
                     className="w-8 h-8  flex items-center justify-center hover:bg-[#f5f5f5] transition text-[#4a4a4a] bg-[#cac9c9]  border-b-3 border-[#8b8b8b]"
-
+                    disabled={item.quantity <= minQty}
                   >
                     <ChevronDown size={16} />
                   </button>
@@ -153,19 +160,21 @@ const CartList = () => {
                         ? item.quantity
                         : quantities[item.id]
                     }
-                    onChange={(e) => handleChange(item.id, e.target.value, item?.maxPurchaseQuantity)}
+                    onChange={(e) => handleChange(item.id, e.target.value, maxQty)}
                     onBlur={(e) => {
                       const parsed = Number(quantities[item.id]);
                       if (!parsed || parsed <= 0) {
                         dispatch(updateQty({ id: item.id, quantity: 1 }));
                         setQuantities((prev) => ({ ...prev, [item.id]: 1 }));
-                      } else if (item.maxPurchaseQuantity && parsed > item.maxPurchaseQuantity) {
-                        dispatch(updateQty({ id: item.id, quantity: item.maxPurchaseQuantity }));
-                        setQuantities((prev) => ({ ...prev, [item.id]: item.maxPurchaseQuantity }));
+                      } else if (item.maxQty && parsed > maxQty) {
+                        dispatch(updateQty({ id: item.id, quantity: maxQty }));
+                        setQuantities((prev) => ({ ...prev, [item.id]: maxQty }));
                       }
                     }}
+                    min={minQty}
+                    max={maxQty || undefined}
                     onKeyDown={(e) =>
-                      handleManualQtyUpdate(e, item.id, item.maxPurchaseQuantity)
+                      handleManualQtyUpdate(e, item.id, maxQty)
                     }
                     className="
       w-10 bg-white text-center py-0 outline-none
@@ -181,8 +190,8 @@ const CartList = () => {
                     type="button"
                     onClick={() => {
                       if (
-                        !item.maxPurchaseQuantity ||
-                        item.quantity < item.maxPurchaseQuantity
+                        !maxQty ||
+                        item.quantity < maxQty
                       ) {
                         dispatch(increaseQty(item.id));
                         localStorage.removeItem("shippingCost")
@@ -194,6 +203,7 @@ const CartList = () => {
                     //   hover:bg-gray-100
                     //   text-black
                     // "
+                    disabled={!!maxQty && item.quantity >= maxQty}
                     className="w-8 h-8  flex items-center justify-center hover:bg-[#f5f5f5] transition text-[#4a4a4a] bg-[#cac9c9]  border-b-3 border-[#8b8b8b]"
 
                   >
@@ -223,7 +233,7 @@ const CartList = () => {
             {/* line grey */}
             <div className="w-[97%] mx-auto h-[1px] bg-gray-300"></div>
           </>
-        ))
+        })
       ) : (
         <div className="text-7xl text-[#4A4A4A] text-center my-16">
           No Cart Added
