@@ -22,6 +22,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
   const { reviews, reviewsLoading, reviewsError, stats } = useAppSelector(
     (state) => state.home
   );
+  const availableForSale = product?.purchasabilityStatus == "available"
 
   const handleSeeMore = useCallback(() => {
     window.open(
@@ -34,6 +35,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
     dispatch(fetchReviews());
     dispatch(fetchStats());
   }, [dispatch]);
+
 
   return (
     <>
@@ -53,7 +55,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
         </div>
 
         {/* Price Section */}
-        {product?.callPricing ? <div className="">
+        {!availableForSale ? <div>
           <div className="flex flex-col">
             <h2 className="text-[#545454] flex items-center font-bold !text-[22px]" style={{ color: "#545454" }}>
               Call for pricing: <Link href="tel:+15022063033" className="text-[#d40511] underline">
@@ -61,7 +63,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
               </Link>
             </h2>
           </div>
-        </div> : <div className="">
+        </div> : <div>
           <div className="flex flex-col">
             {product?.msrp && Number(product?.msrp) > 0 ? (
               <>
@@ -69,7 +71,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
                   <span className="text-[16px] text-[#7b7b7b] font-normal">
                     Price
                   </span>
-                  <span className="">
+                  <span>
                     <ProductPrice
                       price={Number(product?.msrp)}
                       inline={true}
@@ -117,7 +119,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
 
         {/* Quantity & Add to Cart Section */}
         <div className="mt-8 mb-5">
-          {!product?.callPricing && <div className="flex items-center gap-1 mb-8 flex-wrap ">
+          {availableForSale && <div className="flex items-center gap-1 mb-8 flex-wrap ">
             <span className="text-[14px] sm:text-[14px] text-[#545454] font-bold min-w-[70px]">
               Quantity:
             </span>
@@ -150,7 +152,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
           </div>}
 
           {/* Add to Cart Button */}
-          {!product?.callPricing && <button
+          {!availableForSale && <button
             aria-label={`Add ${quantity} ${product?.name} to cart`}
             onClick={() => {
               const existingItem = cart.find(
