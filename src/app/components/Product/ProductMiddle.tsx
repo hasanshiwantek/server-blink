@@ -37,6 +37,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
   }, [dispatch]);
 
 
+
   return (
     <>
       <section className="product-middle flex flex-col h-full w-full max-w-full  xl:max-w-[50%] 2xl:max-w-[50%] ">
@@ -152,7 +153,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
           </div>}
 
           {/* Add to Cart Button */}
-          {!availableForSale && <button
+          {availableForSale && <button
             aria-label={`Add ${quantity} ${product?.name} to cart`}
             onClick={() => {
               const existingItem = cart.find(
