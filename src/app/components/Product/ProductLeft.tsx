@@ -95,7 +95,11 @@ const ProductLeft = ({
         <div className="flex h-auto w-full items-center justify-center rounded-2xl border-1 border-[#8b8b8b] bg-white p-4 aspect-square lg:h-[455px] lg:w-[76.7%]">
           <button
             type="button"
-            onClick={openLightbox}
+            onClick={() => {
+              if (selectedImage) {
+                openLightbox()
+              }
+            }}
             className="flex h-full w-full cursor-zoom-in items-center justify-center rounded-xl bg-transparent p-0 text-left outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-[#D42020]"
             aria-label="View product image larger"
           >
@@ -211,9 +215,9 @@ const ProductLeft = ({
                         expanded
                           ? "h-full w-full max-h-[calc(90vh-2.5rem)] max-w-full cursor-zoom-out"
                           : cn(
-                              "h-auto max-h-[56vh] w-auto max-w-[min(78vw,560px)] cursor-zoom-in",
-                              zoomed && "max-h-none max-w-none scale-[1.45] sm:scale-[1.6]"
-                            )
+                            "h-auto max-h-[56vh] w-auto max-w-[min(78vw,560px)] cursor-zoom-in",
+                            zoomed && "max-h-none max-w-none scale-[1.45] sm:scale-[1.6]"
+                          )
                       )}
                       sizes="90vw"
                       quality={95}

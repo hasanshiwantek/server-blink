@@ -101,7 +101,7 @@ const CategoryGrid = () => {
 
               {/* Category Title */}
               <div className="relative h-full flex items-center justify-center px-6">
-                <h2 className="text-white text-2xl md:text-3xl font-bold drop-shadow-2xl text-center uppercase tracking-wide">
+                <h2 className="text-white text-2xl md:text-3xl font-light drop-shadow-2xl text-center uppercase tracking-wide">
                   {category.name}
                 </h2>
               </div>

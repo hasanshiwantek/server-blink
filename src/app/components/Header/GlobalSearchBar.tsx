@@ -117,16 +117,16 @@ const GlobalSearchBar: React.FC = () => {
             }
           }}
           className="
-            w-full px-4 md:px-5 lg:px-6
-            py-2 md:py-2.5 lg:py-3
+            w-full
+                  h-10 sm:h-12 lg:h-14 xl:h-[32px]
+                 pl-4 pr-12
             bg-white text-gray-800
             focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]
-            text-sm sm:text-base lg:text-lg
-            h-10 sm:h-12 md:h-12 lg:h-14 xl:h-[32px] 2xl:h-[32px]
-            pr-12 sm:pr-16 md:pr-20 lg:pr-27 2xl:pr-56
+            text-sm sm:text-base
             h6-medium-color border-1 border-[#cac9c9]
-          "
-        />
+            "
+           
+            />
         <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center  border-gray-300 px-3">
           <button
             aria-label="search"
@@ -147,7 +147,7 @@ const GlobalSearchBar: React.FC = () => {
       </div>
 
       {/* Dropdown Results */}
-    
+
       {showSearchDropdown && searchQuery.trim().length > 1 && (
         // <div className="absolute top-full left-0 !w-[585px] mt-1 bg-[#f2f2f2] shadow-xl overflow-hidden z-[9999] max-h-[520px] overflow-y-auto border border-gray-300 ">
         <div className="absolute top-full left-1/2 -translate-x-1/2 w-[585px] mt-1 bg-[#f2f2f2] shadow-xl overflow-hidden z-[9999] max-h-[520px] overflow-y-auto border border-gray-300">
