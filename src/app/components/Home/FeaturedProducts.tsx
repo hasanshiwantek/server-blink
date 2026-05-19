@@ -36,6 +36,7 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
   const productsData = products?.data || [];
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null); // Track error per component
 
   const [loading, setLoading] = useState(true); // local loading flag
   const updateScrollButtons = () => {
@@ -62,7 +63,6 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
   }, [productsData]);
 
 
-  const [localError, setLocalError] = useState<string | null>(null); // Track error per component
 
   // ... (keep all your existing functions)
 

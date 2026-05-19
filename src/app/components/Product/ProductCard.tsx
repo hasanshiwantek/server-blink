@@ -22,7 +22,7 @@ const ProductCard = ({ product }: { product: any }) => {
   const images =
     product?.image?.length > 0
       ? product?.image?.map((img: any) => img?.path)
-      : ["/default-product-image.svg"];
+      : [];
 
   const [selectedImage, setSelectedImage] = useState(images[0]);
 
