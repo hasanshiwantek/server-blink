@@ -53,16 +53,16 @@ const ContactForm = () => {
 
       {/* Page Title */}
       <div className="mb-8">
-        <h1 className="h1-lg mb-4">Contact Form</h1>
-        <h2 className="h1-lg ">Server Blink, LLC</h2>
+        <h1 className="sm:text-[28px] h1-lg mb-4">Contact Form</h1>
+        <h2 className="sm:text-[28px] h1-lg ">Server Blink, LLC</h2>
       </div>
 
       {/* Intro Text */}
       <div className="mb-8">
-        <p className="text-[1rem] text-[#545454] font-normal mb-2">
+        <p className="sm:text-[14px] text-[1rem] text-[#545454] font-normal ">
           We're happy to answer questions or help you with returns.
         </p>
-        <p className="text-[1rem] text-[#545454] font-normal">
+        <p className="sm:text-[14px] text-[1rem] text-[#545454] font-normal">
           Please fill out the form below if you need assistance.
         </p>
       </div>
@@ -72,13 +72,13 @@ const ContactForm = () => {
         <p className="text-[10px] text-black font-normal mb-2">
           SMS Disclaimer:
         </p>
-        <p className="text-[10px] text-[#545454] font-normal">
+        <p className="text-[10px] text-[#545454] font-normal leading-[1.8]">
           By providing my phone number to Server Blink LLC, I agree and acknowledge
           that Server Blink may send text messages to my wireless phone number
           for any purpose. Message frequency will vary, and Message and data
           rates may apply. If you need further assistance, please reply “HELP”.
           You can also opt out by replying “STOP.” For more information on how
-          your data will be handled, please visit
+          your data will be handled, please visit&nbsp;
           <a
             href="/privacy-Policy"
             className="text-[#D40511] underline cursor-pointer"
@@ -97,7 +97,7 @@ const ContactForm = () => {
           <div>
             <label
               htmlFor="full_name"
-              className="block text-[1rem] text-[#545454] font-normal mb-2"
+              className="block text-[14px] text-[#545454] font-normal mb-2"
             >
               Full Name
             </label>
@@ -112,7 +112,7 @@ const ContactForm = () => {
           <div>
             <label
               htmlFor="phone_number"
-              className="block text-[1rem] text-[#545454] font-normal mb-2"
+              className="block text-[14px] text-[#545454] font-normal mb-2"
             >
               Phone Number
             </label>
@@ -130,7 +130,7 @@ const ContactForm = () => {
           <div>
             <label
               htmlFor="email"
-              className="mb-2 flex items-baseline justify-between gap-2 text-[1rem] font-normal text-[#545454]"
+              className="mb-2 flex items-baseline justify-between gap-2 text-[14px] font-normal text-[#545454]"
             >
               <span>Email Address</span>
               <span className="shrink-0 text-[#545454]" aria-hidden="true">
@@ -163,7 +163,7 @@ const ContactForm = () => {
           <div>
             <label
               htmlFor="order_number"
-              className="block text-[1rem] text-[#545454] font-normal mb-2"
+              className="block text-[14px] text-[#545454] font-normal mb-2"
             >
               Order Number
             </label>
@@ -181,7 +181,7 @@ const ContactForm = () => {
           <div>
             <label
               htmlFor="company_name"
-              className="block text-[1rem] text-[#545454] font-normal mb-2"
+              className="block text-[14px] text-[#545454] font-normal mb-2"
             >
               Company Name
             </label>
@@ -196,7 +196,7 @@ const ContactForm = () => {
           <div>
             <label
               htmlFor="rma_number"
-              className="block text-[1rem] text-[#545454] font-normal mb-2"
+              className="block text-[14px] text-[#545454] font-normal mb-2"
             >
               RMA Number
             </label>
@@ -213,7 +213,7 @@ const ContactForm = () => {
         <div>
           <label
             htmlFor="comments"
-            className="mb-2 flex items-baseline justify-between gap-2 text-[1rem] font-normal text-[#545454]"
+            className="mb-2 flex items-baseline justify-between gap-2 text-[14px] font-normal text-[#545454]"
           >
             <span>Comments/Questions</span>
             <span className="shrink-0 text-[#545454]" aria-hidden="true">
