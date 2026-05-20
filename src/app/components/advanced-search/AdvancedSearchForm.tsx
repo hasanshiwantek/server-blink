@@ -33,11 +33,36 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
         });
     };
 
+
     // const handleSearch = () => {
+
+    //     if (!keyword) return
+
+    //     const params = new URLSearchParams();
+
+    //     if (keyword.trim()) params.append("q", keyword.trim());
+
+    //     const catIds = Array.from(selectedCategories);
+    //     if (catIds.length > 0) params.append("categories", catIds.join(","));
+
+    //     if (selectedBrand) params.append("brands", selectedBrand);
+
+    //     if (priceFrom) params.append("price_from", priceFrom);
+    //     if (priceTo) params.append("price_to", priceTo);
+
+    //     if (featured) params.append("featured", featured);
+    //     if (freeShipping) params.append("free_shipping", freeShipping);
+
+    //     params.append("search_subcategories", autoSearchSub);
+
+    //     const queryString = params.toString();
+    //     router.push(`/advanced-search?${queryString}`);
+
+    //     // Also call parent onSearch if provided
     //     onSearch?.({
-    //         keyword,
-    //         categories: selectedCategories,
-    //         "brands[]": selectedBrand,
+    //         keyword: keyword.trim(),
+    //         "categories": catIds.join(","),
+    //         "brands": selectedBrand,
     //         price_from: priceFrom,
     //         price_to: priceTo,
     //         featured,
@@ -46,57 +71,62 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
     //     });
     // };
 
+
     const handleSearch = () => {
-
-        if (!keyword) return
-        
-        const params = new URLSearchParams();
-
-        if (keyword.trim()) params.append("q", keyword.trim());
+        if (!keyword) return;
 
         const catIds = Array.from(selectedCategories);
-        if (catIds.length > 0) params.append("categories", catIds.join(","));
 
-        if (selectedBrand) params.append("brands", selectedBrand);
-
-        if (priceFrom) params.append("price_from", priceFrom);
-        if (priceTo) params.append("price_to", priceTo);
-
-        if (featured) params.append("featured", featured);
-        if (freeShipping) params.append("free_shipping", freeShipping);
-
-        params.append("search_subcategories", autoSearchSub);
-
-        const queryString = params.toString();
-        router.push(`/advanced-search?${queryString}`);
-
-        // Also call parent onSearch if provided
-        onSearch?.({
-            keyword: keyword.trim(),
-            "categories": catIds.join(","),
-            "brands": selectedBrand,
+        const searchFilters = {
+            q: keyword.trim(),
+            categories: catIds.join(","),
+            brands: selectedBrand,
             price_from: priceFrom,
             price_to: priceTo,
             featured,
             free_shipping: freeShipping,
             search_subcategories: autoSearchSub,
-        });
+        };
+
+        localStorage.setItem("advancedSearchFilters", JSON.stringify(searchFilters));
+        router.push(`/advanced-search`);
+        window.location.reload()
+        onSearch?.(searchFilters);
     };
+    // useEffect(() => {
+    //     setKeyword(searchParams.get("q") || "");
+    //     const cats = searchParams.get("categories");
+    //     const catsSet: any = cats
+    //         ? new Set(cats?.split(",")?.map(Number))
+    //         : new Set<number>();
+    //     setSelectedCategories(catsSet);
+    //     setSelectedBrand(searchParams.get("brands") || "");
+    //     setPriceFrom(searchParams.get("price_from") || "");
+    //     setPriceTo(searchParams.get("price_to") || "");
+    //     setFeatured(searchParams.get("featured") || "");
+    //     setFreeShipping(searchParams.get("free_shipping") || "");
+    //     setAutoSearchSub(searchParams.get("search_subcategories") !== "false");
+    // }, [searchParams]);
+
     useEffect(() => {
-        setKeyword(searchParams.get("q") || "");
-        const cats = searchParams.get("categories");
+        const stored = localStorage.getItem("advancedSearchFilters");
+        if (!stored) return;
+
+        const parsed = JSON.parse(stored);
+
+        setKeyword(parsed.q || "");
+        const cats = parsed.categories;
         const catsSet: any = cats
-            ? new Set(cats?.split(",")?.map(Number))
+            ? new Set(cats.split(",").map(Number))
             : new Set<number>();
         setSelectedCategories(catsSet);
-        setSelectedBrand(searchParams.get("brands") || "");
-        setPriceFrom(searchParams.get("price_from") || "");
-        setPriceTo(searchParams.get("price_to") || "");
-        setFeatured(searchParams.get("featured") || "");
-        setFreeShipping(searchParams.get("free_shipping") || "");
-        setAutoSearchSub(searchParams.get("search_subcategories") !== "false");
-    }, [searchParams]);
-
+        setSelectedBrand(parsed.brands || "");
+        setPriceFrom(parsed.price_from || "");
+        setPriceTo(parsed.price_to || "");
+        setFeatured(parsed.featured || "");
+        setFreeShipping(parsed.free_shipping || "");
+        setAutoSearchSub(parsed.search_subcategories !== false);
+    }, []);
     return (
         <div className="py-6">
             <h3 className="text-[15px] text-[#545454] mb-4">Advanced Search</h3>

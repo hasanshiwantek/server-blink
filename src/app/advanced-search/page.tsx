@@ -22,9 +22,18 @@ export default function ProductPage({
     const [searchForm, setSearchForm] = useState(false);
     const { loading, products, pagination, categories, brands, error, productCount } = useAppSelector((state: any) => state?.advanceSearch);
     const searchParams = useSearchParams();
-    const query = searchParams.get("q");
+    // const query = searchParams.get("q");
+    const [query, setQuery] = useState("");
     const [category, setCategory] = useState([]);
     const [brand, setBrand] = useState([]);
+
+    useEffect(() => {
+        const stored = localStorage.getItem("advancedSearchFilters");
+        if (stored) {
+            const parsed = JSON.parse(stored);
+            setQuery(parsed.q || "");
+        }
+    }, []);
     useEffect(() => {
         const loadData = async () => {
             try {
@@ -37,7 +46,6 @@ export default function ProductPage({
                 console.error("Failed to load categories/brands", error);
             }
         };
-
         loadData();
     }, []);
 
