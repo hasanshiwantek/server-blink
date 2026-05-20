@@ -124,7 +124,11 @@ const GlobalSearchBar: React.FC = () => {
               if (q) {
                 localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
         window.dispatchEvent(new Event("searchFiltersUpdated"));
-                router.push(`/advanced-search`);
+                   if (pathname === "/advanced-search") {
+   window.location.reload()
+      } else {
+        router.push(`/advanced-search`);
+      }
               }
             }
           }}
@@ -150,7 +154,11 @@ const GlobalSearchBar: React.FC = () => {
               if (q) {
                 localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
                        window.dispatchEvent(new Event("searchFiltersUpdated"));
-                router.push(`/advanced-search`);
+                    if (pathname === "/advanced-search") {
+   window.location.reload()
+      } else {
+        router.push(`/advanced-search`);
+      }
                 // router.push(`/advanced-search?q=${q}`);
               }
             }}
