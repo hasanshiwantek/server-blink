@@ -124,8 +124,9 @@ const GlobalSearchBar: React.FC = () => {
               if (q) {
                 localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
                 router.push(`/advanced-search`);
-
-                window.location.reload()
+  setTimeout(() => {
+                          window.location.reload()
+                        },100)
               }
             }
           }}
@@ -151,7 +152,9 @@ const GlobalSearchBar: React.FC = () => {
               if (q) {
                 localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
                 router.push(`/advanced-search`);
-                window.location.reload()
+                 setTimeout(() => {
+                          window.location.reload()
+                        },100)
                 // router.push(`/advanced-search?q=${q}`);
               }
             }}
