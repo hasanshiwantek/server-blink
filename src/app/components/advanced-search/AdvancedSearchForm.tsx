@@ -33,45 +33,6 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
         });
     };
 
-
-    // const handleSearch = () => {
-
-    //     if (!keyword) return
-
-    //     const params = new URLSearchParams();
-
-    //     if (keyword.trim()) params.append("q", keyword.trim());
-
-    //     const catIds = Array.from(selectedCategories);
-    //     if (catIds.length > 0) params.append("categories", catIds.join(","));
-
-    //     if (selectedBrand) params.append("brands", selectedBrand);
-
-    //     if (priceFrom) params.append("price_from", priceFrom);
-    //     if (priceTo) params.append("price_to", priceTo);
-
-    //     if (featured) params.append("featured", featured);
-    //     if (freeShipping) params.append("free_shipping", freeShipping);
-
-    //     params.append("search_subcategories", autoSearchSub);
-
-    //     const queryString = params.toString();
-    //     router.push(`/advanced-search?${queryString}`);
-
-    //     // Also call parent onSearch if provided
-    //     onSearch?.({
-    //         keyword: keyword.trim(),
-    //         "categories": catIds.join(","),
-    //         "brands": selectedBrand,
-    //         price_from: priceFrom,
-    //         price_to: priceTo,
-    //         featured,
-    //         free_shipping: freeShipping,
-    //         search_subcategories: autoSearchSub,
-    //     });
-    // };
-
-
     const handleSearch = () => {
         if (!keyword) return;
 
@@ -93,20 +54,6 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
         window.location.reload()
         onSearch?.(searchFilters);
     };
-    // useEffect(() => {
-    //     setKeyword(searchParams.get("q") || "");
-    //     const cats = searchParams.get("categories");
-    //     const catsSet: any = cats
-    //         ? new Set(cats?.split(",")?.map(Number))
-    //         : new Set<number>();
-    //     setSelectedCategories(catsSet);
-    //     setSelectedBrand(searchParams.get("brands") || "");
-    //     setPriceFrom(searchParams.get("price_from") || "");
-    //     setPriceTo(searchParams.get("price_to") || "");
-    //     setFeatured(searchParams.get("featured") || "");
-    //     setFreeShipping(searchParams.get("free_shipping") || "");
-    //     setAutoSearchSub(searchParams.get("search_subcategories") !== "false");
-    // }, [searchParams]);
 
     useEffect(() => {
         const stored = localStorage.getItem("advancedSearchFilters");
