@@ -108,12 +108,25 @@ const GlobalSearchBar: React.FC = () => {
           placeholder="SEARCH"
           value={searchQuery}
           onChange={(e) => handleOnChange(e.target.value)}
+          // onKeyDown={(e) => {
+          //   if (e.key === "Enter") {
+          //     e.preventDefault();
+          //     const q = searchQuery.trim();
+          //     dispatch(clearSearch());
+          //     router.push(`/advanced-search?q=${q}`);
+          //   }
+          // }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();
               const q = searchQuery.trim();
               dispatch(clearSearch());
-              router.push(`/advanced-search?q=${q}`);
+              if (q) {
+                localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
+                router.push(`/advanced-search`);
+
+                window.location.reload()
+              }
             }
           }}
           className="
@@ -125,8 +138,8 @@ const GlobalSearchBar: React.FC = () => {
             text-sm sm:text-base
             h6-medium-color border-1 border-[#cac9c9]
             "
-           
-            />
+
+        />
         <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center  border-gray-300 px-3">
           <button
             aria-label="search"
@@ -136,7 +149,10 @@ const GlobalSearchBar: React.FC = () => {
               const q = searchQuery.trim();
               dispatch(clearSearch());
               if (q) {
-                router.push(`/advanced-search?q=${q}`);
+                localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
+                router.push(`/advanced-search`);
+                window.location.reload()
+                // router.push(`/advanced-search?q=${q}`);
               }
             }}
             className="flex items-center justify-center"

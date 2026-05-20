@@ -133,20 +133,72 @@ export default function ProductsClientWrapper({
         categoryName: initialCategoryName || undefined,
     });
 
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             setIsLoading(true);
+    //             setError(null);
+
+    //             const q = searchParams.get("q") || "";
+    //             const categoriesIds = searchParams.get("categories") || "";
+    //             const brandId = searchParams.get("brands") || "";
+    //             const priceFrom = searchParams.get("price_from") || "";
+    //             const priceTo = searchParams.get("price_to") || "";
+    //             const featured = searchParams.get("featured") || "";
+    //             const freeShipping = searchParams.get("free_shipping") || "";
+    //             const searchSubcategories = searchParams.get("search_subcategories") || "";
+
+    //             const res: any = await dispatch(advancedSearch({
+    //                 q,
+    //                 perPage: filters.pageSize,
+    //                 page: filters.page,
+    //                 sortBy: filters.sortBy,
+    //                 categoriesIds,
+    //                 brandId,
+    //                 priceFrom,
+    //                 priceTo,
+    //                 featured,
+    //                 freeShipping,
+    //                 searchSubcategories,
+    //             }));
+
+    //             const payloadRes = res?.payload?.data;
+    //             setProducts(applyClientSort(payloadRes?.products?.items || [], filters.sortBy));
+
+    //             const pagination = {
+    //                 total: payloadRes?.products?.pagination?.total,
+    //                 page: payloadRes?.products?.pagination?.currentPage,
+    //                 pageSize: payloadRes?.products?.pagination?.perPage,
+    //                 lastPage: payloadRes?.products?.pagination?.lastPage,
+    //             };
+    //             setPagination(pagination || null);
+    //         } catch (err: any) {
+    //             setError("Failed to load products");
+    //         } finally {
+    //             setIsLoading(false);
+    //         }
+    //     };
+
+    //     fetchData();
+    // }, [filters, searchParams]);
+    // Generate breadcrumb items based on page type
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setIsLoading(true);
                 setError(null);
 
-                const q = searchParams.get("q") || "";
-                const categoriesIds = searchParams.get("categories") || "";
-                const brandId = searchParams.get("brands") || "";
-                const priceFrom = searchParams.get("price_from") || "";
-                const priceTo = searchParams.get("price_to") || "";
-                const featured = searchParams.get("featured") || "";
-                const freeShipping = searchParams.get("free_shipping") || "";
-                const searchSubcategories = searchParams.get("search_subcategories") || "";
+                const stored = localStorage.getItem("advancedSearchFilters");
+                const parsed = stored ? JSON.parse(stored) : {};
+
+                const q = parsed.q || "";
+                const categoriesIds = parsed.categories || "";
+                const brandId = parsed.brands || "";
+                const priceFrom = parsed.price_from || "";
+                const priceTo = parsed.price_to || "";
+                const featured = parsed.featured || "";
+                const freeShipping = parsed.free_shipping || "";
+                const searchSubcategories = parsed.search_subcategories ?? "";
 
                 const res: any = await dispatch(advancedSearch({
                     q,
@@ -180,9 +232,7 @@ export default function ProductsClientWrapper({
         };
 
         fetchData();
-    }, [filters, searchParams]);
-    // Generate breadcrumb items based on page type
-
+    }, [filters]);
 
     if (!products?.length) return <></>
 

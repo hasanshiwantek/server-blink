@@ -1,13 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import ProductLeft from "./ProductLeft";
 import ProductMiddle from "./ProductMiddle";
-import ProductRight from "./ProductRight";
 import { useAppDispatch } from "@/hooks/useReduxHooks";
 import { toast } from "react-toastify";
 import { addToCart } from "@/redux/slices/cartSlice";
 import { addRecentView } from "@/redux/slices/recentSlice";
+import Link from "next/link";
 
 const ProductCard = ({ product }: { product: any }) => {
   const dispatch = useAppDispatch();
@@ -59,7 +58,6 @@ const ProductCard = ({ product }: { product: any }) => {
 
 
   const decrement = () => quantity > minQty && setQuantity(quantity - 1);
-
   return (
     <div className="max-w-full mx-auto">
       <div className=" rounded-xl w-full px-0">
@@ -69,9 +67,9 @@ const ProductCard = ({ product }: { product: any }) => {
           className="flex items-center justify-center lg:justify-normal space-x-2 text-[11px] text-[#393939] lg:mb-7 sm:mb-7 mb-7 flex-wrap"
         >
           <h2 className="">
-            <span className="text-[11px]" itemProp="name">
+            <Link href={"/"} className="text-[11px]" itemProp="name">
               Home
-            </span>
+            </Link>
 
             {product?.categoryHierarchy?.map((cat: any, index: number) => (
               <span key={cat.id}>
@@ -82,7 +80,7 @@ const ProductCard = ({ product }: { product: any }) => {
                   /
                 </span>
 
-                <span
+                <Link href={`/category/${cat?.slug}`}
                   className={`text-[11px] ${index === product.categoryHierarchy.length - 1
                     ? "!text-[#D42020]"
                     : "text-black"
@@ -90,7 +88,7 @@ const ProductCard = ({ product }: { product: any }) => {
                   itemProp="name"
                 >
                   {cat.name}
-                </span>
+                </Link>
               </span>
             ))}
           </h2>

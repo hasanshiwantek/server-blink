@@ -193,12 +193,24 @@ const TopHeader = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => handleOnChange(e.target.value)}
+                  // onKeyDown={(e) => {
+                  //   if (e.key === "Enter") {
+                  //     e.preventDefault();
+                  //     const q = searchQuery.trim();
+                  //     dispatch(clearSearch());
+                  //     router.push(`/advanced-search?q=${q}`);
+                  //   }
+                  // }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
                       const q = searchQuery.trim();
                       dispatch(clearSearch());
-                      router.push(`/advanced-search?q=${q}`);
+                      if (q) {
+                        localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
+                        router.push(`/advanced-search`);
+                        window.location.reload()
+                      }
                     }
                   }}
                   placeholder="SEARCH"
@@ -211,7 +223,10 @@ const TopHeader = () => {
                     const q = searchQuery.trim();
                     dispatch(clearSearch());
                     if (q) {
-                      router.push(`/advanced-search?q=${q}`);
+                      localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
+                      router.push(`/advanced-search`);
+                      window.location.reload()
+                      // router.push(`/advanced-search?q=${q}`);
                     }
                   }}
                   // onClick={handleSearch}

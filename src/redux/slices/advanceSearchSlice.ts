@@ -78,7 +78,7 @@ export const advancedSearch = createAsyncThunk(
             if (freeShipping) params.append("free_shipping", freeShipping);
             if (searchSubcategories) params.append("search_subcategories", searchSubcategories);
 
-            const res = await axiosInstance.get(`web/search?${params.toString()}`);
+            const res = await axiosInstance.get(`web/search?${params.toString().replace(/%2C/g, ",")}`);
             return res.data;
         } catch (err: any) {
             return thunkAPI.rejectWithValue(

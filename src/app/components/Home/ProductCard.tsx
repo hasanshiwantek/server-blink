@@ -115,7 +115,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <button
           onClick={() => {
             if (availableForSale) {
-              const cartItem = cart.find((item) => item.id === product.id);
+              const cartItem = cart.find((item: any) => item.id === product.id);
               const minQty = product.minPurchaseQuantity || 1;
               const maxQty = product.maxPurchaseQuantity;
               const currentQty = cartItem?.quantity || 0;
