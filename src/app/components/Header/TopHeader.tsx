@@ -208,10 +208,11 @@ const TopHeader = () => {
                       dispatch(clearSearch());
                       if (q) {
                         localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
+                         window.dispatchEvent(new Event("searchFiltersUpdated"));
                         router.push(`/advanced-search`);
-                        setTimeout(() => {
-                          window.location.reload()
-                        },100)
+                        // setTimeout(() => {
+                        //   window.location.reload()
+                        // },100)
                       }
                     }
                   }}
@@ -226,10 +227,9 @@ const TopHeader = () => {
                     dispatch(clearSearch());
                     if (q) {
                       localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
+                       window.dispatchEvent(new Event("searchFiltersUpdated"));
                       router.push(`/advanced-search`);
-                       setTimeout(() => {
-                          window.location.reload()
-                        },100)
+                 
                       // router.push(`/advanced-search?q=${q}`);
                     }
                   }}
