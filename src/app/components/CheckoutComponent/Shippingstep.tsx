@@ -294,6 +294,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                   dispatch(setIsMultiAddress(true));
                 }
                 localStorage.removeItem("shippingCost")
+                localStorage.removeItem("shippingData")
               }}
               className="text-[13px] text-red-600 hover:underline font-medium"
             >
@@ -640,6 +641,21 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                   type="radio"
                   value={rate.service_type}
                   {...register("shippingMethod")}
+                  onChange={(e) => {
+                    register("shippingMethod").onChange(e); // keep react-hook-form in sync
+                    const selectedRate = shippingRates?.find(
+                      (r: any) => r.service_type === e.target.value
+                    );
+                    const cost = selectedRate ? Number(selectedRate.total_charge).toFixed(2) : "0";
+                    const shippingData = {
+                      country: country?.trim(),
+                      city: city?.trim(),
+                      "state": state?.trim(),
+                      zip: zip?.trim(),
+                    }
+                    localStorage.setItem("shippingCost", cost);
+                    localStorage.setItem("shippingData", JSON.stringify(shippingData));
+                  }}
                   // {...register("shippingMethod", {
                   //   required: "Please select a shipping method",
                   // })}

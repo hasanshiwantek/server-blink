@@ -12,6 +12,7 @@ import AdvancedSearchForm from "../components/advanced-search/AdvancedSearchForm
 import NoResults from "../components/advanced-search/NoResults";
 import { useAppSelector } from "@/hooks/useReduxHooks";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 export default function ProductPage({
     params,
@@ -72,9 +73,9 @@ export default function ProductPage({
                     <article className="w-full lg:max-w-[78%]">
                         <div className="mb-4 px-4 md:px-0">
                             <h2>
-                                <span className="text-[11px]" itemProp="name">
+                                <Link href={"/"} className="text-[11px]" itemProp="name">
                                     Home
-                                </span>
+                                </Link>
                                 <span>
                                     <span
                                         className="mt-2 mx-3 text-gray-400 text-[11px]"
