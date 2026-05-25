@@ -123,12 +123,12 @@ const GlobalSearchBar: React.FC = () => {
               dispatch(clearSearch());
               if (q) {
                 localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
-        window.dispatchEvent(new Event("searchFiltersUpdated"));
-                   if (pathname === "/advanced-search") {
-   window.location.reload()
-      } else {
-        router.push(`/advanced-search`);
-      }
+                window.dispatchEvent(new Event("searchFiltersUpdated"));
+                if (pathname === "/advanced-search") {
+                  window.location.reload()
+                } else {
+                  router.push(`/advanced-search`);
+                }
               }
             }
           }}
@@ -153,12 +153,12 @@ const GlobalSearchBar: React.FC = () => {
               dispatch(clearSearch());
               if (q) {
                 localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
-                       window.dispatchEvent(new Event("searchFiltersUpdated"));
-                    if (pathname === "/advanced-search") {
-   window.location.reload()
-      } else {
-        router.push(`/advanced-search`);
-      }
+                window.dispatchEvent(new Event("searchFiltersUpdated"));
+                if (pathname === "/advanced-search") {
+                  window.location.reload()
+                } else {
+                  router.push(`/advanced-search`);
+                }
                 // router.push(`/advanced-search?q=${q}`);
               }
             }}

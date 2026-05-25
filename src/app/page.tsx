@@ -75,12 +75,12 @@ const Page = async () => {
                 title={"Featured Products".toUpperCase()}
               />
               <FeaturedProducts
-                endpoint="web/products/last-week-orders"
+                endpoint="web/products/popular-products"
                 isSlider={false}
                 title={"Current Top Sellers".toUpperCase()}
               />
               <FeaturedProducts
-                endpoint="web/products/last-week-product"
+                endpoint="web/products/last-week-orders"
                 isSlider={true}
                 title={"New Products".toUpperCase()}
               />

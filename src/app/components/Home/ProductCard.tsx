@@ -76,11 +76,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       {/* Info Wrapper */}
       <div className="px-3 pb-3 flex flex-col flex-1">
         <Link href={`/brand/${brandSlug || ""}`}>
-          <p className="text-[1rem] text-gray-500 hover:text-[#D42020]">{brandName}</p>
+          <p className="text-[1rem] text-gray-500 hover:text-[#D42020]" style={{ fontFamily: '"Roboto Condensed"' }}
+          >{brandName}</p>
         </Link>
-        <p className="text-[1rem] text-gray-400 mb-1 hover:text-[#D42020]">Sku: {product.sku}</p>
+        <p className="text-[1rem] text-gray-400 mb-1 hover:text-[#D42020]" style={{ fontFamily: '"Roboto Condensed"' }}>
+          Sku: {product.sku}
+        </p>
         <Link href={`${product?.productUrl}`}>
-          <p className="text-[14px] font-medium mb-1 line-clamp-2 hover:text-[#D42020]">{productName}</p>
+          <p className="text-[14px] font-medium mb-1 line-clamp-2 hover:text-[#D42020]" style={{ fontFamily: '"Roboto Condensed"' }}>
+            {productName}
+          </p>
         </Link>
 
         {!availableForSale ? <div className="flex flex-col items-start gap-2 mb-2">
@@ -90,12 +95,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </span>
 
             {/* New Price */}
-            <span className="text-[1rem] font-bold">Call for pricing:<Link href="tel:+15022063033" className="text-[#d40511] underline">
+            <span className="text-[1rem] font-bold  " style={{ fontFamily: '"Roboto"' }}>Call for pricing:<Link href="tel:+15022063033" className="text-[#d40511] underline">
               (502) 206-3033
             </Link></span>
           </>
 
-        </div> : <div className="flex flex-col items-start gap-2 mb-2">
+        </div> : <div className="flex flex-col items-start gap-2 mb-2 " style={{ fontFamily: '"Roboto"' }}>
           {product?.msrp && Number(product.msrp) > 0 ? (
             <>
               {/* Old Price */}

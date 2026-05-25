@@ -42,6 +42,10 @@ const config: Config = {
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fadeIn 0.6s ease-out forwards",
       },
+      // fontFamily: {
+      //   'roboto-condensed': ['"Roboto Condensed"', 'sans-serif'],
+      //   'roboto': ['"Roboto"', 'sans-serif'],
+      // },
     },
   },
   plugins: [
