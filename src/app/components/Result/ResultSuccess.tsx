@@ -1,7 +1,5 @@
 "use client"
 import React from "react";
-import { useAppSelector } from "@/hooks/useReduxHooks";
-import { RootState } from "@/redux/store";
 const ResultSuccess = () => {
     return (
         <main className="flex flex-col gap-8 w-full ">
@@ -16,7 +14,6 @@ const ResultSuccess = () => {
                             Thank you for joining our mailing list. You'll be sent the next issue of our newsletter shortly
                         </h1>
                     </div>
-
                 </div>
             </div>
         </main>

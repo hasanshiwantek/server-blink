@@ -32,7 +32,8 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
 }) => {
   const sliderRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
-  const { products, error } = useAppSelector((state: any) => state.home);
+  // const { products, error } = useAppSelector((state: any) => state.home);
+  const [products, setProducts] = useState<any>([]);
   const productsData = products?.data || [];
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -72,7 +73,8 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
 
     dispatch(fetchProductsData(endpoint))
       .unwrap() // This will throw if rejected
-      .then(() => {
+      .then((res) => {
+        setProducts(res);
         setLocalError(null);
       })
       .catch((err) => {
@@ -118,6 +120,7 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
     requestAnimationFrame(check);
   };
 
+  if (productsData?.length === 0) return null;
   return (
     <div className="bg-transparent py-4 rounded relative">
       <div className="flex items-center justify-between mb-4 bg-[#393939] border-b border-gray-400">
@@ -206,7 +209,6 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
           )}
         </>
       )}
-
     </div>
   );
 }

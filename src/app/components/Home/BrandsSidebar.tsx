@@ -34,7 +34,7 @@ const BrandsSidebar: React.FC<BrandsSidebarProps> = ({ activeBrandId }) => {
           <CategoriesSidebarSkeleton />
         ) : data && data.length > 0 ? (
           data?.slice(0, 11).map((brand: any) => (
-            <Link href={`/brand/${brand?.slug}`} key={brand.id}>
+            <Link href={`/brand/${brand?.slug}`} key={brand.id} style={{ fontFamily: '"Roboto Condensed"' }}>
               <button
                 className={`w-full px-3 py-1 text-left text-[13px] lg:text-[14px]  font-normal flex items-center gap-3 transition-colors
                   ${brand.id === activeBrandId

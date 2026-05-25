@@ -131,7 +131,6 @@ const OrderSummary = () => {
       toast.error("Please add something");
       return;
     }
-
     router.push("/checkout");
   }, [cart.length, router]);
   useEffect(() => {

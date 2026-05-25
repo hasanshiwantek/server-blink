@@ -285,8 +285,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
           {cart?.reduce((sum, item) => sum + (item.quantity || 1), 0) > 1 && (
             <button
               type="button"
-              // onClick={() => setIsMultiAddress(!isMultiAddress)}
-              // onClick={() => dispatch(setIsMultiAddress(!isMultiAddress))}
               onClick={() => {
                 if (isMultiAddress) {
                   setShowSingleAddressModal(true);

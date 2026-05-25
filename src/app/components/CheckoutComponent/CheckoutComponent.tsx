@@ -723,7 +723,6 @@ const CheckoutForm = () => {
         event.complete("success");
 
         skipEmptyCartCheckRef.current = true;
-        console.log("orderData 1", orderData)
         dispatch(setLastOrder(orderData));
         dispatch(clearCart());
         dispatch(removeCoupon());
@@ -734,7 +733,6 @@ const CheckoutForm = () => {
       } catch (err: any) {
         console.error("❌ Wallet payment failed:", err);
         event.complete("fail");
-
         const errorMessage =
           err?.response?.data?.message || err?.message || "Payment failed.";
 
