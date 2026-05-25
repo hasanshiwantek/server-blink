@@ -23,8 +23,6 @@ interface Category {
   image?: string;
 }
 
-// 5 categories (slice 0–5) → 5 images in this fixed order; slug ignored so API
-// duplicates / same-looking slugs never force the same asset on two tiles.
 const GRID_CATEGORY_IMAGES: StaticImageData[] = [
   memoryImg,
   motherboardImg,
@@ -32,6 +30,49 @@ const GRID_CATEGORY_IMAGES: StaticImageData[] = [
   hddImg,
   psuImg,
 ];
+
+const CategoryTile = ({
+  category,
+  index,
+}: {
+  category: Category;
+  index: number;
+}) => {
+  const categoryImage =
+    GRID_CATEGORY_IMAGES[index % GRID_CATEGORY_IMAGES.length];
+  const colSpan = index < 3 ? "lg:col-span-2" : "lg:col-span-3";
+
+  return (
+    <Link
+      href={`/category/${category.slug}`}
+      className={`group/item relative block h-[200px] rounded-xs overflow-hidden cursor-pointer ${colSpan}`}
+    >
+      <div className="absolute inset-0">
+        <Image
+          src={categoryImage}
+          alt={category.name}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        />
+      </div>
+
+      {/* Fade overlay on non-hovered tiles when grid is hovered */}
+      <div className="pointer-events-none absolute inset-0 bg-white/70 opacity-0 transition-opacity duration-300 group-hover/grid:opacity-100 group-hover/item:opacity-0 z-10" />
+
+      {/* Semi-transparent black text band (center, like reference) */}
+      <div className="absolute inset-x-0 bottom-4 z-20 bg-black/50 flex items-center justify-center px-6 py-7">
+        <p
+          className="text-white text-2xl md:text-3xl font-normal drop-shadow-2xl text-center uppercase tracking-wide m-0"
+          style={{ fontWeight:300 }}
+        >
+          {category.name}
+        </p>
+      </div>
+    </Link>
+  );
+};
+
 const CategoryGrid = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +81,6 @@ const CategoryGrid = () => {
     const loadCategories = async () => {
       try {
         const data = await fetchCategories();
-        // Get only first 5 categories
         setCategories(data.slice(0, 5));
       } catch (error) {
         console.error("Failed to fetch categories:", error);
@@ -51,15 +91,16 @@ const CategoryGrid = () => {
 
     loadCategories();
   }, []);
+
   if (loading) {
     return (
       <div className="mt-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
           {[1, 2, 3, 4, 5].map((i) => (
             <div
               key={i}
-              className={`relative h-52 rounded-xs overflow-hidden bg-gray-200 animate-pulse ${
-                i === 4 ? "md:col-span-1 lg:col-span-2" : ""
+              className={`relative h-[200px] rounded-xs overflow-hidden bg-gray-200 animate-pulse ${
+                i < 4 ? "lg:col-span-2" : "lg:col-span-3"
               }`}
             />
           ))}
@@ -69,48 +110,15 @@ const CategoryGrid = () => {
   }
 
   return (
-    <div className="mt-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {categories.map((category, index) => {
-          // Fourth item (index 3) spans 2 columns
-          const isWide = index === 3;
-          const categoryImage =
-            GRID_CATEGORY_IMAGES[index % GRID_CATEGORY_IMAGES.length];
-
-          return (
-            <Link
-              href={`/category/${category.slug}`}
-              key={category.id}
-              className={`relative h-52 rounded-xs overflow-hidden group cursor-pointer ${
-                isWide ? "md:col-span-1 lg:col-span-2" : ""
-              }`}
-            >
-              {/* Background Image */}
-              <div className="absolute inset-0 ">
-                <Image
-                  src={categoryImage}
-                  alt={category.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
-              </div>
-
-              {/* Dark Overlay */}
-              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all duration-300" />
-
-              {/* Category Title */}
-              <div className="relative h-full flex items-center justify-center px-6">
-                <h2 className="text-white text-2xl md:text-3xl font-light drop-shadow-2xl text-center uppercase tracking-wide">
-                  {category.name}
-                </h2>
-              </div>
-
-              {/* Hover effect - subtle zoom */}
-              <div className="absolute inset-0 transition-transform duration-300 group-hover:scale-105" />
-            </Link>
-          );
-        })}
+    <div className="mt-6 group/grid">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-2.5">
+        {categories.map((category, index) => (
+          <CategoryTile
+            key={category.id}
+            category={category}
+            index={index}
+          />
+        ))}
       </div>
     </div>
   );

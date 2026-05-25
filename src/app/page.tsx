@@ -59,14 +59,14 @@ const Page = async () => {
       {/* Container: max-width 1170px, centered */}
       <div className="w-full max-w-[1170px] mx-auto  lg:px-6 xl:px-0">
         <div className="py-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="flex flex-col lg:flex-row gap-8">
             {/* Left Sidebar */}
-            <aside className="lg:block hidden lg:col-span-3">
+            <aside className="lg:block hidden" style={{width: '22%'}}>
               <CategoriesSidebar />
               <BrandsSidebar />
             </aside>
             {/* Main Content */}
-            <div className="lg:col-span-9">
+            <div className="w-full lg:w-[78%]">
               <Banner />
               <CategoryGrid />
               <FeaturedProducts
@@ -89,6 +89,7 @@ const Page = async () => {
               <ShopNow />
             </div>
           </div>
+  
         </div>
       </div>
     </main>

@@ -52,6 +52,8 @@ const bannerSlides = [
   },
 ];
 
+const robotoCondensedStyle = { fontFamily: '"Roboto Condensed"' };
+
 const Banner = () => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
@@ -103,16 +105,23 @@ const Banner = () => {
 
                 {/* Mobile: copy below image on gray */}
                 <div className="bg-[#393939] px-6 py-5 text-left sm:hidden">
-                  <h1 className="mb-3 text-xl font-bold leading-tight text-white">
+                  <h1
+                    className="mb-3 text-xl font-bold leading-tight text-white"
+                    style={robotoCondensedStyle}
+                  >
                     {slide.title}
                   </h1>
-                  <p className="mb-5 max-w-xl text-base font-semibold text-white">
+                  <p
+                    className="mb-5 max-w-xl text-base font-semibold text-white"
+                    style={robotoCondensedStyle}
+                  >
                     {slide.subtitle}
                   </p>
                   <button
                     type="button"
                     onClick={() => window.location.reload()}
-                    className="rounded bg-[var(--primary-color)] px-5 py-2 text-base font-bold uppercase tracking-wide text-white shadow-md transition-colors duration-200"
+                    className="inline-flex items-center justify-center rounded bg-[var(--primary-color)] border-0 border-b-[3px] border-b-[#860109] box-border h-[30px] px-5 text-[18px] font-bold uppercase tracking-wide text-white shadow-md transition-colors duration-200"
+                    style={robotoCondensedStyle}
                   >
                     {slide.buttonText}
                   </button>
@@ -121,16 +130,23 @@ const Banner = () => {
                 {/* sm+: overlay on image (absolute so it stacks over full-bleed image) */}
                 <div className="absolute inset-0 z-[1] hidden items-center px-6 sm:flex md:px-12 lg:px-16">
                   <div className="max-w-2xl text-left text-white">
-                    <h1 className="h1-bold mb-3 drop-shadow-2xl md:mb-4 md:leading-tight">
+                    <h1
+                      className="h1-bold mb-3 drop-shadow-2xl md:mb-4 md:leading-tight"
+                      style={robotoCondensedStyle}
+                    >
                       {slide.title}
                     </h1>
-                    <p className="mb-6 max-w-xl text-base font-bold text-gray-100 drop-shadow-lg md:mb-8 md:text-[18px]">
+                    <p
+                      className="mb-6 max-w-xl text-base font-bold text-gray-100 drop-shadow-lg md:mb-8 md:text-[18px]"
+                      style={robotoCondensedStyle}
+                    >
                       {slide.subtitle}
                     </p>
                     <button
                       type="button"
                       onClick={() => window.location.reload()}
-                      className="rounded bg-[var(--primary-color)] px-5 py-2.5 text-base font-bold uppercase tracking-wide text-white shadow-xl transition-colors duration-200 md:py-2 md:text-[15px]"
+                      className="inline-flex items-center justify-center rounded bg-[var(--primary-color)] border-0 border-b-[3px] border-b-[#860109] box-border h-[30px] px-5 text-[18px] font-bold uppercase tracking-wide text-white shadow-xl transition-colors duration-200"
+                      style={robotoCondensedStyle}
                     >
                       {slide.buttonText}
                     </button>
@@ -165,9 +181,15 @@ const Banner = () => {
 
       {/* Promo Banner Below Carousel */}
       <div className="bg-white text-center py-3 mt-6 rounded-xs border-b-3 border-[#8b8b8b]">
-        <p className="text-base md:text-[18px]  text-[#8b8b8b] font-medium">
+        <p
+          className="text-base md:text-[18px] text-[#8b8b8b] font-medium"
+          style={robotoCondensedStyle}
+        >
           $10 off on First Order: Code:{" "}
-          <span className="text-base md:text-[18px]  text-[#8b8b8b] font-medium">
+          <span
+            className="text-base md:text-[18px] text-[#8b8b8b] font-medium"
+            style={robotoCondensedStyle}
+          >
             FIRSTORDER
           </span>
         </p>

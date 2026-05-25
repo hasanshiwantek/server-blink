@@ -388,6 +388,26 @@ img {
       rgba(229, 73, 73, 0.8) 100%);
 }
 
+/* Testimonials PrimeReact carousel – prevent black gaps & side clipping */
+.testimonials-carousel .p-carousel,
+.testimonials-carousel .p-carousel-content,
+.testimonials-carousel .p-carousel-container,
+.testimonials-carousel .p-carousel-items-content,
+.testimonials-carousel .p-carousel-item {
+  background: transparent !important;
+}
+
+.testimonials-carousel .p-carousel-content {
+  overflow: hidden;
+}
+
+.testimonials-carousel .p-carousel-item {
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  padding: 0;
+}
+
 /* Tailwind Breakpoints reference:
    sm: 640px, md: 768px, lg: 1024px, xl: 1280px, 2xl: 1440px
 */

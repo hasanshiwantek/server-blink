@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { IoStarSharp } from "react-icons/io5";
 import dynamic from "next/dynamic";
@@ -43,26 +43,27 @@ const Carousel = dynamic(
   }
 );
 const SWIPE_THRESHOLD_PX = 45;
+const REVIEW_CARD_WIDTH = 380;
 
 const Testimonials = () => {
   const dispatch = useAppDispatch();
   const { reviews, reviewsLoading, reviewsError, stats } = useAppSelector(
     (state) => state.home
   );
-  const [visibleItems, setVisibleItems] = useState(3); // dynamically set numVisible
+  const [visibleItems, setVisibleItems] = useState(1);
   const carouselWrapRef = useRef<HTMLDivElement>(null);
   const dragStartX = useRef(0);
   const dragActive = useRef(false);
 
-  const responsiveOptions = useMemo(
-    () => [
-      { breakpoint: 1400, numVisible: 2 },
-      { breakpoint: 1199, numVisible: 2 },
-      { breakpoint: 767, numVisible: 2 },
-      { breakpoint: 575, numVisible: 1 },
-    ],
-    []
-  );
+  const updateVisibleItems = useCallback(() => {
+    const containerWidth =
+      carouselWrapRef.current?.offsetWidth ?? window.innerWidth;
+    const count = Math.max(
+      1,
+      Math.floor(containerWidth / REVIEW_CARD_WIDTH)
+    );
+    setVisibleItems(count);
+  }, []);
 
   useEffect(() => {
     dispatch(fetchReviews());
@@ -70,17 +71,17 @@ const Testimonials = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      const resp = responsiveOptions.find((r) => width <= r.breakpoint);
-      setVisibleItems(resp ? resp.numVisible : 2);
-    };
+    updateVisibleItems();
+    window.addEventListener("resize", updateVisibleItems);
 
-    handleResize(); // initial check
-    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", updateVisibleItems);
+  }, [updateVisibleItems]);
 
-    return () => window.removeEventListener("resize", handleResize);
-  }, [responsiveOptions]);
+  useEffect(() => {
+    if (!reviewsLoading && reviews.length > 0) {
+      updateVisibleItems();
+    }
+  }, [reviewsLoading, reviews.length, updateVisibleItems]);
 
   const clickCarouselNav = useCallback((direction: "next" | "prev") => {
     const root = carouselWrapRef.current;
@@ -123,42 +124,40 @@ const Testimonials = () => {
   );
 
   const reviewTemplate = (review: Review) => (
-    <div className="text-left p-4 flex flex-col gap-3 w-full md:w-[250px] lg:w-[280px] xl:w-[330px] h-[218px]">
-      {/* <FaQuoteLeft size={24} color="#00b67a" className="mb-2" /> */}
-      <div className="mb-3 flex items-center justify-between">
+    <div className="text-left p-4 flex flex-col gap-3 w-full max-w-[380px] h-[218px] box-border mx-auto">
+      <div className="mb-2 flex items-center justify-between gap-2">
         <Image
           src={review?.stars || "/default-product-image.svg"}
           alt="Rating"
           width={80}
           height={32}
-          className="h-8 w-36"
+          className="h-8 w-36 shrink-0"
           unoptimized
         />
-        <p className="mb-1 font-[500]">{review.dateOfExperience}</p>
+        <p className="mb-0 text-sm font-medium shrink-0">{review.dateOfExperience}</p>
       </div>
-      <Link href={review?.url} target="_blank">
+      <Link href={review?.url} target="_blank" className="block min-w-0">
         <h2 className="text-xl text-black font-bold hover:text-blue-600">
-          <span className="inline-block border-b border-black overflow-hidden whitespace-nowrap text-ellipsis max-w-72">
+          <span className="inline-block w-full max-w-[348px] border-b border-black overflow-hidden whitespace-nowrap text-ellipsis">
             {review?.reviewHeading}
           </span>
         </h2>
       </Link>
 
-
       <div
-        className="text-xl overflow-auto review-scroll"
+        className="text-base leading-snug overflow-auto review-scroll min-w-0"
         style={{
-          maxHeight: "3.5em", // Approx 5 lines at 1.5em each
+          maxHeight: "3.5em",
           minHeight: "3.5em",
         }}
       >
         {review?.reviewContent ? review?.reviewContent : "No review content"}
       </div>
-      <p className="text-black">
+      <p className="text-black text-sm truncate">
         <span className="font-bold">Date of Experience:</span> {review.dateOfExperience}
       </p>
 
-      <p className="mb-2">{review.reviewer}</p>
+      <p className="mb-0 text-sm truncate">{review.reviewer}</p>
     </div>
   );
 
@@ -172,7 +171,7 @@ const Testimonials = () => {
 
       </header>
 
-      <div className="flex items-center justify-between md:flex-col sm:flex-col lg:flex-row flex-col">
+      <div className="flex items-center justify-between md:flex-col sm:flex-col lg:flex-row flex-col lg:py-10">
         {/* Left Summary Box */}
         <div className="flex flex-col items-center justify-between gap-5 whitespace-nowrap">
           <h3 className="text-center h3-regular">
@@ -202,13 +201,13 @@ const Testimonials = () => {
         </div>
 
         {/* Carousel */}
-        <div className="w-full lg:w-[81%] relative">
+        <div className="w-full lg:flex-1 min-w-0 relative">
           {reviewsLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4 animate-pulse">
+            <div className="flex gap-4 py-4 overflow-hidden animate-pulse">
               {Array.from({ length: visibleItems }).map((_, index) => (
                 <div
                   key={index}
-                  className="rounded-md border bg-white p-6 space-y-4"
+                  className="w-[380px] max-w-[380px] shrink-0 rounded-md border bg-white p-6 space-y-4 h-[218px]"
                 >
                   <div className="h-6 w-16 rounded bg-gray-200" />
                   <div className="h-4 w-32 rounded bg-gray-200" />
@@ -237,7 +236,7 @@ const Testimonials = () => {
           ) : (
             <div
               ref={carouselWrapRef}
-              className="cursor-grab touch-pan-y select-none active:cursor-grabbing [&_button.p-carousel-prev]:sr-only [&_button.p-carousel-next]:sr-only"
+              className="testimonials-carousel w-full cursor-grab touch-pan-y select-none active:cursor-grabbing [&_button.p-carousel-prev]:sr-only [&_button.p-carousel-next]:sr-only"
               onPointerDown={handleCarouselPointerDown}
               onPointerUp={handleCarouselPointerUp}
               onPointerCancel={handleCarouselPointerUp}
@@ -246,16 +245,16 @@ const Testimonials = () => {
                 value={reviews}
                 numVisible={visibleItems}
                 numScroll={1}
-                responsiveOptions={responsiveOptions.map((r) => ({
-                  breakpoint: r.breakpoint + "px",
-                  numVisible: r.numVisible,
-                  numScroll: 1,
-                }))}
                 circular
                 autoplayInterval={4000}
                 itemTemplate={reviewTemplate}
                 showIndicators={false}
                 showNavigators={true}
+                pt={{
+                  root: { className: "w-full" },
+                  content: { className: "overflow-hidden" },
+                  item: { className: "box-border" },
+                }}
               />
             </div>
           )}
