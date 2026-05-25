@@ -18,6 +18,8 @@ interface Category {
   subcategories?: Category[];
 }
 
+const robotoCondensedStyle = { fontFamily: '"Roboto Condensed"' };
+
 const FooterBottom = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const auth = useAppSelector((state: RootState) => state?.auth);
@@ -51,7 +53,10 @@ const FooterBottom = () => {
     router.push(url);
   };
   return (
-    <footer className="bg-[#333333] text-white w-full mx-auto">
+    <footer
+      className="bg-[#333333] text-white w-full mx-auto"
+      style={robotoCondensedStyle}
+    >
       {/* 🔹 Newsletter Section */}
       <section className="bg-[#cac9c9] flex justify-center items-center h-auto min-h-[3rem]">
         <div
@@ -82,7 +87,7 @@ const FooterBottom = () => {
                 });
               }
             }}
-            className="w-[80%] md:w-[50%] 2xl:max-w-[30%] flex items-center gap-2 mt-4 md:mt-0 p-2"
+            className="w-[80%] md:w-[50%] 2xl:max-w-[30%] flex items-center gap-2 mt-4 md:mt-0 p-2 lg:ml-24"
           >
             <input
               type="email"
@@ -105,14 +110,14 @@ const FooterBottom = () => {
 
 
       {/* Main Footer Content */}
-      <section className="w-full sm:max-w-[95%] md:max-w-[90%] lg:max-w-[88%] xl:max-w-[85%] mx-auto px-4 xl:px-4 2xl:px-28 py-12">
+      <section className="w-full sm:max-w-[95%] md:max-w-[90%] lg:max-w-[88%] xl:max-w-[85%] mx-auto px-4 xl:px-4 2xl:px-16 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Contact Us */}
           <div>
             <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white">
               Contact Us
             </h4>
-            <div className="space-y-2 text-[14px] lg:text-[12px] text-white">
+            <div className="space-y-1 text-[14px] lg:text-[12px] text-white">
               <p className="font-semibold">Address:</p>
               <p>2210 Goldsmith Lane</p>
               <p>Ste 126-5001</p>
@@ -144,7 +149,7 @@ const FooterBottom = () => {
             <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white">
               Accounts & Orders
             </h4>
-            <ul className="space-y-2 text-[14px] lg:text-[12px] text-white">
+            <ul className="space-y-1 text-[14px] lg:text-[12px] text-white">
               {!auth?.isAuthenticated && <li>
                 <Link href="/auth/login" className="hover:text-gray-300">
                   Login
@@ -163,7 +168,7 @@ const FooterBottom = () => {
             <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white">
               Quick Links
             </h4>
-            <ul className="space-y-2 text-[14px] lg:text-[12px] text-white">
+            <ul className="space-y-1 text-[14px] lg:text-[12px] text-white">
               <li>
                 <Link href="/warranty" className="hover:text-gray-300">
                   Warranty
@@ -217,7 +222,7 @@ const FooterBottom = () => {
             <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white">
               Recent Blog Posts
             </h4>
-            <ul className="space-y-2 text-[14px] lg:text-[12px] text-white">
+            <ul className="space-y-1 text-[14px] lg:text-[12px] text-white">
               {loading ? (
                 // 🔹 Inline skeleton (4 items)
                 Array.from({ length: 4 }).map((_, i) => (

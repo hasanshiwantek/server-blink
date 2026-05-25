@@ -36,6 +36,8 @@ interface ProductCardProps {
   product: Product;
 }
 
+const robotoCondensedStyle = { fontFamily: '"Roboto Condensed"' };
+
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -74,13 +76,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
       </Link>
       {/* Info Wrapper */}
-      <div className="px-3 pb-3 flex flex-col flex-1">
+      <div
+        className="px-3 pb-3 flex flex-col flex-1"
+        style={robotoCondensedStyle}
+      >
         <Link href={`/brand/${brandSlug || ""}`}>
           <p className="text-[1rem] text-gray-500 hover:text-[#D42020]">{brandName}</p>
         </Link>
         <p className="text-[1rem] text-gray-400 mb-1 hover:text-[#D42020]">Sku: {product.sku}</p>
         <Link href={`${product?.productUrl}`}>
-          <p className="text-[14px] font-medium mb-1 line-clamp-2 hover:text-[#D42020]">{productName}</p>
+          <p className="text-[14px] text-[#545454] font-bold mb-1 line-clamp-2 hover:text-[#D42020]">{productName}</p>
         </Link>
 
         {!availableForSale ? <div className="flex flex-col items-start gap-2 mb-2">

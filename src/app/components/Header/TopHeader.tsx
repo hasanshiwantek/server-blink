@@ -178,7 +178,10 @@ const TopHeader = () => {
               className={`md:flex hidden items-center whitespace-nowrap space-x-2 md:space-x-3 transition-all duration-300 flex-1 ${isScrolled ? "hidden" : "flex"
                 }`}
             >
-              <p className="ml-2 font-bold text-[14px]">
+              <p
+                className="font-bold text-[14px]"
+                style={{ fontFamily: '"Roboto Condensed"' }}
+              >
                 $10 off on First Order: Code: FIRSTORDER
               </p>
             </div>
@@ -383,19 +386,31 @@ const TopHeader = () => {
                   <button
                     onClick={handleLogout}
                     className="font-bold text-[12px] sm:text-[14px] hover:text-gray-300 transition"
+                    style={{ fontFamily: '"Roboto Condensed"' }}
                   >
                     Logout
                   </button>
                 ) : (
                   <>
                     <Link href="/auth/login">
-                      <button className="font-bold text-[12px] sm:text-[14px] hover:text-gray-300 transition">
+                      <button
+                        className="font-bold text-[12px] sm:text-[14px] hover:text-gray-300 transition"
+                        style={{ fontFamily: '"Roboto Condensed"' }}
+                      >
                         Login
                       </button>
                     </Link>
-                    <span className="font-bold">or</span>
+                    <span
+                      className="font-bold"
+                      style={{ fontFamily: '"Roboto Condensed"' }}
+                    >
+                      or
+                    </span>
                     <Link href="/auth/signup">
-                      <button className="font-bold text-[12px] sm:text-[14px] hover:text-gray-300 transition">
+                      <button
+                        className="font-bold text-[12px] sm:text-[14px] hover:text-gray-300 transition"
+                        style={{ fontFamily: '"Roboto Condensed"' }}
+                      >
                         Sign Up
                       </button>
                     </Link>
