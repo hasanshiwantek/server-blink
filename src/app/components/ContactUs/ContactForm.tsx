@@ -7,8 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
 import { X } from "lucide-react";
 import { contactRequests } from "@/redux/slices/contactSlice";
-import { useAppDispatch } from "@/hooks/useReduxHooks";
-import { useSelector } from "react-redux";
+import { useAppDispatch,useAppSelector } from "@/hooks/useReduxHooks";
 type ContactFormData = {
   full_name: string;
   phone_number: string;
@@ -27,15 +26,13 @@ const ContactForm = () => {
     reset,
   } = useForm<ContactFormData>();
   const dispatch = useAppDispatch()
-  const { loading } = useSelector((state: any) => state.contact);
+  const { loading } = useAppSelector((state: any) => state.contact);
 
   const onSubmit = (data: ContactFormData) => {
     // You can also log it in a more formatted way
     dispatch(contactRequests(data)).unwrap().then(() => {
       reset();
     })
-
-    // Optionally reset the form after submission
   };
 
   return (

@@ -8,15 +8,15 @@ export async function GET(req: NextRequest) {
             "";
 
         const res = await fetch(
-             `http://ip-api.com/json/${ip}?fields=countryCode,region,regionName,city,zip`
+            `http://ip-api.com/json/${ip}?fields=countryCode,region,regionName,city,zip`
         );
         const data = await res.json();
         if (data.countryCode) {
             return NextResponse.json({
-                country_code: data.countryCode,  // "PK"
-              state: data.region,              // "SD"  ← code
-    state_name: data.regionName, 
-                city: data.city,                  // "Karachi"
+                country_code: data.countryCode,  
+                state: data.region,              // "SD"  ← code
+                state_name: data.regionName,
+                city: data.city,                 
                 zip: data.zip,                    // "75500"
                 ip,
             });

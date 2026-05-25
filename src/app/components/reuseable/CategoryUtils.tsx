@@ -36,7 +36,7 @@ export const CategoryItem = ({
   return (
     <div>
       <button
-        className={`w-full px-3 py-1 flex items-center justify-between transition-colors text-[13px] lg:text-[14px] font-normal
+        className={`w-full px-3 py-1 flex items-center justify-between transition-colors text-[13px] lg:text-[15px] font-normal
             ${isActive ? "text-[#d40511]" : "text-[#545454] hover:text-[var(--primary-color)]"}`}
         style={{ paddingLeft: `${level * 12 + 8}px`, paddingRight: "8px" }}
 
