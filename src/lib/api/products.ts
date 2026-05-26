@@ -131,3 +131,28 @@ export const getBlogByIdServer = async (id: string) => {
     throw new Error("Failed to load blog post");
   }
 };
+export const fetchWebPages = async (slug?: string) => {
+  if (!slug) return
+  try {
+    const res = await fetch(`${baseURL}web/webpages/web-pages?page=${1}&perPage=${100}`, {
+      cache: "no-store",
+      headers: { storeId: storeId },
+    });
+
+    if (!res?.ok) {
+      return null;
+    }
+
+    const data = await res.json();
+
+    const filteredPages = data?.data?.find((page: any) => page.pageUrl === slug);
+
+    if (!data?.data) {
+      return null;
+    }
+
+    return filteredPages;
+  } catch (err) {
+    return null; // always return null, not throw
+  }
+};

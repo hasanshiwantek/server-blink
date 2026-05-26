@@ -2,7 +2,7 @@ import type { Metadata, ResolvingMetadata } from "next";
 import Script from "next/script";
 import { headers } from "next/headers";
 import dynamic from "next/dynamic";
-import { fetchProductBySlug, fetchProductBySlugAndUrl, fetchProducts } from "@/lib/api/products";
+import { fetchProductBySlug, fetchProductBySlugAndUrl, fetchProducts, fetchWebPages } from "@/lib/api/products";
 import ProductCard from "@/app/components/Product/ProductCard";
 import ProductOverview from "@/app/components/Product/ProductOverview";
 import ProductExtras from "@/app/components/Product/ProductExtras";
@@ -10,6 +10,7 @@ import { Suspense } from "react";
 import CategoriesSidebar from "../components/Home/CategoriesSidebar";
 import BrandsSidebar from "../components/Home/BrandsSidebar";
 import { notFound, redirect } from "next/navigation";
+import Link from "next/link";
 
 // ✅ Dynamic metadata for SEO
 export async function generateMetadata({
@@ -26,14 +27,37 @@ export async function generateMetadata({
 
 
   const product = await fetchProductBySlugAndUrl(pathname);
+  const webPages = await fetchWebPages(pathname);
 
-  if (!product) {
+  if (!product && !webPages) {
     notFound();
   }
 
   const url = `https://server-blink.vercel.app/${slug}`;
 
-
+  if (webPages) {
+    return {
+      title: `${webPages.pageTitle || webPages.pageName} | Server Blink`,
+      description:
+        webPages.metaDescription?.substring(0, 160) ||
+        webPages.pageName,
+      keywords: webPages.metaKeywords || webPages.searchKeywords || webPages.pageName,
+      alternates: {
+        canonical: url,
+      },
+      openGraph: {
+        title: webPages.pageTitle || webPages.pageName,
+        description: webPages.metaDescription || webPages.pageName,
+        url,
+        siteName: "Server Blink",
+        type: "website",
+      },
+      robots: {
+        index: true,
+        follow: true,
+      },
+    };
+  }
   return {
     title: `${product.pageTitle || product.name} | Server Blink`,
     description:
@@ -90,62 +114,96 @@ export default async function ProductPage({
 }) {
   const { slug } = await params; // <-- await here
   const headersList = await headers();
-
   // ✅ Most reliable - Next.js sets this automatically
   const fullUrl = headersList.get("x-full-url");
   const pathname: any = headersList.get("x-pathname");
 
   // 🔥 Parallel data fetching
   const product = await fetchProductBySlugAndUrl(pathname);
+  const webPages = await fetchWebPages(pathname);
 
-  if (!product) {
+  if (!product && !webPages) {
     notFound(); // 🔥 THIS IS THE KEY
   }
   const backendSchema = product?.schema;
 
   return (
     <>
-      {/* ✅ Structured Data (SEO safe) */}
-      {backendSchema && (
-        <Script
-          id="product-jsonld"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(backendSchema),
-          }}
-          strategy="afterInteractive"
-        />
-      )}
+      {webPages ? <main className="flex flex-col gap-30" role="main">
+        <div className="w-full max-w-[1170px] mx-auto lg:px-6 xl:px-0">
+          <div className="py-2">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              {/* Content */}
+              <div className="lg:col-span-12">
+                <h2 className=""><Link href="/" className="text-[11px] "
+                  itemProp="name"
+                >
+                  Home
+                </Link> {" "} <span className="mt-2 mx-3 text-gray-400 text-[11px]" aria-hidden="true">/</span> {" "} <span
+                  className="!text-[#D42020] text-[11px]"
+                  itemProp="name"
+                >
+                    {webPages?.pageName}
+                  </span></h2>
 
-      <main
-        role="main"
-        className="w-full max-w-[1170px] mx-auto px-4 lg:px-6 xl:px-0"
-      >
-        <div className="flex flex-col md:flex-row gap-4 lg:gap-6">
-          {/* Left Sidebar - Fixed 235px on desktop */}
-          <aside className="hidden lg:block md:w-[20%] flex-shrink-0">
-            <CategoriesSidebar activeCategoryId={product?.categoryIds[0]} />
-            <BrandsSidebar activeBrandId={product?.brand?.id} />
-          </aside>
+                {/* Page Title */}
+                <h1 className="text-4xl mb-4 text-[#4A4A4A] mt-5">
+                  {webPages?.pageName}
+                </h1>
 
-          {/* Main Product Content - Fixed 912px max on desktop */}
-          <article className="w-full lg:max-w-[78%]">
-            <ProductCard product={product} />
-            <ProductOverview product={product} />
+                {/* Policy Content */}
+                <div
+                  className="text-[14px] leading-[20px] [&_ol]:space-y-6 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:text-[14px] [&_li]:leading-[20px] [&_strong]:font-bold [&_p]:mb-0"
+                  dangerouslySetInnerHTML={{ __html: webPages?.pageContent || "" }}
+                />
 
-            {/* Client-side component */}
-            {product?.relatedProductsEnabled && <Suspense
-              fallback={
-                <div className="py-10 text-center text-sm text-gray-500">
-                  Loading...
-                </div>
-              }
-            >
-              <ProductExtras product={product} />
-            </Suspense>}
-          </article>
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
+      </main> : <div>
+        {/* ✅ Structured Data (SEO safe) */}
+        {backendSchema && (
+          <Script
+            id="product-jsonld"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(backendSchema),
+            }}
+            strategy="afterInteractive"
+          />
+        )}
+
+        <main
+          role="main"
+          className="w-full max-w-[1170px] mx-auto px-4 lg:px-6 xl:px-0"
+        >
+          <div className="flex flex-col md:flex-row gap-4 lg:gap-6">
+            {/* Left Sidebar - Fixed 235px on desktop */}
+            <aside className="hidden lg:block md:w-[20%] flex-shrink-0">
+              <CategoriesSidebar activeCategoryId={product?.categoryIds[0]} />
+              <BrandsSidebar activeBrandId={product?.brand?.id} />
+            </aside>
+
+            {/* Main Product Content - Fixed 912px max on desktop */}
+            <article className="w-full lg:max-w-[78%]">
+              <ProductCard product={product} />
+              <ProductOverview product={product} />
+
+              {/* Client-side component */}
+              {product?.relatedProductsEnabled && <Suspense
+                fallback={
+                  <div className="py-10 text-center text-sm text-gray-500">
+                    Loading...
+                  </div>
+                }
+              >
+                <ProductExtras product={product} />
+              </Suspense>}
+            </article>
+          </div>
+        </main>
+      </div>}
     </>
   );
 }

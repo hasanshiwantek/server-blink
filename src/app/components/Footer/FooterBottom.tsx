@@ -6,7 +6,7 @@ import Image from "next/image";
 import FooterSkeleton from "../loader/FooterSkeleton";
 import { subscribeNewsletter } from "@/redux/slices/contactSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { getBlogs } from "@/redux/slices/storeFrontSlice";
+import { getBlogs, getWebPages } from "@/redux/slices/storeFrontSlice";
 import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -27,16 +27,22 @@ const FooterBottom = () => {
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
   const { newsletterLoading, newsletterSuccess, newsletterError } = useSelector((state: any) => state.contact);
-  const { blogs, error, loading } = useAppSelector(
+  const { blogs, webPages, error, loading } = useAppSelector(
     (state: any) => state.storeFront
   );
+  const pagesList = webPages?.data || [];
   const router = useRouter();
   const blogPosts = blogs?.data || [];
+  const handleSelect = (url: string) => {
+    router.push(url);
+  };
 
   useEffect(() => {
     dispatch(getBlogs(filters));
   }, [dispatch]);
-
+  useEffect(() => {
+    dispatch(getWebPages({ page: 1, perPage: 100 }));
+  }, [dispatch]);
   // useEffect(() => {
   //   const loadCategories = async () => {
   //     try {
@@ -49,9 +55,6 @@ const FooterBottom = () => {
 
   //   loadCategories();
   // }, []); 
-  const handleSelect = (url: string) => {
-    router.push(url);
-  };
   return (
     <footer
       className="bg-[#333333] text-white w-full mx-auto"
@@ -114,7 +117,7 @@ const FooterBottom = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Contact Us */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white">
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" >
               Contact Us
             </h4>
             <div className="space-y-1 text-[14px] lg:text-[12px] text-white">
@@ -169,51 +172,13 @@ const FooterBottom = () => {
               Quick Links
             </h4>
             <ul className="space-y-1 text-[14px] lg:text-[12px] text-white">
-              <li>
-                <Link href="/warranty" className="hover:text-gray-300">
-                  Warranty
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy-Policy" className="hover:text-gray-300">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/shipping-policy" className="hover:text-gray-300">
-                  Shipping Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/returnPolicy" className="hover:text-gray-300">
-                  Return & Refund Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms-conditions" className="hover:text-gray-300">
-                  Terms & Conditions
-                </Link>
-              </li>
-              <li>
-                <Link href="/disclaimer" className="hover:text-gray-300">
-                  Disclaimer
-                </Link>
-              </li>
-              <li>
-                <Link href="/blogs" className="hover:text-gray-300">
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact-us" className="hover:text-gray-300">
-                  Contact Form
-                </Link>
-              </li>
-              <li>
-                <Link href="/about-us" className="hover:text-gray-300">
-                  About Us
-                </Link>
-              </li>
+              {pagesList.map((page: any) => (
+                <li key={page.id}>
+                  <Link href={`${page.pageUrl}`} className="hover:text-gray-300">
+                    {page.pageName}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
