@@ -1,0 +1,57 @@
+import React from "react";
+import Link from "next/link";
+import { baseURL, storeId } from "@/lib/axiosInstance";
+
+// Fetch categories
+async function fetchCategories() {
+    try {
+        const res = await fetch(`${baseURL}web/categories/get-categories`, {
+            headers: { storeId: storeId },
+            cache: "no-store",
+        });
+        if (!res.ok) return [];
+        const data = await res.json();
+
+        return data.data || [];
+    } catch {
+        return [];
+    }
+}
+
+
+// Recursive function to render categories as nested list
+const CategoryList: React.FC<{ categories: any[] }> = ({ categories }) => {
+    if (!categories || categories.length === 0) return null;
+
+    return (
+        <ul style={{ listStyleType: "disc" }} className="ml-4 space-y-3">
+            {categories.map((cat) => (
+                <li key={cat.slug}>
+                    <Link
+                        href={`/category/${cat.slug}`}
+                        className="text-[#d42020] text-[14px] hover:underline"
+                    >
+                        {cat.name}
+                    </Link>
+                    {cat.subcategories && cat.subcategories.length > 0 && (
+                        <CategoryList categories={cat.subcategories} />
+                    )}
+                </li>
+            ))}
+        </ul>
+    );
+};
+
+export default async function SitemapPage() {
+    const categories = await fetchCategories();
+    return (
+        <main className="w-full max-w-[1170px] mx-auto mt-8 lg:px-6 xl:px-4">
+            <h1 className="text-[22px] text-[#545454]  mb-6">Sitemap</h1>
+            {/* Categories */}
+            <section>
+                <h2 className="text-[22px] text-[#545454] mb-2">Categories</h2>
+                <CategoryList categories={categories} />
+            </section>
+        </main>
+    );
+}
