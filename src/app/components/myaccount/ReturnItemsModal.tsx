@@ -254,7 +254,7 @@ const ReturnItemsModal: React.FC<ReturnItemsModalProps> = ({
               <p className="text-gray-700 mb-4">{error}</p>
               <button
                 onClick={onClose}
-                className="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                className="px-6 py-2 bg-[#d42020] text-white rounded hover:bg-red-700 transition"
               >
                 Close
               </button>

@@ -17,7 +17,7 @@ export default function OrderSuccessPage() {
   //         <h1 className="text-3xl font-bold mb-4">No order found</h1>
   //         <p>Please place an order first.</p>
   //         <Link href="/cart">
-  //           <button className="mt-4 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-full">
+  //           <button className="mt-4 bg-[#d42020] hover:bg-[#d42020] text-white font-semibold py-2 px-6 rounded-full">
   //             Go to Shop
   //           </button>
   //         </Link>
@@ -105,7 +105,7 @@ export default function OrderSuccessPage() {
 
   //           <button
   //             onClick={handleCheckOrders}
-  //             className="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+  //             className="bg-[#d42020] hover:bg-[#d42020] text-white font-semibold py-3 px-8 rounded-full transition-colors"
   //           >
   //             Check Your Orders
   //           </button>
@@ -177,7 +177,7 @@ export default function OrderSuccessPage() {
         <h1 className="text-3xl font-bold mb-4">No order found</h1>
         <p>Please place an order first.</p>
         <Link href="/cart">
-          <button className="mt-4 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-full">
+          <button className="mt-4 bg-[#d42020] hover:bg-[#d42020] text-white font-semibold py-2 px-6 rounded-full">
             Go to Shop
           </button>
         </Link>
@@ -227,7 +227,7 @@ export default function OrderSuccessPage() {
                 </p>
               </div>
 
-              <div className="space-y-4">
+              {index === 0 && <div className="space-y-4">
                 <h2 className="text-xl font-bold text-gray-900">Billing address</h2>
                 <div className="space-y-3">
                   <div className="flex"><span className="text-gray-600 w-20">Name</span><span className="text-gray-900 font-medium">{orderData.billing.name}</span></div>
@@ -235,16 +235,17 @@ export default function OrderSuccessPage() {
                   <div className="flex"><span className="text-gray-600 w-20">Phone</span><span className="text-gray-900">{orderData.billing.phone}</span></div>
                   <div className="flex"><span className="text-gray-600 w-20">Email</span><span className="text-gray-900">{orderData.billing.email}</span></div>
                 </div>
-              </div>
+              </div>}
 
               {/* Button sirf last order ke baad */}
-              {index === localOrders.length - 1 && (
+              {index === 0 && (
+                // {index === localOrders.length - 1 && (
                 <button
                   onClick={() => {
                     dispatch(clearLastOrder());
                     window.location.href = "/my-account/orders";
                   }}
-                  className="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-8 rounded-full transition-colors"
+                  className="bg-[#d42020] hover:bg-[#d42020] text-white font-semibold py-3 px-8 rounded-full transition-colors"
                 >
                   Check Your Orders
                 </button>

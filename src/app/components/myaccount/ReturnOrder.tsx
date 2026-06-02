@@ -67,7 +67,7 @@ const ReturnOrder = () => {
           <p className="text-red-600 text-lg font-medium">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-4 px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+            className="mt-4 px-6 py-2 bg-[#d42020] text-white rounded hover:bg-red-700 transition"
           >
             Retry
           </button>

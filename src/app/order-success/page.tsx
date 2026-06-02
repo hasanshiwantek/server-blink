@@ -4,7 +4,7 @@ import OrderSuccessPage from '../components/CheckoutComponent/OrderSuccessModal'
 const page = () => {
   return (
     <div>
-        <OrderSuccessPage/>
+      <OrderSuccessPage />
     </div>
   )
 }

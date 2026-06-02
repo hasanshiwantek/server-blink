@@ -505,7 +505,7 @@ const TopHeader = () => {
               </div>
               <div className="relative top-[3px] z-[999] sm:hidden flex" >
                 <Link href="/cart" className="transition block">
-                  <div className="bg-red-600 p-2 rounded hover:bg-red-700 transition">
+                  <div className="bg-[#d42020] p-2 rounded hover:bg-red-700 transition">
                     <FaShoppingCart className="w-7 h-7 text-white" />
                     <span className="absolute top-2 -right-2 bg-white text-red-600 text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                       {cartItemCount || "0"}
