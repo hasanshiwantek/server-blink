@@ -24,7 +24,7 @@ const CategoryList: React.FC<{ categories: any[] }> = ({ categories }) => {
     if (!categories || categories.length === 0) return null;
 
     return (
-        <ul style={{ listStyleType: "disc" }} className="ml-4 space-y-1">
+        <ul className="list-disc list-inside ml-4 space-y-1">
             {categories.map((cat) => (
                 <li key={cat.slug}>
                     <Link
@@ -45,13 +45,15 @@ const CategoryList: React.FC<{ categories: any[] }> = ({ categories }) => {
 export default async function SitemapPage() {
     const categories = await fetchCategories();
     return (
-        <main className="w-full max-w-[1170px] mx-auto mt-8 lg:px-6 xl:px-4">
-            <h1 className="text-[22px] text-[#545454]  mb-6">Sitemap</h1>
+        <main className="w-full max-w-[1170px] font-roboto mx-auto mt-8 lg:px-6 xl:px-4">
+            <h1 className="text-[28px] text-[#545454] mb-6">Sitemap</h1>
             {/* Categories */}
-            <section>
-                <h2 className="text-[22px] text-[#545454] mb-2">Categories</h2>
-                <CategoryList categories={categories} />
-            </section>
+            {categories?.length > 0 && (
+                <section className="mb-8">
+                    <h2 className="text-[22px] text-[#545454] mb-2">• Categories</h2>
+                    <CategoryList categories={categories} />
+                </section>
+            )}
         </main>
     );
 }
