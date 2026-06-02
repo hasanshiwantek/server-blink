@@ -106,15 +106,19 @@ export default async function SitemapPage() {
         </ul>
       </section>
       {/* Categories */}
-      <section>
-        <h2 className="text-[22px] text-[#545454] mb-2 ">Categories</h2>
-        <CategoryList categories={categories} categoriesLength={categories?.length} />
-      </section>
+      {categories?.length > 0 && (
+        <section>
+          <h2 className="text-[22px] text-[#545454] mb-2 ">Categories</h2>
+          <CategoryList categories={categories} categoriesLength={categories?.length} />
+        </section>
+      )}
       {/* Brands */}
-      <section className="mb-8">
-        <h2 className="text-[22px] text-[#545454] mb-2 ">Brands</h2>
-        <BrandsList brands={brands} />
-      </section>
+      {brands?.length > 0 && (
+        <section className="mb-8">
+          <h2 className="text-[22px] text-[#545454] mb-2 ">Brands</h2>
+          <BrandsList brands={brands} />
+        </section>
+      )}
     </main>
   );
 }
