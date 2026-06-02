@@ -16,7 +16,6 @@ async function fetchBrands() {
     }
 }
 
-
 export default async function SitemapPage() {
     const brands = await fetchBrands();
 
@@ -26,12 +25,12 @@ export default async function SitemapPage() {
             {/* Brands */}
             <section className="mb-8">
                 <h2 className="text-[22px] text-[#545454] mb-2">Brands</h2>
-                <ul style={{ listStyleType: "circle" }} className="  ml-4  space-y-2">
+                <ul style={{ listStyleType: "circle" }} className="  ml-4  space-y-1">
                     {brands?.map((brand: any) => (
                         <li key={brand.slug}>
                             <Link
                                 href={`/brand/${brand.brand.slug}`}
-                                className="text-[#d42020] text-[14px] hover:underline"
+                                className="text-[#d42020] text-[14px] underline"
                             >
                                 {brand.brand.name}
                             </Link>

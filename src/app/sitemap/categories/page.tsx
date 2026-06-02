@@ -24,12 +24,12 @@ const CategoryList: React.FC<{ categories: any[] }> = ({ categories }) => {
     if (!categories || categories.length === 0) return null;
 
     return (
-        <ul style={{ listStyleType: "disc" }} className="ml-4 space-y-3">
+        <ul style={{ listStyleType: "disc" }} className="ml-4 space-y-1">
             {categories.map((cat) => (
                 <li key={cat.slug}>
                     <Link
                         href={`/category/${cat.slug}`}
-                        className="text-[#d42020] text-[14px] hover:underline"
+                        className="text-[#d42020] text-[14px] underline"
                     >
                         {cat.name}
                     </Link>
