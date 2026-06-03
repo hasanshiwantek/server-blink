@@ -172,11 +172,15 @@ const FooterBottom = () => {
               Quick Links
             </h4>
             <ul className="space-y-1 text-[14px] lg:text-[12px] text-white">
-              {pagesList.map((page: any) => (
+              {pagesList?.map((page: any) => (
                 <li key={page.id}>
-                  <Link href={`${page.pageUrl}`} className="hover:text-gray-300">
+                  {page?.pageType == "2" ? (
+                    <Link href={`${page.link}`} target="_blank" rel="noopener noreferrer" className="hover:text-gray-300">
+                      {page.pageName}
+                    </Link>) : <Link href={`${page.slugWithUrl}`} className="hover:text-gray-300">
                     {page.pageName}
                   </Link>
+                  }
                 </li>
               ))}
             </ul>

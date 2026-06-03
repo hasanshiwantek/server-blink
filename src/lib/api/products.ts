@@ -134,6 +134,8 @@ export const getBlogByIdServer = async (id: string) => {
 export const fetchWebPages = async (slug?: string) => {
   if (!slug) return
   try {
+    const normalizeSlug = (s: string) => s?.replace(/\/+$/, '');
+
     const res = await fetch(`${baseURL}web/webpages/web-pages?page=${1}&perPage=${100}`, {
       cache: "no-store",
       headers: { storeId: storeId },
@@ -145,7 +147,10 @@ export const fetchWebPages = async (slug?: string) => {
 
     const data = await res.json();
 
-    const filteredPages = data?.data?.find((page: any) => page.pageUrl === slug);
+    // const filteredPages = data?.data?.find((page: any) => page?.slugWithUrl === slug);
+    const filteredPages = data?.data?.find(
+      (page: any) => normalizeSlug(page?.slugWithUrl) === normalizeSlug(slug)
+    );
 
     if (!data?.data) {
       return null;

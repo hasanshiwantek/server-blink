@@ -109,15 +109,20 @@ export default async function SitemapPage() {
     <main className="w-full max-w-[1170px] font-roboto mx-auto mt-8 lg:px-6 xl:px-4">
       <h1 className="text-[28px] text-[#545454] mb-6">Sitemap</h1>
 
-      {webPages.length > 0 && (
+      {webPages?.length > 0 && (
         <section className="mb-8">
           <h2 className="text-[22px] text-[#545454] mb-2">• Pages</h2>
           <ul className="list-disc list-inside ml-4 space-y-1">
             {webPages.map((page: any, i: number) => (
               <li key={i}>
-                <Link href={page?.pageUrl} className="text-[#d42020] text-[14px] underline">
+                {page?.pageType == "2" ? (
+                  <Link href={page?.link} className="text-[#d42020] text-[14px] underline">
+                    {page?.pageName}
+                  </Link>
+                ) : <Link href={page?.slugWithUrl || page?.pageUrl} className="text-[#d42020] text-[14px] underline">
                   {page?.pageName}
                 </Link>
+                }
               </li>
             ))}
           </ul>

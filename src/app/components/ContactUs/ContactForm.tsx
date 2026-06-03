@@ -102,7 +102,7 @@ const ContactForm = () => {
               type="text"
               id="full_name"
               {...register("full_name")}
-              className="mt-1 block w-full max-w-full h- max-w-full h-[40px] px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-red-500 focus:border-red-500"
+              className="mt-1 block w-full max-w-full  h-[40px] px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-red-500 focus:border-red-500"
             />
           </div>
 
