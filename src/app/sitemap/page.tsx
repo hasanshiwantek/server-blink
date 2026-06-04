@@ -116,7 +116,7 @@ export default async function SitemapPage() {
             {webPages.map((page: any, i: number) => (
               <li key={i}>
                 {page?.pageType == "2" ? (
-                  <Link href={page?.link} className="text-[#d42020] text-[14px] underline">
+                  <Link href={page?.link} target="_blank" rel="noopener noreferrer" className="text-[#d42020] text-[14px] underline">
                     {page?.pageName}
                   </Link>
                 ) : <Link href={page?.slugWithUrl || page?.pageUrl} className="text-[#d42020] text-[14px] underline">
