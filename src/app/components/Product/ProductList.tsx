@@ -48,7 +48,7 @@ export default function ProductList({
   isLoading = false,
   error = null,
   filterMeta,
-initialCategorydescription,
+  initialCategorydescription,
 }: ProductListProps) {
   const [view, setView] = useState<"list" | "grid">("grid");
   const [page, setPage] = useState(1);
@@ -65,29 +65,31 @@ initialCategorydescription,
     >
       {/* Headings */}
       <div className="flex items-center justify-between bg-[#393939] border-b border-gray-400">
-  {items?.slice(-1).map((item, index) => (
-        <h2 key={index} className="font-bold text-xl text-white py-2 px-4 flex-1">
-{item.name}
-</h2>
-  ))}
-         </div>
-{/* 
-          <div className="grid grid-col-1 md:grid-col-2 lg:grid-cols-4 gap-4 px-4 py-6">
-    <span className="text-xl font-bold text-center  text-[#545454] cursor-pointer hover:text-[#f15939]">
-      Battery Chargers
-    </span>
-  </div> */}
+        {items?.slice(-1).map((item, index) => (
+          <h2 key={index} className="font-bold text-xl text-white py-2 px-4 flex-1">
+            {item.name}
+          </h2>
+        ))}
+      </div>
+      {initialCategorydescription && <>
+        <style>{`
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cc0000;  }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #aa0000; }
+  `}</style>
 
-      {/* <div className="mb-4
-        <h2 className="h2-medium ">Heading Text</h2>
-        <p className="h4-regular ">
-          Do you need to fix your computer or make it work better? At
-          NewTownSpares, we have all the IT Accessories you need! It doesn’t
-          matter if it’s for your home, work, or even an old computer. We are
-          here to help you. We have parts from popular brands like Intel, Dell,
-          and HP.
-        </p>
-      </div> */}
+        <div className="my-6 border border-solid border-gray-400 bg-white py-[5px] px-[10px] max-h-[240px] overflow-y-auto overflow-x-hidden custom-scrollbar">
+          {initialCategorydescription && (
+            <div
+              className="prose max-w-none break-words"
+              dangerouslySetInnerHTML={{
+                __html: initialCategorydescription,
+              }}
+            />
+          )}
+        </div>
+      </>}
 
       {/* Sort Bar */}
       <SortingBar
@@ -122,11 +124,10 @@ initialCategorydescription,
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className={`mt-4 ${
-            view === "grid"
-              ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-              : "space-y-4"
-          }`}
+          className={`mt-4 ${view === "grid"
+            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+            : "space-y-4"
+            }`}
         >
           {Array.from({ length: 6 }).map((_, idx) => (
             <ProductSkeleton key={idx} view={view} />
@@ -143,11 +144,10 @@ initialCategorydescription,
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
-          className={`mt-4 ${
-            view === "grid"
-              ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-              : "space-y-4"
-          }`}
+          className={`mt-4 ${view === "grid"
+            ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+            : "space-y-4"
+            }`}
         >
           <AnimatePresence mode="wait">
             {products.map((product, idx) =>
@@ -171,7 +171,7 @@ initialCategorydescription,
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.3, delay: idx * 0.05 }}
                 >
-              <ProductCard key={product.id} product={product} />
+                  <ProductCard key={product.id} product={product} />
                 </MotionDiv>
               )
             )}

@@ -82,7 +82,7 @@ export default async function CategoryPage({ params }: Props) {
     <ProductsPage
       initialCategoryId={category.id}
       initialCategoryName={category.name}
-      initialCategorydescription={formattedCategorydescription?.category}
+      initialCategorydescription={category?.description}
     />
   );
 }

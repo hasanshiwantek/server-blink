@@ -49,8 +49,8 @@ export default function Sidebar({
   // const toggleCategorySection = (section: string) => {
   //   setExpandedCategorySection((prev) => (prev === section ? null : section));
   // };
-   
- const handleToggleExpand = (categoryId: number) => {
+
+  const handleToggleExpand = (categoryId: number) => {
     setExpandedCategories((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(categoryId)) {
@@ -111,7 +111,7 @@ export default function Sidebar({
   };
 
   // ✅ When URL slug changes, auto-expand matching categories
- useEffect(() => {
+  useEffect(() => {
     if (params?.slug && categories?.length > 0) {
       const chain = findParentChain(categories, params.slug);
       if (chain && chain.length > 0) {
@@ -130,42 +130,42 @@ export default function Sidebar({
     "
     >
       <div className="border rounded-xl">
-           {/* Header */}
-      <div className="bg-[#393939] px-3 py-1 uppercase tracking-wide border-b-3 border-[#8b8b8b]">
-        <h2 className="h2-bold">SHOP BY CATEGORY</h2>
-      </div>
+        {/* Header */}
+        <div className="bg-[#393939] px-3 py-1 uppercase tracking-wide border-b-3 border-[#8b8b8b]">
+          <h2 className="h2-bold">SHOP BY CATEGORY</h2>
+        </div>
 
         <ul className="py-2 space-y-2">
           <li>
             <CategoryFilter
-            categories={categories?.slice(0, 10)}
-            handleCategoryClick={handleCategoryClick}
-            activeCategoryId={filters?.categoryIds?.[0]}
-            expandedCategories={expandedCategories}
-            onToggleExpand={handleToggleExpand}
-          />
+              categories={categories?.slice(0, 10)}
+              handleCategoryClick={handleCategoryClick}
+              activeCategoryId={filters?.categoryIds?.[0]}
+              expandedCategories={expandedCategories}
+              onToggleExpand={handleToggleExpand}
+            />
           </li>
         </ul>
-      <div className="bg-[#393939] px-3 py-1 uppercase tracking-wide border-b-3 border-[#8b8b8b] mt-8">
-        <h2 className="h2-bold">SHOP BY BRAND</h2>
-      </div>
+        <div className="bg-[#393939] px-3 py-1 uppercase tracking-wide border-b-3 border-[#8b8b8b] mt-8">
+          <h2 className="h2-bold">SHOP BY BRAND</h2>
+        </div>
 
         <ul className="py-2 space-y-2">
-          <li>  
+          <li>
             <AnimatePresence initial={false}>
-                <MotionDiv
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="overflow-hidden"
-                >
-                  <BrandFilter
-                    brands={brands}
-                    handleBrandClick={handleBrandClick}
-                    activeBrandId={filters?.brandId}
-                  />
-                </MotionDiv>
+              <MotionDiv
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden"
+              >
+                <BrandFilter
+                  brands={brands}
+                  handleBrandClick={handleBrandClick}
+                  activeBrandId={filters?.brandId}
+                />
+              </MotionDiv>
             </AnimatePresence>
           </li>
         </ul>
