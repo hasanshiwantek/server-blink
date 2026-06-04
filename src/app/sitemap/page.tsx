@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { baseURL, storeId } from "@/lib/axiosInstance";
+import WebDynamicList from "../components/sitemap/WebDynamicList";
 
 const SHOW_BRANDS_LIMIT = 19;
 const SHOW_CATEGORIES_LIMIT = 3;
@@ -110,23 +111,7 @@ export default async function SitemapPage() {
       <h1 className="text-[28px] text-[#545454] mb-6">Sitemap</h1>
 
       {webPages?.length > 0 && (
-        <section className="mb-8">
-          <h2 className="text-[22px] text-[#545454] mb-2">• Pages</h2>
-          <ul className="list-disc list-inside ml-4 space-y-1">
-            {webPages.map((page: any, i: number) => (
-              <li key={i}>
-                {page?.pageType == "2" ? (
-                  <Link href={page?.link} target="_blank" rel="noopener noreferrer" className="text-[#d42020] text-[14px] underline">
-                    {page?.pageName}
-                  </Link>
-                ) : <Link href={page?.slugWithUrl || page?.pageUrl} className="text-[#d42020] text-[14px] underline">
-                  {page?.pageName}
-                </Link>
-                }
-              </li>
-            ))}
-          </ul>
-        </section>
+        <WebDynamicList webPages={webPages} />
       )}
 
       {categories?.length > 0 && (

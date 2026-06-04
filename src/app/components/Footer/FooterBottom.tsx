@@ -23,6 +23,9 @@ const robotoCondensedStyle = { fontFamily: '"Roboto Condensed"' };
 const FooterBottom = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const auth = useAppSelector((state: RootState) => state?.auth);
+  const user: any = localStorage.getItem("persist:auth");
+  const parsedAuth = auth ? JSON.parse(user) : null;
+  const token = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
   const [filters, setFilters] = useState({ page: 1, perPage: 20 });
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
@@ -31,6 +34,9 @@ const FooterBottom = () => {
     (state: any) => state.storeFront
   );
   const pagesList = webPages?.data || [];
+  const visiblePages = pagesList?.filter((page: any) =>
+    !page.showInNavigation || token
+  );
   const router = useRouter();
   const blogPosts = blogs?.data || [];
   const handleSelect = (url: string) => {
@@ -55,6 +61,10 @@ const FooterBottom = () => {
 
   //   loadCategories();
   // }, []); 
+
+
+  console.log("pagesList", pagesList);
+
   return (
     <footer
       className="bg-[#333333] text-white w-full mx-auto"
@@ -172,7 +182,7 @@ const FooterBottom = () => {
               Quick Links
             </h4>
             <ul className="space-y-1 text-[14px] lg:text-[12px] text-white">
-              {pagesList?.map((page: any) => (
+              {visiblePages?.map((page: any) => (
                 <li key={page.id}>
                   {page?.pageType == "2" ? (
                     <Link href={`${page.link}`} target="_blank" rel="noopener noreferrer" className="hover:text-gray-300">
