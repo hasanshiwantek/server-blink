@@ -75,7 +75,7 @@ const Page = async () => {
                 title={"Featured Products".toUpperCase()}
               />
               <FeaturedProducts
-                endpoint="web/products/cc"
+                endpoint="web/products/popular-products"
                 isSlider={false}
                 title={"Current Top Sellers".toUpperCase()}
               />
