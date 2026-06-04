@@ -62,9 +62,6 @@ const FooterBottom = () => {
   //   loadCategories();
   // }, []); 
 
-
-  console.log("pagesList", pagesList);
-
   return (
     <footer
       className="bg-[#333333] text-white w-full mx-auto"
