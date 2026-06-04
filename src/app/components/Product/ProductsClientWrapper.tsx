@@ -97,7 +97,7 @@ export default function ProductsClientWrapper({
           categoryIds: [matched.id],
           page: 1,
         }));
-        setFilterMeta((prev) => ({
+        setFilterMeta((prev: any) => ({
           ...prev,
           categoryName: matched.name,
         }));
@@ -115,7 +115,7 @@ export default function ProductsClientWrapper({
           brandId: matched.brand?.id,
           page: 1,
         }));
-        setFilterMeta((prev) => ({
+        setFilterMeta((prev: any) => ({
           ...prev,
           brandName: matched.brand?.name,
         }));
@@ -124,10 +124,11 @@ export default function ProductsClientWrapper({
   }, [params?.slug, brands, isBrandPage]);
 
   // 👇 Separate state for UI display (not sent to API)
-  const [filterMeta, setFilterMeta] = useState({
+  const [filterMeta, setFilterMeta] = useState<any>({
     brandName: initialBrandName || undefined,
     categoryName: initialCategoryName || undefined,
   });
+  console.log("initialCategorydescription", initialCategorydescription);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -150,16 +151,18 @@ export default function ProductsClientWrapper({
   }, [filters]);
   // Generate breadcrumb items based on page type
   const breadcrumbItems = React.useMemo(() => {
-    const items = [{ name: "Home", href: "/" }];
+    const items: any = [{ name: "Home", href: "/" }];
 
     if (isCategoryPage && filterMeta.categoryName) {
       items.push({
         name: filterMeta.categoryName,
+        description: filterMeta.description,
         href: `/category/${params?.slug || ""}`,
       });
     } else if (isBrandPage && filterMeta.brandName) {
       items.push({
         name: filterMeta.brandName,
+        description: filterMeta.description,
         href: `/brand/${params?.slug || ""}`,
       });
     }
@@ -179,6 +182,8 @@ export default function ProductsClientWrapper({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Sidebar */}
           <aside className="lg:block hidden lg:col-span-3">
+
+            
             <Sidebar
               categories={categories}
               brands={brands}
@@ -198,6 +203,7 @@ export default function ProductsClientWrapper({
                 <Breadcrumb items={breadcrumbItems} />
               </div>
             )}
+
             <ProductList
               items={breadcrumbItems}
               filters={filters}
@@ -213,43 +219,5 @@ export default function ProductsClientWrapper({
         </div>
       </div>
     </div>
-    //       <div className="flex flex-col lg:flex-row gap-4 py-4 w-full xl:max-w-[100%] 2xl:max-w-[119.5%]">
-    //         {/* Sidebar: Filters */}
-    //         <aside
-    //           className="w-full lg:w-[27%] xl:w-[24%] 2xl:w-[24.1%] bg-white rounded
-    // "
-    //         >
-    //           <Sidebar
-    //             categories={categories}
-    //             brands={brands}
-    //             filters={filters}
-    //             setFilters={setFilters}
-    //             products={products}
-    //             filterMeta={filterMeta}
-    //             setFilterMeta={setFilterMeta}
-    //             isBrandPage={isBrandPage}
-    //             isCategoryPage={isCategoryPage}
-    //           />
-    //         </aside>
-
-    //         {/* Product Listing */}
-    //         <main className="w-full lg:w-[72%] xl:w-[73.3%] 2xl:w-[73.8%]">
-    //           {(isCategoryPage || isBrandPage) && (
-    //             <div className="mb-4 px-4 md:px-0">
-    //               <Breadcrumb items={breadcrumbItems} />
-    //             </div>
-    //           )}
-    //           <ProductList
-    //             filters={filters}
-    //             setFilters={setFilters}
-    //             products={products}
-    //             pagination={pagination}
-    //             isLoading={isLoading}
-    //             error={error}
-    //             filterMeta={filterMeta}
-    //             initialCategorydescription={initialCategorydescription}
-    //           />
-    //         </main>
-    //       </div>
   );
 }

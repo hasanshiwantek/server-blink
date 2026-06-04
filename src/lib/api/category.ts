@@ -9,7 +9,7 @@ export const fetchCategories = async () => {
       storeId: storeId,
     },
     // ✅ ISR: cache once, refresh every 5 min
-    next: { revalidate: 60 },
+    next: { revalidate: 10 },
   });
 
   if (!res.ok) throw new Error("Failed to fetch categories");
@@ -24,7 +24,7 @@ export async function fetchCategoryById(id: number | string) {
   try {
     // const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${id}`, {
     const res = await fetch(`${baseURL}categories/${id}`, {
-      next: { revalidate: 60 },
+      next: { revalidate: 10 },
     });
 
     if (res.status === 404) return null;
