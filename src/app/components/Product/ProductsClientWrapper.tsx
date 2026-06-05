@@ -6,7 +6,56 @@ import Breadcrumb from "./Breadcrumb";
 import { fetchFilteredProducts } from "@/lib/api/products";
 import { ProductFilterPayload } from "@/types/types";
 import { useParams, usePathname } from "next/navigation";
+import Link from "next/link";
 
+// Helper: Find category path from root to target in the tree
+const findCategoryPath = (
+  categories: any[],
+  targetId: number,
+  path: any[] = []
+): any[] | null => {
+  for (const cat of categories) {
+    const currentPath = [...path, { name: cat.name, slug: cat.slug, id: cat.id }];
+    if (cat.id === targetId) return currentPath;
+    if (cat.subcategories?.length) {
+      const found = findCategoryPath(cat.subcategories, targetId, currentPath);
+      if (found) return found;
+    }
+  }
+  return null;
+};
+const CategoryBreadcrumb = ({ categoryId, categories }: { categoryId: number; categories: any[] }) => {
+  const path = findCategoryPath(categories, categoryId) || [];
+
+  return (
+    <nav
+      aria-label="breadcrumb"
+      className="flex items-center justify-center lg:justify-normal space-x-2 text-[11px] text-[#393939] lg:mb-7 sm:mb-7 mb-7 flex-wrap"
+    >
+      <Link href={"/"} className="text-[11px] hover:text-[#D42020]" itemProp="name">
+        Home
+      </Link>
+      {path?.map((cat: any, index: number) => (
+        <span key={cat.id}>
+          <span
+            className="mt-2 mx-3 text-gray-400 text-[11px]"
+            aria-hidden="true"
+          >
+            /
+          </span>
+
+          {index === path.length - 1 ? (
+            <span className="text-[#D42020]">{cat.name}</span>
+          ) : (<Link href={`/category/${cat?.slug}`}
+            className={`text-[11px] text-[#666666]  hover:text-[#D42020]  transition-colors`}
+          >
+            <span itemProp="name">{cat.name}</span>
+          </Link>)}
+        </span>
+      ))}
+    </nav>
+  );
+};
 export default function ProductsClientWrapper({
   categories,
   brands,
@@ -41,6 +90,7 @@ export default function ProductsClientWrapper({
       typeof p?.name === "string" ? p.name : (p?.name?.name as string | undefined);
     return (name ?? "").toString().toLowerCase().trim();
   };
+
 
   const normalizeFeatured = (p: any) => {
     return Boolean(p?.isFeatured ?? p?.featured ?? p?.is_featured ?? p?.is_featured_item);
@@ -97,7 +147,7 @@ export default function ProductsClientWrapper({
           categoryIds: [matched.id],
           page: 1,
         }));
-        setFilterMeta((prev: any) => ({
+        setFilterMeta((prev) => ({
           ...prev,
           categoryName: matched.name,
         }));
@@ -115,7 +165,7 @@ export default function ProductsClientWrapper({
           brandId: matched.brand?.id,
           page: 1,
         }));
-        setFilterMeta((prev: any) => ({
+        setFilterMeta((prev) => ({
           ...prev,
           brandName: matched.brand?.name,
         }));
@@ -124,11 +174,10 @@ export default function ProductsClientWrapper({
   }, [params?.slug, brands, isBrandPage]);
 
   // 👇 Separate state for UI display (not sent to API)
-  const [filterMeta, setFilterMeta] = useState<any>({
+  const [filterMeta, setFilterMeta] = useState({
     brandName: initialBrandName || undefined,
     categoryName: initialCategoryName || undefined,
   });
-  console.log("initialCategorydescription", initialCategorydescription);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -151,18 +200,16 @@ export default function ProductsClientWrapper({
   }, [filters]);
   // Generate breadcrumb items based on page type
   const breadcrumbItems = React.useMemo(() => {
-    const items: any = [{ name: "Home", href: "/" }];
+    const items = [{ name: "Home", href: "/" }];
 
     if (isCategoryPage && filterMeta.categoryName) {
       items.push({
         name: filterMeta.categoryName,
-        description: filterMeta.description,
         href: `/category/${params?.slug || ""}`,
       });
     } else if (isBrandPage && filterMeta.brandName) {
       items.push({
         name: filterMeta.brandName,
-        description: filterMeta.description,
         href: `/brand/${params?.slug || ""}`,
       });
     }
@@ -182,8 +229,6 @@ export default function ProductsClientWrapper({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Sidebar */}
           <aside className="lg:block hidden lg:col-span-3">
-
-            
             <Sidebar
               categories={categories}
               brands={brands}
@@ -200,10 +245,9 @@ export default function ProductsClientWrapper({
           <div className="lg:col-span-9">
             {(isCategoryPage || isBrandPage) && (
               <div className="mb-4 px-4 md:px-0">
-                <Breadcrumb items={breadcrumbItems} />
+                <CategoryBreadcrumb categoryId={initialCategoryId} categories={categories} />
               </div>
             )}
-
             <ProductList
               items={breadcrumbItems}
               filters={filters}

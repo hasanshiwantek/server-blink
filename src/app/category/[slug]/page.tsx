@@ -78,14 +78,11 @@ export default async function CategoryPage({ params }: Props) {
     return <div className="text-center py-10">❌ Category not found</div>;
   }
   const formattedCategorydescription = await fetchCategoryById(category.id);
-
   return (
-    <>
-      <ProductsPage
-        initialCategoryId={category.id}
-        initialCategoryName={category.name}
-        initialCategorydescription={category?.description}
-      />
-    </>
+    <ProductsPage
+      initialCategoryId={category.id}
+      initialCategoryName={category.name}
+      initialCategorydescription={category?.description}
+    />
   );
 }
