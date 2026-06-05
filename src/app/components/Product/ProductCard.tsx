@@ -66,7 +66,7 @@ const ProductCard = ({ product }: { product: any }) => {
           aria-label="breadcrumb"
           className="flex items-center justify-center lg:justify-normal space-x-2 text-[11px] text-[#393939] lg:mb-7 sm:mb-7 mb-7 flex-wrap"
         >
-          <h2 className="">
+          <h2 >
             <Link href={"/"} className="text-[11px]" itemProp="name">
               Home
             </Link>

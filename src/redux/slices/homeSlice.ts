@@ -167,6 +167,34 @@ export const contactUs = createAsyncThunk(
   }
 );
 
+export const fetchCarousels = createAsyncThunk(
+  "home/get-crousel",
+  async (_, thunkAPI) => {
+    try {
+      const res = await axiosInstance.get(`web/carousels/get-crousel`);
+      return res.data;
+    } catch (err: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to fetch popular products"
+      );
+    }
+  }
+);
+export const fetchLogos = createAsyncThunk(
+  "home/get-logos",
+  async (_, thunkAPI) => {
+    try {
+      const res = await axiosInstance.get(`web/logos/get-logos`);
+      return res.data;
+    } catch (err: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to fetch popular products"
+      );
+    }
+  }
+);
 // 2. Initial State
 const initialState = {
   statistics: null,
@@ -176,6 +204,8 @@ const initialState = {
   getBrand: [],
   popularProducts: [],
   products: [],
+  carousels: [],
+  swapInterval: 4000,
   reviews: [] as any[],
   reviewsLoading: false,
   reviewsError: null as string | null,
@@ -187,6 +217,12 @@ const initialState = {
 
   searchQuery: "",
   showSearchDropdown: false,
+
+  // logos
+  logoUrl: null as string | null,
+  logoType: null as string | null,
+  faviconUrl: null as string | null,
+  logoDimensions: null as { width: number; height: number } | null,
 };
 
 // 3. Slice
@@ -286,20 +322,53 @@ const homeSlice = createSlice({
 
 
 
-    // search query
-    // .addCase(globalSearch.pending, (state) => {
-    //   state.loading = true;
-    //   state.error = null;
-    // })
-    // .addCase(globalSearch.fulfilled, (state, action) => {
-    //   state.loading = false;
-    //   state.searchData = action.payload;
-    //   state.showSearchDropdown = true;
-    // })
-    // .addCase(globalSearch.rejected, (state, action) => {
-    //   state.loading = false;
-    //   state.error = action.payload as string;
-    // });
+      // search query
+      // .addCase(globalSearch.pending, (state) => {
+      //   state.loading = true;
+      //   state.error = null;
+      // })
+      // .addCase(globalSearch.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   state.searchData = action.payload;
+      //   state.showSearchDropdown = true;
+      // })
+      // .addCase(globalSearch.rejected, (state, action) => {
+      //   state.loading = false;
+      //   state.error = action.payload as string;
+      // });
+
+
+      // carousels
+      .addCase(fetchCarousels.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchCarousels.fulfilled, (state, action) => {
+        state.loading = false;
+        state.carousels = action.payload?.slides;
+        state.swapInterval = action.payload?.settings?.swapInterval
+      })
+      .addCase(fetchCarousels.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch carousels data";
+      })
+
+
+      // Logos
+      .addCase(fetchLogos.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchLogos.fulfilled, (state, action) => {
+        const getLogos = action?.payload?.data?.[0] || {};
+        state.loading = false;
+        state.logoUrl = getLogos.logoUrl;
+        state.logoType = getLogos.logoType;
+        state.faviconUrl = getLogos.faviconUrl;
+        state.logoDimensions = getLogos.dimensions;
+      })
+      .addCase(fetchLogos.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch logos data";
+      })
   },
 });
 export const { setSearchQuery, setShowSearchDropdown, clearSearch } = homeSlice.actions;
