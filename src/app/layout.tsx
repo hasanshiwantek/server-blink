@@ -5,6 +5,7 @@ import localFont from "next/font/local";
 import ScriptInjector from "@/components/ScriptInjector";
 import "../styles/blog/api-content.css";
 import "./globals.css";
+import DynamicFavicon from "@/components/DynamicFavicon";
 const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -121,6 +122,7 @@ export default function RootLayout({
       >
         <LayoutWrapper>
           <ScriptInjector />
+          <DynamicFavicon />
           {children}
         </LayoutWrapper>
       </body>
