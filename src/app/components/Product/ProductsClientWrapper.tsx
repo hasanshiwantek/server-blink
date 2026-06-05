@@ -15,7 +15,7 @@ const findCategoryPath = (
   path: any[] = []
 ): any[] | null => {
   for (const cat of categories) {
-    const currentPath = [...path, { name: cat.name, slug: cat.slug, id: cat.id }];
+    const currentPath = [...path, { name: cat.name, slug: cat.slug, id: cat.id, subcategories: cat.subcategories }];
     if (cat.id === targetId) return currentPath;
     if (cat.subcategories?.length) {
       const found = findCategoryPath(cat.subcategories, targetId, currentPath);
@@ -84,7 +84,7 @@ export default function ProductsClientWrapper({
     maxPrice: undefined,
     sortBy: "",
   });
-
+  const findCategory = findCategoryPath(categories, initialCategoryId) || [];
   const normalizeProductName = (p: any) => {
     const name =
       typeof p?.name === "string" ? p.name : (p?.name?.name as string | undefined);
@@ -222,7 +222,6 @@ export default function ProductsClientWrapper({
     filterMeta.brandName,
     params?.slug,
   ]);
-
   return (
     <div className="w-full max-w-[1170px] mx-auto  lg:px-6 xl:px-0">
       <div className="py-6">
@@ -258,6 +257,8 @@ export default function ProductsClientWrapper({
               error={error}
               filterMeta={filterMeta}
               initialCategorydescription={initialCategorydescription}
+              categories={findCategory?.find((c: any) => c.id === initialCategoryId)}
+              initialCategoryId={initialCategoryId}
             />
           </div>
         </div>

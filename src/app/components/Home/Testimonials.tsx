@@ -189,10 +189,10 @@ const Testimonials = () => {
           />
           <span className="flex items-center justify-center gap-1 text-center">
             Based on
-            <a href="#" className="border-b-2 text-black border-black">
-              {stats?.count || "18"} {' '}
+            <Link href="https://www.trustpilot.com/review/serverblink.com" target="_blank" className="border-b-2 text-black border-black">
+              {stats?.count || "0"} {' '}
               reviews
-            </a>
+            </Link>
           </span>
           <div className="flex items-center justify-center">
             <IoStarSharp size={20} color="#00b67a" />

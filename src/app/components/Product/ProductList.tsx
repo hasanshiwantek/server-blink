@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import ProductCategoryCard from "./ProductCategoryCard";
 // import ProductGridCard from "./ProductGridCard";
 import SortingBar from "./SortingBar";
@@ -10,6 +10,8 @@ import ProductSkeleton from "../loader/ProductSkeleton";
 import Pagination from "@/components/ui/pagination";
 import dynamic from "next/dynamic";
 import ProductCard from "../../components/Home/ProductCard";
+import { decode } from "html-entities";
+import Link from "next/link";
 
 
 // Dynamically import motion.div and AnimatePresence (client only)
@@ -37,6 +39,8 @@ interface ProductListProps {
   error?: string | null;
   filterMeta: any;
   initialCategorydescription?: any;
+  categories?: any;
+  initialCategoryId?: any;
 }
 
 export default function ProductList({
@@ -49,14 +53,71 @@ export default function ProductList({
   error = null,
   filterMeta,
   initialCategorydescription,
+  categories,
+  initialCategoryId
 }: ProductListProps) {
   const [view, setView] = useState<"list" | "grid">("grid");
   const [page, setPage] = useState(1);
+  const decodedHtml = decode(
+    initialCategorydescription?.replace(/<pre[^>]*>/gi, "")?.replace(/<\/pre>/gi, "")
+  );
+
+  const findCategoryById = (cats: any[], id: number): any => {
+    for (const cat of cats) {
+      if (cat.id === id) return cat;
+      if (cat.subcategories?.length) {
+        const found = findCategoryById(cat.subcategories, id);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
+
+  const cleanSubcategories = categories?.subcategories
+
+  const { contentHtml, faqHtml } = useMemo(() => {
+    if (!decodedHtml) {
+      return {
+        contentHtml: "",
+        faqHtml: "",
+      };
+    }
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(decodedHtml, "text/html");
+
+    const faq = doc.querySelector(".blog-faqs");
+
+    const faqHtml = faq ? faq.outerHTML : "";
+
+    if (faq) {
+      faq.remove();
+    }
+
+    return {
+      contentHtml: doc.body.innerHTML,
+      faqHtml,
+    };
+  }, [decodedHtml]);
   const total = pagination?.total || 0;
   // ✅ Scroll to top when filters.page changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [filters.page]);
+
+  useEffect(() => {
+    const main = document.querySelector(".custom-description-style");
+    if (!main) return;
+
+    const blogFaqs = main.querySelector(".blog-faqs");
+    const target = document.querySelector(".faqs-section");
+
+    if (blogFaqs && target) {
+      target.innerHTML = "";
+      target.appendChild(blogFaqs.cloneNode(true));
+    }
+  }, [decodedHtml]);
+
   return (
     <section
       className="w-full
@@ -71,49 +132,119 @@ export default function ProductList({
           </h2>
         ))}
       </div>
-      {initialCategorydescription && <>
-        <style>{`
-    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cc0000;  }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #aa0000; }
-  `}</style>
+      {initialCategorydescription && (
+        <>
+          <style>{`
+      .custom-description {
+        color: #545454;
+        font-family: Roboto, Arial, Helvetica, sans-serif;
+      }
 
-       
+      /* Headings */
+      .custom-description h2 {
+        font-size: 26px;
+        margin: 17.5px 0 11px 0;
+        font-weight: 300;
+        line-height: 1.3;
+      }
 
-<div
-  className="
-    my-6 border border-[1px] border-solid border-gray-600 bg-white
-    py-[5px] px-[10px]
-    max-h-[240px] overflow-y-auto overflow-x-hidden
+      /* Paragraphs */
+      .custom-description p {
+        font-size: 14px;
+        margin: 8px 0 0 0;
+        line-height: 1.6;
+      }
 
-    [&::-webkit-scrollbar]:w-2
-    [&::-webkit-scrollbar-track]:bg-gray-200
+      /* Strong */
+      .custom-description strong {
+        font-weight: 700;
+        color: #545454;
+      }
 
-    [&::-webkit-scrollbar-thumb]:bg-[#FF0101]
-    [&::-webkit-scrollbar-thumb]:border
-    [&::-webkit-scrollbar-thumb]:border-dotted
-    [&::-webkit-scrollbar-thumb]:border-[#FF0101]
+      /* Links */
+      .custom-description a {
+        color: #d42020;
+        text-decoration: underline;
+        line-height: inherit;
+        transition: color 0.15s ease;
+        -webkit-transition: color 0.15s ease;
+      }
 
-    [&::-webkit-scrollbar-thumb:hover]:bg-[#387C3B]
-    [&::-webkit-scrollbar-thumb:hover]:border-[#387C3B]
-  "
->
-  {initialCategorydescription && (
-    <div
-      className="prose max-w-none break-words"
-      dangerouslySetInnerHTML={{
-        __html: initialCategorydescription,
-      }}
-    />
-  )}
-</div>
+      .custom-description a:hover {
+        color: #b31b1b; /* Slightly darker red on hover - you can adjust */
+      }
 
+      /* Lists */
+      .custom-description ul,
+      .custom-description ol {
+        margin: 8px 0 8px 20px;
+        padding: 0;
+      }
 
+      .custom-description li {
+        font-size: 14px;
+        margin-bottom: 6px;
+        line-height: 1.6;
+        position: relative;
+      }
 
+      .custom-description ul {
+        list-style-type: disc;
+      }
 
-       {/* network div */}
-      </>}
+      .custom-description ol {
+        list-style-type: decimal;
+      }
+
+      /* Scrollbar */
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #FF0101;
+        border: 1px solid #FF0101;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #387C3B;
+        border-color: #387C3B;
+      }
+    `}</style>
+
+          <div
+            className="my-6 border border-gray-600 bg-white py-5 px-4
+                 max-h-[240px] overflow-y-auto custom-scrollbar"
+          >
+            <div
+              className="custom-description custom-description-style prose prose-sm max-w-none break-words"
+              dangerouslySetInnerHTML={{ __html: contentHtml }}
+            />
+          </div>
+        </>
+      )}
+      <div>
+        <div className="my-6 ">
+          <div className="grid grid-cols-2 md:grid-cols-4">
+            <Link
+              href={`/category/${categories?.slug}`}
+              className="py-3 px-4 text-center text-[14px] text-[#545454] font-bold  hover:text-[#d42020] transition-colors"
+            >
+              {categories?.name}
+            </Link>
+            {cleanSubcategories?.length > 0 ? cleanSubcategories?.map((sub: any, i: number) => (
+              <Link
+                key={sub?.id}
+                href={`/category/${sub?.slug}`}
+                className="py-3 px-4 text-center text-[14px] text-[#545454] font-bold  hover:text-[#d42020] transition-colors"
+              >
+                {sub?.name}
+              </Link>
+            )) : <></>}
+          </div>
+        </div>
+      </div>
 
       {/* Sort Bar */}
       <SortingBar
@@ -217,6 +348,15 @@ export default function ProductList({
             }
           />
         </div>
+      )}
+      {/* <div className="faqs-section"></div> */}
+      {faqHtml && (
+        <div
+          className="faqs-section mt-8"
+          dangerouslySetInnerHTML={{
+            __html: faqHtml.replace(/type="checkbox"/g, 'type="radio" name="faq-accordion"')
+          }}
+        />
       )}
     </section>
   );

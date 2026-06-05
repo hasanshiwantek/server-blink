@@ -62,6 +62,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const brandSlug =
     typeof product.brand === "object" ? product?.brand?.slug : undefined;
   const availableForSale = product?.purchasabilityStatus == "available"
+
   return (
     <div className="bg-[#F2F2F2] rounded shadow hover:shadow-md transition flex flex-col h-full">
       {/* Image */}
@@ -122,7 +123,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>}
 
         {/* Button pushed to bottom */}
-        <button
+        {availableForSale ? <button
           onClick={() => {
             if (availableForSale) {
               const cartItem = cart.find((item: any) => item.id === product.id);
@@ -153,7 +154,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           disabled={!availableForSale}
           className="w-full bg-[#CAC9C9] hover:bg-[#D42020] font-bold text-[#393939] border-b-2 border-[#393939] py-1 hover:text-white rounded text-[14px] mt-auto transition">
           {"ADD TO CART"}
-        </button>
+        </button> : <button
+          onClick={() => {
+            router.push(product?.productUrl || "#");
+          }}
+          className="w-full bg-[#CAC9C9] hover:bg-[#D42020] font-bold text-[#393939] border-b-2 border-[#393939] py-1 hover:text-white rounded text-[14px] mt-auto transition">
+          {"CALL FOR PRICING"}
+        </button>}
       </div>
     </div>
   );
