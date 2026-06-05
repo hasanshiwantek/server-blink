@@ -56,7 +56,7 @@ const WebContactForm = ({ showTheseFields }: { showTheseFields: string[] }) => {
     }
 
     return (
-        <div className="w-full  max-w-full lg:max-w-[1170px]  mx-0 lg:mx-auto my-4  lg:px-[0%] px-[7%] ">
+        <div className="w-full  max-w-full lg:max-w-[1170px]  mx-0 lg:mx-auto my-8  lg:px-[0%] px-[7%] ">
             {/* Form */}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 {/* Dynamic Input Fields - Paired in rows of 2 */}

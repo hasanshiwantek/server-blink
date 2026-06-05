@@ -391,6 +391,69 @@ img {
       rgba(229, 73, 73, 0.8) 100%);
 }
 
+/* Faqs Design */
+.faqs-section {
+  width: 100%;
+}
+
+.faqs-section .accordion input {
+  display: none;
+}
+
+.faqs-section h2 {
+  border: none;
+  text-transform: none;
+  font-size: 24px;
+  padding-left: 0;
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #333;
+  font-weight: 300;
+}
+
+.faqs-section .accordion h3 label {
+  display: block;
+  padding: 12px;
+  background: #f1f1f1;
+  color: #000;
+  cursor: pointer;
+  margin-bottom: 2px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+.faqs-section .accordion h3 label:hover {
+  background: #d42020;
+  color: #fff;
+}
+
+.faqs-section .accordion input:checked+h3 label {
+  background: #d42020;
+  color: #fff;
+}
+
+.faqs-section .accordion .content {
+  max-height: 0;
+  overflow: hidden;
+  background: #fff;
+  transition: max-height 0.3s ease;
+  padding: 0 12px;
+}
+
+.faqs-section .accordion input:checked+h3+.content {
+  max-height: 200px;
+  padding: 10px 12px;
+}
+
+.faqs-section .accordion h3 {
+  font-weight: 700;
+  line-height: inherit;
+  margin: 0;
+  font-size: 15px;
+}
+
 /* Testimonials PrimeReact carousel – prevent black gaps & side clipping */
 .testimonials-carousel .p-carousel,
 .testimonials-carousel .p-carousel-content,
