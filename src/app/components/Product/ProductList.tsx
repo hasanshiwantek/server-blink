@@ -79,16 +79,40 @@ export default function ProductList({
     .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #aa0000; }
   `}</style>
 
-        <div className="my-6 border border-solid border-gray-400 bg-white py-[5px] px-[10px] max-h-[240px] overflow-y-auto overflow-x-hidden custom-scrollbar">
-          {initialCategorydescription && (
-            <div
-              className="prose max-w-none break-words"
-              dangerouslySetInnerHTML={{
-                __html: initialCategorydescription,
-              }}
-            />
-          )}
-        </div>
+       
+
+<div
+  className="
+    my-6 border border-[1px] border-solid border-gray-600 bg-white
+    py-[5px] px-[10px]
+    max-h-[240px] overflow-y-auto overflow-x-hidden
+
+    [&::-webkit-scrollbar]:w-2
+    [&::-webkit-scrollbar-track]:bg-gray-200
+
+    [&::-webkit-scrollbar-thumb]:bg-[#FF0101]
+    [&::-webkit-scrollbar-thumb]:border
+    [&::-webkit-scrollbar-thumb]:border-dotted
+    [&::-webkit-scrollbar-thumb]:border-[#FF0101]
+
+    [&::-webkit-scrollbar-thumb:hover]:bg-[#387C3B]
+    [&::-webkit-scrollbar-thumb:hover]:border-[#387C3B]
+  "
+>
+  {initialCategorydescription && (
+    <div
+      className="prose max-w-none break-words"
+      dangerouslySetInnerHTML={{
+        __html: initialCategorydescription,
+      }}
+    />
+  )}
+</div>
+
+
+
+
+       {/* network div */}
       </>}
 
       {/* Sort Bar */}
