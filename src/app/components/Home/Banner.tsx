@@ -28,7 +28,7 @@ const Banner = () => {
   const { carousels, loading, swapInterval } = useAppSelector((state: any) => state?.home);
   const dispatch = useAppDispatch();
   const plugin = useRef(
-    Autoplay({ delay: swapInterval, stopOnInteraction: false, stopOnMouseEnter: true })
+    Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true })
   );
 
   useEffect(() => {
