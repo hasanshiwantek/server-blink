@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Carousel,
   CarouselContent,
@@ -10,59 +10,28 @@ import {
   CarouselApi,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import Image from "next/image";
 import bannerImg1 from "@/assets/banner/banner-img1.jpg";
 import bannerImg2 from "@/assets/banner/banner-img2.jpg";
 import bannerImg3 from "@/assets/banner/banner-img3.jpg";
 import bannerImg4 from "@/assets/banner/banner-img4.jpg";
-
-const bannerSlides = [
-  {
-    id: 1,
-    title: "Reliable and Efficient",
-    subtitle: "Get reliable and efficient storage solutions for your server",
-    buttonText: "SHOP NOW",
-    image: bannerImg1,
-    gradient: "from-slate-900/70 to-slate-800/50",
-  },
-  {
-    id: 2,
-    title: "YOUR SERVER PARTS PARTNER",
-    subtitle: "Find the perfect server parts to fit your needs.",
-    buttonText: "SHOP NOW",
-    image: bannerImg2,
-    gradient: "from-blue-900/70 to-blue-800/50",
-  },
-  {
-    id: 3,
-    title: "Server Upgrade",
-    subtitle: "Upgrade your server with the latest parts.",
-    buttonText: "SHOP NOW",
-    image: bannerImg3,
-    gradient: "from-slate-900/70 to-slate-700/50",
-  },
-  {
-    id: 4,
-    title: "Easy-to-install Parts",
-    subtitle:
-      "Shop with confidence, knowing our server parts are backed by our satisfaction guarantee",
-    buttonText: "SHOP NOW",
-    image: bannerImg4,
-    gradient: "from-gray-900/70 to-gray-800/50",
-  },
-];
+import { fetchCarousels } from "@/redux/slices/homeSlice";
 
 const robotoCondensedStyle = { fontFamily: '"Roboto Condensed"' };
 
 const Banner = () => {
+  const router = useRouter();
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
-
-  const plugin = React.useRef(
+  const { carousels, loading, swapInterval } = useAppSelector((state: any) => state?.home);
+  const dispatch = useAppDispatch();
+  const plugin = useRef(
     Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true })
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!api) {
       return;
     }
@@ -73,6 +42,16 @@ const Banner = () => {
       setCurrent(api.selectedScrollSnap());
     });
   }, [api]);
+
+
+  useEffect(() => {
+    dispatch(fetchCarousels());
+  }, []);
+
+
+  if (loading) return (
+    <div className="w-full h-[400px] animate-pulse bg-gray-200 rounded" />
+  )
 
   return (
     <div className="relative w-full">
@@ -88,14 +67,14 @@ const Banner = () => {
         onMouseLeave={plugin.current.reset}
       >
         <CarouselContent>
-          {bannerSlides.map((slide, index) => (
+          {carousels?.map((slide: any, index: number) => (
             <CarouselItem key={slide.id}>
               <div className="relative flex w-full flex-col overflow-hidden rounded-xs sm:block md:h-[312px] md:w-[913px] sm:h-[320px]">
                 {/* Image (mobile: top only; sm+: full slide background) */}
                 <div className="relative h-[105px] w-full shrink-0 sm:absolute sm:inset-0 sm:h-full">
                   <Image
                     src={slide.image}
-                    alt={slide.title}
+                    alt={slide.altText}
                     fill
                     className="object-cover"
                     priority={index === 0}
@@ -109,17 +88,17 @@ const Banner = () => {
                     className="mb-3 text-xl font-bold leading-tight text-white"
                     style={robotoCondensedStyle}
                   >
-                    {slide.title}
+                    {slide.heading}
                   </h1>
                   <p
                     className="mb-5 max-w-xl text-base font-semibold text-white"
                     style={robotoCondensedStyle}
                   >
-                    {slide.subtitle}
+                    {slide.text}
                   </p>
                   <button
                     type="button"
-                    onClick={() => window.location.reload()}
+                    onClick={() => router.push(slide?.link)}
                     className="inline-flex items-center justify-center rounded bg-[var(--primary-color)] border-0 border-b-[3px] border-b-[#860109] box-border h-[30px] px-5 text-[18px] font-bold uppercase tracking-wide text-white shadow-md transition-colors duration-200"
                     style={robotoCondensedStyle}
                   >
@@ -134,17 +113,17 @@ const Banner = () => {
                       className="h1-bold mb-3 drop-shadow-2xl md:mb-4 md:leading-tight"
                       style={robotoCondensedStyle}
                     >
-                      {slide.title}
+                      {slide.heading}
                     </h1>
                     <p
                       className="mb-6 max-w-xl text-base font-bold text-gray-100 drop-shadow-lg md:mb-8 md:text-[18px]"
                       style={robotoCondensedStyle}
                     >
-                      {slide.subtitle}
+                      {slide.text}
                     </p>
                     <button
                       type="button"
-                      onClick={() => window.location.reload()}
+                      onClick={() => router.push(slide?.link)}
                       className="inline-flex items-center justify-center rounded bg-[var(--primary-color)] border-0 border-b-[3px] border-b-[#860109] box-border h-[30px] px-5 text-[18px] font-bold uppercase tracking-wide text-white shadow-xl transition-colors duration-200"
                       style={robotoCondensedStyle}
                     >
@@ -161,13 +140,13 @@ const Banner = () => {
 
         {/* Navigation Dots - Bottom Right (sits on gray strip on mobile) */}
         <div className="absolute bottom-0.5 right-0 z-10 flex gap-2 bg-[#CAC9C9] p-2 px-3 sm:bottom-0.5">
-          {bannerSlides.map((_, index) => (
+          {carousels?.map((_: any, index: number) => (
             <button
               key={index}
               onClick={() => api?.scrollTo(index)}
               className={`w-4 h-4 rounded-full transition-all duration-300 ${current === index
-                  ? "bg-[#d42020] w-3"
-                  : "bg-white/60 hover:bg-white/90"
+                ? "bg-[#d42020] w-3"
+                : "bg-white/60 hover:bg-white/90"
                 }`}
               aria-label={`Go to slide ${index + 1}`}
             />

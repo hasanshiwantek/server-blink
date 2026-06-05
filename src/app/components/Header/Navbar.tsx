@@ -1,17 +1,23 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Search, ShoppingCart, Menu, X } from "lucide-react";
 import navlogo from "@/assets/nav-logo.webp";
 import Image from "next/image";
 import Link from "next/link";
 import { RootState } from "@/redux/store";
-import { useAppSelector } from "@/hooks/useReduxHooks";
+import { useAppSelector, useAppDispatch } from "@/hooks/useReduxHooks";
 import GlobalSearchBar from "./GlobalSearchBar";
 import MobileSearchBar from "./MobileSearchBar";
-
+import { fetchLogos } from "@/redux/slices/homeSlice";
 const Navbar: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state.cart.items);
+  const { logoUrl, faviconUrl, logoDimensions, logoType } = useAppSelector((state: any) => state?.home);
+
+  useEffect(() => {
+    dispatch(fetchLogos());
+  }, []);
 
   return (
     <header className="bg-[var(--bg-color)]  sticky top-0 z-50 px-4 sm:px-0">
@@ -21,15 +27,15 @@ const Navbar: React.FC = () => {
           <div className="flex items-center justify-center flex-shrink-0">
             <Link href={"/"}>
               <div className="relative w-80 h-14 sm:w-70 sm:h-30 md:w-44 md:h-9 lg:w-48 lg:h-20 xl:w-76 xl:h-18 2xl:w-[253.48px] 2xl:h-[48px]">
-                <Image
-                  src={navlogo}
+                {logoType == "upload" && <Image
+                  src={logoUrl || navlogo}
                   alt="Logo"
                   fill
                   fetchPriority="high"
                   className="object-contain"
                   priority
                   sizes="(max-width: 768px) 200px, (max-width: 1200px) 200px, 253px"
-                />
+                />}
               </div>
             </Link>
           </div>
