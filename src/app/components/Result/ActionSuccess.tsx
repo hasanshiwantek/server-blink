@@ -1,9 +1,13 @@
 "use client"
-import { useRouter } from "next/navigation";
 import React from "react";
+import { useRouter } from "next/navigation";
 import { CHECKOUT_STORAGE_KEY } from "../CheckoutComponent/CheckoutComponent";
+import { useAppSelector } from "@/hooks/useReduxHooks";
+import { RootState } from "@/redux/store";
+
 const ActionSuccess = () => {
     const router = useRouter();
+        const auth = useAppSelector((state: RootState) => state?.auth);
     const handleShopping = () => {
         localStorage.removeItem(CHECKOUT_STORAGE_KEY);
         router.push("/");
@@ -19,7 +23,7 @@ const ActionSuccess = () => {
                     <div className=" p-0.5 gap-3 flex justify-center items-center  mt-1 text-[#545454]">
                         <div className="flex flex-col  items-center">
                             <p className="text-[14px]   font-light text-center">
-                                Thank you for creating your account at Server Blink LLC. Your account details have been emailed to
+                                Thank you for creating your account at Server Blink LLC. Your account details have been emailed to <span className="font-bold">{auth?.user?.email}</span>
                             </p>
                             <button onClick={handleShopping} className="btn-primary px-[30px]">
                                 CONTINUE TO SHOPPING
