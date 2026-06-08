@@ -40,6 +40,10 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
 
   // ==================== DRAG HANDLERS ====================
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    // Skip drag if clicking on a link
+    if ((e.target as HTMLElement).closest('a')) {
+      return;
+    }
     if (!carouselRef.current) return;
 
     isDragging.current = true;
@@ -109,7 +113,7 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
           >
             <Card className="border-none shadow-none flex justify-center items-center bg-transparent">
               <CardContent className="flex items-center justify-center p-6 w-[100.2%] md:w-[139.2%] h-[13.34rem] bg-[#FFFFFF] rounded-2xl">
-                <Link href={`/brand/${item?.slug}`} title="">
+                <Link href={`/brand/${item?.slug}`} title="" onClick={(e) => e.stopPropagation()}>
                   <div className="w-32 h-32">
                     <Image
                       src={item.logo ?? "/default-product-image.svg"}

@@ -61,7 +61,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     "/default-product-image.svg";
   const brandSlug =
     typeof product.brand === "object" ? product?.brand?.slug : undefined;
-  const availableForSale = product?.purchasabilityStatus == "available"
+  const availableForSale = product?.purchasabilityStatus == "available" || Number(product?.price) == 0;
 
   return (
     <div className="bg-[#F2F2F2] rounded shadow hover:shadow-md transition flex flex-col h-full">
