@@ -29,10 +29,28 @@ const DynamicWebPage = ({ webPages }: { webPages: any }) => {
                             </h1>
 
                             {webPages?.pageType == "4" ? <div
-                                className="text-[14px] leading-[20px] [&_ol]:space-y-6 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:text-[14px] [&_li]:leading-[20px] [&_strong]:font-bold [&_p]:mb-0"
+                                className="prose prose-sm sm:prose-base max-w-none 
+               text-[14px] leading-[20px] 
+               [&_ol]:space-y-6 [&_ol]:list-decimal [&_ol]:pl-5 
+               [&_li]:text-[14px] [&_li]:leading-[20px] 
+               [&_strong]:font-bold [&_p]:mb-0
+               [&_img]:max-w-full [&_img]:h-auto [&_img]:mx-auto
+               [&_iframe]:max-w-full [&_iframe]:aspect-video [&_iframe]:mx-auto
+               [&_table]:w-full [&_table]:overflow-x-auto [&_table]:border-collapse
+               [&_td]:border [&_th]:border [&_td]:p-2 [&_th]:p-2
+               break-words"
                                 dangerouslySetInnerHTML={{ __html: webPages?.rawHtml || "" }}
                             /> : <div
-                                className="text-[14px] leading-[20px] [&_ol]:space-y-6 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:text-[14px] [&_li]:leading-[20px] [&_strong]:font-bold [&_p]:mb-0"
+                                className="prose prose-sm sm:prose-base max-w-none 
+               text-[14px] leading-[20px] 
+               [&_ol]:space-y-6 [&_ol]:list-decimal [&_ol]:pl-5 
+               [&_li]:text-[14px] [&_li]:leading-[20px] 
+               [&_strong]:font-bold [&_p]:mb-0
+               [&_img]:max-w-full [&_img]:h-auto [&_img]:mx-auto
+               [&_iframe]:max-w-full [&_iframe]:aspect-video [&_iframe]:mx-auto
+               [&_table]:w-full [&_table]:overflow-x-auto [&_table]:border-collapse
+               [&_td]:border [&_th]:border [&_td]:p-2 [&_th]:p-2
+               break-words"
                                 dangerouslySetInnerHTML={{ __html: webPages?.pageContent || "" }}
                             />}
                             {webPages?.pageType == "3" && (
