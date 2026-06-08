@@ -85,6 +85,7 @@ const multiAddressSlice = createSlice({
             state.destShippingRates = action.payload.destShippingRates;
             state.orderComment = action.payload.orderComment;
         },
+        
         clearMultiAddressProgress: (state) => {
             state.destinations = [
                 { id: "dest-1", address: null, allocatedItems: [], selectedShippingMethod: "", showItems: true },
