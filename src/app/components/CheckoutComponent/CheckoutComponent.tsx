@@ -13,6 +13,7 @@ import {
   increaseQty,
   removeFromCart,
   clearCart,
+  restoreCart,
 } from "@/redux/slices/cartSlice";
 import { applyCoupon, removeCoupon } from "@/redux/slices/couponSlice"; // ADD THIS
 import axiosInstance from "@/lib/axiosInstance";
@@ -974,10 +975,14 @@ const CheckoutForm = () => {
       if (parsed._currentStep) {
         setCurrentStep(parsed._currentStep);
       }
+      // ✅ Restore Cart Items
+      if (parsed._cartItems?.length) {
+        dispatch(restoreCart(parsed._cartItems));
+      }
     } catch (e) {
       console.error("Failed to restore checkout data:", e);
     }
-  }, []);
+  }, [dispatch, setValue]);
   // ✅ Save to localStorage on form changes (debounced)
   const watchedValues = watch();
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -1021,6 +1026,13 @@ const CheckoutForm = () => {
         _completedDestinations: completedDestinations,       // ✅ ADD
         _destShippingRates: destShippingRates,               // ✅ ADD
         _orderComment: watchedValues.orderComment || "",     // ✅ ADD
+        // ✅ NEW: Save current cart state
+        _cartItems: cart.map(item => ({
+          id: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+        })),
       };
       localStorage.setItem(CHECKOUT_STORAGE_KEY, JSON.stringify(dataToSave));
     }, 500);
@@ -1028,7 +1040,13 @@ const CheckoutForm = () => {
     return () => {
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     };
-  }, [completedSteps, currentStep]);
+  }, [watchedValues,           // This already covers most form fields
+    completedSteps,
+    currentStep,
+    isMultiAddress,
+    destinations,            // ← Important: Add this
+    completedDestinations,   // ← Important
+    destShippingRates, cart]);
 
 
   return (
