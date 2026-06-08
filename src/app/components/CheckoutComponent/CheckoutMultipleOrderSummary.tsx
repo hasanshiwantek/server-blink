@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAppSelector } from "@/hooks/useReduxHooks";
-
+import { Button } from "@/components/ui/button";
+import EditCartShipModal from "./EditCartShipModal";
 interface OrderSummaryProps {
     cart: any[];
     subtotal: number;
@@ -27,6 +28,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
     const [showPromo, setShowPromo] = useState(false);
     const [discountOpen, setDiscountOpen] = useState(false);
     const [showAllItems, setShowAllItems] = useState(false);
+    const [showSingleAddressModal, setShowSingleAddressModal] = useState(false);
 
     // ✅ Redux se destinations lo
     const { destinations, isMultiAddress } = useAppSelector((state) => state.multiAddress);
@@ -151,45 +153,55 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
     const hiddenCount = displayItems.length - INITIAL_SHOW;
 
     return (
-        <div className="bg-white border-[1px] border-[#8b8b8b] rounded-sm shadow-sm py-6 h-fit sticky top-9">
+        <>
+            {showSingleAddressModal && <EditCartShipModal
+                open={showSingleAddressModal}
+                onClose={() => setShowSingleAddressModal(false)}
+            />}
+            <div className="bg-white border-[1px] border-[#8b8b8b] rounded-sm shadow-sm py-6 h-fit sticky top-9">
 
-            {/* Header */}
-            <div className="flex items-center justify-between mb-6 px-6 border-b-[1px] border-[#8b8b8b]">
-                <h2 className="text-xl font-semibold text-gray-800 p-2">
-                    Order Summary
-                </h2>
-                <Link href="/cart" className="text-base text-[var(--primary-color)] hover:underline">
-                    Edit Cart
-                </Link>
-            </div>
+                {/* Header */}
+                <div className="flex items-center justify-between mb-6 px-6 border-b-[1px] border-[#8b8b8b]">
+                    <h2 className="text-xl font-semibold text-gray-800 p-2">
+                        Order Summary
+                    </h2>
+                    <span onClick={() => {
+                        if (isMultiAddress) {
+                            setShowSingleAddressModal(true);
+                        }
 
-            {/* Item count */}
-            <div className="mb-4 text-sm text-gray-600 px-6">
-                {cartItemCount} Item{cartItemCount !== 1 ? "s" : ""}
-            </div>
+                    }} className="text-base text-[var(--primary-color)] hover:underline cursor-pointer">
+                        Edit Cart
+                    </span>
+                </div>
 
-            {/* Cart Items */}
-            <div className="border-b-[1px] border-[#8b8b8b]">
-                <div className="space-y-0 px-6">
-                    {visibleItems.map((item) => {
-                        const primaryImage = item.image?.[0]?.url || item.image?.[0]?.path || "/checkouticon/orderimg.png";
-                        const lineTotal = item.price * item.quantity;
+                {/* Item count */}
+                <div className="mb-4 text-sm text-gray-600 px-6">
+                    {cartItemCount} Item{cartItemCount !== 1 ? "s" : ""}
+                </div>
 
-                        return (
-                            <div key={item.id} className="flex items-start gap-3 pb-4 border-b last:border-b-0">
-                                <div className="relative w-20 h-25 flex-shrink-0">
+                {/* Cart Items */}
+                <div className="border-b-[1px] border-[#8b8b8b]">
+                    <div className="space-y-0 px-6">
+                        {visibleItems.map((item) => {
+                            const primaryImage = item.image?.[0]?.url || item.image?.[0]?.path || "/checkouticon/orderimg.png";
+                            const lineTotal = item.price * item.quantity;
 
-                                    <Image
-                                        src={item.image?.[0]?.path || "/checkouticon/orderimg.png"}
-                                        alt={item.name}
-                                        width={80}
-                                        height={80}
-                                        className="object-cover rounded"
-                                    />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    {/* ✅ Destination label OR unallocated badge */}
-                                    {/* {item.destLabel ? (
+                            return (
+                                <div key={item.id} className="flex items-start gap-3 pb-4 border-b last:border-b-0">
+                                    <div className="relative w-20 h-25 flex-shrink-0">
+
+                                        <Image
+                                            src={item.image?.[0]?.path || "/checkouticon/orderimg.png"}
+                                            alt={item.name}
+                                            width={80}
+                                            height={80}
+                                            className="object-cover rounded"
+                                        />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        {/* ✅ Destination label OR unallocated badge */}
+                                        {/* {item.destLabel ? (
                                         <p className="text-xs text-[var(--primary-color)] font-medium mb-0.5">
                                             {item.destLabel}
                                         </p>
@@ -198,126 +210,128 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                                             Not allocated
                                         </p>
                                     ) : null} */}
-                                    <p className="text-sm text-gray-800 line-clamp-2 leading-snug mb-1">
-                                        {item.quantity} x {item.name}
-                                    </p>
-                                    <p className="text-xs text-gray-500">${item.price.toFixed(2)}</p>
+                                        <p className="text-sm text-gray-800 line-clamp-2 leading-snug mb-1">
+                                            {item.quantity} x {item.name}
+                                        </p>
+                                        <p className="text-xs text-gray-500">${item.price.toFixed(2)}</p>
+                                    </div>
+                                    <div className="text-sm font-semibold text-gray-900 flex-shrink-0">
+                                        ${lineTotal.toFixed(2)}
+                                    </div>
                                 </div>
-                                <div className="text-sm font-semibold text-gray-900 flex-shrink-0">
-                                    ${lineTotal.toFixed(2)}
-                                </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
+                    </div>
+
+
+                    <div className="flex w-full justify-end mb-1 mr-2 pr-1 ">
+
+                        {/* SEE MORE / SEE LESS */}
+                        {displayItems.length > INITIAL_SHOW && (
+                            <button
+                                type="button"
+                                onClick={() => setShowAllItems((prev) => !prev)}
+                                className=" flex items-center justify-end gap-2 py-3 p-2 text-sm font-bold text-white bg-[var(--primary-color)] hover:opacity-90 uppercase"
+                            >
+                                {showAllItems ? (
+                                    <>
+                                        SEE LESS
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                                        </svg>
+                                    </>
+                                ) : (
+                                    <>
+                                        SEE MORE
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </>
+                                )}
+                            </button>
+                        )}
+                    </div>
                 </div>
 
+                {/* Promo */}
+                <div className="mb-6 border-b-[1px] px-6 border-[#8b8b8b] py-4">
+                    <button type="button" className="text-[13px] text-[var(--primary-color)]" onClick={() => setShowPromo((prev) => !prev)}>
+                        Promo/Gift Certificate
+                    </button>
+                    {showPromo && (
+                        <div className="mt-4 flex flex-col gap-2">
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    placeholder="Enter code"
+                                    className="w-full border border-gray-300 rounded px-4 py-3.5 focus:outline-none focus:ring-1 focus:ring-[var(--primary-color)]"
+                                    value={promoCode}
+                                    onChange={(e) => setPromoCode(e.target.value)}
+                                />
+                                <button type="button" className="bg-[var(--primary-color)] text-white px-4 py-1 rounded-none border-b-2 border-black text-2xl" onClick={onApplyCoupon}>
+                                    Apply
+                                </button>
+                            </div>
+                            {appliedCoupon && (
+                                <div className="flex gap-3 items-center px-4 py-2 rounded">
+                                    <span>${Number(appliedCoupon.discountAmount).toFixed(2)} off the order total ({appliedCoupon.couponCode.toUpperCase()})</span>
+                                    <button onClick={onRemoveCoupon} className="font-bold hover:text-red-700">X</button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
 
-                <div className="flex w-full justify-end mb-1 mr-2 pr-1 ">
+                {/* Totals */}
+                <div className="space-y-3  pt-4 px-6">
+                    <div className="flex justify-between text-[13px] text-gray-700">
+                        <span>Subtotal</span>
+                        <span className="font-medium">${subtotal.toFixed(2)}</span>
+                    </div>
 
-                    {/* SEE MORE / SEE LESS */}
-                    {displayItems.length > INITIAL_SHOW && (
-                        <button
-                            type="button"
-                            onClick={() => setShowAllItems((prev) => !prev)}
-                            className=" flex items-center justify-end gap-2 py-3 p-2 text-sm font-bold text-white bg-[var(--primary-color)] hover:opacity-90 uppercase"
-                        >
-                            {showAllItems ? (
-                                <>
-                                    SEE LESS
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-                                    </svg>
-                                </>
-                            ) : (
-                                <>
-                                    SEE MORE
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                    {appliedCoupon && discountAmount > 0 && (
+                        <div className="mt-2">
+                            <div className="flex text-[13px]  justify-between items-center text-gray-700 cursor-pointer select-none" onClick={() => setDiscountOpen((prev) => !prev)}>
+                                <span className="flex items-center gap-1 font-medium">
+                                    Discounts
+                                    <svg className={`w-4 h-4 transition-transform ${discountOpen ? "rotate-180" : "rotate-0"}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                                     </svg>
-                                </>
+                                </span>
+                                <span className="font-medium">-${discountAmount.toFixed(2)}</span>
+                            </div>
+                            {discountOpen && (
+                                <div className="flex justify-between text-gray-600 text-[13px] mt-1">
+                                    <span>${Number(appliedCoupon.discountAmount).toFixed(2)} off ({appliedCoupon.couponCode.toUpperCase()})</span>
+                                    <span className="font-medium">-${discountAmount.toFixed(2)}</span>
+                                </div>
                             )}
-                        </button>
+                        </div>
+                    )}
+
+                    <div className="flex justify-between text-[13px] text-gray-700">
+                        <span>Shipping</span>
+                        <span className="font-medium">{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
+                    </div>
+                    <div className="flex justify-between text-[13px] text-gray-700">
+                        <span>Tax</span>
+                        <span className="font-medium">${tax.toFixed(2)}</span>
+                    </div>
+                </div>
+
+                {/* Total */}
+                <div className="flex flex-col mt-4 pt-4 px-6 border-t-[1px] border-[#8b8b8b] text-gray-700">
+                    <div className="flex justify-between items-center text-[15px] font-bold">
+                        <span>Total <br /> (USD)</span>
+                        <span>${finalTotal.toFixed(2)}</span>
+                    </div>
+                    {appliedCoupon && discountAmount > 0 && (
+                        <div className="text-[#333] font-medium text-[13px] mt-1 self-end">You saved <span className="!text-[#2aab3f] ">${discountAmount.toFixed(2)}</span> in total!</div>
                     )}
                 </div>
             </div>
+        </>
 
-            {/* Promo */}
-            <div className="mb-6 border-b-[1px] px-6 border-[#8b8b8b] py-4">
-                <button type="button" className="text-[13px] text-[var(--primary-color)]" onClick={() => setShowPromo((prev) => !prev)}>
-                    Promo/Gift Certificate
-                </button>
-                {showPromo && (
-                    <div className="mt-4 flex flex-col gap-2">
-                        <div className="flex gap-2">
-                            <input
-                                type="text"
-                                placeholder="Enter code"
-                                className="w-full border border-gray-300 rounded px-4 py-3.5 focus:outline-none focus:ring-1 focus:ring-[var(--primary-color)]"
-                                value={promoCode}
-                                onChange={(e) => setPromoCode(e.target.value)}
-                            />
-                            <button type="button" className="bg-[var(--primary-color)] text-white px-4 py-1 rounded-none border-b-2 border-black text-2xl" onClick={onApplyCoupon}>
-                                Apply
-                            </button>
-                        </div>
-                        {appliedCoupon && (
-                            <div className="flex gap-3 items-center px-4 py-2 rounded">
-                                <span>${Number(appliedCoupon.discountAmount).toFixed(2)} off the order total ({appliedCoupon.couponCode.toUpperCase()})</span>
-                                <button onClick={onRemoveCoupon} className="font-bold hover:text-red-700">X</button>
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
-
-            {/* Totals */}
-            <div className="space-y-3  pt-4 px-6">
-                <div className="flex justify-between text-[13px] text-gray-700">
-                    <span>Subtotal</span>
-                    <span className="font-medium">${subtotal.toFixed(2)}</span>
-                </div>
-
-                {appliedCoupon && discountAmount > 0 && (
-                    <div className="mt-2">
-                        <div className="flex text-[13px]  justify-between items-center text-gray-700 cursor-pointer select-none" onClick={() => setDiscountOpen((prev) => !prev)}>
-                            <span className="flex items-center gap-1 font-medium">
-                                Discounts
-                                <svg className={`w-4 h-4 transition-transform ${discountOpen ? "rotate-180" : "rotate-0"}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </span>
-                            <span className="font-medium">-${discountAmount.toFixed(2)}</span>
-                        </div>
-                        {discountOpen && (
-                            <div className="flex justify-between text-gray-600 text-[13px] mt-1">
-                                <span>${Number(appliedCoupon.discountAmount).toFixed(2)} off ({appliedCoupon.couponCode.toUpperCase()})</span>
-                                <span className="font-medium">-${discountAmount.toFixed(2)}</span>
-                            </div>
-                        )}
-                    </div>
-                )}
-
-                <div className="flex justify-between text-[13px] text-gray-700">
-                    <span>Shipping</span>
-                    <span className="font-medium">{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
-                </div>
-                <div className="flex justify-between text-[13px] text-gray-700">
-                    <span>Tax</span>
-                    <span className="font-medium">${tax.toFixed(2)}</span>
-                </div>
-            </div>
-
-            {/* Total */}
-            <div className="flex flex-col mt-4 pt-4 px-6 border-t-[1px] border-[#8b8b8b] text-gray-700">
-                <div className="flex justify-between items-center text-[15px] font-bold">
-                    <span>Total <br /> (USD)</span>
-                    <span>${finalTotal.toFixed(2)}</span>
-                </div>
-                {appliedCoupon && discountAmount > 0 && (
-                    <div className="text-[#333] font-medium text-[13px] mt-1 self-end">You saved <span className="!text-[#2aab3f] ">${discountAmount.toFixed(2)}</span> in total!</div>
-                )}
-            </div>
-        </div>
     );
 };
 
