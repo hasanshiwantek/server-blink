@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { fetchReviews, fetchStats } from "@/redux/slices/homeSlice";
+
 export interface Review {
   id: number;
   brand: string;
@@ -16,10 +17,10 @@ export interface Review {
   reviewHeading: string;
   reviewContent: string;
   dateOfExperience: string;
-  stars: string; // URL string
+  stars: string;
   url: string;
-  created_at: string; // ISO date string
-  updated_at: string; // ISO date string
+  created_at: string;
+  updated_at: string;
   deleted_at: string | null;
 }
 
@@ -35,13 +36,12 @@ export interface Stats {
   deleted_at: string | null;
 }
 
-// Dynamically import Carousel to reduce bundle size
+// Dynamically import Carousel
 const Carousel = dynamic(
   () => import("primereact/carousel").then((mod) => mod.Carousel),
-  {
-    ssr: false,
-  }
+  { ssr: false }
 );
+
 const SWIPE_THRESHOLD_PX = 45;
 const REVIEW_CARD_WIDTH = 380;
 
@@ -50,18 +50,19 @@ const Testimonials = () => {
   const { reviews, reviewsLoading, reviewsError, stats } = useAppSelector(
     (state) => state.home
   );
+
   const [visibleItems, setVisibleItems] = useState(1);
   const carouselWrapRef = useRef<HTMLDivElement>(null);
+
+  // Drag handling refs
   const dragStartX = useRef(0);
   const dragActive = useRef(false);
+  const isDragging = useRef(false);
 
   const updateVisibleItems = useCallback(() => {
     const containerWidth =
       carouselWrapRef.current?.offsetWidth ?? window.innerWidth;
-    const count = Math.max(
-      1,
-      Math.floor(containerWidth / REVIEW_CARD_WIDTH)
-    );
+    const count = Math.max(1, Math.floor(containerWidth / REVIEW_CARD_WIDTH));
     setVisibleItems(count);
   }, []);
 
@@ -73,7 +74,6 @@ const Testimonials = () => {
   useEffect(() => {
     updateVisibleItems();
     window.addEventListener("resize", updateVisibleItems);
-
     return () => window.removeEventListener("resize", updateVisibleItems);
   }, [updateVisibleItems]);
 
@@ -87,41 +87,59 @@ const Testimonials = () => {
     const root = carouselWrapRef.current;
     if (!root) return;
     const sel =
-      direction === "next" ? "button.p-carousel-next" : "button.p-carousel-prev";
+      direction === "next"
+        ? "button.p-carousel-next"
+        : "button.p-carousel-prev";
     const btn = root.querySelector<HTMLButtonElement>(sel);
     if (btn && !btn.disabled) btn.click();
   }, []);
 
-  const handleCarouselPointerDown = useCallback(
-    (e: React.PointerEvent) => {
-      if (e.pointerType === "touch") return;
-      dragActive.current = true;
-      dragStartX.current = e.clientX;
-      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-    },
-    []
-  );
+  // ==================== DRAG HANDLERS ====================
+  const handleCarouselPointerDown = useCallback((e: React.PointerEvent) => {
+    dragActive.current = true;
+    isDragging.current = false;
+    dragStartX.current = e.clientX;
+
+    const target = e.currentTarget as HTMLElement;
+    target.setPointerCapture(e.pointerId);
+  }, []);
+
+  const handleCarouselPointerMove = useCallback((e: React.PointerEvent) => {
+    if (!dragActive.current) return;
+
+    const diff = Math.abs(e.clientX - dragStartX.current);
+    if (diff > 10) {
+      isDragging.current = true;
+    }
+  }, []);
 
   const handleCarouselPointerUp = useCallback(
     (e: React.PointerEvent) => {
-      if (e.pointerType === "touch") return;
       if (!dragActive.current) return;
+
       dragActive.current = false;
+      const target = e.currentTarget as HTMLElement;
+
       try {
-        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
-      } catch {
-        /* ignore */
-      }
+        target.releasePointerCapture(e.pointerId);
+      } catch { }
+
       const diff = e.clientX - dragStartX.current;
-      if (Math.abs(diff) < SWIPE_THRESHOLD_PX) return;
-      if (diff < 0) {
-        clickCarouselNav("next");
-      } else {
-        clickCarouselNav("prev");
+
+      // Only navigate if it was a meaningful drag
+      if (isDragging.current && Math.abs(diff) > SWIPE_THRESHOLD_PX) {
+        if (diff < 0) {
+          clickCarouselNav("next");
+        } else {
+          clickCarouselNav("prev");
+        }
       }
+
+      isDragging.current = false;
     },
     [clickCarouselNav]
   );
+  // =======================================================
 
   const reviewTemplate = (review: Review) => (
     <div className="text-left p-4 flex flex-col gap-3 w-full max-w-[380px] h-[218px] box-border mx-auto">
@@ -161,14 +179,12 @@ const Testimonials = () => {
     </div>
   );
 
+
   return (
     <div>
       {/* Header */}
       <header className="text-left mb-4 bg-[#393939] border-b border-gray-400">
-        <h2 className="font-bold text-xl text-white p-3 flex-1">
-          REVIEWS
-        </h2>
-
+        <h2 className="font-bold text-xl text-white p-3 flex-1">REVIEWS</h2>
       </header>
 
       <div className="flex items-center justify-between md:flex-col sm:flex-col lg:flex-row flex-col lg:py-10">
@@ -189,9 +205,12 @@ const Testimonials = () => {
           />
           <span className="flex items-center justify-center gap-1 text-center">
             Based on
-            <Link href="https://www.trustpilot.com/review/serverblink.com" target="_blank" className="border-b-2 text-black border-black">
-              {stats?.count || "0"} {' '}
-              reviews
+            <Link
+              href="https://www.trustpilot.com/review/serverblink.com"
+              target="_blank"
+              className="border-b-2 text-black border-black"
+            >
+              {stats?.count || "0"} reviews
             </Link>
           </span>
           <div className="flex items-center justify-center">
@@ -218,7 +237,9 @@ const Testimonials = () => {
             </div>
           ) : reviewsError ? (
             <div className="flex flex-col items-center justify-center gap-4 bg-white border rounded-md p-8 text-center w-full max-w-full overflow-hidden">
-              <p className="h5-regular text-red-600 break-words w-full">{reviewsError}</p>
+              <p className="h5-regular text-red-600 break-words w-full">
+                {reviewsError}
+              </p>
               <button
                 onClick={() => dispatch(fetchReviews())}
                 className="btn-outline-primary !px-6 !py-3 !text-base"
@@ -238,6 +259,7 @@ const Testimonials = () => {
               ref={carouselWrapRef}
               className="testimonials-carousel w-full cursor-grab touch-pan-y select-none active:cursor-grabbing [&_button.p-carousel-prev]:sr-only [&_button.p-carousel-next]:sr-only"
               onPointerDown={handleCarouselPointerDown}
+              onPointerMove={handleCarouselPointerMove}
               onPointerUp={handleCarouselPointerUp}
               onPointerCancel={handleCarouselPointerUp}
             >
