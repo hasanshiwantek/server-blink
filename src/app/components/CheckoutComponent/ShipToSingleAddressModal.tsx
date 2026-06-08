@@ -10,6 +10,7 @@ import {
 import { useAppDispatch } from "@/hooks/useReduxHooks";
 import { clearMultiAddressProgress, resetMultiAddress, setIsMultiAddress } from "@/redux/slices/multiAddressSlice";
 import { resetShippingRates } from "@/redux/slices/shippingSlice";
+import { CHECKOUT_STORAGE_KEY } from "./CheckoutComponent";
 
 interface ShipToSingleAddressModalProps {
     open: boolean;
@@ -27,6 +28,7 @@ const ShipToSingleAddressModal: React.FC<ShipToSingleAddressModalProps> = ({
         dispatch(resetMultiAddress());
         dispatch(resetShippingRates());
         dispatch(setIsMultiAddress(false));
+        localStorage.removeItem(CHECKOUT_STORAGE_KEY);
         onClose();
     };
 

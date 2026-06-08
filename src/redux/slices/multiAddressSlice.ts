@@ -72,6 +72,19 @@ const multiAddressSlice = createSlice({
         setDestShippingRatesAction: (state, action: PayloadAction<Record<string, any[]>>) => {
             state.destShippingRates = action.payload;
         },
+        restoreMultiAddress: (state, action: PayloadAction<{
+            isMultiAddress: boolean;
+            destinations: Destination[];
+            completedDestinations: Destination[];
+            destShippingRates: Record<string, any[]>;
+            orderComment: string;
+        }>) => {
+            state.isMultiAddress = action.payload.isMultiAddress;
+            state.destinations = action.payload.destinations;
+            state.completedDestinations = action.payload.completedDestinations;
+            state.destShippingRates = action.payload.destShippingRates;
+            state.orderComment = action.payload.orderComment;
+        },
         clearMultiAddressProgress: (state) => {
             state.destinations = [
                 { id: "dest-1", address: null, allocatedItems: [], selectedShippingMethod: "", showItems: true },
@@ -88,7 +101,7 @@ export const {
     setIsMultiAddress, setDestinations, addDestination, removeDestination,
     updateDestinationAddress, updateDestinationShippingMethod, toggleShowItems,
     setCompletedDestinations, setOrderComment, resetMultiAddress, setDestShippingRatesAction,
-    clearMultiAddressProgress,
+    clearMultiAddressProgress, restoreMultiAddress,
 
 } = multiAddressSlice.actions;
 

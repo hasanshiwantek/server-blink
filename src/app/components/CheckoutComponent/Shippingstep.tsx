@@ -24,6 +24,7 @@ import { RootState } from "@/redux/store";
 import MultiAddressShipping from "./MultiAddressShipping";
 import { setIsMultiAddress, setCompletedDestinations } from "@/redux/slices/multiAddressSlice";
 import ShipToSingleAddressModal from "./ShipToSingleAddressModal";
+import { CHECKOUT_STORAGE_KEY } from "./CheckoutComponent";
 
 interface ShippingStepProps {
   register: UseFormRegister<any>;
@@ -289,6 +290,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                 if (isMultiAddress) {
                   setShowSingleAddressModal(true);
                 } else {
+                  localStorage.removeItem(CHECKOUT_STORAGE_KEY);
                   dispatch(setIsMultiAddress(true));
                 }
                 localStorage.removeItem("shippingCost")
@@ -305,11 +307,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
           <MultiAddressShipping
             cart={cart}
             shippingRates={shippingRates || []}
-            // onComplete={(destinations) => {
-            //   setCompletedDestinations(destinations); // ✅ save karo
-            // }}
-            // // onComplete={(destinations) => console.log("destinations:", destinations)}
-            // onSingleAddress={() => setIsMultiAddress(false)}
             onContinue={onContinue}
             // ✅ MultiAddressShipping
             onSingleAddress={() => dispatch(setIsMultiAddress(false))}

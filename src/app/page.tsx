@@ -61,7 +61,7 @@ const Page = async () => {
         <div className="py-6">
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Left Sidebar */}
-            <aside className="lg:block hidden" style={{width: '22%'}}>
+            <aside className="lg:block hidden" style={{ width: '22%' }}>
               <CategoriesSidebar />
               <BrandsSidebar />
             </aside>
@@ -89,7 +89,6 @@ const Page = async () => {
               <ShopNow />
             </div>
           </div>
-  
         </div>
       </div>
     </main>

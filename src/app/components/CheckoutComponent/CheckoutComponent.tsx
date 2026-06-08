@@ -40,7 +40,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { useRouter } from "next/navigation";
 import { setLastOrder } from "@/redux/slices/orderslice";
-import { resetMultiAddress, setIsMultiAddress } from "@/redux/slices/multiAddressSlice";
+import { resetMultiAddress, restoreMultiAddress, setIsMultiAddress } from "@/redux/slices/multiAddressSlice";
 import { resetShippingRates } from "@/redux/slices/shippingSlice";
 // Import step components
 import CustomerStep from "./CustomerStep";
@@ -49,6 +49,10 @@ import BillingStep from "./Billingstep";
 import PaymentStep from "./Paymentstep";
 import CheckoutOrderSummary from "./CheckoutOrderSummary";
 import CheckoutMultipleOrderSummary from "./CheckoutMultipleOrderSummary";
+
+export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
+
+
 
 // Stripe publishable key
 const stripePromise = loadStripe(
@@ -256,117 +260,6 @@ const CheckoutForm = () => {
 
     detectCountry();
   }, [setValue]);
-
-  // useEffect(() => {
-  //   const detectLocation = async () => {
-  //     try {
-  //       const res = await fetch("/api/detect-country");
-  //       const data = await res.json();
-
-  //       if (data.country_code) {
-  //         setValue("country", data.country_code);
-  //         setValue("billingCountry", data.country_code);
-  //       }
-  //       if (data.state_code) {
-  //         setValue("state", data.state_code);
-  //         setValue("billingState", data.state_code);
-  //       }
-  //       // for future if needed
-  //       // if (data.city) {
-  //       //   setValue("city", data.city);
-  //       //   setValue("billingCity", data.city);
-  //       // }
-  //       // if (data.zip) {
-  //       //   setValue("zip", data.zip);
-  //       //   setValue("billingZip", data.zip);
-  //       // }
-  //     } catch {
-  //       setValue("country", "US");
-  //       setValue("billingCountry", "US");
-  //     }
-  //   };
-
-  //   detectLocation();
-  // }, [setValue]);
-
-  // temp comment
-  // const shipping = useMemo(() => {
-  //   if (cart.length === 0) return 0;
-  //   return cart.reduce((sum, item) => {
-  //     const cost = Number(item.fixedShippingCost || 0);
-  //     return sum + cost;
-  //   }, 0);
-  // }, [cart]);
-
-
-  // const shipping = useMemo(() => {
-  //   if (!watchedShippingMethod || !shippingRates?.length) return 0;
-  //   const selected = shippingRates.find((rate) =>
-  //     rate.service_type === watchedShippingMethod
-  //   );
-  //   return selected ? Number(selected?.total_charge) : 0;
-  // }, [watchedShippingMethod, shippingRates]);
-
-
-
-  //  for future use 
-  // const shipping = useMemo(() => {
-  //   if (watchedShippingMethod) {
-  //     if (!shippingRates?.length) return 0;
-
-  //     const selected = shippingRates.find(
-  //       (rate) => rate.service_type === watchedShippingMethod
-  //     );
-
-  //     return selected ? Number(selected.total_charge) : 0;
-  //   }
-
-  //   if (cart.length === 0) return 0;
-
-  //   return cart.reduce((sum, item) => {
-  //     const cost = Number(item.fixedShippingCost || 0);
-  //     return sum + cost;
-  //   }, 0);
-  // }, [watchedShippingMethod, shippingRates, cart]);
-
-
-  // const shipping = useMemo(() => {
-  //   // ✅ Multi address mode — har destination ka shipping sum karo
-  //   if (isMultiAddress) {
-  //     return destinations.reduce((sum, dest) => {
-  //       if (!dest.selectedShippingMethod) return sum;
-
-  //       // Global rates se match karo
-  //       const rate = shippingRates?.find(
-  //         (r: any) => r.service_type === dest.selectedShippingMethod
-  //       );
-
-  //       // Agar global rates mein nahi mila to default rates check karo
-  //       if (!rate) {
-  //         if (dest.selectedShippingMethod === "flat") return sum + 10;
-  //         if (dest.selectedShippingMethod === "own") return sum + 0;
-  //         return sum;
-  //       }
-
-  //       return sum + Number(rate.total_charge || 0);
-  //     }, 0);
-  //   }
-
-  //   // ✅ Single address mode — existing logic
-  //   if (watchedShippingMethod) {
-  //     if (!shippingRates?.length) return 0;
-  //     const selected = shippingRates.find(
-  //       (rate: any) => rate.service_type === watchedShippingMethod
-  //     );
-  //     return selected ? Number(selected.total_charge) : 0;
-  //   }
-
-  //   if (cart.length === 0) return 0;
-  //   return cart.reduce((sum, item) => {
-  //     const cost = Number(item.fixedShippingCost || 0);
-  //     return sum + cost;
-  //   }, 0);
-  // }, [isMultiAddress, destinations, watchedShippingMethod, shippingRates, cart]);
 
   const shipping = useMemo(() => {
     if (isMultiAddress) {
@@ -729,6 +622,7 @@ const CheckoutForm = () => {
         dispatch(resetMultiAddress());       // ✅ ADD
         dispatch(resetShippingRates());      // ✅ ADD
         dispatch(setIsMultiAddress(false));
+        localStorage.removeItem(CHECKOUT_STORAGE_KEY);
         router.push("/order-success");
       } catch (err: any) {
         console.error("❌ Wallet payment failed:", err);
@@ -1001,6 +895,7 @@ const CheckoutForm = () => {
       dispatch(resetMultiAddress());       // ✅ ADD
       dispatch(resetShippingRates());      // ✅ ADD
       dispatch(setIsMultiAddress(false));
+      localStorage.removeItem(CHECKOUT_STORAGE_KEY);
       router.push("/order-success");
     } catch (err: any) {
       console.error("❌ Error processing order:", err);
@@ -1040,6 +935,102 @@ const CheckoutForm = () => {
       setCompletedSteps((prev) => prev.filter((s) => s !== 3));
     }
   }, [watchedBillingSame, watchedState, watchedCountry, watchedFirstName, watchedLastName, watchedZip, watchedAddress2, watchedAddress1, watchedCompany, watchedPhone, watchedCity]);
+
+
+  // ✅ Restore from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem(CHECKOUT_STORAGE_KEY);
+    if (!saved) return;
+
+    try {
+      const parsed = JSON.parse(saved);
+      const fieldsToRestore: (keyof CheckoutFormValues)[] = [
+        "email", "firstName", "lastName", "company", "phone",
+        "address1", "address2", "city", "country", "state", "zip",
+        "billingFirstName", "billingLastName", "billingCompany",
+        "billingPhone", "billingAddress1", "billingAddress2",
+        "billingCity", "billingCountry", "billingState", "billingZip",
+        "billingSame", "orderComment", "newsletter", "shippingMethod",
+      ];
+
+      fieldsToRestore.forEach((field) => {
+        if (parsed[field] !== undefined && parsed[field] !== "") {
+          setValue(field, parsed[field]);
+        }
+      });
+      if (parsed._isMultiAddress && parsed._destinations?.length) {
+        dispatch(restoreMultiAddress({
+          isMultiAddress: true,
+          destinations: parsed._destinations,
+          completedDestinations: parsed._completedDestinations || [],
+          destShippingRates: parsed._destShippingRates || {},
+          orderComment: parsed._orderComment || "",
+        }));
+      }
+      // Restore completed steps
+      if (parsed._completedSteps) {
+        setCompletedSteps(parsed._completedSteps);
+      }
+      if (parsed._currentStep) {
+        setCurrentStep(parsed._currentStep);
+      }
+    } catch (e) {
+      console.error("Failed to restore checkout data:", e);
+    }
+  }, []);
+  // ✅ Save to localStorage on form changes (debounced)
+  const watchedValues = watch();
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  useEffect(() => {
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+
+    saveTimeoutRef.current = setTimeout(() => {
+      const dataToSave = {
+        email: watchedValues.email,
+        firstName: watchedValues.firstName,
+        lastName: watchedValues.lastName,
+        company: watchedValues.company,
+        phone: watchedValues.phone,
+        address1: watchedValues.address1,
+        address2: watchedValues.address2,
+        city: watchedValues.city,
+        country: watchedValues.country,
+        state: watchedValues.state,
+        zip: watchedValues.zip,
+
+        billingFirstName: watchedValues.billingFirstName,
+        billingLastName: watchedValues.billingLastName,
+        billingCompany: watchedValues.billingCompany,
+        billingPhone: watchedValues.billingPhone,
+        billingAddress1: watchedValues.billingAddress1,
+        billingAddress2: watchedValues.billingAddress2,
+        billingCity: watchedValues.billingCity,
+        billingCountry: watchedValues.billingCountry,
+        billingState: watchedValues.billingState,
+        billingZip: watchedValues.billingZip,
+        billingSame: watchedValues.billingSame,
+        orderComment: watchedValues.orderComment,
+        newsletter: watchedValues.newsletter,
+        shippingMethod: watchedValues.shippingMethod,
+        _completedSteps: completedSteps,
+        _currentStep: currentStep,
+
+        // ✅ Multi-address data
+        _isMultiAddress: isMultiAddress,                     // ✅ ADD
+        _destinations: destinations,                         // ✅ ADD
+        _completedDestinations: completedDestinations,       // ✅ ADD
+        _destShippingRates: destShippingRates,               // ✅ ADD
+        _orderComment: watchedValues.orderComment || "",     // ✅ ADD
+      };
+      localStorage.setItem(CHECKOUT_STORAGE_KEY, JSON.stringify(dataToSave));
+    }, 500);
+
+    return () => {
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    };
+  }, [completedSteps, currentStep]);
+
+
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
       {paymentRequest && (
