@@ -4,7 +4,7 @@ import ResultSuccess from '../components/Result/ResultSuccess';
 import { useRouter } from 'next/navigation';
 
 
-const page = () => {
+const ResultPage = () => {
   const router = useRouter();
 
   useEffect(() => {
@@ -31,4 +31,4 @@ const page = () => {
   )
 }
 
-export default page
+export default ResultPage
