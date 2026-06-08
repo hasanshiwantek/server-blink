@@ -50,12 +50,6 @@ export const loginUser = createAsyncThunk(
       return res.data;
     } catch (err: any) {
       console.error("❌ Thunk Error caught:", err);
-      if (err.response) {
-        console.error("❌ Response Status:", err.response.status);
-        console.error("❌ Response Data:", err.response.data);
-      } else {
-        console.error("❌ No response (network or CORS):", err.message);
-      }
       console.groupEnd();
       return thunkAPI.rejectWithValue(
         err.response?.data?.message || "Login failed"
@@ -113,7 +107,7 @@ const authSlice = createSlice({
     builder
       // Pending
       .addCase(loginUser.pending, (state) => {
-        state.loginloading  = true;
+        state.loginloading = true;
         state.error = null;
       })
       .addCase(registerUser.pending, (state) => {
@@ -123,8 +117,8 @@ const authSlice = createSlice({
 
       // Fulfilled - login
       .addCase(loginUser.fulfilled, (state, action) => {
-        const {user, customer, token ,expireAt} = action.payload.data || action.payload;
-        state.loginloading  = false;
+        const { user, customer, token, expireAt } = action.payload.data || action.payload;
+        state.loginloading = false;
         state.user = user || customer;
         state.token = token;
         state.expireAt = expireAt;
@@ -141,13 +135,20 @@ const authSlice = createSlice({
       })
 
       // Fulfilled - register
-      .addCase(registerUser.fulfilled, (state) => {
+      .addCase(registerUser.fulfilled, (state, action) => {
+        console.log("action", action.payload);
+
+        const { user, customer, token, expireAt } = action.payload.data || action.payload;
         state.registerLoading = false;
+        state.user = customer || user;
+        state.token = token;
+        state.expireAt = expireAt;
+        state.isAuthenticated = true;
       })
 
       // Rejected
       .addCase(loginUser.rejected, (state, action) => {
-        state.loginloading  = false;
+        state.loginloading = false;
         state.error = action.payload as string;
       })
       .addCase(registerUser.rejected, (state, action) => {

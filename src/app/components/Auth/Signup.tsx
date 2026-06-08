@@ -86,7 +86,8 @@ const SignupPage = () => {
 
       if (registerUser.fulfilled.match(result)) {
         reset();
-        router.push("/auth/login");
+        // router.push("/auth/login");
+         router.push("/action");
       } else {
         const errorMessage =
           result.payload || "Registration failed. Please try again.";
