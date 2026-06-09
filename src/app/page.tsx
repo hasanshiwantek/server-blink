@@ -58,7 +58,7 @@ const Page = async () => {
     <main className="flex flex-col gap-30" role="main">
       {/* Container: max-width 1170px, centered */}
       <div className="w-full max-w-[1170px] mx-auto  lg:px-6 xl:px-0">
-        <div className="py-6">
+        <div className="md:py-6">
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Left Sidebar */}
             <aside className="lg:block hidden" style={{ width: '22%' }}>
@@ -66,7 +66,7 @@ const Page = async () => {
               <BrandsSidebar />
             </aside>
             {/* Main Content */}
-            <div className="w-full lg:w-[78%]">
+            <div className="w-full lg:w-[78%] p-0">
               <Banner />
               <CategoryGrid />
               <FeaturedProducts
