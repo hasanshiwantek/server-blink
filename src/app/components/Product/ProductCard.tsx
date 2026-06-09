@@ -94,7 +94,7 @@ const ProductCard = ({ product }: { product: any }) => {
             >
               /
             </span>
-            <Link href={"/"} className="text-[11px] !text-[#D42020]" itemProp="name">
+            <Link href={product?.productUrl} className="text-[11px] !text-[#D42020]" itemProp="name">
               {product?.name}
             </Link>
 
