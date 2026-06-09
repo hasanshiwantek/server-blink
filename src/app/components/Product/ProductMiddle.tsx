@@ -22,7 +22,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
   const { reviews, reviewsLoading, reviewsError, stats } = useAppSelector(
     (state) => state.home
   );
-  const availableForSale = product?.purchasabilityStatus == "available" || Number(product?.price) !== 0;
+  const availableForSale = product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
 
   const handleSeeMore = useCallback(() => {
     window.open(
@@ -35,8 +35,6 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
     dispatch(fetchReviews());
     dispatch(fetchStats());
   }, [dispatch]);
-
-
 
   return (
     <>
