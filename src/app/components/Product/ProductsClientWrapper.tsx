@@ -184,7 +184,6 @@ export default function ProductsClientWrapper({
       try {
         setIsLoading(true);
         setError(null);
-        console.log("filters", filters);
 
         const res = await fetchFilteredProducts(filters);
         setProducts(applyClientSort(res.data || [], filters.sortBy));
