@@ -67,7 +67,7 @@ const ProductCard = ({ product }: { product: any }) => {
           className="flex items-center justify-center lg:justify-normal space-x-2 text-[11px] text-[#393939] lg:mb-7 sm:mb-7 mb-7 flex-wrap"
         >
           <h2 >
-            <Link href={"/"} className="text-[11px]" itemProp="name">
+            <Link href={"/"} className="text-[11px] hover:!text-[#D42020]" itemProp="name">
               Home
             </Link>
 
@@ -81,32 +81,24 @@ const ProductCard = ({ product }: { product: any }) => {
                 </span>
 
                 <Link href={`/category/${cat?.slug}`}
-                  className={`text-[11px] ${index === product.categoryHierarchy.length - 1
-                    ? "!text-[#D42020]"
-                    : "text-black"
-                    }`}
+                  className={`text-[11px]   hover:!text-[#D42020]`}
                   itemProp="name"
                 >
                   {cat.name}
                 </Link>
               </span>
             ))}
+            <span
+              className="mt-2 mx-3 text-gray-400 text-[11px]"
+              aria-hidden="true"
+            >
+              /
+            </span>
+            <Link href={"/"} className="text-[11px] !text-[#D42020]" itemProp="name">
+              {product?.name}
+            </Link>
+
           </h2>
-          {/* <span>Home</span>
-          {product.categoryHierarchy?.map((data: any, index: number) => (
-          ))}
-          <React.Fragment>
-            <Image
-              className="inline-block align-middle"
-              src="/arrow-right.png"
-              alt="Arrow Right"
-              width={10}
-              height={10}
-              loading="lazy"
-              sizes="12px"
-            />
-            <span className="text-[11px] text-[var(--primary-color)]">{product?.sku}</span>
-          </React.Fragment> */}
         </nav>
 
         <div className="flex flex-wrap justify-center  lg:justify-normal md:flex-nowrap gap-6 lg:gap-8 xl:gap-8">
