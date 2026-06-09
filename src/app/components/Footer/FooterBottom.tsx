@@ -35,7 +35,7 @@ const FooterBottom = () => {
   );
   const pagesList = webPages?.data || [];
   const visiblePages = pagesList?.filter((page: any) =>
-    !page.showInNavigation || token
+    !page.restrictToCustomersOnly || token
   );
   const router = useRouter();
   const blogPosts = blogs?.data || [];
