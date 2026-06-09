@@ -35,8 +35,6 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
     dispatch(fetchReviews());
     dispatch(fetchStats());
   }, [dispatch]);
-  console.log("product?.price", product?.purchasabilityStatus, product?.price);
-
 
   return (
     <>
