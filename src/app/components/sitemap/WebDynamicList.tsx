@@ -16,7 +16,7 @@ const WebDynamicList = ({ webPages }: { webPages: any[] }) => {
     }, [auth]);
 
     const visiblePages = webPages?.filter((page: any) =>
-        !page.showInNavigation || token
+        !page.restrictToCustomersOnly || token
     );
 
     return (
