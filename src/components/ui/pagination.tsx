@@ -39,7 +39,7 @@ const Pagination = ({
   }
 
   return (
-    <div className="flex flex-col sm:flex-row justify-center items-center space-y-3 sm:space-y-0 space-x-2 md:space-x-3 mt-6">
+    <div className="flex justify-center space-y-3 sm:space-y-0 space-x-2 md:space-x-3 mt-6">
       {/* Prev Button */}
       <Button
         variant="outline"
