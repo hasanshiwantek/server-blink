@@ -37,17 +37,17 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
     //   const buildMultiAddressItems = () => {
     //     const items: { id: string; name: string; price: number; quantity: number; image: any[]; destLabel: string }[] = [];
 
-    //     destinations.forEach((dest, destIndex) => {
+    //     destinations?.forEach((dest, destIndex) => {
     //       if (dest.allocatedItems.length === 0) return;
 
     //       // Group slots by itemId
     //       const grouped: Record<string, number> = {};
-    //       dest.allocatedItems.forEach((slot) => {
+    //       dest.allocatedItems?.forEach((slot) => {
     //         const itemId = slot.split("-")[0];
     //         grouped[itemId] = (grouped[itemId] || 0) + 1;
     //       });
 
-    //       Object.entries(grouped).forEach(([itemId, count]) => {
+    //       Object.entries(grouped)?.forEach(([itemId, count]) => {
     //         const cartItem = cart.find((c) => String(c.id) === itemId);
     //         if (!cartItem) return;
     //         items.push({
@@ -75,11 +75,11 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
         }[] = [];
 
         // ✅ Pehle sab cart items check karo
-        cart.forEach((cartItem) => {
+        cart?.forEach((cartItem) => {
             // ✅ Count total allocated across all destinations
             const allocatedPerDest: Record<string, number> = {};
 
-            destinations.forEach((dest, destIndex) => {
+            destinations?.forEach((dest, destIndex) => {
                 const count = dest.allocatedItems.filter(
                     (slot) => slot.split("-")[0] === String(cartItem.id)
                 ).length;
@@ -93,7 +93,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
             const unallocated = (cartItem.quantity || 1) - totalAllocated;
 
             // ✅ Allocated items — har destination ke liye alag row
-            Object.entries(allocatedPerDest).forEach(([destLabel, qty]) => {
+            Object.entries(allocatedPerDest)?.forEach(([destLabel, qty]) => {
                 items.push({
                     id: `${destLabel}-${cartItem.id}`,
                     name: cartItem.name,

@@ -49,7 +49,7 @@ const CartList = () => {
   };
   useEffect(() => {
     const updatedQuantities: { [key: string]: number } = {};
-    cart.forEach((item) => {
+    cart?.forEach((item) => {
       updatedQuantities[item.id] = item.quantity;
     });
     setQuantities(updatedQuantities);

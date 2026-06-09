@@ -71,13 +71,13 @@ function buildFedExPackages(products: any[]) {
 }
 export function calculatePackage(products: any[]) {
   const totalWeight = products.reduce((sum, p) => {
-    const weight = parseFloat(p.dimensions?.weight) || 0;
+    const weight = parseFloat(p.dimensions?.weight) || 1;
     const qty = p.quantity || 1;
     return sum + (weight * qty);
   }, 0);
 
   const orderTotal = products.reduce((sum, p) => {
-    const price = parseFloat(p.price) || 0;
+    const price = parseFloat(p.price) || 1;
     const qty = p.quantity || 1;
     return sum + (price * qty);
   }, 0);
@@ -85,9 +85,9 @@ export function calculatePackage(products: any[]) {
   const itemCount = products.reduce((sum, p) => sum + (p.quantity || 1), 0);
 
 
-  const maxLength = Math.max(...products.map(p => parseFloat(p.dimensions?.depth) || 0));
-  const maxWidth = Math.max(...products.map(p => parseFloat(p.dimensions?.width) || 0));
-  const maxHeight = Math.max(...products.map(p => parseFloat(p.dimensions?.height) || 0));
+  const maxLength = Math.max(...products.map(p => parseFloat(p.dimensions?.depth) || 1));
+  const maxWidth = Math.max(...products.map(p => parseFloat(p.dimensions?.width) || 1));
+  const maxHeight = Math.max(...products.map(p => parseFloat(p.dimensions?.height) || 1));
 
   return {
     total_weight: totalWeight,   // fallback if data missing
@@ -151,6 +151,9 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
       zip?.trim()
     );
   }, [firstName, lastName, address1, city, country, zip]);
+
+  console.log("cart", cart);
+
   useEffect(() => {
     if (!city?.trim() && !country?.trim() && !zip?.trim() && !state?.trim()) return;
     if (city?.trim() && country?.trim() && zip?.trim() && state?.trim()) {
@@ -635,7 +638,10 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                 <input
                   type="radio"
                   value={rate.service_type}
-                  {...register("shippingMethod")}
+                  // {...register("shippingMethod")}
+                  {...register("shippingMethod", {
+                    required: "Please select a shipping method",
+                  })}
                   onChange={(e) => {
                     register("shippingMethod").onChange(e); // keep react-hook-form in sync
                     const selectedRate = shippingRates?.find(
@@ -651,9 +657,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     localStorage.setItem("shippingCost", cost);
                     localStorage.setItem("shippingData", JSON.stringify(shippingData));
                   }}
-                  // {...register("shippingMethod", {
-                  //   required: "Please select a shipping method",
-                  // })}
+
                   className="mt-1"
                   disabled={!isShippingComplete}
                 />

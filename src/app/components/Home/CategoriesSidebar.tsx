@@ -50,7 +50,7 @@ const CategoriesSidebar: React.FC<CategoriesSidebarProps> = ({ activeCategoryId 
           const findParentIds = (cats: Category[], targetId: number, parents: number[] = []) => {
             for (const cat of cats) {
               if (cat.id === targetId) {
-                parents.forEach((id) => idsToExpand.add(id));
+                parents?.forEach((id) => idsToExpand.add(id));
                 return true;
               }
               if (cat.subcategories?.length) {

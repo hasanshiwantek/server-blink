@@ -32,7 +32,7 @@ export default function ScriptInjector() {
         if (!scripts || scripts.length === 0) return;
 
         const executeScripts = (scriptList: any[], target: "head" | "body") => {
-            scriptList.forEach((script: any) => {
+            scriptList?.forEach((script: any) => {
                 if (!script.script_content) return;
                 if (document.getElementById(`injected-script-${script.id}`)) return;
 
@@ -57,7 +57,7 @@ export default function ScriptInjector() {
         executeScripts(footerScripts, "body");
 
         return () => {
-            activeScripts.forEach((script: any) => {
+            activeScripts?.forEach((script: any) => {
                 const el = document.getElementById(`injected-script-${script.id}`);
                 if (el) el.remove();
             });

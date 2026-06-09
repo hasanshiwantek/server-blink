@@ -483,7 +483,7 @@ const CheckoutForm = () => {
           destinations: destinations.map((dest) => {
             // Per dest allocated products
             const allocatedProducts: Record<string, number> = {};
-            dest.allocatedItems.forEach((slot) => {
+            dest.allocatedItems?.forEach((slot) => {
               const itemId = slot.split("-")[0];
               allocatedProducts[itemId] = (allocatedProducts[itemId] || 0) + 1;
             });
@@ -954,7 +954,7 @@ const CheckoutForm = () => {
         "billingSame", "orderComment", "newsletter", "shippingMethod",
       ];
 
-      fieldsToRestore.forEach((field) => {
+      fieldsToRestore?.forEach((field) => {
         if (parsed[field] !== undefined && parsed[field] !== "") {
           setValue(field, parsed[field]);
         }
