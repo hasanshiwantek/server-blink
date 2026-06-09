@@ -49,9 +49,9 @@ axiosInstance.interceptors.response.use(
 
     const errors = error.response?.data.errors;
     if (errors && typeof errors === "object") {
-      Object.values(errors).forEach((fieldErrors) => {
+      Object.values(errors)?.forEach((fieldErrors) => {
         if (Array.isArray(fieldErrors)) {
-          fieldErrors.forEach((err) =>
+          fieldErrors?.forEach((err) =>
             toast.error(err, {
               style: {
                 fontSize: "12px",

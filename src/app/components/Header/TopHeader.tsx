@@ -211,12 +211,12 @@ const TopHeader = () => {
                       dispatch(clearSearch());
                       if (q) {
                         localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
-                         window.dispatchEvent(new Event("searchFiltersUpdated"));
-                          if (pathname === "/advanced-search") {
-   window.location.reload()
-      } else {
-        router.push(`/advanced-search`);
-      }
+                        window.dispatchEvent(new Event("searchFiltersUpdated"));
+                        if (pathname === "/advanced-search") {
+                          window.location.reload()
+                        } else {
+                          router.push(`/advanced-search`);
+                        }
                         // setTimeout(() => {
                         //   window.location.reload()
                         // },100)
@@ -234,13 +234,13 @@ const TopHeader = () => {
                     dispatch(clearSearch());
                     if (q) {
                       localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
-                       window.dispatchEvent(new Event("searchFiltersUpdated"));
-                           if (pathname === "/advanced-search") {
-   window.location.reload()
-      } else {
-        router.push(`/advanced-search`);
-      }
-                 
+                      window.dispatchEvent(new Event("searchFiltersUpdated"));
+                      if (pathname === "/advanced-search") {
+                        window.location.reload()
+                      } else {
+                        router.push(`/advanced-search`);
+                      }
+
                       // router.push(`/advanced-search?q=${q}`);
                     }
                   }}
@@ -450,7 +450,7 @@ const TopHeader = () => {
                                 return acc;
                               }, {})
                             ).map((item) => (
-                              <Link key={item?.id} href={item?.productUrl} onClick={() => setIsOpen(false)} className=" px-2 flex gap-3 items-center cursor-pointer border-b border-gray-300 pb-1 last:border-b-0">
+                              <Link key={item?.id} href={item?.productUrl || "#"} onClick={() => setIsOpen(false)} className=" px-2 flex gap-3 items-center cursor-pointer border-b border-gray-300 pb-1 last:border-b-0">
                                 <div className="w-16 h-16 flex-shrink-0 border border-gray-100 rounded-none">
                                   <img
                                     src={item?.image?.[0]?.path || "/default-product-image.svg"}
