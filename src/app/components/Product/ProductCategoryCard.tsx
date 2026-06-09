@@ -24,6 +24,7 @@ interface Product {
   availabilityText?: string;
   description?: string;
   customFields?: Record<string, string>;
+  purchasabilityStatus?: string;
 }
 
 export default function ProductCategoryCard({ product }: { product: Product }) {
@@ -39,6 +40,7 @@ export default function ProductCategoryCard({ product }: { product: Product }) {
   // }, [dispatch, stats]);
 
   const imageUrl = product.image?.[0]?.path || "/default-product-image.svg";
+  const availableForSale = product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
 
   return (
     <div
@@ -81,7 +83,7 @@ export default function ProductCategoryCard({ product }: { product: Product }) {
           </h3>
         </Link>
 
-        <div className="flex flex-wrap items-center gap-2 mt-2">
+        {availableForSale ? <div className="flex flex-wrap items-center gap-2 mt-2">
           {/* Price */}
           {product?.msrp && Number(product.msrp) > 0 ? (
             <div>
@@ -106,7 +108,11 @@ export default function ProductCategoryCard({ product }: { product: Product }) {
               className="font-bold !text-[#545454] !text-3xl"
             />
           )}
-        </div>
+        </div> : <div className="flex flex-wrap items-center gap-2 mt-2">
+          <span className="text-[1rem] font-bold  " style={{ fontFamily: '"Roboto"' }}>Call for pricing:<Link href="tel:+15022063033" className="text-[#d40511] underline">
+            (502) 206-3033
+          </Link></span>
+        </div>}
       </div>
     </div>
   );
