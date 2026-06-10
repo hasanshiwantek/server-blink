@@ -150,7 +150,7 @@ export default function Sidebar({
           <h2 className="h2-bold">SHOP BY BRAND</h2>
         </div>
 
-        <ul className="py-2 space-y-2">
+        <ul className="py-2 space-y-2 ">
           <li>
             <AnimatePresence initial={false}>
               <MotionDiv

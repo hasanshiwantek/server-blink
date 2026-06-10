@@ -46,7 +46,7 @@ const Pagination = ({
         size="xl"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="rounded-md px-3  2xl:text-[12px] border border-black text-base"
+        className=" px-3  2xl:text-[12px] border rounded-none border-black text-base"
       >
         Prev
       </Button>
@@ -66,9 +66,9 @@ const Pagination = ({
             size="xl"
             variant={currentPage === page ? "default" : "outline"}
             onClick={() => onPageChange(Number(page))}
-            className={`rounded-md px-4 2xl:text-[12px] border text-base ${
+            className={` px-4 2xl:text-[12px] border rounded-none text-base ${
               currentPage === page
-                ? "bg-white text-[#D42020] border-[#D42020] hover:bg-[var(--primary-color)]"
+                ? "bg-white text-[#D42020] border-[#D42020] hover:bg-[var(--primary-color)] hover:text-[#fff]"
                 : "border-black"
             }`}
           >
@@ -83,7 +83,7 @@ const Pagination = ({
         size="xl"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="rounded-md px-3 2xl:text-[12px] border border-black text-base"
+        className=" px-3 2xl:text-[12px] border rounded-none border-black text-base"
       >
         Next
       </Button>
