@@ -133,7 +133,7 @@ const SignupPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className=" px-10 xl:px-0  w-full  xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-7xl mx-auto  py-8 pb-16">
+      <div  className="px-4 md:px-6 xl:px-0 w-full xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-7xl mx-auto py-8 pb-16">
         <h1 className="h1-lg !font-light text-[28px] mb-2">New Account</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -451,7 +451,7 @@ const SignupPage = () => {
           </div>
 
           {/* Zip/Postcode - Full Width */}
-          <div className="max-w-[calc(50%-1rem)]">
+          <div className="w-full md:max-w-[calc(50%-1rem)]">
             <div className="flex justify-between items-center">
 
               <label
@@ -481,7 +481,7 @@ const SignupPage = () => {
                 <div className="w-6 h-6 border-4 border-t-transparent border-red-600 rounded-full animate-spin"></div>
               </div>
             ) : (
-              <button type="submit" className="btn-primary px-[30px]">
+              <button type="submit" className="btn-primary w-full sm:w-auto py-[5px] px-[30px]">
                 CREATE ACCOUNT
               </button>
             )}
