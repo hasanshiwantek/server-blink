@@ -34,6 +34,7 @@ const OrderSummary = () => {
   const [couponCode, setCouponCode] = useState("");
   const [discountOpen, setDiscountOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [fedexShow, setFedexShow] = useState(false);
   const [selectedShippingMethod, setSelectedShippingMethod] = useState("");
 
   const [shippingData, setShippingData] = useState({
@@ -97,6 +98,7 @@ const OrderSummary = () => {
       },
     })).unwrap().finally(() => {
       setLoading(false);
+      setFedexShow(true)
     })
   };
 
@@ -292,7 +294,7 @@ const OrderSummary = () => {
                 </button>
               </div>
 
-              {shippingRates?.length > 0 && <div className="">
+              {shippingRates?.length > 0 && fedexShow && <div>
                 {ratesLoader ? (
                   Array.from({ length: 2 }).map((_, i) => (
                     <div key={i} className="flex items-start gap-3 border rounded p-4 animate-pulse">
