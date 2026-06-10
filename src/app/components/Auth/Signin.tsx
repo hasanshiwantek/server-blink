@@ -55,16 +55,16 @@ const SigninPage = () => {
       {/* Breadcrumb */}
       <div className="px-10 xl:px-0  w-full xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-8xl mx-auto  py-4">
         <div className="flex items-center gap-2 text-sm">
-          <Link href="/" className="text-gray-600 hover:text-gray-900">
+          <Link href="/" className="text-gray-600 hover:text-gray-900 text-[11px]">
             Home
           </Link>
           <span className="text-gray-400">/</span>
-          <span className="text-[var(--primary-color)]">Login</span>
+          <span className="text-[var(--primary-color)] text-[11px]">Login</span>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="  px-10 xl:px-0 xl:max-w-[1170px] 2xl:max-w-[1170px]  mx-auto  py-8">
+      <div className="px-4 md:px-6 xl:px-0 w-full xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-7xl mx-auto py-8 pb-16">
         <h1 className="h1-lg mb-10">Login</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-12">
@@ -82,7 +82,7 @@ const SigninPage = () => {
                 <Input
                   id="email"
                   type="email"
-                  className="w-full h-12 max-w-full"
+                  className="w-full h-12 max-w-full py-[15px] "
                   {...register("email", { required: "Email is required" })}
                 />
                 {errors.email && (
@@ -103,7 +103,7 @@ const SigninPage = () => {
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"} // toggle type
-                  className="w-full h-12 max-w-full pr-10" // add padding for icon
+                  className="w-full h-12 max-w-full py-[15px] pr-10" // add padding for icon
                   {...register("password", {
                     required: "Password is required",
                   })}
@@ -124,19 +124,19 @@ const SigninPage = () => {
               </div>
 
               {/* Login Button and Forgot Password */}
-              <div className="flex  gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
                 {loginloading ? (
                   <div className="flex justify-center items-center py-3">
                     <div className="w-6 h-6 border-4 border-t-transparent border-red-600 rounded-full animate-spin"></div>
                   </div>
                 ) : (
-                  <button type="submit" className="btn-primary">
+                  <button type="submit" className="btn-primary sm:w-auto">
                     LOGIN
                   </button>
                 )}
                 <Link
                   href="/forgot-password"
-                  className="text-red-600 hover:text-red-700 text-[14px] underline"
+                  className="text-[#D42020] hover:text-red-700 text-[14px] underline"
                 >
                   Forgot your password?
                 </Link>
@@ -173,7 +173,7 @@ const SigninPage = () => {
               </li>
             </ul>
             <button className="btn-primary">
-              <Link href="/auth/signup">CREATE ACCOUNT</Link>
+              {/* <Link href="/auth/signup">CREATE ACCOUNT</Link> */}
             </button>
           </div>
         </div>

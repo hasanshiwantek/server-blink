@@ -11,7 +11,7 @@ const ProductOverview = ({ product }: { product: any }) => {
         <div className="flex flex-col">
           {/* Main Overview Heading */}
           <div className="flex justify-center sm:justify-start  ">
-            <h2 className="text-[13px]  bg-[#F2F2F2] p-2 sm:w-48 w-full text-center text-black font-bold">Overview</h2>
+            <h2 className="text-[13px]  bg-[#F2F2F2] p-2 sm:w-48 w-full text-center text-[#545454] font-bold">Overview</h2>
           </div>
           <h3 className="text-[20px] bg-[#F2F2F2] px-5 text-[#545454] py-2 font-bold">PRODUCT DESCRIPTION</h3>
           <div className="w-[97%] mx-auto h-[1px] bg-[#545454]"></div>
@@ -74,7 +74,7 @@ const ProductOverview = ({ product }: { product: any }) => {
         <section className="border" aria-labelledby="product-details-heading">
           {/* <div className="p-4">
           </div> */}
-          <h2 className="!p-4 bg-[#F2F2F2]">{product?.metaDescription || "N/A"}</h2>
+          <h2 className="!p-4 bg-[#F2F2F2] text-[14px] text-[#545454]">{product?.metaDescription || "N/A"}</h2>
           {product?.customFields.length > 0 && <>
             <h3 className="text-[20px] bg-[#F2F2F2] px-5 text-[#545454] py-2 font-bold">PRODUCT DETAILS</h3>
             <div className="w-[97%] mx-auto h-[1px] bg-[#545454]"></div>
