@@ -248,6 +248,7 @@ const CheckoutForm = () => {
         const data = await res.json();
         if (data.country_code) {
           const checkoutFormData = JSON.parse(localStorage.getItem("checkoutFormData") || "");
+
           if(checkoutFormData){
             // Agar localStorage mein data hai, toh usko update karo detected country se
           }else {
@@ -894,7 +895,6 @@ const CheckoutForm = () => {
 
       const orderData = await placeOrder({ ...data, paymentIntentId });
       skipEmptyCartCheckRef.current = true;
-      console.log(orderData, "Order data after wallet payment");
       dispatch(setLastOrder(orderData));
       dispatch(clearCart());
       dispatch(removeCoupon());
