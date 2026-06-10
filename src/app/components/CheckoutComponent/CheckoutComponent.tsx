@@ -247,11 +247,21 @@ const CheckoutForm = () => {
         const res = await fetch("/api/detect-country"); // apna Next.js route
         const data = await res.json();
         if (data.country_code) {
-          setValue("country", data.country_code);
-          setValue("state", data.state);
 
-          setValue("billingCountry", data.country_code);
-          setValue("billingState", data.state);
+          const shippingDataLocal = localStorage.getItem("shippingData"); // Clear any previously saved shipping cost when component mounts
+          if (shippingDataLocal) {
+            const detail = JSON.parse(shippingDataLocal)
+            setValue("zip", detail.zip);
+            setValue("city", detail.city);
+            setValue("state", detail.state);
+            setValue("country", detail.country);
+          } else {
+            setValue("country", data.country_code);
+            setValue("state", data.state);
+
+            setValue("billingCountry", data.country_code);
+            setValue("billingState", data.state);
+          }
         }
       } catch {
         setValue("country", "US");
@@ -988,8 +998,9 @@ const CheckoutForm = () => {
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   useEffect(() => {
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-
     saveTimeoutRef.current = setTimeout(() => {
+      const shippingDataLocal: any = localStorage.getItem("shippingData");
+      const detail = JSON.parse(shippingDataLocal)
       const dataToSave = {
         email: watchedValues.email,
         firstName: watchedValues.firstName,
@@ -998,10 +1009,10 @@ const CheckoutForm = () => {
         phone: watchedValues.phone,
         address1: watchedValues.address1,
         address2: watchedValues.address2,
-        city: watchedValues.city,
-        country: watchedValues.country,
-        state: watchedValues.state,
-        zip: watchedValues.zip,
+        city: detail.city ? detail.city : watchedValues.city,
+        country: detail.country ? detail.country : watchedValues.country,
+        state: detail.state ? detail.state : watchedValues.state,
+        zip: detail.zip ? detail.zip : watchedValues.zip,
 
         billingFirstName: watchedValues.billingFirstName,
         billingLastName: watchedValues.billingLastName,
