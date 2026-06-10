@@ -247,18 +247,13 @@ const CheckoutForm = () => {
         const res = await fetch("/api/detect-country"); // apna Next.js route
         const data = await res.json();
         if (data.country_code) {
-
-          const shippingDataLocal = localStorage.getItem("shippingData"); // Clear any previously saved shipping cost when component mounts
-          if (shippingDataLocal) {
-            const detail = JSON.parse(shippingDataLocal)
-            setValue("zip", detail.zip);
-            setValue("city", detail.city);
-            setValue("state", detail.state);
-            setValue("country", detail.country);
-          } else {
+          const checkoutFormData = JSON.parse(localStorage.getItem("checkoutFormData") || "");
+          if(checkoutFormData){
+            // Agar localStorage mein data hai, toh usko update karo detected country se
+          }else {
             setValue("country", data.country_code);
             setValue("state", data.state);
-
+            
             setValue("billingCountry", data.country_code);
             setValue("billingState", data.state);
           }
@@ -998,9 +993,8 @@ const CheckoutForm = () => {
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   useEffect(() => {
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+
     saveTimeoutRef.current = setTimeout(() => {
-      // const shippingDataLocal: any = localStorage.getItem("shippingData");
-      // const detail = JSON.parse(shippingDataLocal)
       const dataToSave = {
         email: watchedValues.email,
         firstName: watchedValues.firstName,

@@ -148,23 +148,8 @@ const OrderSummary = () => {
           }));
         }
         const shippingDataLocal = localStorage.getItem("shippingData"); // Clear any previously saved shipping cost when component mounts
-        const checkoutFormData = JSON.parse(localStorage.getItem("checkoutFormData") || "");
         if (shippingDataLocal) {
           setShippingData(JSON.parse(shippingDataLocal));
-          if (checkoutFormData) {
-            const updatedCheckoutFormData = {
-              ...checkoutFormData,
-              country: shippingData.country,
-              city: shippingData.city,
-              state: shippingData.state,
-              zip: shippingData.zip,
-            };
-
-            localStorage.setItem(
-              "checkoutFormData",
-              JSON.stringify(updatedCheckoutFormData)
-            );
-          }
         }
       } catch {
         setShippingData({ ...shippingData, country: "US" });
@@ -362,6 +347,24 @@ const OrderSummary = () => {
                       const cost = selectedRate ? Number(selectedRate.total_charge).toFixed(2) : "0";
                       localStorage.setItem("shippingCost", cost);
                       localStorage.setItem("shippingData", JSON.stringify(shippingData));
+
+                      const checkoutFormData = JSON.parse(localStorage.getItem("checkoutFormData") || "");
+
+                      if (shippingData) {
+                        if (checkoutFormData) {
+                          const updatedCheckoutFormData = {
+                            ...checkoutFormData,
+                            country: shippingData.country,
+                            city: shippingData.city,
+                            state: shippingData.state,
+                            zip: shippingData.zip,
+                          };
+                          localStorage.setItem(
+                            "checkoutFormData",
+                            JSON.stringify(updatedCheckoutFormData)
+                          );
+                        }
+                      }
                       window.location.reload(); // Refresh to update totals with new shipping cost
                     }}
                     className="w-full md:w-[55%] text-[18px] btn-primary"
