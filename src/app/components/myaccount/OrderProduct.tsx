@@ -84,8 +84,8 @@ const OrderProduct = () => {
               {/* Product Image */}
               <div className="w-full max-w-[128px] h-32 relative flex-shrink-0">
                 <Image
-                  src={
-                    item?.products?.[0]?.images?.[0] || item?.products?.[1]?.images?.[0] ||
+                 src={
+                    item?.products?.[0]?.image?.[0]?.path || item?.products?.[1]?.image?.[0]?.path ||
                     "/default-product-image.svg"
                   }
                   alt={item?.products?.[0]?.name || item?.products?.[1]?.name || "Product Image"}
