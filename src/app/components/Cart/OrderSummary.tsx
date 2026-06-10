@@ -350,7 +350,7 @@ const OrderSummary = () => {
                       localStorage.setItem("shippingCost", cost);
                       localStorage.setItem("shippingData", JSON.stringify(shippingData));
 
-                      const checkoutFormData = JSON.parse(localStorage.getItem("checkoutFormData") || "");
+                     const checkoutFormData = JSON.parse(localStorage.getItem("checkoutFormData") || "{}");
 
                       if (shippingData) {
                         if (checkoutFormData) {
