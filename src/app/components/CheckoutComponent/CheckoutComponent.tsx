@@ -248,7 +248,7 @@ const CheckoutForm = () => {
         const data = await res.json();
         if (data.country_code) {
           const checkoutFormData = JSON.parse(localStorage.getItem("checkoutFormData") || "");
-          if(checkoutFormData){
+                  if (checkoutFormData?.country && checkoutFormData?.state && checkoutFormData?.city) {
             // Agar localStorage mein data hai, toh usko update karo detected country se
           }else {
             setValue("country", data.country_code);
