@@ -90,7 +90,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
             <DialogContent className="!max-w-[70rem]  w-full max-h-[90vh] overflow-y-auto p-0 rounded-none shadow-sm bg-[#eaeaea]">
                 {/* ✅ Sticky Header */}
                 <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-[#ddd] bg-[#eaeaea]">
-                    <DialogTitle className="text-[18px] font-light text-[#333333]  w-full flex justify-center">
+                    <DialogTitle className="text-[18px] font-light text-[#545454]  w-full flex justify-center">
                         <div>
                             Write a Review
                         </div>
@@ -99,7 +99,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
                         onClick={onClose}
                         className="text-[#333333] hover:text-black transition-colors"
                     >
-                        <X className="w-5 h-5" />
+                       <X className="w-8 h-8 text-[#CAC9C9]" />
                     </button>
                 </div>
                 <div className="flex flex-col md:flex-row bg-[#eaeaea]">
@@ -119,7 +119,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
                             </div>
                         )}
                         {product?.name && (
-                            <p className="mt-4 text-base text-gray-700 text-center font-medium">
+                            <p className="mt-4 text-base text-[#545454] text-[15px] text-center font-medium">
                                 {product.name}
                             </p>
                         )}
@@ -134,7 +134,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
                                 <div className="flex items-center justify-between mb-1">
                                     <Label
                                         htmlFor="rating"
-                                        className="text-[#545454] cursor-pointer block text-base leading-6 mb-2"
+                                        className="text-[#545454] text-[14px] cursor-pointer block  leading-6 mb-2"
                                     >Rating:</Label>
                                     <span className="text-[11px] text-[#999] uppercase tracking-wider">*</span>
 
@@ -163,7 +163,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
 
                                     <Label
                                         htmlFor="name"
-                                        className="text-[#545454] cursor-pointer block text-base leading-6 mb-2"
+                                        className="text-[#545454] cursor-pointer block text-[14px] leading-6 mb-2"
                                     >Name</Label>
                                 </div>
                                 <Input
@@ -180,7 +180,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
 
                                     <Label
                                         htmlFor="email"
-                                        className="text-[#545454] cursor-pointer block text-base leading-6 mb-2"
+                                        className="text-[#545454] cursor-pointer block text-[14px] leading-6 mb-2"
                                     >Email</Label>
                                     <span className="text-[11px] text-[#999] uppercase tracking-wider">*</span>
                                 </div>
@@ -198,7 +198,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
 
                                     <Label
                                         htmlFor="subject"
-                                        className="text-[#545454] cursor-pointer block text-base leading-6 mb-2"
+                                        className="text-[#545454] cursor-pointer block text-[14px] leading-6 mb-2"
                                     >Review Subject</Label>
                                     <span className="text-[11px] text-[#999] uppercase tracking-wider">*</span>
 
@@ -217,7 +217,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
                                 <div className="flex items-center justify-between mb-1">
                                     <Label
                                         htmlFor="comment"
-                                        className="text-[#545454] cursor-pointer block text-base leading-6 mb-2"
+                                        className="text-[#545454] cursor-pointer block text-[14px] leading-6 mb-2"
                                     >Comments</Label>
                                     <span className="text-[11px] text-[#999] uppercase tracking-wider">*</span>
                                 </div>
