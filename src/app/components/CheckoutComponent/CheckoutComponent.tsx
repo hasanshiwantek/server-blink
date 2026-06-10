@@ -999,8 +999,8 @@ const CheckoutForm = () => {
   useEffect(() => {
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     saveTimeoutRef.current = setTimeout(() => {
-      const shippingDataLocal: any = localStorage.getItem("shippingData");
-      const detail = JSON.parse(shippingDataLocal)
+      // const shippingDataLocal: any = localStorage.getItem("shippingData");
+      // const detail = JSON.parse(shippingDataLocal)
       const dataToSave = {
         email: watchedValues.email,
         firstName: watchedValues.firstName,
@@ -1009,10 +1009,10 @@ const CheckoutForm = () => {
         phone: watchedValues.phone,
         address1: watchedValues.address1,
         address2: watchedValues.address2,
-        city: detail.city ? detail.city : watchedValues.city,
-        country: detail.country ? detail.country : watchedValues.country,
-        state: detail.state ? detail.state : watchedValues.state,
-        zip: detail.zip ? detail.zip : watchedValues.zip,
+        city: watchedValues.city,
+        country: watchedValues.country,
+        state: watchedValues.state,
+        zip: watchedValues.zip,
 
         billingFirstName: watchedValues.billingFirstName,
         billingLastName: watchedValues.billingLastName,
