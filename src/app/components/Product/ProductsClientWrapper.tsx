@@ -73,7 +73,7 @@ const BrandBreadcrumb = ({ brandName }: { brandName: string }) => {
         >
           /
         </span>
-        <span className="text-[#D42020]">{brandName}</span>
+        <span className="text-[#D42020] cursor-pointer">{brandName}</span>
       </span>
     </nav>
   );
@@ -244,7 +244,7 @@ export default function ProductsClientWrapper({
     filterMeta.brandName,
     params?.slug,
   ]);
-  console.log("brandName", initialBrandName);
+ 
  
   return (
     <div className="w-full max-w-[1170px] mx-auto  lg:px-6 xl:px-0">
