@@ -358,6 +358,7 @@ const OrderSummary = () => {
                             city: shippingData.city,
                             state: shippingData.state,
                             zip: shippingData.zip,
+                            shippingMethod: selectedShippingMethod,
                           };
                           localStorage.setItem(
                             "checkoutFormData",
