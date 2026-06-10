@@ -36,6 +36,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
     dispatch(fetchStats());
   }, [dispatch]);
 
+
   return (
     <>
       <section className="product-middle flex flex-col h-full w-full max-w-full  xl:max-w-[50%] 2xl:max-w-[50%] ">

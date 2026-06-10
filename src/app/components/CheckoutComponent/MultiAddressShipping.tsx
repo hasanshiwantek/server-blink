@@ -176,7 +176,7 @@ const AllocateModal: React.FC<{
         if (!open) return;
         const dest = destinations.find((d) => d.id === currentDestId);
         const init: Record<string, number> = {};
-        cart.forEach((item) => {
+        cart?.forEach((item) => {
             init[String(item.id)] = dest?.allocatedItems.filter(
                 (s) => s.split("-")[0] === String(item.id)
             ).length || 0;
@@ -188,8 +188,8 @@ const AllocateModal: React.FC<{
         const item = cart.find((c) => c.id === itemId);
         if (!item) return 0;
         const elsewhereSlots = new Set<string>();
-        destinations.filter((d) => d.id !== currentDestId).forEach((d) => {
-            d.allocatedItems.filter((s) => s.split("-")[0] === String(itemId)).forEach((s) => elsewhereSlots.add(s));
+        destinations.filter((d) => d.id !== currentDestId)?.forEach((d) => {
+            d.allocatedItems.filter((s) => s.split("-")[0] === String(itemId))?.forEach((s) => elsewhereSlots.add(s));
         });
         return item.quantity - elsewhereSlots.size;
     };
@@ -217,8 +217,8 @@ const AllocateModal: React.FC<{
                 <div className="px-6 py-3 bg-gray-50 border-b flex justify-between items-center">
                     <span className="text-[16px] text-gray-600">{totalLeft} item{totalLeft !== 1 ? "s" : ""} left to allocate</span>
                     <div className="flex gap-4">
-                        <button type="button" onClick={() => { const c: Record<string, number> = {}; cart.forEach((i) => { c[String(i.id)] = 0; }); setQuantities(c); }} className="text-[16px] text-red-600 hover:underline">Clear all</button>
-                        <button type="button" onClick={() => { const a: Record<string, number> = {}; cart.forEach((i) => { a[String(i.id)] = getLeft(i.id); }); setQuantities(a); }} className="text-[16px] text-red-600 hover:underline">Select all items left</button>
+                        <button type="button" onClick={() => { const c: Record<string, number> = {}; cart?.forEach((i) => { c[String(i.id)] = 0; }); setQuantities(c); }} className="text-[16px] text-red-600 hover:underline">Clear all</button>
+                        <button type="button" onClick={() => { const a: Record<string, number> = {}; cart?.forEach((i) => { a[String(i.id)] = getLeft(i.id); }); setQuantities(a); }} className="text-[16px] text-red-600 hover:underline">Select all items left</button>
                     </div>
                 </div>
                 <div className="px-6 py-2 bg-gray-50 border-b grid grid-cols-12 text-[16px] font-medium text-gray-600">
@@ -275,8 +275,8 @@ const MultiAddressShipping = ({
 
     const unallocatedCount = useMemo(() => {
         const allocatedPerItem: Record<string, Set<string>> = {};
-        destinations.forEach((d) => {
-            d.allocatedItems.forEach((slot) => {
+        destinations?.forEach((d) => {
+            d.allocatedItems?.forEach((slot) => {
                 const itemId = slot.split("-")[0];
                 if (!allocatedPerItem[itemId]) allocatedPerItem[itemId] = new Set();
                 allocatedPerItem[itemId].add(slot);
@@ -383,9 +383,9 @@ const MultiAddressShipping = ({
                     (slot) => !allocations.some((a) => slot.split("-")[0] === String(a.itemId))
                 );
                 const otherSlotCount: Record<string, number> = {};
-                destinations.forEach((od) => {
+                destinations?.forEach((od) => {
                     if (od.id === editingDestId) return;
-                    od.allocatedItems.forEach((slot) => {
+                    od.allocatedItems?.forEach((slot) => {
                         const id = slot.split("-")[0];
                         otherSlotCount[id] = (otherSlotCount[id] || 0) + 1;
                     });
@@ -403,7 +403,7 @@ const MultiAddressShipping = ({
 
     const getGrouped = (slots: string[]) => {
         const map: Record<string, number> = {};
-        slots.forEach((s) => { const id = s.split("-")[0]; map[id] = (map[id] || 0) + 1; });
+        slots?.forEach((s) => { const id = s.split("-")[0]; map[id] = (map[id] || 0) + 1; });
         return map;
     };
 
@@ -419,7 +419,7 @@ const MultiAddressShipping = ({
         lastDest?.selectedShippingMethod
     );
     useEffect(() => {
-        destinations.forEach((dest) => {
+        destinations?.forEach((dest) => {
             if (dest.address && !destShippingRates[dest.id]) {
                 // Rates nahi hain — re-fetch karo
                 fetchRatesForDest(dest.id, dest.address);

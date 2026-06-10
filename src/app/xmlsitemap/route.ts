@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
                 let sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
 
-                urls.forEach((url) => {
+                urls?.forEach((url) => {
                     const safeUrl = url.replace(/&/g, '&amp;');
                     sitemapIndex += `\n  <sitemap>\n    <loc>${safeUrl}</loc>\n  </sitemap>`;
                 });
