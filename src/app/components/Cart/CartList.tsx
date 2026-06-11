@@ -103,8 +103,8 @@ const CartList = () => {
               key={item?.id}
               className="flex flex-col xl:flex-row items-center justify-between py-5"
             >
-              <div className="flex flex-col xl:flex-row items-center xl:w-[65.1%] 2xl:w-[64.5%]">
-                <div className="w-full xl:w-[18.1%] 2xl:w-[17.7%]">
+              <div className="flex flex-row items-start  xl:flex-row items-center xl:w-[65.1%] 2xl:w-[64.5%]">
+                <div className="w-[40%] xl:w-[18.1%] 2xl:w-[17.7%]">
                   <Image
                     width={98}
                     height={105}
@@ -113,12 +113,12 @@ const CartList = () => {
                     className="w-full h-[8.1rem] object-contain border m-auto"
                   />
                 </div>
-                <div className="w-full text-[15px] xl:w-[63.1%] 2xl:w-[71%] mx-4">
-                  <p className=" text-center xl:text-start">
+                <div className="w-[60%] pl-3 text-[15px] text-[#545454] xl:w-[63.1%] 2xl:w-[71%] mx-4">
+                  <p className="  xl:text-start">
                     {item?.brand?.name || "N/A"}
                   </p>
                   <Link href={`${item?.productUrl || "#"}`}>
-                    <p className=" text-[#D42020] underline text-center lg:mx-auto md:mx-auto sm:mx-auto w-[100%] sm:w-[60%]  md:w-[70%] lg:w-[80%] xl:text-start xl:w-[100%] 2xl:w-[100%]">
+                    <p className=" text-[#D42020] underline  lg:mx-auto md:mx-auto sm:mx-auto w-[100%] sm:w-[60%]  md:w-[70%] lg:w-[80%] xl:text-start xl:w-[100%] 2xl:w-[100%]">
                       {item.name}
                     </p>
                   </Link>
@@ -126,10 +126,25 @@ const CartList = () => {
                 </div>
               </div>
 
-              <div className="flex w-full flex-wrap items-center gap-4 xl:gap-0 xl:w-[66%] 2xl:w-[68%] xl:flex-nowrap xl:justify-between">
-                <p className="text-[15px]">${Number(item.price).toFixed(2)}</p>
-                <div className="flex items-center  border-gray-300 overflow-hidden">
+              <div className="flex flex-col md:flex-row w-full gap-3 xl:gap-0 xl:w-[66%] 2xl:w-[68%] xl:flex-nowrap xl:justify-between">
+               <div className="flex items-center justify-between md:block">
+  
+  <p className=" text-[14px] text-[#545454] md:hidden">Price</p>
 
+  <p className="text-[15px] text-[#545454]  ">
+    ${Number(item.price).toFixed(2)}
+  </p>
+   <div>
+                    
+                  </div>
+
+</div>
+
+               <div className="flex items-center justify-between ">
+
+  <p className=" text-[14px] text-[#545454]    md:hidden">Quantity</p>
+                <div className="flex items-center  border-gray-300 overflow-hidden">
+                  
                   {/* Down Arrow (Decrease) — Left */}
                   <button
                     type="button"
@@ -208,12 +223,21 @@ const CartList = () => {
                   >
                     <ChevronUp size={16} />
                   </button>
+                 
+                </div>
+                 <div>
+                    
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <p className="text-[15px]">
-                    ${Number(item.price * item.quantity).toFixed(2)}
-                  </p>
+               <div className="flex items-center justify-between gap-2">
+
+  <p className="text-[14px] text-[#545454]   md:hidden">Total</p>
+
+  <p className="text-[15px] text-[#545454]  ">
+    ${Number(item.price * item.quantity).toFixed(2)}
+  </p>
+  
                   <button
                     type="button"
                     aria-label="Remove item from cart"

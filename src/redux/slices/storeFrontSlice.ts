@@ -21,7 +21,7 @@ export const getBlogById = createAsyncThunk(
   async ({ id }: { id: any }, thunkAPI) => {
     try {
       const res = await axiosInstance.get(`web/blogs/blog-posts/${id}`);
-      console.log("Blogs data by id: ", res.data);
+     
 
       return res.data;
     } catch (err: any) {
@@ -52,7 +52,7 @@ export const getWebPageById = createAsyncThunk(
   async ({ id }: { id: any }, thunkAPI) => {
     try {
       const res = await axiosInstance.get(`web/webpages/web-pages/${id}`);
-      console.log("Web Pages data by id: ", res.data);
+     
 
       return res.data;
     } catch (err: any) {

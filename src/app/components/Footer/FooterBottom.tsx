@@ -120,7 +120,7 @@ const FooterBottom = () => {
 
 
       {/* Main Footer Content */}
-      <section className="w-full sm:max-w-[95%] md:max-w-[90%] lg:max-w-[88%] xl:max-w-[85%] mx-auto px-4 xl:px-4 2xl:px-16 py-12">
+      <section className="text-center md:text-left w-full sm:max-w-[95%] md:max-w-[90%] lg:max-w-[88%] xl:max-w-[85%] mx-auto px-4 xl:px-4 2xl:px-16 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Contact Us */}
           <div>
@@ -226,11 +226,11 @@ const FooterBottom = () => {
             </ul>
 
             {/* Connect with Us */}
-            <div className="mt-8">
+            <div className=" md:mt-8">
               <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white">
                 Connect with Us:
               </h4>
-              <div className="flex gap-3">
+             <div className="flex justify-center md:justify-start gap-3">
                 <Link
                   href="http://www.facebook.com/serverblink"
                   target="_blank"
@@ -238,7 +238,7 @@ const FooterBottom = () => {
                   className="hover:opacity-80"
                 >
                   <svg
-                    className="w-8 h-8 text-white"
+                    className="w-8 h-8 text-white "
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -265,7 +265,7 @@ const FooterBottom = () => {
         </div>
 
         {/* Payment Methods */}
-        <div className="mt-12 pt-8  border-gray-600">
+        <div className="mt-12 pt-8  border-gray-600 ">
           <div className="flex flex-wrap items-center gap-4">
             <Image
               src="/american-express.svg"

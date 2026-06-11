@@ -167,14 +167,13 @@ const ReturnItemsModal: React.FC<ReturnItemsModalProps> = ({
         isSubmit:true,
       };
 
-      console.log("Return Request Data:", returnData);
+    
 
       const response = await axiosInstance.post("web/orders/return-order", 
          returnData
       );
 
 
-        console.log("Return Request Response:", response.data);
       onClose();
     } catch (err) {
       console.error("Submission error:", err);
