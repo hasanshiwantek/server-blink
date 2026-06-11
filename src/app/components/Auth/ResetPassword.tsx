@@ -34,18 +34,15 @@ const ResetPassword = () => {
         formState: { errors },
     } = useForm<ResetPasswordValues>();
     const password = watch("password");
-
     const [loading, setLoading] = useState(false);
-    const [successOpen, setSuccessOpen] = useState(false);
-    const [successMessage, setSuccessMessage] = useState("");
-
     const onSubmit = async (data: ResetPasswordValues) => {
         setLoading(true);
         try {
             const res = await axiosInstance.post("user/reset-password", {
-                token: token,
+                email: email,
                 password: data.password,
-                password_confirmation: data.password_confirmation
+                token: token,
+                password_confirmation:data?.password_confirmation
             });
             const body = res?.data as {
                 status?: boolean | string;
@@ -56,10 +53,7 @@ const ResetPassword = () => {
                 body?.status === "true" ||
                 String(body?.status).toLowerCase() === "true";
             if (ok) {
-                setSuccessMessage(
-                    body.message || "Reset link sent to your email."
-                );
-                setSuccessOpen(true);
+                router.push("/auth/login");
                 reset();
             } else {
                 toast.error(body?.message || "Something went wrong. Please try again.");
@@ -76,24 +70,24 @@ const ResetPassword = () => {
 
     return (
         <div className="w-full bg-[var(--bg-color)] py-10 lg:py-14">
-            <div className="w-[80%] max-w-full lg:max-w-[1170px] mx-0 lg:mx-auto lg:px-[0%] px-[7%]">
+            <div className=" w-full md:w-[80%] max-w-full lg:max-w-[1170px] mx-0 lg:mx-auto lg:px-[0%] px-[7%]">
                 <div className="flex w-full justify-center">
                     {/* 585px column: page par center, andar text left (image jaisa) */}
-                    <div className="w-full min-w-0 max-w-[585px] text-left">
-                        <nav className="mb-5 w-full">
+                    <div className=" w-full min-w-0 max-w-[585px] text-left">
+                        <nav className=" hidden md:block mb-5 w-full">
                             <div className="flex flex-wrap items-center gap-2 text-sm">
                                 <Link
                                     href="/"
-                                    className="text-black hover:underline hover:text-gray-800"
+                                    className="text-[#393939] hover:underline hover:text-gray-800"
                                 >
                                     Home
                                 </Link>
                                 <span className="text-gray-500">/</span>
-                                <span className="text-[#b91c1c]">Reset Password</span>
+                                <span className=" text-[#b91c1c]">Reset Password</span>
                             </div>
                         </nav>
 
-                        <h1 className="mb-4 text-3xl font-light tracking-tight text-gray-700 md:text-4xl">
+                        <h1 className="mb-4 text-[28px] font-light tracking-tight text-[#545454] md:text-[28px]">
                             Change Password
                         </h1>
                         <p className="mb-0 text-[14px] leading-relaxed text-[#545454]">
@@ -107,7 +101,7 @@ const ResetPassword = () => {
                                     <div className="flex justify-between items-center">
                                         <label
                                             htmlFor="password"
-                                            className="block text-[14px] font-normal text-[#545454] mb-2"
+                                            className="block text-[14px]  font-normal text-[#545454] mb-2"
                                         >
                                             New Password
                                         </label>
@@ -116,7 +110,7 @@ const ResetPassword = () => {
                                     <Input
                                         id="password"
                                         type="password"
-                                        className="h-[42px] min-h-[42px] w-full max-w-full"
+                                        className="h-[42px] min-h-[42px] pt-[11px] pb-[11px]  w-full max-w-full"
                                         {...register("password", { required: "Password is required" })}
                                     />
                                     {errors.password && (
@@ -141,7 +135,7 @@ const ResetPassword = () => {
                                     <Input
                                         id="confirmPassword"
                                         type="password"
-                                        className="h-[42px] min-h-[42px] w-full max-w-full"
+                                        className="h-[42px] min-h-[42px]  pt-[11px] pb-[11px]  w-full max-w-full"
                                         {...register("password_confirmation", {
                                             required: "Please confirm your password",
                                             validate: (value) =>
@@ -160,7 +154,7 @@ const ResetPassword = () => {
                                         type="submit"
                                         disabled={loading}
                                         aria-busy={loading}
-                                        className="btn-primary inline-flex h-11 min-w-[150px] shrink-0 items-center justify-center px-5 text-sm font-bold uppercase sm:h-12 sm:min-w-[150px] sm:rounded-l-none sm:px-6 disabled:opacity-70"
+                                        className="btn-primary w-full sm:w-auto inline-flex h-11 min-w-[150px] shrink-0 items-center justify-center px-5 text-sm font-bold uppercase sm:h-12 sm:min-w-[150px] sm:rounded-l-none sm:px-6 disabled:opacity-70"
                                     >
                                         {loading ? (
                                             "LOADING..."
@@ -175,35 +169,6 @@ const ResetPassword = () => {
                     </div>
                 </div>
             </div>
-
-            <Dialog open={successOpen} onOpenChange={setSuccessOpen}>
-                <DialogContent
-                    showCloseButton={true}
-                    className="max-w-[420px] border border-gray-200 bg-white sm:max-w-[440px]"
-                >
-                    <DialogHeader className="text-center sm:text-center">
-                        <DialogTitle className="text-xl font-semibold text-gray-900">
-                            Email sent
-                        </DialogTitle>
-                        <DialogDescription className="text-base text-gray-600">
-                            {successMessage ||
-                                "Reset link sent to your email. Please check your inbox."}
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:justify-center">
-                        <button
-                            type="button"
-                            className="btn-primary w-full sm:w-auto sm:min-w-[200px]"
-                            onClick={() => {
-                                setSuccessOpen(false);
-                                router.push("/auth/login");
-                            }}
-                        >
-                            GO TO LOGIN
-                        </button>
-                    </div>
-                </DialogContent>
-            </Dialog>
         </div>
     );
 };

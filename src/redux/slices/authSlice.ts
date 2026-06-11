@@ -46,7 +46,7 @@ export const loginUser = createAsyncThunk(
   async (data: any, thunkAPI) => {
     try {
       const res = await axiosInstance.post("user/login", data);
-      console.log("✅ Response Data:", res.data);
+      
       return res.data;
     } catch (err: any) {
       console.error("❌ Thunk Error caught:", err);
@@ -136,7 +136,7 @@ const authSlice = createSlice({
 
       // Fulfilled - register
       .addCase(registerUser.fulfilled, (state, action) => {
-        console.log("action", action.payload);
+        
 
         const { user, customer, token, expireAt } = action.payload.data || action.payload;
         state.registerLoading = false;
