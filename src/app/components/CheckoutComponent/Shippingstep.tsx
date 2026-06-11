@@ -92,10 +92,10 @@ export function calculatePackage(products: any[]) {
   return {
     total_weight: totalWeight,   // fallback if data missing
     weight_unit: "LB",
-    package_length: maxLength,
-    package_width: maxWidth,
-    package_height: maxHeight,
-    dimension_unit: "IN",
+    // package_length: maxLength,
+    // package_width: maxWidth,
+    // package_height: maxHeight,
+    // dimension_unit: "IN",
     order_total: orderTotal,
     item_count: itemCount,
     package_value: orderTotal,
@@ -151,7 +151,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
       zip?.trim()
     );
   }, [firstName, lastName, address1, city, country, zip]);
-  
+
   useEffect(() => {
     if (!city?.trim() && !country?.trim() && !zip?.trim() && !state?.trim()) return;
     if (city?.trim() && country?.trim() && zip?.trim() && state?.trim()) {
