@@ -41,6 +41,7 @@ interface ProductListProps {
   initialCategorydescription?: any;
   categories?: any;
   initialCategoryId?: any;
+  isBrandPage: boolean
 }
 
 export default function ProductList({
@@ -54,7 +55,8 @@ export default function ProductList({
   filterMeta,
   initialCategorydescription,
   categories,
-  initialCategoryId
+  initialCategoryId,
+  isBrandPage
 }: ProductListProps) {
   const [view, setView] = useState<"list" | "grid">("grid");
   const [page, setPage] = useState(1);
@@ -132,7 +134,7 @@ export default function ProductList({
           </h2>
         ))}
       </div>
-      {initialCategorydescription && (
+      {initialCategorydescription && !isBrandPage && (
         <>
           <style>{`
       .custom-description {
@@ -224,7 +226,7 @@ export default function ProductList({
           </div>
         </>
       )}
-      <div>
+      {!isBrandPage && <div>
         <div className="my-6 ">
           <div className="grid grid-cols-2 md:grid-cols-4">
             <Link
@@ -244,7 +246,7 @@ export default function ProductList({
             )) : <></>}
           </div>
         </div>
-      </div>
+      </div>}
 
       {/* Sort Bar */}
       <SortingBar

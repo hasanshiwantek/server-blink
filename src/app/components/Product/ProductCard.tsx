@@ -64,9 +64,9 @@ const ProductCard = ({ product }: { product: any }) => {
         {/* Breadcrumb */}
         <nav
           aria-label="breadcrumb"
-          className="flex items-center justify-center lg:justify-normal space-x-2 text-[11px] text-[#393939] lg:mb-7 sm:mb-7 mb-7 flex-wrap"
+          className="hidden md:flex items-center justify-center lg:justify-normal space-x-2 text-[11px] text-[#393939] lg:mb-7 sm:mb-7 mb-7 flex-wrap"
         >
-          <h2 >
+          <h2>
             <Link href={"/"} className="text-[11px] hover:!text-[#D42020]" itemProp="name">
               Home
             </Link>
