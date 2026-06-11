@@ -100,7 +100,7 @@ const ForgotPassword = () => {
                 >
                   Email Address
                 </label>
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch sm:gap-0">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch sm:gap-2">
                   <Input
                     id="forgot-email"
                     type="email"
@@ -118,7 +118,7 @@ const ForgotPassword = () => {
                     type="submit"
                     disabled={loading}
                     aria-busy={loading}
-                   className="btn-primary inline-flex h-16 sm: min-w-[200px] shrink-0 items-center justify-center px-5 text-sm font-bold uppercase sm: min-w-[220px] sm:px-6 disabled:opacity-70"
+                   className="btn-primary inline-flex h-12 sm: min-w-[200px] shrink-0 items-center justify-center px-5 text-sm font-bold uppercase sm: min-w-[220px] sm:px-6 disabled:opacity-70"
                   >
                     {loading ? (
                       <>
