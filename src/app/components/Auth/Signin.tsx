@@ -173,7 +173,7 @@ const SigninPage = () => {
               </li>
             </ul>
             <button className="btn-primary">
-              {/* <Link href="/auth/signup">CREATE ACCOUNT</Link> */}
+              <Link href="/auth/signup">CREATE ACCOUNT</Link>
             </button>
           </div>
         </div>
