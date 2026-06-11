@@ -66,12 +66,12 @@ const ForgotPassword = () => {
 
   return (
     <div className="w-full bg-[var(--bg-color)] py-10 lg:py-14">
-      <div className="w-[80%] max-w-full lg:max-w-[1170px] mx-0 lg:mx-auto lg:px-[0%] px-[7%]">
+      <div className="w-full md:w-[80%] max-w-full lg:max-w-[1170px] mx-0 lg:mx-auto lg:px-[0%] px-[7%]">
         <div className="flex w-full justify-center">
           {/* 585px column: page par center, andar text left (image jaisa) */}
           <div className="w-full min-w-0 max-w-[585px] text-left">
             <nav className="mb-5 w-full">
-              <div className="flex flex-wrap items-center gap-2 text-sm">
+              <div className="hidden md:flex flex-wrap items-center gap-2 text-sm">
                 <Link
                   href="/"
                   className="text-black hover:underline hover:text-gray-800"
@@ -83,7 +83,7 @@ const ForgotPassword = () => {
               </div>
             </nav>
 
-            <h1 className="mb-4 text-3xl font-light tracking-tight text-gray-700 md:text-4xl">
+            <h1 className="mb-4 text-[28px] font-light tracking-tight text-[#545454] ">
               Reset Password
             </h1>
             <p className="mb-8 text-base leading-relaxed text-gray-600">
@@ -105,7 +105,7 @@ const ForgotPassword = () => {
                     id="forgot-email"
                     type="email"
                     autoComplete="email"
-                    className="h-11 w-full min-w-0 flex-1 rounded border border-gray-300 bg-white px-3 py-2 text-base shadow-none focus-visible:border-gray-400 focus-visible:ring-0 sm:h-12 sm:rounded-r-none sm:border-r-0"
+                    className="h-11  w-full min-w-0 flex-1 rounded border border-gray-300 bg-white px-3 py-5 text-base shadow-none focus-visible:border-gray-400 focus-visible:ring-0 sm:h-12 sm:rounded-r-none sm:border-r-0"
                     {...register("email", {
                       required: "Email is required",
                       pattern: {
@@ -118,7 +118,7 @@ const ForgotPassword = () => {
                     type="submit"
                     disabled={loading}
                     aria-busy={loading}
-                    className="btn-primary inline-flex h-11 min-w-[200px] shrink-0 items-center justify-center px-5 text-sm font-bold uppercase sm:h-12 sm:min-w-[220px] sm:rounded-l-none sm:px-6 disabled:opacity-70"
+                   className="btn-primary inline-flex h-16 sm: min-w-[200px] shrink-0 items-center justify-center px-5 text-sm font-bold uppercase sm: min-w-[220px] sm:px-6 disabled:opacity-70"
                   >
                     {loading ? (
                       <>
