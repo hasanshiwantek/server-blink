@@ -7,7 +7,7 @@ import { fetchFilteredProducts } from "@/lib/api/products";
 import { ProductFilterPayload } from "@/types/types";
 import { useParams, usePathname } from "next/navigation";
 import Link from "next/link";
-
+ 
 // Helper: Find category path from root to target in the tree
 const findCategoryPath = (
   categories: any[],
@@ -26,7 +26,7 @@ const findCategoryPath = (
 };
 const CategoryBreadcrumb = ({ categoryId, categories }: { categoryId: number; categories: any[] }) => {
   const path = findCategoryPath(categories, categoryId) || [];
-
+ 
   return (
     <nav
       aria-label="breadcrumb"
@@ -43,7 +43,7 @@ const CategoryBreadcrumb = ({ categoryId, categories }: { categoryId: number; ca
           >
             /
           </span>
-
+ 
           {index === path.length - 1 ? (
             <span className="text-[#D42020]">{cat.name}</span>
           ) : (<Link href={`/category/${cat?.slug}`}
@@ -53,6 +53,28 @@ const CategoryBreadcrumb = ({ categoryId, categories }: { categoryId: number; ca
           </Link>)}
         </span>
       ))}
+    </nav>
+  );
+};
+const BrandBreadcrumb = ({ brandName }: { brandName: string }) => {
+  return (
+    <nav
+      aria-label="breadcrumb"
+      className="flex items-center justify-center lg:justify-normal space-x-2 text-[11px] text-[#393939] lg:mb-7 sm:mb-7 mb-7 flex-wrap"
+    >
+      <Link href={"/"} className="text-[11px] hover:text-[#D42020]" itemProp="name">
+        Home
+      </Link>
+ 
+      <span>
+        <span
+          className="mt-2 mx-3 text-gray-400 text-[11px]"
+          aria-hidden="true"
+        >
+          /
+        </span>
+        <span className="text-[#D42020] cursor-pointer">{brandName}</span>
+      </span>
     </nav>
   );
 };
@@ -74,7 +96,7 @@ export default function ProductsClientWrapper({
   // Detect if we're on brand or category page
   const isBrandPage = pathname?.startsWith("/brand/");
   const isCategoryPage = pathname?.startsWith("/category/");
-
+ 
   const [filters, setFilters] = useState<ProductFilterPayload>({
     page: 1,
     pageSize: 20,
@@ -90,18 +112,18 @@ export default function ProductsClientWrapper({
       typeof p?.name === "string" ? p.name : (p?.name?.name as string | undefined);
     return (name ?? "").toString().toLowerCase().trim();
   };
-
-
+ 
+ 
   const normalizeFeatured = (p: any) => {
     return Boolean(p?.isFeatured ?? p?.featured ?? p?.is_featured ?? p?.is_featured_item);
   };
-
+ 
   const normalizeCreatedAt = (p: any) => {
     const raw = p?.createdAt ?? p?.created_at ?? p?.created ?? p?.dateCreated;
     const t = raw ? Date.parse(raw) : NaN;
     return Number.isFinite(t) ? t : null;
   };
-
+ 
   const applyClientSort = (items: any[], sortBy?: string) => {
     const list = [...(items ?? [])];
     switch (sortBy) {
@@ -136,7 +158,7 @@ export default function ProductsClientWrapper({
         return list;
     }
   };
-
+ 
   // ✅ Sync filters when URL slug changes (for category pages)
   useEffect(() => {
     if (isCategoryPage && params?.slug && categories?.length > 0) {
@@ -154,7 +176,7 @@ export default function ProductsClientWrapper({
       }
     }
   }, [params?.slug, categories, isCategoryPage]);
-
+ 
   // ✅ Sync filters when URL slug changes (for brand pages)
   useEffect(() => {
     if (isBrandPage && params?.slug && brands?.length > 0) {
@@ -172,19 +194,19 @@ export default function ProductsClientWrapper({
       }
     }
   }, [params?.slug, brands, isBrandPage]);
-
+ 
   // 👇 Separate state for UI display (not sent to API)
   const [filterMeta, setFilterMeta] = useState({
     brandName: initialBrandName || undefined,
     categoryName: initialCategoryName || undefined,
   });
-
+ 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
         setError(null);
-
+ 
         const res = await fetchFilteredProducts(filters);
         setProducts(applyClientSort(res.data || [], filters.sortBy));
         setPagination(res.pagination || null);
@@ -195,13 +217,13 @@ export default function ProductsClientWrapper({
         setIsLoading(false);
       }
     };
-
+ 
     fetchData();
   }, [filters]);
   // Generate breadcrumb items based on page type
   const breadcrumbItems = React.useMemo(() => {
     const items = [{ name: "Home", href: "/" }];
-
+ 
     if (isCategoryPage && filterMeta.categoryName) {
       items.push({
         name: filterMeta.categoryName,
@@ -213,7 +235,7 @@ export default function ProductsClientWrapper({
         href: `/brand/${params?.slug || ""}`,
       });
     }
-
+ 
     return items;
   }, [
     isCategoryPage,
@@ -222,6 +244,8 @@ export default function ProductsClientWrapper({
     filterMeta.brandName,
     params?.slug,
   ]);
+ 
+ 
   return (
     <div className="w-full max-w-[1170px] mx-auto  lg:px-6 xl:px-0">
       <div className="py-6">
@@ -244,7 +268,8 @@ export default function ProductsClientWrapper({
           <div className="lg:col-span-9">
             {(isCategoryPage || isBrandPage) && (
               <div className="mb-4 px-4 md:px-0">
-                <CategoryBreadcrumb categoryId={initialCategoryId} categories={categories} />
+                {isCategoryPage && <CategoryBreadcrumb categoryId={initialCategoryId} categories={categories} />}
+                {isBrandPage && <BrandBreadcrumb brandName={initialBrandName} />}
               </div>
             )}
             <ProductList
