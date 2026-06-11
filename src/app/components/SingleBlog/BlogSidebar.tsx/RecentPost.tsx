@@ -13,7 +13,7 @@ const RecentPost = () => {
   );
   const blogPosts = blogs?.data;
   const pagination = blogs?.pagination || null;
-  console.log("Blogs data from frontend: ", blogPosts);
+
   useEffect(() => {
     dispatch(getBlogs(filters));
   }, [dispatch]);

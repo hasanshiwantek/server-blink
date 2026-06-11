@@ -20,7 +20,7 @@ export const addCart = createAsyncThunk(
   async ({ data }: { data: CartItem }, thunkAPI) => {
     try {
       const res = await axiosInstance.post(`web/cart/add-cart`, data);
-      console.log("Add cart response: ", res?.data);
+      
       return res.data;
     } catch (err: any) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

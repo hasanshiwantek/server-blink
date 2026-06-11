@@ -155,7 +155,7 @@ export const contactUs = createAsyncThunk(
       );
 
       if (res?.data?.status && res?.data?.data) {
-        console.log("Contact us response:", res?.data);
+      
         return res.data;
       }
 

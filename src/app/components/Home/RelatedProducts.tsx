@@ -42,7 +42,7 @@ const RelatedProduct = ({ products }: { products: RelatedProductItem[] }) => {
   };
 
   const visibleProducts = products.slice(startIndex, startIndex + itemsPerPage);
-  console.log("Related Products: ", products);
+ 
 
   return (
     <>

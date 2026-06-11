@@ -73,7 +73,7 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
         console.error("Failed to submit bulk inquiry");
       }
     } catch (err) {
-      console.log("Something went wrong: ", err);
+      
     } finally {
       setLoading(false)
     }

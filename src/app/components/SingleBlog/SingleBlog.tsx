@@ -8,7 +8,7 @@ import CommentForm from "./CommentForm";
 // import css from "../../../styles/blog/BlogContent.module.css"
 
 const SingleBlog = ({ blogPost }: { blogPost: any }) => {
-  console.log("Blogpost data: ", blogPost);
+
 
   return (
     <>

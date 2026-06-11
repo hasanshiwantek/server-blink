@@ -66,10 +66,10 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
                 onClose();
                 toast.success("Review submitted successfully!");
             } else {
-                console.log("Error Sending Review:", result.payload);
+               
             }
         } catch (err) {
-            console.log("Something went wrong:", err);
+           
         } finally {
             setLoading(false);
         }
