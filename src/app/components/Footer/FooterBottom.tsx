@@ -121,7 +121,7 @@ const FooterBottom = () => {
               <p>Louisville, KY 40218</p>
               <p className="mt-3">
                 <span className="font-semibold">Phone Number:</span>{" "}
-                <a href="tel:+15022063033" className="hover:text-gray-300">
+                <a href="tel:+15022063033" className="text-gray-300">
                   +1502-206-3033
                 </a>
               </p>
@@ -129,7 +129,7 @@ const FooterBottom = () => {
                 <span className="font-semibold">Email:</span>{" "}
                 <a
                   href="mailto:sales@serverblink.com"
-                  className="hover:text-gray-300"
+                  className="text-gray-300"
                 >
                   sales@serverblink.com
                 </a>

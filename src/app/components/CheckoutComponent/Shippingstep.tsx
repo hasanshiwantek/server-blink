@@ -700,7 +700,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
           />
         </div>
 
-        <button type="button" onClick={onContinue} className="btn-primary">
+        <button   disabled={ratesLoader}  type="button" onClick={onContinue} className="btn-primary">
           CONTINUE
         </button>
       </>}
