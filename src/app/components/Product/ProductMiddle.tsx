@@ -60,6 +60,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
             <h2 className="text-[#545454] flex items-center font-bold !text-[22px]" style={{ color: "#545454" }}>
               Call for pricing: <Link
                 // href="tel:+15022063033" 
+                                   href="#" 
                 className="text-[#d40511] underline">
                 {/* (502) 206-3033 */}
               </Link>
