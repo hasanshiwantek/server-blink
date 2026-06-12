@@ -43,7 +43,7 @@ export default function SortingBar({
   };
 
   return (
-    <div className="flex flex-col xl:flex-row justify-between items-center border 2xl:py-[20px] 2xl:px-[30px] xl:py-[15px] xl:px-[22.5px] p-5 w-full">
+    <div  className="flex flex-col items-center xl:flex-row justify-between items-center border 2xl:py-[20px] xl:py-[15px] py-5 w-full">
 
       {/* ✅ Dynamic Heading Placeholder */}
       {/* <h4 className="h3-regular">{getFilterTitle()}</h4> */}
@@ -110,7 +110,7 @@ export default function SortingBar({
         </div>
 
         {/* Centered Sort Section */}
-        <div className="flex items-center gap-2 justify-center flex-1 mt-3 md:mt-0">
+        <div className="flex items-center gap-2 justify-center flex-1 mt-1 md:mt-0">
           <span className="text-[13px] whitespace-nowrap">Sort By: </span>
           <SortDropdown filters={filters} setFilters={setFilters} />
         </div>
