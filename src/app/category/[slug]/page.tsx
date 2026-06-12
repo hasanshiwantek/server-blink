@@ -2,7 +2,7 @@
 import ProductsPage from "@/app/products/page";
 import { fetchCategories, fetchCategoryById } from "@/lib/api/category";
 import { Metadata } from "next";
-
+import NotFound from "@/app/not-found";
 interface Props {
   params: Promise<{ slug: string }>; // 👈 same as ProductPage
 }
@@ -75,7 +75,8 @@ export default async function CategoryPage({ params }: Props) {
   const category = findCategoryBySlug(categories, slug);
 
   if (!category) {
-    return <div className="text-center py-10">❌ Category not found</div>;
+    return <NotFound />;
+    // return <div className="text-center py-10">❌ Category not found</div>;
   }
   const formattedCategorydescription = await fetchCategoryById(category.id);
   return (

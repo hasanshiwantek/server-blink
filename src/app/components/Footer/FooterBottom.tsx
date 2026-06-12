@@ -6,7 +6,7 @@ import Image from "next/image";
 import FooterSkeleton from "../loader/FooterSkeleton";
 import { subscribeNewsletter } from "@/redux/slices/contactSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { getBlogs, getWebPages } from "@/redux/slices/storeFrontSlice";
+import { getBlogs, getWebPages, visitorSession } from "@/redux/slices/storeFrontSlice";
 import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -33,6 +33,8 @@ const FooterBottom = () => {
   const { blogs, webPages, error, loading } = useAppSelector(
     (state: any) => state.storeFront
   );
+
+
   const pagesList = webPages?.data || [];
   const visiblePages = pagesList?.filter((page: any) =>
     !page.restrictToCustomersOnly || token
@@ -51,6 +53,17 @@ const FooterBottom = () => {
     dispatch(getWebPages({ page: 1, perPage: 100 }));
   }, [dispatch]);
 
+
+
+  useEffect(() => {
+    const existingSession = localStorage.getItem("sessionId");
+    if (existingSession) {
+      dispatch(visitorSession({ sessionId: existingSession }))
+    } else {
+      const randomString = Math.random().toString(36).substring(2, 15);
+      localStorage.setItem("sessionId", randomString)
+    }
+  }, [])
 
   return (
     <footer
@@ -123,7 +136,7 @@ const FooterBottom = () => {
                 <span className="font-semibold">Phone Number:</span>{" "}
                 <a
                   // href="tel:+15022063033"
-                     href="#" 
+                  href="#"
                   className="text-gray-300">
                   {/* +1502-206-3033 */}
                 </a>
