@@ -82,7 +82,7 @@ const ContactForm = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            https://www.serverblink.com/privacy-policy.
+            https://www.serverblink.uk/privacy-policy.
           </a>
         </p>
       </div>

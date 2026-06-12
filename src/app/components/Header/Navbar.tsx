@@ -62,20 +62,21 @@ const Navbar: React.FC = () => {
                 <p className="text-[15px] font-semibold">
                   Call:{" "}
                   <a
-                    href="tel:+15022063033"
+                    // href="tel:+15022063033"
+                    href="#"
                     className="text-[var(--primary-color)] text-[18px] hover:underline"
                   >
-                    +1 502-206-3033
+                    {/* +1 502-206-3033 */}
                   </a>
                 </p>
 
                 <p className="text-[15px] font-semibold">
                   Email:{" "}
                   <a
-                    href="mailto:sales@serverblink.com"
+                    href="mailto:info@serverblink.uk"
                     className="text-[var(--primary-color)] text-[14px] hover:underline"
                   >
-                    sales@serverblink.com
+                    info@serverblink.uk
                   </a>
                 </p>
               </div>
@@ -115,7 +116,7 @@ const Navbar: React.FC = () => {
 
         {/* Text Banner */}
         <div className="w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto" style={{ fontFamily: "'Roboto', 'Roboto Condensed', sans-serif" }}>
-          <div  className="bg-white text-center p-0 mb-0 md:p-4 md:mb-4">
+          <div className="bg-white text-center p-0 mb-0 md:p-4 md:mb-4">
             <p className="p-4 md:text-[14px] text-[14px] font-semibold text-[#545454]">
               We Accept POs from Fortune 1000 Companies, Government Agencies
               (Federal, State, Local), Defense (Military, Air Force, Navy),
@@ -149,10 +150,10 @@ const Navbar: React.FC = () => {
                 <p className="text-sm">
                   Email:{" "}
                   <a
-                    href="mailto:sales@serverblink.com"
+                    href="mailto:info@serverblink.uk"
                     className="hover:text-red-600"
                   >
-                    sales@serverblink.com
+                    info@serverblink.uk
                   </a>
                 </p>
               </div>

@@ -111,7 +111,7 @@ const FooterBottom = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Contact Us */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{fontFamily:robotoCondensed}}>
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{ fontFamily: robotoCondensed }}>
               Contact Us
             </h4>
             <div className="space-y-1 text-[14px] lg:text-[12px] text-white">
@@ -121,17 +121,20 @@ const FooterBottom = () => {
               <p>Louisville, KY 40218</p>
               <p className="mt-3">
                 <span className="font-semibold">Phone Number:</span>{" "}
-                <a href="tel:+15022063033" className="text-gray-300">
-                  +1502-206-3033
+                <a
+                  // href="tel:+15022063033"
+                     href="#" 
+                  className="text-gray-300">
+                  {/* +1502-206-3033 */}
                 </a>
               </p>
               <p>
                 <span className="font-semibold">Email:</span>{" "}
                 <a
-                  href="mailto:sales@serverblink.com"
+                  href="mailto:info@serverblink.uk"
                   className="text-gray-300"
                 >
-                  sales@serverblink.com
+                  info@serverblink.uk
                 </a>
               </p>
               <p className="mt-3">
@@ -143,7 +146,7 @@ const FooterBottom = () => {
 
           {/* Accounts & Orders */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{fontFamily:robotoCondensed}}>
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{ fontFamily: robotoCondensed }}>
               Accounts & Orders
             </h4>
             <ul className="space-y-1 text-[14px] lg:text-[12px] text-white">
@@ -162,10 +165,10 @@ const FooterBottom = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{fontFamily:robotoCondensed}}>
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{ fontFamily: robotoCondensed }}>
               Quick Links
             </h4>
-            <ul className="space-y-1 text-[14px] lg:text-[12px] text-white " style={{fontFamily:robotoCondensed}}>
+            <ul className="space-y-1 text-[14px] lg:text-[12px] text-white " style={{ fontFamily: robotoCondensed }}>
               {visiblePages?.map((page: any) => (
                 <li key={page.id}>
                   {page?.pageType == "2" ? (
@@ -182,7 +185,7 @@ const FooterBottom = () => {
 
           {/* Recent Blog Posts */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{fontFamily:robotoCondensed}}>
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{ fontFamily: robotoCondensed }}>
               Recent Blog Posts
             </h4>
             <ul className="space-y-1 text-[14px] lg:text-[12px] text-white">
@@ -204,7 +207,7 @@ const FooterBottom = () => {
                     <Link
                       href={`/blogs/${post.slug}`}
                       className="hover:text-[#D42020] text-[12px]"
-                      style={{fontFamily:robotoCondensed}}
+                      style={{ fontFamily: robotoCondensed }}
                     >
                       {post.title}
                     </Link>
@@ -215,7 +218,7 @@ const FooterBottom = () => {
 
             {/* Connect with Us */}
             <div className=" md:mt-8">
-              <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{fontFamily:robotoCondensed}}>
+              <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{ fontFamily: robotoCondensed }}>
                 Connect with Us:
               </h4>
               <div className="flex justify-center md:justify-start gap-3">
