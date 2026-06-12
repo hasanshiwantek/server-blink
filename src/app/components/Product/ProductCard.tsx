@@ -13,6 +13,7 @@ const ProductCard = ({ product }: { product: any }) => {
   const minQty = product?.minPurchaseQuantity || 1;
   const maxQty = product?.maxPurchaseQuantity;
   const [quantity, setQuantity] = useState(minQty);
+  const roboto = "'Roboto', sans-serif";
   const addtocart = () => {
     dispatch(addToCart(product));
     toast.success(`${product?.name} added to cart!`);
@@ -68,7 +69,7 @@ const ProductCard = ({ product }: { product: any }) => {
           className="hidden md:flex items-center justify-center lg:justify-normal space-x-2 text-[11px] text-[#393939] lg:mb-7 sm:mb-7 mb-7 flex-wrap"
         >
           <h2>
-            <Link href={"/"} className="text-[11px] hover:!text-[#D42020]" itemProp="name">
+            <Link href={"/"} className="text-[11px] hover:!text-[#D42020]" itemProp="name" style={{fontFamily:roboto}}>
               Home
             </Link>
 
@@ -83,6 +84,7 @@ const ProductCard = ({ product }: { product: any }) => {
 
                 <Link href={`/category/${cat?.slug}`}
                   className={`text-[11px]   hover:!text-[#D42020]`}
+                  style={{fontFamily:roboto}}
                   itemProp="name"
                 >
                   {cat.name}
@@ -95,7 +97,7 @@ const ProductCard = ({ product }: { product: any }) => {
             >
               /
             </span>
-            <Link href={product?.productUrl} className="text-[11px] !text-[#D42020]" itemProp="name">
+            <Link href={product?.productUrl} className="text-[11px] !text-[#D42020]" itemProp="name" style={{fontFamily:roboto}}>
               {product?.name}
             </Link>
 

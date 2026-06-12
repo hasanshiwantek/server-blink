@@ -18,11 +18,14 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const robotoCondensed = "'Roboto Condensed'";
+   const roboto = "'Roboto ', Arial, Helvetica, sans-serif";
   const cart = useAppSelector((state: RootState) => state.cart.items);
   const { reviews, reviewsLoading, reviewsError, stats } = useAppSelector(
     (state) => state.home
   );
   const availableForSale = product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
+ 
 
   const handleSeeMore = useCallback(() => {
     window.open(
@@ -42,13 +45,13 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
       <section className="product-middle flex flex-col h-full w-full max-w-full  xl:max-w-[50%] 2xl:max-w-[50%] ">
         {/* Title Section */}
         <div className="flex flex-col gap-2 mb-4">
-          <h1 className="font-bold text-[18px] sm:text-[18px] md:text-[18px] lg:text-[20px] xl:text-[20px] 2xl:text-[20px] leading-tight text-[#545454] border-b-1 border-[#8b8b8b] pb-3">
+          <h1 className="font-bold text-[18px] sm:text-[18px] md:text-[18px] lg:text-[20px] xl:text-[20px] 2xl:text-[20px] leading-tight text-[#545454] border-b-1 border-[#8b8b8b] pb-3" style={{fontFamily:robotoCondensed}}>
             {product?.name || "N/A"}
           </h1>
 
           {/* Brand */}
           <Link href={`/brand/${product?.brand?.slug}`}>
-            <h2 className="text-[14px] sm:text-[14px] md:text-[14px] text-[#545454] font-[400] uppercase hover:text-[#d40511] transition">
+            <h2 className="text-[14px] sm:text-[14px] md:text-[14px] text-[#545454] font-[400] uppercase hover:text-[#d40511] transition" style={{fontFamily:robotoCondensed}}>
               {product?.brand?.name || "N/A"}
             </h2>
           </Link>
@@ -186,11 +189,12 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
           </button>}
 
           {/* Bulk Quote Link */}
-          <p className="text-[15px] sm:text-[18px] text-[#545454] mt-3 font-normal">
+          <p className="text-[15px] sm:text-[18px] text-[#545454] mt-3 font-normal" style={{fontFamily:robotoCondensed}}>
             Looking for a large quantity?{" "}
             <span
               className="text-[var(--primary-color)] hover:underline font-normal cursor-pointer"
               onClick={() => setIsModalOpen(true)}
+              style={{fontFamily:robotoCondensed}}
             >
               Request A Bulk Quote
             </span>

@@ -21,7 +21,7 @@ export const getBlogById = createAsyncThunk(
   async ({ id }: { id: any }, thunkAPI) => {
     try {
       const res = await axiosInstance.get(`web/blogs/blog-posts/${id}`);
-     
+
 
       return res.data;
     } catch (err: any) {
@@ -52,7 +52,7 @@ export const getWebPageById = createAsyncThunk(
   async ({ id }: { id: any }, thunkAPI) => {
     try {
       const res = await axiosInstance.get(`web/webpages/web-pages/${id}`);
-     
+
 
       return res.data;
     } catch (err: any) {
@@ -64,6 +64,21 @@ export const getWebPageById = createAsyncThunk(
   }
 );
 
+
+export const visitorSession = createAsyncThunk(
+  "visitor-session",
+  async (data: any, thunkAPI) => {
+    try {
+      const res = await axiosInstance.post("web/visitor-session", data);
+
+      return res.data;
+    } catch (err: any) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Login failed"
+      );
+    }
+  }
+);
 // 2. Initial State
 const initialState = {
   blogs: [],
