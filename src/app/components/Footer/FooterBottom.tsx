@@ -49,18 +49,6 @@ const FooterBottom = () => {
   useEffect(() => {
     dispatch(getWebPages({ page: 1, perPage: 100 }));
   }, [dispatch]);
-  // useEffect(() => {
-  //   const loadCategories = async () => {
-  //     try {
-  //       const data = await fetchCategories();
-  //       setCategories(data); // ✅ fill the variable
-  //     } catch (error) {
-  //       console.error("Failed to load categories:", error);
-  //     }
-  //   };
-
-  //   loadCategories();
-  // }, []); 
 
   return (
     <footer
@@ -71,15 +59,12 @@ const FooterBottom = () => {
       <section className="bg-[#cac9c9] flex justify-center items-center h-auto min-h-[3rem]">
         <div
           className="
-        w-full max-w-full sm:max-w-[95%] md:max-w-[90%] lg:max-w-[85%] xl:max-w-[88%]
-        2xl:max-w-[97%] 
-        mx-auto 
-        px-4 sm:px-6 lg:px-8 xl:px-10 py-2 md:py-0
-        flex flex-col md:flex-row items-center justify-center gap-2 md:gap-8 lg:gap-0
+       w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto px-4 xl:px-4 2xl:px-2
+        flex flex-col md:flex-row items-center justify-between gap-2 md:gap-8 lg:gap-0 py-2
       "
         >
           <div className="text-center md:text-left w-full md:w-[60%] 2xl:max-w-[50%]">
-            <h3 className="text-[20px] text-[#545454] font-bold uppercase">
+            <h3 className="text-[20px] text-[#292121] font-bold uppercase">
               Join Our Mailing List
               <span className="text-[16px] lowercase ml-2">
                 for special offers!
@@ -120,7 +105,7 @@ const FooterBottom = () => {
 
 
       {/* Main Footer Content */}
-      <section className="text-center md:text-left w-full sm:max-w-[95%] md:max-w-[90%] lg:max-w-[88%] xl:max-w-[85%] mx-auto px-4 xl:px-4 2xl:px-16 py-12">
+      <section className="text-center md:text-left w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto px-4 xl:px-4 2xl:px-2 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Contact Us */}
           <div>
@@ -230,7 +215,7 @@ const FooterBottom = () => {
               <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white">
                 Connect with Us:
               </h4>
-             <div className="flex justify-center md:justify-start gap-3">
+              <div className="flex justify-center md:justify-start gap-3">
                 <Link
                   href="http://www.facebook.com/serverblink"
                   target="_blank"
@@ -266,7 +251,7 @@ const FooterBottom = () => {
 
         {/* Payment Methods */}
         <div className="mt-12 pt-8  border-gray-600 ">
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
             <Image
               src="/american-express.svg"
               alt="American Express"
@@ -301,10 +286,9 @@ const FooterBottom = () => {
 
       {/* Bottom Bar */}
       <div className="bg-[#8b8b8b]  py-4">
-        <div className=" w-full max-w-full sm:max-w-[95%] md:max-w-[90%] lg:max-w-[85%] xl:max-w-[85%]
-        2xl:max-w-[85%]  mx-auto px-4 xl:px-4 2xl:px-28">
+        <div className="w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto px-4 xl:px-4 2xl:px-2 ">
           <p className="text-white text-left text-base">
-            © {new Date().getFullYear()} Server Blink LLC |
+            © {new Date().getFullYear()} Server Blink LLC |&nbsp;
             <Link href="/sitemap" className="hover:text-gray-300">
               Sitemap
             </Link>
