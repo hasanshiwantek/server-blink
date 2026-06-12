@@ -188,7 +188,7 @@ const TopHeader = () => {
 
             {/* Center: Search Bar (visible when scrolled) */}
             {!isMobile && <div ref={containerRef}
-              className={`relative flex-1 flex  justify-center transition-all duration-300 
+              className={`relative flex-1 hidden md:flex  justify-center transition-all duration-300 
     ${isScrolled ? "block" : "hidden"}`}
             >
               <form className="relative w-full max-w-[270px]  h-[25px]">

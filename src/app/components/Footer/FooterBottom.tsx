@@ -82,7 +82,7 @@ const FooterBottom = () => {
                 });
               }
             }}
-            className="w-[80%] md:w-[50%] 2xl:max-w-[30%] flex items-center gap-2 mt-4 md:mt-0 p-2 lg:ml-24"
+            className="w-[80%] md:w-[50%] 2xl:max-w-[30%] flex items-center gap-2 mt-4 md:mt-0  lg:ml-24"
           >
             <input
               type="email"

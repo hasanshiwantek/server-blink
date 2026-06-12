@@ -108,7 +108,7 @@ const CategoriesSidebar: React.FC<CategoriesSidebarProps> = ({ activeCategoryId 
     return (
       <div className="rounded-xs overflow-hidden mb-5">
         <div className="bg-[#393939] px-3 py-2 border-b-3 border-[#8b8b8b]">
-          <h2 className="text-[13px] lg:text-[15px] font-bold">SHOP BY CATEGORY</h2>
+          <h2 className="text-[13px] lg:text-[15px] font-bold text-white ">SHOP BY CATEGORY</h2>
         </div>
         <div className="bg-white px-3 py-4 text-sm text-gray-500">No categories available.</div>
       </div>
