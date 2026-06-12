@@ -132,10 +132,10 @@ export default function Sidebar({
       <div className="border rounded-xl">
         {/* Header */}
         <div className="bg-[#393939] px-3 py-1 uppercase tracking-wide border-b-3 border-[#8b8b8b]">
-          <h2 className="h2-bold">SHOP BY CATEGORY</h2>
+          <h2 className="h2-bold !text-[15px]" style={{ fontFamily: "Roboto Condensed, Arial, Helvetica, sans-serif" }}>SHOP BY CATEGORY</h2>
         </div>
 
-        <ul className="py-2 space-y-2">
+        <ul className="py-2 space-y-2"   style={{ fontFamily: "'Roboto Condensed'" }}>
           <li>
             <CategoryFilter
               categories={categories?.slice(0, 10)}
@@ -147,10 +147,10 @@ export default function Sidebar({
           </li>
         </ul>
         <div className="bg-[#393939] px-3 py-1 uppercase tracking-wide border-b-3 border-[#8b8b8b] mt-8">
-          <h2 className="h2-bold">SHOP BY BRAND</h2>
+          <h2 className="h2-bold !text-[15px]" style={{ fontFamily: "Roboto Condensed, Arial, Helvetica, sans-serif" }}>SHOP BY BRAND</h2>
         </div>
 
-        <ul className="py-2 space-y-2 ">
+        <ul className="py-2 space-y-2 "   style={{ fontFamily: "'Roboto Condensed'" }}>
           <li>
             <AnimatePresence initial={false}>
               <MotionDiv

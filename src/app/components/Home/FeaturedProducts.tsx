@@ -124,7 +124,7 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
   return (
     <div className="bg-transparent py-4 rounded relative">
       <div className="flex items-center justify-between mb-4 bg-[#393939] border-b border-gray-400">
-        <h2 className="font-bold text-xl text-white p-3 flex-1">{title}</h2>
+        <h2 className="font-bold text-xl text-white p-3 flex-1">{title} </h2>
         {isSlider && (
           <div className="flex gap-2 ml-2">
             <button

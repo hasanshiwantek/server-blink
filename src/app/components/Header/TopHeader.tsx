@@ -180,7 +180,7 @@ const TopHeader = () => {
             >
               <p
                 className="font-bold text-[14px]"
-                style={{ fontFamily: '"Roboto Condensed"' }}
+                style={{ fontFamily: "Roboto, Arial, Helvetica, sans-serif" }}
               >
                 $10 off on First Order: Code: FIRSTORDER
               </p>
@@ -395,21 +395,21 @@ const TopHeader = () => {
                     <Link href="/auth/login">
                       <button
                         className="font-bold text-[12px] sm:text-[14px] hover:text-gray-300 transition"
-                        style={{ fontFamily: '"Roboto Condensed"' }}
+                        style={{ fontFamily: "Roboto, Arial, Helvetica, sans-serif" }}
                       >
                         Login
                       </button>
                     </Link>
                     <span
                       className="font-bold"
-                      style={{ fontFamily: '"Roboto Condensed"' }}
+                    style={{ fontFamily: "Roboto, Arial, Helvetica, sans-serif" }}
                     >
                       or
                     </span>
                     <Link href="/auth/signup">
                       <button
                         className="font-bold text-[12px] sm:text-[14px] hover:text-gray-300 transition"
-                        style={{ fontFamily: '"Roboto Condensed"' }}
+                        style={{ fontFamily: "Roboto, Arial, Helvetica, sans-serif" }}
                       >
                         Sign Up
                       </button>

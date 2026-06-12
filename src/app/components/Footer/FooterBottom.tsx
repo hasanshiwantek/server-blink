@@ -38,6 +38,7 @@ const FooterBottom = () => {
     !page.restrictToCustomersOnly || token
   );
   const router = useRouter();
+  const robotoCondensed = "'Roboto Condensed', Arial, Helvetica, sans-serif";
   const blogPosts = blogs?.data || [];
   const handleSelect = (url: string) => {
     router.push(url);
@@ -49,6 +50,7 @@ const FooterBottom = () => {
   useEffect(() => {
     dispatch(getWebPages({ page: 1, perPage: 100 }));
   }, [dispatch]);
+
 
   return (
     <footer
@@ -82,7 +84,7 @@ const FooterBottom = () => {
                 });
               }
             }}
-            className="w-[80%] md:w-[50%] 2xl:max-w-[30%] flex items-center gap-2 mt-4 md:mt-0 p-2 lg:ml-24"
+            className="w-[80%] md:w-[30%] 2xl:max-w-[30%] flex items-center gap-2 mt-4 md:mt-0 lg:ml-24"
           >
             <input
               type="email"
@@ -95,7 +97,7 @@ const FooterBottom = () => {
             />
             <button
               type="submit" disabled={newsletterLoading}
-              className="btn-primary h-[32px] !p-3 !rounded-sm w-[40%] md:w-[30%] max-w-[9rem]"
+              className="btn-primary h-[32px] !px-4 !py-1 !rounded-sm w-[120px]"
             >
               {newsletterLoading ? "LOADING.." : "JOIN"}
             </button>
@@ -109,7 +111,7 @@ const FooterBottom = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Contact Us */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" >
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{fontFamily:robotoCondensed}}>
               Contact Us
             </h4>
             <div className="space-y-1 text-[14px] lg:text-[12px] text-white">
@@ -141,16 +143,16 @@ const FooterBottom = () => {
 
           {/* Accounts & Orders */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white">
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{fontFamily:robotoCondensed}}>
               Accounts & Orders
             </h4>
             <ul className="space-y-1 text-[14px] lg:text-[12px] text-white">
               {!auth?.isAuthenticated && <li>
-                <Link href="/auth/login" className="hover:text-gray-300">
+                <Link href="/auth/login" className="hover:text-[#D42020]">
                   Login
                 </Link>{" "}
                 or{" "}
-                <Link href="/auth/signup" className="hover:text-gray-300">
+                <Link href="/auth/signup" className="hover:text-[#D42020]">
                   Sign Up
                 </Link>
               </li>}
@@ -160,16 +162,16 @@ const FooterBottom = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white">
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{fontFamily:robotoCondensed}}>
               Quick Links
             </h4>
-            <ul className="space-y-1 text-[14px] lg:text-[12px] text-white">
+            <ul className="space-y-1 text-[14px] lg:text-[12px] text-white " style={{fontFamily:robotoCondensed}}>
               {visiblePages?.map((page: any) => (
                 <li key={page.id}>
                   {page?.pageType == "2" ? (
-                    <Link href={`${page.link}`} target="_blank" rel="noopener noreferrer" className="hover:text-gray-300">
+                    <Link href={`${page.link}`} target="_blank" rel="noopener noreferrer" className="hover:text-[#D42020]">
                       {page.pageName}
-                    </Link>) : <Link href={`${page.slugWithUrl}`} className="hover:text-gray-300">
+                    </Link>) : <Link href={`${page.slugWithUrl}`} className="hover:text-[#D42020]">
                     {page.pageName}
                   </Link>
                   }
@@ -180,7 +182,7 @@ const FooterBottom = () => {
 
           {/* Recent Blog Posts */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white">
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{fontFamily:robotoCondensed}}>
               Recent Blog Posts
             </h4>
             <ul className="space-y-1 text-[14px] lg:text-[12px] text-white">
@@ -193,7 +195,7 @@ const FooterBottom = () => {
                   ></li>
                 ))
               ) : error ? (
-                <li className="text-red-500 px-2 py-1">{error}</li>
+                <li className="text-red-500 px-2 py-1" >{error}</li>
               ) : blogPosts.length === 0 ? (
                 <li className="text-gray-500 px-2 py-1">No blogs available</li>
               ) : (
@@ -201,7 +203,8 @@ const FooterBottom = () => {
                   <li key={post.id}>
                     <Link
                       href={`/blogs/${post.slug}`}
-                      className="hover:text-gray-300 text-[12px]"
+                      className="hover:text-[#D42020] text-[12px]"
+                      style={{fontFamily:robotoCondensed}}
                     >
                       {post.title}
                     </Link>
@@ -212,7 +215,7 @@ const FooterBottom = () => {
 
             {/* Connect with Us */}
             <div className=" md:mt-8">
-              <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white">
+              <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{fontFamily:robotoCondensed}}>
                 Connect with Us:
               </h4>
               <div className="flex justify-center md:justify-start gap-3">

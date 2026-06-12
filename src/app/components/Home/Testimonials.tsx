@@ -44,6 +44,7 @@ const Carousel = dynamic(
 
 const SWIPE_THRESHOLD_PX = 45;
 const REVIEW_CARD_WIDTH = 380;
+const roboto = "Roboto, Arial, Helvetica, sans-serif";
 
 const Testimonials = () => {
   const dispatch = useAppDispatch();
@@ -155,7 +156,7 @@ const Testimonials = () => {
         <p className="mb-0 text-sm font-medium shrink-0">{review.dateOfExperience}</p>
       </div>
       <Link href={review?.url} target="_blank" className="block min-w-0">
-        <h2 className="text-xl text-black font-bold hover:text-blue-600">
+        <h2 className="text-[14px] text-[#333333] font-bold ">
           <span className="inline-block w-full max-w-[348px] border-b border-black overflow-hidden whitespace-nowrap text-ellipsis">
             {review?.reviewHeading}
           </span>
@@ -163,22 +164,21 @@ const Testimonials = () => {
       </Link>
 
       <div
-        className="text-base leading-snug overflow-auto review-scroll min-w-0"
+        className="text-[14px] text-[#333333] leading-snug overflow-auto review-scroll min-w-0"
         style={{
-          maxHeight: "3.5em",
-          minHeight: "3.5em",
+          maxHeight: "4.5em",
+          minHeight: "4.5em",
         }}
       >
         {review?.reviewContent ? review?.reviewContent : "No review content"}
       </div>
-      <p className="text-black text-sm truncate">
+      <p className="text-[#333333] text-[14px] truncate" style={{ fontFamily: roboto }}>
         <span className="font-bold">Date of Experience:</span> {review.dateOfExperience}
       </p>
 
-      <p className="mb-0 text-sm truncate">{review.reviewer}</p>
+      <p className="mb-0 text-[13px] text-[#00000099] truncate">{review.reviewer}</p>
     </div>
   );
-
 
   return (
     <div>

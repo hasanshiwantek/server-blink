@@ -18,6 +18,7 @@ export interface Product {
   image?: { path?: string }[];
   slug: string;
   productUrl?: string;
+  purchasabilityStatus?:string,
 }
 
 

@@ -58,7 +58,7 @@ const Navbar: React.FC = () => {
                   sizes="48px"
                 />
               </div>
-              <div className="flex flex-col text-gray-800" >
+              <div className="flex flex-col text-gray-800" style={{ fontFamily: "Roboto, Arial, Helvetica, sans-serif" }}>
                 <p className="text-[15px] font-semibold">
                   Call:{" "}
                   <a
