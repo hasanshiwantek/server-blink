@@ -43,6 +43,7 @@ const ProductCard = ({ product }: { product: any }) => {
         msrp: product.msrp,
 
         image: product.image,
+        purchasabilityStatus:product?.purchasabilityStatus
       })
     );
   }, [product, dispatch]);
