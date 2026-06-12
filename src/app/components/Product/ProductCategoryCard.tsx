@@ -109,8 +109,11 @@ export default function ProductCategoryCard({ product }: { product: Product }) {
             />
           )}
         </div> : <div className="flex flex-wrap items-center gap-2 mt-2">
-          <span className="text-[1rem] font-bold  " style={{ fontFamily: '"Roboto"' }}>Call for pricing:<Link href="tel:+15022063033" className="text-[#d40511] underline">
-            (502) 206-3033
+          <span className="text-[1rem] font-bold  " style={{ fontFamily: '"Roboto"' }}>Call for pricing:<Link
+            //  href="tel:+15022063033"
+            href="#"
+            className="text-[#d40511] underline">
+            {/* (502) 206-3033 */}
           </Link></span>
         </div>}
       </div>

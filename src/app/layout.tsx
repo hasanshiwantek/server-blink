@@ -3,9 +3,9 @@ import LayoutWrapper from "./components/layout/LayoutWrapper";
 import { Inter, Jost, Roboto, Roboto_Condensed } from "next/font/google";
 import localFont from "next/font/local";
 import ScriptInjector from "@/components/ScriptInjector";
+import DynamicFavicon from "@/components/DynamicFavicon";
 import "../styles/blog/api-content.css";
 import "./globals.css";
-import DynamicFavicon from "@/components/DynamicFavicon";
 const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -62,6 +62,7 @@ const robotoCondensed = Roboto_Condensed({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://server-blink.vercel.app"),
+  robots: { index: false, follow: false },
   title: {
     // default: "Server Blink",
     // template: "%s | Server Blink",
