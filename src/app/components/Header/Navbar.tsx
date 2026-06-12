@@ -58,12 +58,12 @@ const Navbar: React.FC = () => {
                   sizes="48px"
                 />
               </div>
-              <div className="flex flex-col text-gray-800">
+              <div className="flex flex-col text-gray-800" style={{ fontFamily: "'Roboto', 'Roboto Condensed', sans-serif" }}>
                 <p className="text-[15px] font-semibold">
                   Call:{" "}
                   <a
                     href="tel:+15022063033"
-                    className="text-[var(--primary-color)] text-[15px] hover:underline"
+                    className="text-[var(--primary-color)] text-[18px] hover:underline"
                   >
                     +1 502-206-3033
                   </a>
@@ -73,7 +73,7 @@ const Navbar: React.FC = () => {
                   Email:{" "}
                   <a
                     href="mailto:sales@serverblink.com"
-                    className="text-[var(--primary-color)] text-[15px] hover:underline"
+                    className="text-[var(--primary-color)] text-[14px] hover:underline"
                   >
                     sales@serverblink.com
                   </a>
@@ -114,7 +114,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Text Banner */}
-        <div className="w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto">
+        <div className="w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto" style={{ fontFamily: "'Roboto', 'Roboto Condensed', sans-serif" }}>
           <div  className="bg-white text-center p-0 mb-0 md:p-4 md:mb-4">
             <p className="p-4 md:text-[14px] text-[14px] font-semibold text-[#545454]">
               We Accept POs from Fortune 1000 Companies, Government Agencies
