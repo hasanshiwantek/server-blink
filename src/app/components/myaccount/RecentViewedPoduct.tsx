@@ -36,9 +36,8 @@ const RecentViewedProduct = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-semibold mb-4">Recently Viewed Products</h2>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+   
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {recentProducts.map((product: any, index: number) => (
           <ProductCard key={index} product={product} />
         ))}

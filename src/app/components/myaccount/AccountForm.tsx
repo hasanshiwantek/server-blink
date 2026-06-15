@@ -64,15 +64,18 @@ const AccountForm = () => {
     }
   };
 
-  const inputClass = "!w-full h-[42px] !max-w-full";
+  const inputClass =
+  "!w-full h-[42px] text-[#545454] !font-normal !max-w-full py-[10px] px-[14px] border border-[#cac9c9] rounded-none";
+
+   const roboto = "'Roboto', Arial, Helvetica, sans-serif";
 
   return (
-    <div className="max-w-full mx-auto p-8 rounded-lg">
+    <div className="max-w-full mx-auto p-6 rounded-lg" style={{fontFamily:roboto}}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* First Name & Last Name */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
           <div>
-            <Label className="text-[14px] flex md:justify-between" htmlFor="firstName">First Name <span className="">*</span></Label>
+            <Label className="text-[14px]  text-[#545454] flex md:justify-between !font-normal" htmlFor="firstName" style={{fontFamily:roboto}}>First Name <span className="">*</span></Label>
             <Input
               id="firstName"
               {...register("firstName", { required: "First Name is required" })}
@@ -81,7 +84,7 @@ const AccountForm = () => {
             {errors.firstName && <p className="text-sm text-red-500">{errors.firstName.message}</p>}
           </div>
           <div>
-            <Label className="text-[14px] flex md:justify-between" htmlFor="lastName">Last Name <span className="">*</span></Label>
+            <Label className="text-[14px] text-[#545454] flex md:justify-between !font-normal" htmlFor="lastName" >Last Name <span className="">*</span></Label>
             <Input
               id="lastName"
               {...register("lastName", { required: "Last Name is required" })}
@@ -92,9 +95,9 @@ const AccountForm = () => {
         </div>
 
         {/* Company & Phone Number */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-7 mt-[20px]">
           <div>
-            <Label className="text-[14px] flex md:justify-between" htmlFor="companyName">Company</Label>
+            <Label className="text-[14px] text-[#545454] flex md:justify-between !font-normal" htmlFor="companyName">Company</Label>
             <Input
               id="companyName"
               {...register("companyName")}
@@ -102,7 +105,7 @@ const AccountForm = () => {
             />
           </div>
           <div>
-            <Label className="text-[14px] flex md:justify-between" htmlFor="phone">Phone Number</Label>
+            <Label className="text-[14px]  text-[#545454] flex md:justify-between !font-normal" htmlFor="phone">Phone Number</Label>
             <Input
               id="phone"
               {...register("phone")}
@@ -112,9 +115,9 @@ const AccountForm = () => {
         </div>
 
         {/* Email & Password */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-7 mt-[20px]">
           <div>
-            <Label className="text-[14px] flex md:justify-between" htmlFor="email">Email Address <span className="">*</span></Label>
+            <Label className="text-[14px] text-[#545454]   flex md:justify-between  !font-normal" htmlFor="email">Email Address <span className="">*</span></Label>
             <Input
               id="email"
               type="email"
@@ -126,7 +129,7 @@ const AccountForm = () => {
           </div>
 
           <div className="relative">
-            <Label className="text-[14px] flex md:justify-between" htmlFor="password">Password <span className="">*</span></Label>
+            <Label className="text-[14px] text-[#545454]    flex md:justify-between !font-normal " htmlFor="password">Password <span className="">*</span></Label>
             <Input
               id="password"
               type={showPassword ? "text" : "password"}
@@ -145,9 +148,9 @@ const AccountForm = () => {
         </div>
 
         {/* Confirm Password & Current Password */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-7 mt-[20px]">
           <div className="relative">
-            <Label className="text-[14px] flex md:justify-between" htmlFor="password_confirmation">Confirm Password <span className="">*</span></Label>
+            <Label className="text-[14px] flex md:justify-between !font-normal " htmlFor="password_confirmation">Confirm Password <span className="">*</span></Label>
             <Input
               id="password_confirmation"
               type={showConfirmPassword ? "text" : "password"}
@@ -168,7 +171,7 @@ const AccountForm = () => {
           </div>
 
           <div className="relative">
-            <Label className="text-[14px] flex md:justify-between" htmlFor="currentPassword">Current Password</Label>
+            <Label className="text-[14px] flex md:justify-between !font-normal " htmlFor="currentPassword">Current Password</Label>
             <Input
               id="currentPassword"
               type={showCurrentPassword ? "text" : "password"}
@@ -186,7 +189,7 @@ const AccountForm = () => {
         </div>
 
         {/* Submit */}
-        <Button type="submit" className="w-64 !p-7 text-2xl border-b-2 border-black bg-[#D42020] text-white font-bold md:mt-8">
+        <Button type="submit" className=" w-full mt-[12px] md:w-64 !p-7 text-2xl rounded-none border-b-2 border-black bg-[#D42020] text-white font-bold md:mt-8 " >
          {loading ? "Loading..." : "UPDATE DETAILS"}
         </Button>
       </form>
