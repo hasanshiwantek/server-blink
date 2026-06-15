@@ -29,6 +29,7 @@ const FooterBottom = () => {
   const [filters, setFilters] = useState({ page: 1, perPage: 20 });
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
+   const robotoCondensed = "'Roboto Condensed ', Arial, Helvetica, sans-serif";
   const { newsletterLoading, newsletterSuccess, newsletterError } = useSelector((state: any) => state.contact);
   const { blogs, webPages, error, loading } = useAppSelector(
     (state: any) => state.storeFront
@@ -40,7 +41,7 @@ const FooterBottom = () => {
     !page.restrictToCustomersOnly || token
   );
   const router = useRouter();
-  const robotoCondensed = "'Roboto Condensed', Arial, Helvetica, sans-serif";
+  
   const blogPosts = blogs?.data || [];
   const handleSelect = (url: string) => {
     router.push(url);
@@ -78,8 +79,8 @@ const FooterBottom = () => {
         flex flex-col md:flex-row items-center justify-between gap-2 md:gap-8 lg:gap-0 py-2
       "
         >
-          <div className="text-center md:text-left w-full md:w-[60%] 2xl:max-w-[50%]">
-            <h3 className="text-[20px] text-[#292121] font-bold uppercase">
+          <div className="text-center  md:text-left  w-full md:w-[60%] 2xl:max-w-[50%]" style={{fontFamily:robotoCondensed}}>
+            <h3 className="text-[15px] md:text-[20px] text-[#545454] font-bold uppercase">
               Join Our Mailing List
               <span className="text-[16px] lowercase ml-2">
                 for special offers!
@@ -97,7 +98,7 @@ const FooterBottom = () => {
                 });
               }
             }}
-            className="w-[80%] md:w-[30%] 2xl:max-w-[30%] flex items-center gap-2 mt-4 md:mt-0 lg:ml-24"
+            className="w-[80%] mb-[6px] md:w-[30%] mb-[7px] 2xl:max-w-[30%] flex items-center gap-2 mt-4 md:mt-0 lg:ml-24"
           >
             <input
               type="email"

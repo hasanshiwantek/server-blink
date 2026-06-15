@@ -206,13 +206,14 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
           <button
             onClick={() => setIsReviewModalOpen(true)}
             className="text-[#393939] font-bold text-[13px] sm:text-[20px] hover:text-[#d40511] underline transition inline-block"
+            style={{fontFamily:robotoCondensed}}
           >
             Write a Review
           </button>
         </div>
 
         {/* Product Details */}
-        <div className="mb-6">
+        <div className="mb-6" style={{fontFamily:robotoCondensed}}>
           <div className="space-y-2">
             <div className="flex gap-2">
               <span className="text-[12px] sm:text-[14px] font-bold text-[#545454] ">
