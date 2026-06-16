@@ -15,7 +15,6 @@ const ProductCard = ({ product }: { product: any }) => {
   const maxQty = product?.maxPurchaseQuantity;
   const cart = useAppSelector((state: RootState) => state.cart.items);
   const availableForSale = product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
-
   const [quantity, setQuantity] = useState(minQty);
   const roboto = "'Roboto', sans-serif";
   const addtocart = () => {
