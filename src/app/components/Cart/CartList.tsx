@@ -127,117 +127,117 @@ const CartList = () => {
               </div>
 
               <div className="flex flex-col md:flex-row w-full gap-3 xl:gap-0 xl:w-[66%] 2xl:w-[68%] xl:flex-nowrap xl:justify-between">
-               <div className="flex items-center justify-between md:block">
-  
-  <p className=" text-[14px] text-[#545454] md:hidden">Price</p>
+                <div className="flex items-center justify-between md:block">
 
-  <p className="text-[15px] text-[#545454]  ">
-    ${Number(item.price).toFixed(2)}
-  </p>
-   <div>
-                    
+                  <p className=" text-[14px] text-[#545454] md:hidden">Price</p>
+
+                  <p className="text-[15px] text-[#545454]  ">
+                    ${Number(item.price).toFixed(2)}
+                  </p>
+                  <div>
+
                   </div>
 
-</div>
+                </div>
 
-               <div className="flex items-center justify-between ">
+                <div className="flex items-center justify-between ">
 
-  <p className=" text-[14px] text-[#545454]    md:hidden">Quantity</p>
-                <div className="flex items-center  border-gray-300 overflow-hidden">
-                  
-                  {/* Down Arrow (Decrease) — Left */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (item.quantity > minQty) {
-                        dispatch(decreaseQty(item.id))
-                        localStorage.removeItem("shippingCost")
-                        localStorage.removeItem("shippingData")
+                  <p className=" text-[14px] text-[#545454]    md:hidden">Quantity</p>
+                  <div className="flex items-center  border-gray-300 overflow-hidden">
+
+                    {/* Down Arrow (Decrease) — Left */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (item.quantity > minQty) {
+                          dispatch(decreaseQty(item.id))
+                          localStorage.removeItem("shippingCost")
+                          localStorage.removeItem("shippingData")
+                        }
+                      }}
+                      //                 className="
+                      //   flex items-center justify-center w-8 h-full
+                      //   hover:bg-gray-100
+                      //   text-black
+                      // "
+                      className="w-8 h-8  flex items-center justify-center hover:bg-[#f5f5f5] transition text-[#4a4a4a] bg-[#cac9c9]  border-b-3 border-[#8b8b8b]"
+                      disabled={item.quantity <= minQty}
+                    >
+                      <ChevronDown size={16} />
+                    </button>
+
+                    {/* Number Input — Center */}
+                    <input
+                      type="number"
+                      value={
+                        quantities[item.id] === undefined
+                          ? item.quantity
+                          : quantities[item.id]
                       }
-                    }}
-                    //                 className="
-                    //   flex items-center justify-center w-8 h-full
-                    //   hover:bg-gray-100
-                    //   text-black
-                    // "
-                    className="w-8 h-8  flex items-center justify-center hover:bg-[#f5f5f5] transition text-[#4a4a4a] bg-[#cac9c9]  border-b-3 border-[#8b8b8b]"
-                    disabled={item.quantity <= minQty}
-                  >
-                    <ChevronDown size={16} />
-                  </button>
-
-                  {/* Number Input — Center */}
-                  <input
-                    type="number"
-                    value={
-                      quantities[item.id] === undefined
-                        ? item.quantity
-                        : quantities[item.id]
-                    }
-                    onChange={(e) => handleChange(item.id, e.target.value, maxQty)}
-                    onBlur={(e) => {
-                      const parsed = Number(quantities[item.id]);
-                      if (!parsed || parsed <= 0) {
-                        dispatch(updateQty({ id: item.id, quantity: 1 }));
-                        setQuantities((prev) => ({ ...prev, [item.id]: 1 }));
-                      } else if (item.maxQty && parsed > maxQty) {
-                        dispatch(updateQty({ id: item.id, quantity: maxQty }));
-                        setQuantities((prev) => ({ ...prev, [item.id]: maxQty }));
+                      onChange={(e) => handleChange(item.id, e.target.value, maxQty)}
+                      onBlur={(e) => {
+                        const parsed = Number(quantities[item.id]);
+                        if (!parsed || parsed <= 0) {
+                          dispatch(updateQty({ id: item.id, quantity: 1 }));
+                          setQuantities((prev) => ({ ...prev, [item.id]: 1 }));
+                        } else if (item.maxQty && parsed > maxQty) {
+                          dispatch(updateQty({ id: item.id, quantity: maxQty }));
+                          setQuantities((prev) => ({ ...prev, [item.id]: maxQty }));
+                        }
+                      }}
+                      min={minQty}
+                      max={maxQty || undefined}
+                      onKeyDown={(e) =>
+                        handleManualQtyUpdate(e, item.id, maxQty)
                       }
-                    }}
-                    min={minQty}
-                    max={maxQty || undefined}
-                    onKeyDown={(e) =>
-                      handleManualQtyUpdate(e, item.id, maxQty)
-                    }
-                    className="
+                      className="
       w-10 bg-white text-center py-0 outline-none
       border-x border-gray-300
       [appearance:textfield]
       [&::-webkit-outer-spin-button]:appearance-none
       [&::-webkit-inner-spin-button]:appearance-none
     "
-                  />
+                    />
 
-                  {/* Up Arrow (Increase) — Right */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (
-                        !maxQty ||
-                        item.quantity < maxQty
-                      ) {
-                        dispatch(increaseQty(item.id));
-                        localStorage.removeItem("shippingCost")
-                        localStorage.removeItem("shippingData")
-                      }
-                    }}
-                    //                 className="
-                    //   flex items-center justify-center w-8 h-full
-                    //   hover:bg-gray-100
-                    //   text-black
-                    // "
-                    disabled={!!maxQty && item.quantity >= maxQty}
-                    className="w-8 h-8  flex items-center justify-center hover:bg-[#f5f5f5] transition text-[#4a4a4a] bg-[#cac9c9]  border-b-3 border-[#8b8b8b]"
+                    {/* Up Arrow (Increase) — Right */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (
+                          !maxQty ||
+                          item.quantity < maxQty
+                        ) {
+                          dispatch(increaseQty(item.id));
+                          localStorage.removeItem("shippingCost")
+                          localStorage.removeItem("shippingData")
+                        }
+                      }}
+                      //                 className="
+                      //   flex items-center justify-center w-8 h-full
+                      //   hover:bg-gray-100
+                      //   text-black
+                      // "
+                      disabled={!!maxQty && item.quantity >= maxQty}
+                      className="w-8 h-8  flex items-center justify-center hover:bg-[#f5f5f5] transition text-[#4a4a4a] bg-[#cac9c9]  border-b-3 border-[#8b8b8b]"
 
-                  >
-                    <ChevronUp size={16} />
-                  </button>
-                 
-                </div>
-                 <div>
-                    
+                    >
+                      <ChevronUp size={16} />
+                    </button>
+
+                  </div>
+                  <div>
+
                   </div>
                 </div>
 
-               <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center justify-between gap-2">
 
-  <p className="text-[14px] text-[#545454]   md:hidden">Total</p>
+                  <p className="text-[14px] text-[#545454]   md:hidden">Total</p>
 
-  <p className="text-[15px] text-[#545454]  ">
-    ${Number(item.price * item.quantity).toFixed(2)}
-  </p>
-  
+                  <p className="text-[15px] text-[#545454]  ">
+                    ${Number(item.price * item.quantity).toFixed(2)}
+                  </p>
+
                   <button
                     type="button"
                     aria-label="Remove item from cart"
