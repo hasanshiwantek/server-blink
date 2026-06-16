@@ -1,97 +1,96 @@
 "use client";
-import { useEffect, useState } from "react";
+import GooglePayButton from "@google-pay/button-react";
 import { loadStripe } from "@stripe/stripe-js";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const stripePromise = loadStripe(
-    "pk_test_51TTnoo8vkezGA3pyz8ekc5xIQNyhweCnxiumTB1si5Dejq5YWPGHDJIJPpBHMLw9hYRkbSkOGpdCzPrlW8g59HZ600cueNQymh"
+  "pk_test_51TTnoo8vkezGA3pyz8ekc5xIQNyhweCnxiumTB1si5Dejq5YWPGHDJIJPpBHMLw9hYRkbSkOGpdCzPrlW8g59HZ600cueNQymh"
 );
-// const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
-interface GooglePayButtonProps {
-    amount: number; // in dollars
-    onSuccess?: (paymentIntent: any) => void;
-    onError?: (error: string) => void;
+interface Props {
+  amount: number;
+  onSuccess?: (paymentIntent: any) => void;
 }
 
-export default function GooglePayButton({ amount, onSuccess, onError }: GooglePayButtonProps) {
-    const [paymentRequest, setPaymentRequest] = useState<any>(null);
-    const [canMakePayment, setCanMakePayment] = useState(false);
+export default function GPayButton({ amount, onSuccess }: Props) {
+  const router = useRouter();
 
-    useEffect(() => {
-        const init = async () => {
-            const stripe = await stripePromise;
-            if (!stripe) return;
+  return (
+    <GooglePayButton
+      environment="TEST"
+      buttonType="buy"
+      buttonColor="black"
+      className="w-full"
+      style={{ width: "100%", height: "44px" }}
+      paymentRequest={{
+        apiVersion: 2,
+        apiVersionMinor: 0,
+        allowedPaymentMethods: [
+          {
+            type: "CARD",
+            parameters: {
+              allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+              allowedCardNetworks: ["VISA", "MASTERCARD", "AMEX", "DISCOVER"],
+            },
+            tokenizationSpecification: {
+              type: "PAYMENT_GATEWAY",
+              parameters: {
+                gateway: "stripe",
+                gatewayMerchantId: "pk_test_51TTnoo8vkezGA3pyz8ekc5xIQNyhweCnxiumTB1si5Dejq5YWPGHDJIJPpBHMLw9hYRkbSkOGpdCzPrlW8g59HZ600cueNQymh",
+              },
+            },
+          },
+        ],
+        merchantInfo: {
+          merchantId: "BCR2DN4TR4PRGHE4",
+          merchantName: "Kinza",
+        },
+        transactionInfo: {
+          totalPriceStatus: "FINAL",
+          totalPrice: amount.toFixed(2),
+          currencyCode: "USD",
+          countryCode: "US",
+        },
+      }}
+      onLoadPaymentData={async (paymentData: any) => {
+        try {
+          const stripe = await stripePromise;
+          if (!stripe) return;
 
-            const pr = stripe.paymentRequest({
-                country: "US",
-                currency: "usd",
-                total: {
-                    label: "Order Total",
-                    amount: Math.round(amount * 100), // cents mein
-                },
-                requestPayerName: true,
-                requestPayerEmail: true,
-            });
+          // ✅ Google Pay raw token string
+          const rawToken = paymentData.paymentMethodData.tokenizationData.token;
+          
+          // ✅ Backend ko token bhi bhejo
+          const res = await fetch("/api/create-payment-intent", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+              amount: Math.round(amount * 100),
+              googlePayToken: rawToken  // backend pe process karega
+            }),
+          });
+          
+          const data = await res.json();
+          
+          if (data.error) {
+            toast.error(data.error);
+            return;
+          }
 
-            const result = await pr.canMakePayment();
+          toast.success("Payment successful!");
+          onSuccess?.(data);
+          router.push(`/order-confirmation?payment_intent=${data.paymentIntentId}`);
 
-            console.log(result);
-            
-            if (result?.googlePay) {
-                setPaymentRequest(pr);
-                setCanMakePayment(true);
-            }
-
-            pr.on("paymentmethod", async (e) => {
-                try {
-                    // Backend se PaymentIntent create karo
-                    const res = await fetch("/api/create-payment-intent", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ amount: Math.round(amount * 100) }),
-                    });
-                    const { clientSecret } = await res.json();
-
-                    const { error, paymentIntent } = await stripe.confirmCardPayment(
-                        clientSecret,
-                        { payment_method: e.paymentMethod.id },
-                        { handleActions: false }
-                    );
-
-                    if (error) {
-                        e.complete("fail");
-                        onError?.(error.message || "Payment failed");
-                    } else {
-                        e.complete("success");
-                        if (paymentIntent.status === "requires_action") {
-                            await stripe.confirmCardPayment(clientSecret);
-                        }
-                        onSuccess?.(paymentIntent);
-                    }
-                } catch (err) {
-                    e.complete("fail");
-                    onError?.("Something went wrong");
-                }
-            });
-        };
-
-        init();
-    }, [amount]);
-
-    if (!canMakePayment || !paymentRequest) return null;
-
-    return (
-        <button
-            onClick={() => paymentRequest.show()}
-            className="w-full flex items-center justify-center gap-2 bg-black text-white rounded py-2.5 px-4 text-sm font-medium hover:bg-gray-900 transition-colors"
-        >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M3.5 10.5C3.5 7.46 5.96 5 9 5h6c3.04 0 5.5 2.46 5.5 5.5v3C20.5 17.04 18.04 19.5 15 19.5H9c-3.04 0-5.5-2.46-5.5-5.5v-3z" fill="white" fillOpacity="0.1" stroke="white" strokeWidth="1.5" />
-                <text x="6" y="15" fontSize="7" fontWeight="bold" fill="#4285F4">G</text>
-                <text x="11" y="15" fontSize="7" fontWeight="bold" fill="white">Pay</text>
-            </svg>
-            <span style={{ color: '#4285F4', fontWeight: 700 }}>G</span>
-            <span style={{ fontWeight: 500 }}>Pay</span>
-        </button>
-    );
+        } catch (err) {
+          console.log("Error:", err);
+          toast.error("Something went wrong");
+        }
+      }}
+      onError={(err: any) => {
+        console.error(err);
+        toast.error("Google Pay error");
+      }}
+    />
+  );
 }
