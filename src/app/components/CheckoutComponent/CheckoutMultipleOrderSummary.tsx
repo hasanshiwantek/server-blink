@@ -145,6 +145,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
             isAllocated: true,
         }));
     const INITIAL_SHOW = 3;
+      const roboto = "'Roboto', Arial, Helvetica, sans-serif";
     // const cartItemCount = cart.reduce((sum, item: any) => sum + (item?.quantity ?? 1), 0);
     const cartItemCount = isMultiAddress && destinations.some((d) => d.allocatedItems.length > 0)
         ? destinations.reduce((sum, d) => sum + d.allocatedItems.length, 0)
@@ -162,7 +163,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
 
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6 px-6 border-b-[1px] border-[#8b8b8b]">
-                    <h2 className="text-xl font-semibold text-gray-800 p-2">
+                    <h2 className="text-xl font-normal text-[#545454] p-4" style={{ fontFamily: roboto }}>
                         Order Summary
                     </h2>
                     <span onClick={() => {
@@ -170,13 +171,13 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                             setShowSingleAddressModal(true);
                         }
 
-                    }} className="text-base text-[var(--primary-color)] hover:underline cursor-pointer">
+                    }} className="text-[13px] text-[#D42020] hover:underline cursor-pointer">
                         Edit Cart
                     </span>
                 </div>
 
                 {/* Item count */}
-                <div className="mb-4 text-sm text-gray-600 px-6">
+                <div className="mb-4 text-[13px] text-[#545454] px-6">
                     {cartItemCount} Item{cartItemCount !== 1 ? "s" : ""}
                 </div>
 
@@ -210,12 +211,12 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                                             Not allocated
                                         </p>
                                     ) : null} */}
-                                        <p className="text-sm text-gray-800 line-clamp-2 leading-snug mb-1">
+                                        <p className="text-[13px] text-[#545454] line-clamp-2 leading-snug mb-1" style={{ fontFamily: roboto }}>
                                             {item.quantity} x {item.name}
                                         </p>
-                                        <p className="text-xs text-gray-500">${item.price.toFixed(2)}</p>
+                                        {/* <p className="text-xs text-gray-500">${item.price.toFixed(2)}</p> */}
                                     </div>
-                                    <div className="text-sm font-semibold text-gray-900 flex-shrink-0">
+                                    <div className="text-sm font-semibold text-[#545454] flex-shrink-0" style={{ fontFamily: roboto }}>
                                         ${lineTotal.toFixed(2)}
                                     </div>
                                 </div>
@@ -255,7 +256,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
 
                 {/* Promo */}
                 <div className="mb-6 border-b-[1px] px-6 border-[#8b8b8b] py-4">
-                    <button type="button" className="text-[13px] text-[var(--primary-color)]" onClick={() => setShowPromo((prev) => !prev)}>
+                    <button type="button" className="text-[13px] text-[#D42020]" onClick={() => setShowPromo((prev) => !prev)}>
                         Promo/Gift Certificate
                     </button>
                     {showPromo && (
@@ -284,14 +285,14 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
 
                 {/* Totals */}
                 <div className="space-y-3  pt-4 px-6">
-                    <div className="flex justify-between text-[13px] text-gray-700">
+                    <div className="flex justify-between text-[13px] text-[#545454]" style={{ fontFamily: roboto }}>
                         <span>Subtotal</span>
                         <span className="font-medium">${subtotal.toFixed(2)}</span>
                     </div>
 
                     {appliedCoupon && discountAmount > 0 && (
                         <div className="mt-2">
-                            <div className="flex text-[13px]  justify-between items-center text-gray-700 cursor-pointer select-none" onClick={() => setDiscountOpen((prev) => !prev)}>
+                            <div className="flex text-[13px]  justify-between items-center text-[#545454] cursor-pointer select-none" onClick={() => setDiscountOpen((prev) => !prev)}>
                                 <span className="flex items-center gap-1 font-medium">
                                     Discounts
                                     <svg className={`w-4 h-4 transition-transform ${discountOpen ? "rotate-180" : "rotate-0"}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -309,11 +310,11 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                         </div>
                     )}
 
-                    <div className="flex justify-between text-[13px] text-gray-700">
+                    <div className="flex justify-between text-[13px] text-[#545454]" style={{ fontFamily: roboto }}>
                         <span>Shipping</span>
                         <span className="font-medium">{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
                     </div>
-                    <div className="flex justify-between text-[13px] text-gray-700">
+                    <div className="flex justify-between text-[13px] text-[#545454]" style={{ fontFamily: roboto }}>
                         <span>Tax</span>
                         <span className="font-medium">${tax.toFixed(2)}</span>
                     </div>
@@ -321,7 +322,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
 
                 {/* Total */}
                 <div className="flex flex-col mt-4 pt-4 px-6 border-t-[1px] border-[#8b8b8b] text-gray-700">
-                    <div className="flex justify-between items-center text-[15px] font-bold">
+                    <div className="flex justify-between items-center text-[15px] text-[#545454]" style={{ fontFamily: roboto }}>
                         <span>Total <br /> (USD)</span>
                         <span>${finalTotal.toFixed(2)}</span>
                     </div>

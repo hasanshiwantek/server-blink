@@ -1065,10 +1065,13 @@ const CheckoutForm = () => {
           {/* LEFT SECTION - Multi-step form */}
           <div className="lg:col-span-2 space-y-0">
             {/* STEP 1: Customer */}
-            <div className="p-6 border-b-[1px] border-b-[#8b8b8b]">
-              <h2 className="text-[1.92308rem] font-normal mb-4 text-[#545454]">
+            <div className="p-6 border-b-[1px] border-b-[#8b8b8b] flex items-center justify-center gap-5">
+              <h2 className="basis-1/5 text-[25px] font-normal mb-4 text-[#545454]">
                 Customer
               </h2>
+              <div className="basis-4/5">
+
+              
               <CustomerStep
                 register={register}
                 errors={errors}
@@ -1080,11 +1083,12 @@ const CheckoutForm = () => {
                 onEdit={handleEditCustomer}
                 emailValue={watch("email")}
               />
+              </div>
             </div>
 
             {/* STEP 2: Shipping */}
             <div className="p-6  border-b-[1px] border-b-[#8b8b8b]">
-              <h2 className="text-[1.92308rem] font-normal mb-4 text-[#545454]">
+              <h2 className="text-[25px] font-normal mt-6 mb-6 text-[#545454]">
                 Shipping
               </h2>
               <ShippingStep
