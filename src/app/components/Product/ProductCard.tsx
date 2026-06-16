@@ -2,21 +2,49 @@
 import React, { useEffect, useState } from "react";
 import ProductLeft from "./ProductLeft";
 import ProductMiddle from "./ProductMiddle";
-import { useAppDispatch } from "@/hooks/useReduxHooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { toast } from "react-toastify";
 import { addToCart } from "@/redux/slices/cartSlice";
 import { addRecentView } from "@/redux/slices/recentSlice";
 import Link from "next/link";
+import { RootState } from "@/redux/store";
 
 const ProductCard = ({ product }: { product: any }) => {
   const dispatch = useAppDispatch();
   const minQty = product?.minPurchaseQuantity || 1;
   const maxQty = product?.maxPurchaseQuantity;
+  const cart = useAppSelector((state: RootState) => state.cart.items);
+  const availableForSale = product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
+
   const [quantity, setQuantity] = useState(minQty);
   const roboto = "'Roboto', sans-serif";
   const addtocart = () => {
-    dispatch(addToCart(product));
-    toast.success(`${product?.name} added to cart!`);
+    if (availableForSale) {
+      const cartItem = cart.find((item: any) => item.id === product.id);
+
+      const currentQty = cartItem?.quantity || 0;
+      const remaining = maxQty ? maxQty - currentQty : Infinity;
+      if (remaining <= 0) {
+        toast.error(`You have already reached the maximum limit (${maxQty}) for this product.`);
+        return;
+      }
+      // dispatch(addToCart(product));
+      // Add only up to the allowed maximum
+      const quantityToAdd = Math.min(minQty, remaining);
+
+      dispatch(
+        addToCart({
+          ...product,
+          quantity: quantityToAdd,
+          minPurchaseQuantity: minQty,
+          maxPurchaseQuantity: maxQty,
+        })
+      );
+      toast.success(`${product.name} added to cart!`);
+      // router.push("/cart")
+    }
+    // dispatch(addToCart(product));
+    // toast.success(`${product?.name} added to cart!`);
   };
 
   const images =
@@ -44,7 +72,7 @@ const ProductCard = ({ product }: { product: any }) => {
         msrp: product.msrp,
 
         image: product.image,
-        purchasabilityStatus:product?.purchasabilityStatus
+        purchasabilityStatus: product?.purchasabilityStatus
       })
     );
   }, [product, dispatch]);
@@ -69,7 +97,7 @@ const ProductCard = ({ product }: { product: any }) => {
           className="hidden md:flex items-center justify-center lg:justify-normal space-x-2 text-[11px] text-[#393939] lg:mb-7 sm:mb-7 mb-7 flex-wrap"
         >
           <h2>
-            <Link href={"/"} className="text-[11px] hover:!text-[#D42020]" itemProp="name" style={{fontFamily:roboto}}>
+            <Link href={"/"} className="text-[11px] hover:!text-[#D42020]" itemProp="name" style={{ fontFamily: roboto }}>
               Home
             </Link>
 
@@ -84,7 +112,7 @@ const ProductCard = ({ product }: { product: any }) => {
 
                 <Link href={`/category/${cat?.slug}`}
                   className={`text-[11px]   hover:!text-[#D42020]`}
-                  style={{fontFamily:roboto}}
+                  style={{ fontFamily: roboto }}
                   itemProp="name"
                 >
                   {cat.name}
@@ -97,7 +125,7 @@ const ProductCard = ({ product }: { product: any }) => {
             >
               /
             </span>
-            <Link href={product?.productUrl} className="text-[11px] !text-[#D42020]" itemProp="name" style={{fontFamily:roboto}}>
+            <Link href={product?.productUrl} className="text-[11px] !text-[#D42020]" itemProp="name" style={{ fontFamily: roboto }}>
               {product?.name}
             </Link>
 
@@ -116,6 +144,7 @@ const ProductCard = ({ product }: { product: any }) => {
             increment={increment}
             decrement={decrement}
             addtocart={addtocart}
+            setQuantity={setQuantity}
           />
         </div>
       </div>

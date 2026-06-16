@@ -13,19 +13,18 @@ import { RootState } from "@/redux/store";
 import BulkInquiryModal from "../modal/BulkInquiryModal";
 import AddReviewModal from "../modal/AddReviewModal";
 
-const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
+const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }: any) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const robotoCondensed = "'Roboto Condensed'";
-   const roboto = "'Roboto ', Arial, Helvetica, sans-serif";
+  const minQty = product?.minPurchaseQuantity || 1;
+  const maxQty = product?.maxPurchaseQuantity;
   const cart = useAppSelector((state: RootState) => state.cart.items);
   const { reviews, reviewsLoading, reviewsError, stats } = useAppSelector(
     (state) => state.home
   );
   const availableForSale = product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
- 
 
   const handleSeeMore = useCallback(() => {
     window.open(
@@ -45,13 +44,13 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
       <section className="product-middle flex flex-col h-full w-full max-w-full  xl:max-w-[50%] 2xl:max-w-[50%] ">
         {/* Title Section */}
         <div className="flex flex-col gap-2 mb-4">
-          <h1 className="font-bold text-[18px] sm:text-[18px] md:text-[18px] lg:text-[20px] xl:text-[20px] 2xl:text-[20px] leading-tight text-[#545454] border-b-1 border-[#8b8b8b] pb-3" style={{fontFamily:robotoCondensed}}>
+          <h1 className="font-bold text-[18px] sm:text-[18px] md:text-[18px] lg:text-[20px] xl:text-[20px] 2xl:text-[20px] leading-tight text-[#545454] border-b-1 border-[#8b8b8b] pb-3">
             {product?.name || "N/A"}
           </h1>
 
           {/* Brand */}
           <Link href={`/brand/${product?.brand?.slug}`}>
-            <h2 className="text-[14px] sm:text-[14px] md:text-[14px] text-[#545454] font-[400] uppercase hover:text-[#d40511] transition" style={{fontFamily:robotoCondensed}}>
+            <h2 className="text-[14px] sm:text-[14px] md:text-[14px] text-[#545454] font-[400] uppercase hover:text-[#d40511] transition">
               {product?.brand?.name || "N/A"}
             </h2>
           </Link>
@@ -62,8 +61,8 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
           <div className="flex flex-col">
             <h2 className="text-[#545454] flex items-center font-bold !text-[22px]" style={{ color: "#545454" }}>
               Call for pricing: <Link
+                href="#"
                 // href="tel:+15022063033" 
-                                   href="#" 
                 className="text-[#d40511] underline">
                 {/* (502) 206-3033 */}
               </Link>
@@ -143,7 +142,33 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
               <input
                 type="text"
                 value={quantity}
-                readOnly
+                // readOnly
+                onChange={(e) => {
+                  const val = e.target.value;
+                  // Empty allow karo typing ke liye
+                  if (val === "") {
+                    setQuantity("");
+                    return;
+                  }
+                  const num = Number(val);
+                  // Sirf valid number allow karo
+                  if (!isNaN(num) && num > 0) {
+                    // Max se zyada mat jane do
+                    if (maxQty && num > maxQty) return;
+                    setQuantity(num);
+                  }
+                }}
+                onBlur={() => {
+                  const num = Number(quantity);
+                  // Blur pe range enforce karo
+                  if (!num || num < minQty) {
+                    setQuantity(minQty);
+                    toast.error(`Minimum quantity is ${minQty}`);
+                  } else if (maxQty && num > maxQty) {
+                    setQuantity(maxQty);
+                    toast.error(`Maximum quantity is ${maxQty}`);
+                  }
+                }}
                 className="w-12 sm:w-14 h-9 sm:h-8 text-center border-x border-[#ddd] text-[15px] sm:text-[16px] font-semibold text-[#545454] outline-none bg-white"
               />
 
@@ -189,12 +214,11 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
           </button>}
 
           {/* Bulk Quote Link */}
-          <p className="text-[15px] sm:text-[18px] text-[#545454] mt-3 font-normal" style={{fontFamily:robotoCondensed}}>
+          <p className="text-[15px] sm:text-[18px] text-[#545454] mt-3 font-normal">
             Looking for a large quantity?{" "}
             <span
               className="text-[var(--primary-color)] hover:underline font-normal cursor-pointer"
               onClick={() => setIsModalOpen(true)}
-              style={{fontFamily:robotoCondensed}}
             >
               Request A Bulk Quote
             </span>
@@ -206,14 +230,13 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
           <button
             onClick={() => setIsReviewModalOpen(true)}
             className="text-[#393939] font-bold text-[13px] sm:text-[20px] hover:text-[#d40511] underline transition inline-block"
-            style={{fontFamily:robotoCondensed}}
           >
             Write a Review
           </button>
         </div>
 
         {/* Product Details */}
-        <div className="mb-6" style={{fontFamily:robotoCondensed}}>
+        <div className="mb-6">
           <div className="space-y-2">
             <div className="flex gap-2">
               <span className="text-[12px] sm:text-[14px] font-bold text-[#545454] ">
