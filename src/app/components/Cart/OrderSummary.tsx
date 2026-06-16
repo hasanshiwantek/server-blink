@@ -18,7 +18,8 @@ import { Country, State, City } from "country-state-city";
 import { fetchShippingRates } from "@/redux/slices/shippingSlice";
 import { calculatePackage } from "../CheckoutComponent/Shippingstep";
 import Image from "next/image";
-import GooglePayButton from "../CheckoutComponent/GooglePayButton";
+// import GooglePayButton from "../CheckoutComponent/GooglePayButton";
+import GPayButton from "../CheckoutComponent/GooglePayButton";
 
 
 
@@ -518,16 +519,10 @@ const OrderSummary = () => {
             Checkout
           </button>
 
-          <div className="w-full">
-            <GooglePayButton
-              amount={finalTotal}
-              onSuccess={(paymentIntent) => {
-                console.log("paymentIntent", paymentIntent);
-                // toast.success("Payment successful!");
-                // router.push(`/order-confirmation?payment_intent=${paymentIntent.id}`);
-              }}
-              onError={(err) => toast.error(err)}
-            />
+          <div className="w-full flex justify-end">
+            <div className="w-full md:w-auto min-w-[200px]">
+              <GPayButton amount={finalTotal} />
+            </div>
           </div>
         </div>
       </div>
