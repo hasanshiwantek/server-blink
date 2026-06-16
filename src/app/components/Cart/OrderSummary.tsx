@@ -18,6 +18,7 @@ import { Country, State, City } from "country-state-city";
 import { fetchShippingRates } from "@/redux/slices/shippingSlice";
 import { calculatePackage } from "../CheckoutComponent/Shippingstep";
 import Image from "next/image";
+import GooglePayButton from "../CheckoutComponent/GooglePayButton";
 
 
 
@@ -350,7 +351,7 @@ const OrderSummary = () => {
                       localStorage.setItem("shippingCost", cost);
                       localStorage.setItem("shippingData", JSON.stringify(shippingData));
 
-                     const checkoutFormData = JSON.parse(localStorage.getItem("checkoutFormData") || "{}");
+                      const checkoutFormData = JSON.parse(localStorage.getItem("checkoutFormData") || "{}");
 
                       if (shippingData) {
                         if (checkoutFormData) {
@@ -516,6 +517,18 @@ const OrderSummary = () => {
           >
             Checkout
           </button>
+
+          <div className="w-full">
+            <GooglePayButton
+              amount={finalTotal}
+              onSuccess={(paymentIntent) => {
+                console.log("paymentIntent", paymentIntent);
+                // toast.success("Payment successful!");
+                // router.push(`/order-confirmation?payment_intent=${paymentIntent.id}`);
+              }}
+              onError={(err) => toast.error(err)}
+            />
+          </div>
         </div>
       </div>
     </div>
