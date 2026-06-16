@@ -20,6 +20,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement }: any) => {
   const router = useRouter();
   const robotoCondensed = "'Roboto Condensed'";
    const roboto = "'Roboto ', Arial, Helvetica, sans-serif";
+   
   const cart = useAppSelector((state: RootState) => state.cart.items);
   const { reviews, reviewsLoading, reviewsError, stats } = useAppSelector(
     (state) => state.home
