@@ -57,7 +57,6 @@ export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
 
 // Stripe publishable key
 const stripePromise = loadStripe(
-  // "pk_test_51Q84ITDXm8Pt3arOOI28hj5W9JPohSimaAfVeGxCPCf9N86B5rK1POKOhQpOsNmeaid1cbRAU06yzV8eienwD10B00KDT12v4S"
   "pk_test_51TTnoo8vkezGA3pyz8ekc5xIQNyhweCnxiumTB1si5Dejq5YWPGHDJIJPpBHMLw9hYRkbSkOGpdCzPrlW8g59HZ600cueNQymh"
 );
 
