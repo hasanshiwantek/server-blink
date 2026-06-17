@@ -29,7 +29,7 @@ const FooterBottom = () => {
   const [filters, setFilters] = useState({ page: 1, perPage: 20 });
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
-   const robotoCondensed = "'Roboto Condensed ', Arial, Helvetica, sans-serif";
+   const robotoCondensed = "'Roboto ', Arial, Helvetica, sans-serif";
   const { newsletterLoading, newsletterSuccess, newsletterError } = useSelector((state: any) => state.contact);
   const { blogs, webPages, error, loading } = useAppSelector(
     (state: any) => state.storeFront
@@ -69,7 +69,7 @@ const FooterBottom = () => {
   return (
     <footer
       className="bg-[#333333] text-white w-full mx-auto"
-      style={robotoCondensedStyle}
+      style={{ fontFamily: robotoCondensed }}
     >
       {/* 🔹 Newsletter Section */}
       <section className="bg-[#cac9c9] flex justify-center items-center h-auto min-h-[3rem]">
