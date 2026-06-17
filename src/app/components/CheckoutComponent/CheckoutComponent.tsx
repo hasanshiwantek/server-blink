@@ -50,6 +50,7 @@ import BillingStep from "./Billingstep";
 import PaymentStep from "./Paymentstep";
 import CheckoutOrderSummary from "./CheckoutOrderSummary";
 import CheckoutMultipleOrderSummary from "./CheckoutMultipleOrderSummary";
+import { calculatePackage } from "./Shippingstep";
 
 export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
 
@@ -391,22 +392,116 @@ const CheckoutForm = () => {
       return;
     }
 
+    // const pr = stripe.paymentRequest({
+    //   country: "US",
+    //   currency: "usd",
+    //   total: {
+    //     label: "Order Total",
+    //     amount: Math.max(0, Math.round(finalTotal * 100)), // USE finalTotal
+    //   },
+    //   requestPayerName: true,
+    //   requestPayerEmail: true,
+    //   requestPayerPhone: true,
+    // });
+
     const pr = stripe.paymentRequest({
       country: "US",
       currency: "usd",
+
       total: {
         label: "Order Total",
-        amount: Math.max(0, Math.round(finalTotal * 100)), // USE finalTotal
+        amount: Math.max(0, Math.round(finalTotal * 100)),
       },
+
       requestPayerName: true,
       requestPayerEmail: true,
       requestPayerPhone: true,
+
+      requestShipping: true,
+    });
+
+    pr.on("shippingaddresschange", async (event) => {
+      try {
+        const response = await fetch(
+          "https://backend.sparemicro.com/api/web/checkout/get-shipping-rates",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              destination: {
+                state: event.shippingAddress.region,
+                country_code: event.shippingAddress.country,
+                postal_code: event.shippingAddress.postalCode,
+              },
+
+              package: {
+                total_weight: calculatePackage(cart).total_weight,
+                weight_unit: "LB",
+                order_total: finalTotal,
+                item_count: calculatePackage(cart).item_count,
+                package_value: finalTotal,
+              },
+            }),
+          }
+        );
+
+        const data = await response.json();
+
+        if (!data.success || !data.rates?.length) {
+          event.updateWith({
+            status: "invalid_shipping_address",
+          });
+
+          return;
+        }
+
+        event.updateWith({
+          status: "success",
+
+          shippingOptions: data.rates.map((rate: any) => ({
+            id: String(rate.method_id),
+            label: rate.display_name,
+            detail: rate.display_name,
+            amount: Math.round(
+              Number(rate.total_charge) * 100
+            ),
+          })),
+        });
+      } catch (err) {
+        console.error(err);
+
+        event.updateWith({
+          status: "fail",
+        });
+      }
+    });
+
+    pr.on("shippingoptionchange", (event) => {
+      const shippingCost =
+        Number(event.shippingOption.amount || 0);
+
+      event.updateWith({
+        status: "success",
+
+        total: {
+          label: "Order Total",
+          amount:
+            Math.round(finalTotal * 100) +
+            shippingCost,
+        },
+      });
     });
 
     let isMounted = true;
 
     pr.canMakePayment()
       .then((result) => {
+         console.log("Stripe:", stripe);
+          console.log("Payment Request:", pr);
+          console.log("canMakePayment:", result);
+          console.log("User Agent:", navigator.userAgent);
         if (!isMounted) return;
         if (result) {
           setPaymentRequest(pr);
@@ -416,7 +511,7 @@ const CheckoutForm = () => {
           });
         } else {
           setPaymentRequest(null);
-          setWalletSupport({ applePay: false, googlePay: false });
+          setWalletSupport({ applePay: true, googlePay: true });
         }
       });
 
@@ -1055,8 +1150,15 @@ const CheckoutForm = () => {
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
       {paymentRequest && (
-        <div className="hidden">
-          <PaymentRequestButtonElement options={{ paymentRequest }} />
+        <div className="">
+          {/* <PaymentRequestButtonElement options={{ paymentRequest }} /> */}
+          {paymentRequest && (
+            <PaymentRequestButtonElement
+              options={{
+                paymentRequest,
+              }}
+            />
+          )}
         </div>
       )}
 
