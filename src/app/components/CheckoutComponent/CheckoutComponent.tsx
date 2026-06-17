@@ -404,22 +404,29 @@ const CheckoutForm = () => {
     //   requestPayerPhone: true,
     // });
 
+    // const pr = stripe.paymentRequest({
+    //   country: "US",
+    //   currency: "usd",
+
+    //   total: {
+    //     label: "Order Total",
+    //     amount: Math.max(0, Math.round(finalTotal * 100)),
+    //   },
+
+    //   requestPayerName: true,
+    //   requestPayerEmail: true,
+    //   requestPayerPhone: true,
+
+    //   requestShipping: true,
+    // });
     const pr = stripe.paymentRequest({
       country: "US",
       currency: "usd",
-
       total: {
-        label: "Order Total",
-        amount: Math.max(0, Math.round(finalTotal * 100)),
+        label: "Test",
+        amount: 100,
       },
-
-      requestPayerName: true,
-      requestPayerEmail: true,
-      requestPayerPhone: true,
-
-      requestShipping: true,
     });
-
     pr.on("shippingaddresschange", async (event) => {
       try {
         const response = await fetch(
