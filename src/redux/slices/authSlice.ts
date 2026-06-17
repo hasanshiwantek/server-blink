@@ -5,16 +5,16 @@ export interface RegisterPayload {
   firstName: string;
   lastName: string;
   email: string;
-  phoneNumber: string;
   password: string;
-  password_confirmation: string;
-  companyName: string;
-  addressLine1: string;
+  phoneNumber?: string;
+  password_confirmation?: string;
+  companyName?: string;
+  addressLine1?: string;
   addressLine2?: string;
-  suburb: string;
-  country: string;
-  state: string;
-  zip: string;
+  suburb?: string;
+  country?: string;
+  state?: string;
+  zip?: string;
 }
 
 interface AuthState {
