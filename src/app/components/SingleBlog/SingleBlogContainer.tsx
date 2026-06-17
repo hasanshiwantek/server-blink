@@ -59,7 +59,7 @@ const SingleBlogContainer = ({ singleBlog }: SingleBlogContainerProps) => {
       >
         {/* Breadcrumb Navigation with Schema markup */}
         <nav 
-          className="flex items-center mb-6"
+          className=" hidden md:flex items-center mb-6"
           aria-label="Breadcrumb"
           itemScope
           itemType="https://schema.org/BreadcrumbList"

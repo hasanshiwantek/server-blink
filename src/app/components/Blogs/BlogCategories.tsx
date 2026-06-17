@@ -40,7 +40,7 @@ const BlogCategories = ({
   const showPagination = totalPages > 1;
   return (
     <div className="flex flex-col items-start w-full ">
-        <h2 className=""><span
+        <h2 className="hidden md:flex"><span
                   className="text-[11px]"
                   itemProp="name"
                 >
