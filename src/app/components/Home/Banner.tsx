@@ -20,7 +20,7 @@ import bannerImg4 from "@/assets/banner/banner-img4.jpg";
 import { fetchCarousels } from "@/redux/slices/homeSlice";
 
 const robotoCondensedStyle = { fontFamily: '"Roboto Condensed"' };
- const roboto = "'Roboto Condensed ', Arial, Helvetica, sans-serif";
+ const roboto = "'Roboto Condensed', Arial, Helvetica, sans-serif";
 
 const Banner = () => {
   const router = useRouter();

@@ -69,7 +69,7 @@ const FooterBottom = () => {
   return (
     <footer
       className="bg-[#333333] text-white w-full mx-auto"
-      style={robotoCondensedStyle}
+      style={{ fontFamily: robotoCondensed }}
     >
       {/* 🔹 Newsletter Section */}
       <section className="bg-[#cac9c9] flex justify-center items-center h-auto min-h-[3rem]">
