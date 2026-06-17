@@ -18,7 +18,7 @@ import { Country, State, City } from "country-state-city";
 import { fetchShippingRates } from "@/redux/slices/shippingSlice";
 import { calculatePackage } from "../CheckoutComponent/Shippingstep";
 import Image from "next/image";
-import GPayButton from "../CheckoutComponent/GooglePayButton";
+
 
 const OrderSummary = () => {
   const dispatch = useAppDispatch();
@@ -74,6 +74,8 @@ const OrderSummary = () => {
       return sum + cost;
     }, 0);
   }, [cart]);
+
+  const packageInfo = useMemo(() => calculatePackage(cart), [cart]);
 
   const shippingLabel = `FedEx priority $${shipping.toFixed(2)}`;
   const roboto = "'Roboto', Arial, Helvetica, sans-serif";
@@ -579,7 +581,11 @@ const OrderSummary = () => {
 
           <div className="w-full flex justify-end">
             <div className="w-full md:w-auto min-w-[200px]">
-              <GPayButton amount={finalTotal} />
+              {/* <StripeWalletButton
+                amount={finalTotal}
+                totalWeight={packageInfo.total_weight}
+                itemCount={packageInfo.item_count}
+              /> */}
             </div>
           </div>
         </div>
