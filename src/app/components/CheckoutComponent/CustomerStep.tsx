@@ -4,7 +4,10 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { UseFormRegister, FieldErrors } from "react-hook-form";
 import Link from "next/link";
+import { useAppSelector } from "@/hooks/useReduxHooks";
+import { RootState } from "@/redux/store";
 import LoginForm from "./LoginForm";
+
 interface CustomerStepProps {
   register: UseFormRegister<any>;
   errors: FieldErrors;
@@ -34,6 +37,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
 }) => {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
+  const auth = useAppSelector((state: RootState) => state?.auth);
 
   return (
     <>
@@ -107,7 +111,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
                   </button>
                 </div>
 
-                <div className="text-[13px] text-gray-700 mt-10 sm:mt-4">
+            {!auth?.isAuthenticated && <div className="text-[13px] text-gray-700 mt-10 sm:mt-4">
                   Already have an account?{" "}
                   <button
                     type="button"
@@ -116,7 +120,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
                   >
                     Sign in now
                   </button>
-                </div>
+                </div>}
               </>
             ) : (
               <div className="w-full">
