@@ -1,9 +1,10 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { UseFormRegister, FieldErrors } from "react-hook-form";
 import Link from "next/link";
+import LoginForm from "./LoginForm";
 interface CustomerStepProps {
   register: UseFormRegister<any>;
   errors: FieldErrors;
@@ -31,73 +32,97 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
   onEdit,
   emailValue,
 }) => {
+  const [showLogin, setShowLogin] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
+
   return (
     <>
       {isCompleted && !isActive ? (
         // Show completed state with email and edit button
         <div className="flex items-center justify-between">
           <span className="text-base text-gray-600">{emailValue}</span>
-          <button
-            type="button"
-            onClick={onEdit}
-            className="btn-primary"
-          >
+          <button type="button" onClick={onEdit} className="btn-primary">
             EDIT
           </button>
         </div>
       ) : isActive ? (
         // Show active form
-        <div className="space-y-4">
+        <div className="space-y-4 ">
           <div className="flex flex-col">
-            <label htmlFor="email" className="text-[13px] mb-2 text-gray-700">
-              Email Address
-            </label>
-            <div className="flex gap-2">
-              <Input
-                id="email"
-                type="email"
-                className={`flex-1 h-[40px] ${errors.email ? "border-red-500" : ""
-                  }`}
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Invalid email address",
-                  },
-                })}
-              />
-              <button
-                type="button"
-                onClick={onContinue}
-                className="btn-primary"
-              >
-                CONTINUE
-              </button>
-            </div>
-            {errors.email && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.email.message as string}
-              </p>
+            {!showLogin ? (
+              <>
+                <label
+                  htmlFor="email"
+                  className="text-[13px] mb-2 text-gray-700"
+                >
+                  Email Address
+                </label>
+
+                <div className="flex flex-wrap items-start gap-2">
+                  <div className="w-full sm:flex-1 sm:max-w-[350px] order-1">
+                    <Input
+                      id="email"
+                      type="email"
+                      className={`flex-1 h-[44px] w-full rounded-none ${
+                        errors.email ? "border-red-500" : ""
+                      }`}
+                      {...register("email", {
+                        required: "Email is required",
+                        pattern: {
+                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                          message: "Invalid email address",
+                        },
+                      })}
+                    />
+                    {errors.email && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.email.message as string}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Newsletter */}
+                  <div className="w-full mt-2 order-2 sm:order-3">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        id="newsletter"
+                        {...register("newsletter")}
+                        className="w-4 h-4"
+                      />
+                      <label
+                        htmlFor="newsletter"
+                        className="text-[13px] text-gray-700"
+                      >
+                        Subscribe to our newsletter.
+                      </label>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={onContinue}
+                    className="btn-primary h-[44px] sm:h-[40px] w-full sm:w-auto order-3  sm:order-2"
+                  >
+                    CONTINUE
+                  </button>
+                </div>
+
+                <div className="text-[13px] text-gray-700 mt-10 sm:mt-4">
+                  Already have an account?{" "}
+                  <button
+                    type="button"
+                    onClick={() => setShowLogin(true)}
+                    className="text-[var(--primary-color)]"
+                  >
+                    Sign in now
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="w-full">
+                <LoginForm onCancel={() => setShowLogin(false)} />
+              </div>
             )}
-          </div>
-
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="newsletter"
-              {...register("newsletter")}
-              className="w-4 h-4"
-            />
-            <label htmlFor="newsletter" className="text-[13px] text-gray-700">
-              Subscribe to our newsletter.
-            </label>
-          </div>
-
-          <div className="text-[13px] text-gray-700">
-            Already have an account?{" "}
-            <Link href="/auth/login" className="text-[var(--primary-color)]">
-              Sign in now
-            </Link>
           </div>
 
           {/* Apple Pay Button */}
@@ -130,7 +155,6 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
               height={30}
             />
           </button>
-
         </div>
       ) : null}
     </>
