@@ -1,12 +1,14 @@
 
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 // import { fetchOrderDetails } from "@/lib/api/order";
 import { fetchOrderDetails } from "@/redux/slices/cartSlice";
 import { useAppDispatch } from "@/hooks/useReduxHooks";
+import { useReactToPrint } from "react-to-print";
+import { Invoice } from "./helpers/OrderDetail";
 interface OrderData {
   id: number;
   orderNumber: string;
@@ -63,13 +65,29 @@ interface OrderData {
 const SingleOrder = () => {
   const params = useParams();
   const orderNumber = params?.slug as string;
-  
-  
   const dispatch = useAppDispatch();
   const [order, setOrder] = useState<OrderData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // ref pointing to the Invoice DOM node
+  const invoiceRef = useRef<HTMLDivElement>(null);
 
+  const handlePrint = useReactToPrint({
+    contentRef: invoiceRef,          // v3 API: pass the ref here
+    documentTitle: `Invoice-Order-${order?.id}`,
+    pageStyle: `
+            @page {
+                size: A4;
+                margin: 16mm;
+            }
+            @media print {
+                body {
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                }
+            }
+        `,
+  });
   useEffect(() => {
     const loadOrderDetails = async () => {
       if (!orderNumber) {
@@ -148,112 +166,122 @@ const SingleOrder = () => {
     );
     return product?.quantity || 1;
   };
+  console.log("order", order);
 
   return (
-    <div className="py-6 max-w-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
-      {/* Order Contents */}
-      <div className="lg:col-span-2 border rounded-md p-6">
-        <p className="text-gray-500 mb-4 text-xl">
-          Items shipped to {shippingAddress?.addressLine1},{" "}
-          {shippingAddress?.city}, {shippingAddress?.zip},{" "}
-          {shippingAddress?.country}
-        </p>
+    <>
+      {/* ── Hidden invoice: only rendered for react-to-print, never visible on screen ── */}
+      <div className="hidden print:block">
+        <Invoice ref={invoiceRef} order={order} />
+      </div>
+      <div className="py-6 max-w-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Order Contents */}
+        <div className="lg:col-span-2 border rounded-md p-6">
+          <p className="text-gray-500 mb-4 text-xl">
+            Items shipped to {shippingAddress?.addressLine1},{" "}
+            {shippingAddress?.city}, {shippingAddress?.zip},{" "}
+            {shippingAddress?.country}
+          </p>
 
-        <div className="divide-y">
-          {order.products.map((item) => {
-            const quantity = getProductQuantity(item.id);
-            const itemPrice = parseFloat(item.price);
-            const primaryImage = item.image.find((img) => img.isPrimary === 1);
+          <div className="divide-y">
+            {order.products.map((item) => {
+              const quantity = getProductQuantity(item.id);
+              const itemPrice = parseFloat(item.price);
+              const primaryImage = item.image.find((img) => img.isPrimary === 1);
 
-            return (
-              <div
-                key={item.id}
-                className="border-t border-b border-gray-300 flex flex-col md:flex-row items-center justify-between py-4"
-              >
-                <div className="flex flex-col md:flex-row items-center gap-4">
-                  <div className="w-28 h-28 relative border rounded">
-                    <Image
-                      src={primaryImage?.path || "/default-product-image.svg"}
-                      alt={primaryImage?.altText || item.name}
-                      fill
-                      className="object-contain bg-white p-2"
-                    />
+              return (
+                <div
+                  key={item.id}
+                  className="border-t border-b border-gray-300 flex flex-col md:flex-row items-center justify-between py-4"
+                >
+                  <div className="flex flex-col md:flex-row items-center gap-4">
+                    <div className="w-28 h-28 relative border rounded">
+                      <Image
+                        src={primaryImage?.path || "/default-product-image.svg"}
+                        alt={primaryImage?.altText || item.name}
+                        fill
+                        className="object-contain bg-white p-2"
+                      />
+                    </div>
+                    <div>
+                      <p className="font-medium text-xl max-w-2xl">
+                        {quantity} × {item.sku} - {item.name}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium text-xl max-w-2xl">
-                      {quantity} × {item.sku} - {item.name}
-                    </p>
-                  </div>
+                  <p className="font-medium text-xl">
+                    ${(itemPrice * quantity).toFixed(2)}
+                  </p>
                 </div>
-                <p className="font-medium text-xl">
-                  ${(itemPrice * quantity).toFixed(2)}
-                </p>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+
+          {/* Totals */}
+          <div className="flex flex-col items-end mt-6 gap-1 text-xl">
+            <p>Subtotal: ${subtotal.toFixed(2)}</p>
+            {shippingCost > 0 && <p>Shipping: ${shippingCost.toFixed(2)}</p>}
+            <p className="font-semibold">
+              Grand total: ${total.toFixed(2)}
+            </p>
+          </div>
         </div>
 
-        {/* Totals */}
-        <div className="flex flex-col items-end mt-6 gap-1 text-xl">
-          <p>Subtotal: ${subtotal.toFixed(2)}</p>
-          {shippingCost > 0 && <p>Shipping: ${shippingCost.toFixed(2)}</p>}
-          <p className="font-semibold">
-            Grand total: ${total.toFixed(2)}
-          </p>
+        {/* Order Details, Ship To, Bill To */}
+        <div className="flex flex-col gap-6">
+          {/* Order Details */}
+          <div className="border rounded-md p-4 text-xl">
+            <p>Order number: {order.orderNumber}</p>
+            <p>Order status: {order.status}</p>
+            <p>Order date: {orderDate}</p>
+            <p>Order total: ${total.toFixed(2)}</p>
+            <button onClick={() => handlePrint()} className="mt-3 text-2xl font-bold border-b-2 border-black px-4 py-2 bg-[#D42020] text-white rounded-md hover:bg-red-700 transition w-60">
+              PRINT INVOICE
+            </button>
+            {/* ── Invoice preview (screen only) ── */}
+
+          </div>
+
+          {/* Ship To */}
+          <div className="border rounded-md p-4 text-xl">
+            <p>
+              {shippingAddress?.firstName} {shippingAddress?.lastName}
+            </p>
+            {shippingAddress?.companyName && <p>{shippingAddress.companyName}</p>}
+            <p>{shippingAddress?.addressLine1}</p>
+            {shippingAddress?.addressLine2 && (
+              <p>{shippingAddress.addressLine2}</p>
+            )}
+            <p>
+              {shippingAddress?.city}, {shippingAddress?.state}{" "}
+              {shippingAddress?.zip}
+            </p>
+            <p>{shippingAddress?.country}</p>
+            <p className="mt-2 text-sm text-gray-600">{shippingAddress?.phone}</p>
+            <p className="text-gray-600">{shippingAddress?.email}</p>
+          </div>
+
+          {/* Bill To */}
+          <div className="border rounded-md p-4 text-xl">
+            {/* <h2 className="font-semibold mb-2">Bill To</h2> */}
+            <p>
+              {billingAddress?.firstName} {billingAddress?.lastName}
+            </p>
+            {billingAddress?.companyName && <p>{billingAddress.companyName}</p>}
+            <p>{billingAddress?.addressLine1}</p>
+            {billingAddress?.addressLine2 && <p>{billingAddress.addressLine2}</p>}
+            <p>
+              {billingAddress?.city}, {billingAddress?.state}{" "}
+              {billingAddress?.zip}
+            </p>
+            <p>{billingAddress?.country}</p>
+            <p className="mt-2 text-sm text-gray-600">{billingAddress?.phone}</p>
+            <p className="text-gray-600">{billingAddress?.email}</p>
+          </div>
         </div>
       </div>
+    </>
 
-      {/* Order Details, Ship To, Bill To */}
-      <div className="flex flex-col gap-6">
-        {/* Order Details */}
-        <div className="border rounded-md p-4 text-xl">
-          <p>Order number: {order.orderNumber}</p>
-          <p>Order status: {order.status}</p>
-          <p>Order date: {orderDate}</p>
-          <p>Order total: ${total.toFixed(2)}</p>
-          <button className="mt-3 text-2xl font-bold border-b-2 border-black px-4 py-2 bg-[#D42020] text-white rounded-md hover:bg-red-700 transition w-60">
-            PRINT INVOICE
-          </button>
-        </div>
-
-        {/* Ship To */}
-        <div className="border rounded-md p-4 text-xl">
-          <p>
-            {shippingAddress?.firstName} {shippingAddress?.lastName}
-          </p>
-          {shippingAddress?.companyName && <p>{shippingAddress.companyName}</p>}
-          <p>{shippingAddress?.addressLine1}</p>
-          {shippingAddress?.addressLine2 && (
-            <p>{shippingAddress.addressLine2}</p>
-          )}
-          <p>
-            {shippingAddress?.city}, {shippingAddress?.state}{" "}
-            {shippingAddress?.zip}
-          </p>
-          <p>{shippingAddress?.country}</p>
-          <p className="mt-2 text-sm text-gray-600">{shippingAddress?.phone}</p>
-          <p className="text-gray-600">{shippingAddress?.email}</p>
-        </div>
-
-        {/* Bill To */}
-        <div className="border rounded-md p-4 text-xl">
-          {/* <h2 className="font-semibold mb-2">Bill To</h2> */}
-          <p>
-            {billingAddress?.firstName} {billingAddress?.lastName}
-          </p>
-          {billingAddress?.companyName && <p>{billingAddress.companyName}</p>}
-          <p>{billingAddress?.addressLine1}</p>
-          {billingAddress?.addressLine2 && <p>{billingAddress.addressLine2}</p>}
-          <p>
-            {billingAddress?.city}, {billingAddress?.state}{" "}
-            {billingAddress?.zip}
-          </p>
-          <p>{billingAddress?.country}</p>
-          <p className="mt-2 text-sm text-gray-600">{billingAddress?.phone}</p>
-          <p className="text-gray-600">{billingAddress?.email}</p>
-        </div>
-      </div>
-    </div>
   );
 };
 
