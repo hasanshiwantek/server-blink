@@ -22,7 +22,7 @@ import Image from "next/image";
 
 const OrderSummary = () => {
   const dispatch = useAppDispatch();
-  const cart = useAppSelector((state: RootState) => state.cart.items);
+  const cart = useAppSelector((state: RootState) => state.carts?.items);
   const {
     appliedCoupon,
     discountAmount,

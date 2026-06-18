@@ -2,6 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { useAppDispatch } from "@/hooks/useReduxHooks";
+import { baseURL, storeId } from "@/lib/axiosInstance";
 import { registerUser } from "@/redux/slices/authSlice";
 import { useState } from "react";
 
@@ -68,14 +69,27 @@ const SignupForm = ({ onCancel }: SignupFormProps) => {
       const result = await dispatch(registerUser(payload));
 
       if (registerUser.fulfilled.match(result)) {
+        const token = result?.payload?.token
+        const fetchCartListInner = async () => {
+          const sessionId = localStorage.getItem("sessionId")
+          const res = await fetch(`${baseURL}web/cart/transfer`, {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "storeId": storeId,
+              "X-Session-ID": sessionId || "",
+              "Content-Type": "application/json",
+            },
+          });
+          window.location.reload();
+        };
+        fetchCartListInner()
         setState({
           firstName: "",
           lastName: "",
           email: "",
           password: "",
         });
-
-        window.location.reload();
       } else {
         const errorMessage =
           result.payload || "Registration failed. Please try again.";
