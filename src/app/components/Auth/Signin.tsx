@@ -63,9 +63,13 @@ const SigninPage = () => {
       console.error("🚨 Unexpected error during onSubmit:", err);
     }
   };
-  useEffect(() => {
+useEffect(() => {
+  const timer = setTimeout(() => {
     dispatch(fetchCartList());
-  }, [])
+  }, 1000);
+
+  return () => clearTimeout(timer); // cleanup
+}, []);
   return (
     <div className=" ">
       {/* Header/Navigation - Dark gray bar at top */}
