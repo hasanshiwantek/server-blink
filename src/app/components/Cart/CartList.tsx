@@ -15,37 +15,56 @@ import {
   Dialog,
   DialogContent,
 } from "@/components/ui/dialog";
+import { deleteCart, fetchCartList, updateCart } from "@/redux/slices/cartsSlice";
 const CartList = () => {
   const dispatch = useAppDispatch();
-  const cart = useAppSelector((state: RootState) => state.cart.items);
+  const cart = useAppSelector((state: RootState) => state.carts?.items);
+  const { cartLoading, loading } = useAppSelector((state: RootState) => state.carts);
+  const disable = cartLoading || loading
 
   const [quantities, setQuantities] = useState<{
     [key: string]: number | string;
   }>({});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<any | null>(null);
-
+  function removeLocalShipping() {
+    localStorage.removeItem("shippingCost")
+    localStorage.removeItem("shippingData")
+  }
   const handleChange = (id: string, value: string, maxPurchaseQuantity?: number) => {
     if (value === "" || /^\d*$/.test(value)) {
       const parsed = Number(value);
 
       if (maxPurchaseQuantity && parsed > maxPurchaseQuantity) {
         setQuantities((prev) => ({ ...prev, [id]: maxPurchaseQuantity }));
-        dispatch(updateQty({ id, quantity: maxPurchaseQuantity }));
+        // dispatch(updateQty({ id, quantity: maxPurchaseQuantity }));
+        dispatch(updateCart({
+          id: id,
+          data: {
+            quantity: maxPurchaseQuantity
+          }
+        })).unwrap()
+          .then(() => {
+            dispatch(fetchCartList());
+            removeLocalShipping()
+          })
         return;
       }
-
       setQuantities((prev) => ({ ...prev, [id]: value }));
     }
-    localStorage.removeItem("shippingCost")
-    localStorage.removeItem("shippingData")
   };
+
+
   const confirmDelete = () => {
     if (itemToDelete) {
-      dispatch(removeFromCart(itemToDelete.id));
-      setItemToDelete(null);
+      // dispatch(removeFromCart(itemToDelete.id));
+      dispatch(deleteCart({ id: itemToDelete?.cartItemId })).unwrap().then(() => {
+        dispatch(fetchCartList());
+        removeLocalShipping()
+        setItemToDelete(null);
+        setIsDialogOpen(false);
+      })
     }
-    setIsDialogOpen(false);
   };
   useEffect(() => {
     const updatedQuantities: { [key: string]: number } = {};
@@ -71,7 +90,18 @@ const CartList = () => {
           ? parsed
           : 1;
 
-      dispatch(updateQty({ id, quantity: newQty }));
+      // dispatch(updateQty({ id, quantity: newQty }));
+
+      dispatch(updateCart({
+        id: id,
+        data: {
+          quantity: newQty
+        }
+      })).unwrap()
+        .then(() => {
+          dispatch(fetchCartList());
+          removeLocalShipping()
+        })
 
       setQuantities((prev) => ({
         ...prev,
@@ -98,7 +128,6 @@ const CartList = () => {
           const maxQty = item.maxPurchaseQuantity;
 
           return <>
-            {/* Example product row */}
             <div
               key={item?.id}
               className="flex flex-col xl:flex-row items-center justify-between py-5"
@@ -148,11 +177,26 @@ const CartList = () => {
                     {/* Down Arrow (Decrease) — Left */}
                     <button
                       type="button"
+
                       onClick={() => {
                         if (item.quantity > minQty) {
-                          dispatch(decreaseQty(item.id))
-                          localStorage.removeItem("shippingCost")
-                          localStorage.removeItem("shippingData")
+                          // dispatch(decreaseQty(item.id))
+                          // dispatch(updateCart({
+                          //   id: item?.cartItemId, data: quantities[item.id] === undefined
+                          //     ? item.quantity
+                          //     : quantities[item.id]
+                          // }))
+
+                          dispatch(updateCart({
+                            id: item?.cartItemId,
+                            data: {
+                              quantity: Number(item?.quantity) - 1
+                            }
+                          })).unwrap()
+                            .then(() => {
+                              dispatch(fetchCartList());
+                              removeLocalShipping()
+                            })
                         }
                       }}
                       //                 className="
@@ -161,7 +205,7 @@ const CartList = () => {
                       //   text-black
                       // "
                       className="w-8 h-8  flex items-center justify-center hover:bg-[#f5f5f5] transition text-[#4a4a4a] bg-[#cac9c9]  border-b-3 border-[#8b8b8b]"
-                      disabled={item.quantity <= minQty}
+                      disabled={item.quantity <= minQty || disable}
                     >
                       <ChevronDown size={16} />
                     </button>
@@ -169,26 +213,47 @@ const CartList = () => {
                     {/* Number Input — Center */}
                     <input
                       type="number"
+                      disabled={disable}
                       value={
                         quantities[item.id] === undefined
                           ? item.quantity
                           : quantities[item.id]
                       }
-                      onChange={(e) => handleChange(item.id, e.target.value, maxQty)}
+                      onChange={(e) => handleChange(item?.cartItemId, e.target.value, maxQty)}
                       onBlur={(e) => {
-                        const parsed = Number(quantities[item.id]);
+                        const parsed = Number(quantities[item.cartItemId]);
                         if (!parsed || parsed <= 0) {
-                          dispatch(updateQty({ id: item.id, quantity: 1 }));
-                          setQuantities((prev) => ({ ...prev, [item.id]: 1 }));
+                          dispatch(updateCart({
+                            id: item?.cartItemId,
+                            data: {
+                              quantity: 1
+                            }
+                          })).unwrap()
+                            .then(() => {
+                              dispatch(fetchCartList());
+                              removeLocalShipping()
+                            })
+                          // dispatch(updateQty({ id: item.id, quantity: 1 }));
+                          setQuantities((prev) => ({ ...prev, [item.cartItemId]: 1 }));
                         } else if (item.maxQty && parsed > maxQty) {
-                          dispatch(updateQty({ id: item.id, quantity: maxQty }));
-                          setQuantities((prev) => ({ ...prev, [item.id]: maxQty }));
+                          dispatch(updateCart({
+                            id: item?.cartItemId,
+                            data: {
+                              quantity: maxQty
+                            }
+                          })).unwrap()
+                            .then(() => {
+                              dispatch(fetchCartList());
+                              removeLocalShipping()
+                            })
+                          // dispatch(updateQty({ id: item.id, quantity: maxQty }));
+                          setQuantities((prev) => ({ ...prev, [item.cartItemId]: maxQty }));
                         }
                       }}
                       min={minQty}
                       max={maxQty || undefined}
                       onKeyDown={(e) =>
-                        handleManualQtyUpdate(e, item.id, maxQty)
+                        handleManualQtyUpdate(e, item?.cartItemId, maxQty)
                       }
                       className="
       w-10 bg-white text-center py-0 outline-none
@@ -207,9 +272,17 @@ const CartList = () => {
                           !maxQty ||
                           item.quantity < maxQty
                         ) {
-                          dispatch(increaseQty(item.id));
-                          localStorage.removeItem("shippingCost")
-                          localStorage.removeItem("shippingData")
+                          // dispatch(increaseQty(item.id));
+                          dispatch(updateCart({
+                            id: item?.cartItemId,
+                            data: {
+                              quantity: Number(item?.quantity) + 1
+                            }
+                          })).unwrap()
+                            .then(() => {
+                              dispatch(fetchCartList());
+                              removeLocalShipping()
+                            });
                         }
                       }}
                       //                 className="
@@ -217,7 +290,7 @@ const CartList = () => {
                       //   hover:bg-gray-100
                       //   text-black
                       // "
-                      disabled={!!maxQty && item.quantity >= maxQty}
+                      disabled={!!maxQty && item.quantity >= maxQty || disable}
                       className="w-8 h-8  flex items-center justify-center hover:bg-[#f5f5f5] transition text-[#4a4a4a] bg-[#cac9c9]  border-b-3 border-[#8b8b8b]"
 
                     >
@@ -244,6 +317,7 @@ const CartList = () => {
                     onClick={() => {
                       setItemToDelete(item);
                       setIsDialogOpen(true);
+
                     }}
                     className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#CAC9C9] text-[#D42020] transition hover:bg-[#B8B7B7] hover:text-[#b81a1a]"
                   >
@@ -251,10 +325,10 @@ const CartList = () => {
                   </button>
                 </div>
               </div>
-            </div>
+            </div >
 
             {/* line grey */}
-            <div className="w-[97%] mx-auto h-[1px] bg-gray-300"></div>
+            <div className="w-[97%] mx-auto h-[1px] bg-gray-300" ></div>
           </>
         })
       ) : (
@@ -298,7 +372,7 @@ const CartList = () => {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </div >
   );
 };
 

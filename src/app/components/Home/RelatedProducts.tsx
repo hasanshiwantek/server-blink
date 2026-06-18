@@ -25,7 +25,7 @@ const RelatedProduct = ({ products }: { products: RelatedProductItem[] }) => {
   const [direction, setDirection] = useState(0); // 👈 direction detect
   const itemsPerPage = 4;
   const dispatch = useAppDispatch();
-  const cart = useAppSelector((state: RootState) => state.cart.items);
+  const cart = useAppSelector((state: RootState) => state.carts?.items);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<RelatedProductItem | null>(null);
 

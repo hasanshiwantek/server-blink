@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -11,6 +11,8 @@ import { useRouter } from "next/navigation";
 import { RootState } from "@/redux/store";
 import { toast } from "react-toastify";
 import { FiEye, FiEyeOff } from "react-icons/fi"; // add at top
+import { cartTransfer, fetchCartList } from "@/redux/slices/cartsSlice";
+import { baseURL, storeId } from "@/lib/axiosInstance";
 interface SigninFormValues {
   email: string;
   password: string;
@@ -26,14 +28,29 @@ const SigninPage = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-
+  const auth = useAppSelector((state: RootState) => state?.auth);
   const { loginloading } = useAppSelector((state: RootState) => state?.auth);
   const onSubmit = async (data: SigninFormValues) => {
     try {
       const result = await dispatch(loginUser(data));
       if (loginUser.fulfilled.match(result)) {
-        reset();
-        router.push("/my-account/orders");
+        const token = result?.payload?.token
+        const fetchCartListInner = async () => {
+          const sessionId = localStorage.getItem("sessionId")
+          const res = await fetch(`${baseURL}web/cart/transfer`, {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "storeId": storeId,
+              "X-Session-ID": sessionId || "",
+              "Content-Type": "application/json",
+            },
+          });
+          reset();
+          dispatch(fetchCartList());
+          router.push("/my-account/orders");
+        };
+        fetchCartListInner()
       } else {
         const errorMessage =
           typeof result?.payload === "string"
@@ -46,7 +63,9 @@ const SigninPage = () => {
       console.error("🚨 Unexpected error during onSubmit:", err);
     }
   };
-
+  useEffect(() => {
+    dispatch(fetchCartList());
+  }, [])
   return (
     <div className=" ">
       {/* Header/Navigation - Dark gray bar at top */}

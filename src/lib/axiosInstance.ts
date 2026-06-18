@@ -12,6 +12,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use((config) => {
   if (typeof window !== "undefined") {
     const data = localStorage.getItem("persist:auth");
+    const sessionId = localStorage.getItem("sessionId");
     const user = data ? JSON.parse(data) : null
     const token = user?.token ? JSON.parse(user.token) : null;
     if (token) {
@@ -19,6 +20,7 @@ axiosInstance.interceptors.request.use((config) => {
     }
     if (storeId) {
       config.headers["storeId"] = Number(storeId);
+      config.headers["X-Session-ID"] = sessionId
     }
   }
 

@@ -3,7 +3,7 @@ import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "@/lib/axiosInstance";
 import { CHECKOUT_STORAGE_KEY } from "@/app/components/CheckoutComponent/CheckoutComponent";
 export interface CartItem {
-  productId: string | number;
+  productId:any;
   quantity: number;
   // baki jo bhi props product ke andar aate hain unhe dynamically allow karenge
   [key: string]: any;

@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { RootState } from "@/redux/store";
+import { addCart, fetchCartList } from "@/redux/slices/cartsSlice";
 interface Brand {
   id: number;
   name: string;
@@ -41,7 +42,9 @@ const robotoCondensedStyle = { fontFamily: '"Roboto Condensed"' };
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const cart = useAppSelector((state: RootState) => state.cart.items);
+  const cart = useAppSelector((state: RootState) => state.carts?.items);
+  const { cartLoading, loading } = useAppSelector((state: RootState) => state.carts);
+  const cartLoad = cartLoading || loading
 
   // safe brand name
   const brandName =
@@ -62,6 +65,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const brandSlug =
     typeof product.brand === "object" ? product?.brand?.slug : undefined;
   const availableForSale = product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
+
 
   return (
     <div className="bg-[#F2F2F2] rounded shadow hover:shadow-md transition flex flex-col h-full">
@@ -142,19 +146,28 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               // Add only up to the allowed maximum
               const quantityToAdd = Math.min(minQty, remaining);
 
-              dispatch(
-                addToCart({
-                  ...product,
-                  quantity: quantityToAdd,
-                  minPurchaseQuantity: minQty,
-                  maxPurchaseQuantity: maxQty,
-                })
-              );
-              toast.success(`${product.name} added to cart!`);
-              router.push("/cart")
+              // dispatch(
+              //   addToCart({
+              //     ...product,
+              //     quantity: quantityToAdd,
+              //     minPurchaseQuantity: minQty,
+              //     maxPurchaseQuantity: maxQty,
+              //   })
+              // );
+
+              dispatch(addCart({
+                data: {
+                  productId: product?.id,
+                  quantity: quantityToAdd
+                }
+              })).unwrap().then(() => {
+                toast.success(`${product.name} added to cart!`);
+                dispatch(fetchCartList());
+                router.push("/cart")
+              })
             }
           }}
-          disabled={!availableForSale}
+          disabled={!availableForSale || cartLoad}
           className="w-full bg-[#CAC9C9] hover:bg-[#D42020] font-bold text-[#393939] border-b-2 border-[#393939] py-1 hover:text-white rounded text-[14px] mt-auto transition">
           {"ADD TO CART"}
         </button> : <button

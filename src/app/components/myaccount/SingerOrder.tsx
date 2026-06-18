@@ -166,7 +166,6 @@ const SingleOrder = () => {
     );
     return product?.quantity || 1;
   };
-  console.log("order", order);
 
   return (
     <>

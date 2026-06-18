@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { logout } from "@/redux/slices/authSlice";
+import { cartTransfer, fetchCartList } from "@/redux/slices/cartsSlice";
 
 interface Category {
   id: number;
@@ -36,6 +37,8 @@ const FooterBottom = () => {
   const { blogs, webPages, error, loading } = useAppSelector(
     (state: any) => state.storeFront
   );
+  const cart = useAppSelector((state: RootState) => state.cart?.items);
+  const carts = useAppSelector((state: RootState) => state.carts.items);
 
 
   const pagesList = webPages?.data || [];
@@ -58,14 +61,6 @@ const FooterBottom = () => {
       router.replace("/auth/login");
     }
   };
-  useEffect(() => {
-    dispatch(getBlogs(filters));
-  }, [dispatch]);
-  useEffect(() => {
-    dispatch(getWebPages({ page: 1, perPage: 100 }));
-  }, [dispatch]);
-
-
 
   useEffect(() => {
     const existingSession = localStorage.getItem("sessionId");
@@ -76,6 +71,13 @@ const FooterBottom = () => {
       localStorage.setItem("sessionId", randomString)
     }
   }, [])
+
+  useEffect(() => {
+    dispatch(getBlogs(filters));
+    dispatch(getWebPages({ page: 1, perPage: 100 }));
+    dispatch(fetchCartList());
+  }, [dispatch]);
+
 
   return (
     <footer

@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import SignupForm from "./SignupForm";
+import { baseURL, storeId } from "@/lib/axiosInstance";
 
 interface SigninFormValues {
   email: string;
@@ -42,11 +43,25 @@ const LoginForm = ({ onCancel }: LoginFormProps) => {
     try {
       const result = await dispatch(loginUser(state));
       if (loginUser.fulfilled.match(result)) {
+        const token = result?.payload?.token
+        const fetchCartListInner = async () => {
+          const sessionId = localStorage.getItem("sessionId")
+          const res = await fetch(`${baseURL}web/cart/transfer`, {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "storeId": storeId,
+              "X-Session-ID": sessionId || "",
+              "Content-Type": "application/json",
+            },
+          });
+          window.location.reload();
+        };
+        fetchCartListInner()
         setState({
           email: "",
           password: "",
         });
-        window.location.reload();
       } else {
         const errorMessage =
           typeof result?.payload === "string"
