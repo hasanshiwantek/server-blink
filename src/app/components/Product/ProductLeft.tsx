@@ -73,6 +73,7 @@ const ProductLeft = ({
   }, [lightboxOpen, goPrev, goNext]);
 
   const modalSrc = imageList[modalIndex] ?? "/default-product-image.svg";
+  const roboto = "'Roboto', Arial, Helvetica, sans-serif";
 
   useEffect(() => {
     if (!lightboxOpen) return;
@@ -251,7 +252,7 @@ const ProductLeft = ({
                 side="top"
                 className="max-w-[280px] rounded-md bg-[#3d3d3d] px-4 py-2 text-base text-white"
               >
-                <p>
+                <p style={{ fontFamily: roboto }} className="text-[16px]">
                   A well-known review website is Trustpilot. It is used by
                   companies of all sizes, from small local businesses to large
                   international corporations.
@@ -278,7 +279,7 @@ const ProductLeft = ({
                 side="top"
                 className="max-w-[280px] rounded-md bg-[#3d3d3d] px-4 py-2 text-base text-white"
               >
-                <p>
+                <p style={{ fontFamily: roboto }} className="text-[16px]">
                   Express shipping is available. Get your product delivered in
                   as fast as one day
                 </p>
@@ -304,7 +305,7 @@ const ProductLeft = ({
                 side="top"
                 className="max-w-[280px] rounded-md bg-[#3d3d3d] px-4 py-2 text-base text-white"
               >
-                <p>
+                <p style={{ fontFamily: roboto }} className="text-[16px]">
                   Have peace of mind knowing that *replacements/refunds are done
                   promptly
                 </p>
@@ -330,15 +331,23 @@ const ProductLeft = ({
                 side="top"
                 className="max-w-[280px] rounded-md bg-[#3d3d3d] px-4 py-2 text-base text-white"
               >
-                <p className="mb-2">
+                <p style={{ fontFamily: roboto }} className="text-[16px] mb-2">
                   Protects both users and merchants from the threats posed by
                   fraudulent payments. Accepted Payment Cards:
                 </p>
                 <ul className="list-none space-y-1">
-                  <li>Visa</li>
-                  <li>Mastercard</li>
-                  <li>American Express</li>
-                  <li>Discover</li>
+                  <li style={{ fontFamily: roboto }} className="text-[16px]">
+                    Visa
+                  </li>
+                  <li style={{ fontFamily: roboto }} className="text-[16px]">
+                    Mastercard
+                  </li>
+                  <li style={{ fontFamily: roboto }} className="text-[16px]">
+                    American Express
+                  </li>
+                  <li style={{ fontFamily: roboto }} className="text-[16px]">
+                    Discover
+                  </li>
                 </ul>
               </TooltipContent>
             </Tooltip>
