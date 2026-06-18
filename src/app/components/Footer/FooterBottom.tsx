@@ -10,6 +10,8 @@ import { getBlogs, getWebPages, visitorSession } from "@/redux/slices/storeFront
 import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { logout } from "@/redux/slices/authSlice";
 
 interface Category {
   id: number;
@@ -29,7 +31,7 @@ const FooterBottom = () => {
   const [filters, setFilters] = useState({ page: 1, perPage: 20 });
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
-   const robotoCondensed = "'Roboto ', Arial, Helvetica, sans-serif";
+  const robotoCondensed = "'Roboto ', Arial, Helvetica, sans-serif";
   const { newsletterLoading, newsletterSuccess, newsletterError } = useSelector((state: any) => state.contact);
   const { blogs, webPages, error, loading } = useAppSelector(
     (state: any) => state.storeFront
@@ -41,12 +43,21 @@ const FooterBottom = () => {
     !page.restrictToCustomersOnly || token
   );
   const router = useRouter();
-  
+
   const blogPosts = blogs?.data || [];
   const handleSelect = (url: string) => {
     router.push(url);
   };
-
+  const handleLogout = () => {
+    const confirm = window.confirm("Confirm Logout?");
+    if (!confirm) {
+      return;
+    } else {
+      dispatch(logout());
+      toast.success("Logged out successfully!");
+      router.replace("/auth/login");
+    }
+  };
   useEffect(() => {
     dispatch(getBlogs(filters));
   }, [dispatch]);
@@ -68,7 +79,7 @@ const FooterBottom = () => {
 
   return (
     <footer
-      className="bg-[#333333] text-white w-full mx-auto"
+      className="bg-[#333333] text-[#ffffff] w-full mx-auto"
       style={{ fontFamily: robotoCondensed }}
     >
       {/* 🔹 Newsletter Section */}
@@ -79,7 +90,7 @@ const FooterBottom = () => {
         flex flex-col md:flex-row items-center justify-between gap-2 md:gap-8 lg:gap-0 py-2
       "
         >
-          <div className="text-center  md:text-left  w-full md:w-[60%] 2xl:max-w-[50%]" style={{fontFamily:robotoCondensed}}>
+          <div className="text-center  md:text-left  w-full md:w-[60%] 2xl:max-w-[50%]" style={{ fontFamily: robotoCondensed }}>
             <h3 className="text-[15px] md:text-[20px] text-[#545454] font-bold uppercase">
               Join Our Mailing List
               <span className="text-[16px] lowercase ml-2">
@@ -125,10 +136,10 @@ const FooterBottom = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Contact Us */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{ fontFamily: robotoCondensed }}>
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff]" style={{ fontFamily: robotoCondensed }}>
               Contact Us
             </h4>
-            <div className="space-y-1 text-[14px] lg:text-[12px] text-white">
+            <div className="space-y-1 text-[14px] lg:text-[12px] text-[#ffffff]">
               <p className="font-semibold">Address:</p>
               <p>2210 Goldsmith Lane</p>
               <p>Ste 126-5001</p>
@@ -160,11 +171,11 @@ const FooterBottom = () => {
 
           {/* Accounts & Orders */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{ fontFamily: robotoCondensed }}>
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff]" style={{ fontFamily: robotoCondensed }}>
               Accounts & Orders
             </h4>
-            <ul className="space-y-1 text-[14px] lg:text-[12px] text-white">
-              {!auth?.isAuthenticated && <li>
+            <ul className="space-y-1 text-[14px] lg:text-[12px] text-[#ffffff]">
+              {!auth?.isAuthenticated ? <li>
                 <Link href="/auth/login" className="hover:text-[#D42020]">
                   Login
                 </Link>{" "}
@@ -172,17 +183,34 @@ const FooterBottom = () => {
                 <Link href="/auth/signup" className="hover:text-[#D42020]">
                   Sign Up
                 </Link>
-              </li>}
+              </li> : <>
+                <li>
+                  <Link href="/my-account/orders" className="hover:text-[#D42020]">
+                    Account
+                  </Link>
+                </li>
+                <li>
+                  <span onClick={handleLogout} className="hover:text-[#D42020] cursor-pointer">
+                    Logout
+                  </span>
+                </li>
+                <li>
+                  <Link href="/my-account/orders" className="hover:text-[#D42020]">
+                    Order Status
+                  </Link>
+                </li>
+              </>
+              }
 
             </ul>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{ fontFamily: robotoCondensed }}>
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff]" style={{ fontFamily: robotoCondensed }}>
               Quick Links
             </h4>
-            <ul className="space-y-1 text-[14px] lg:text-[12px] text-white " style={{ fontFamily: robotoCondensed }}>
+            <ul className="space-y-1 text-[14px] lg:text-[12px] text-[#ffffff] " style={{ fontFamily: robotoCondensed }}>
               {visiblePages?.map((page: any) => (
                 <li key={page.id}>
                   {page?.pageType == "2" ? (
@@ -199,10 +227,10 @@ const FooterBottom = () => {
 
           {/* Recent Blog Posts */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{ fontFamily: robotoCondensed }}>
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff]" style={{ fontFamily: robotoCondensed }}>
               Recent Blog Posts
             </h4>
-            <ul className="space-y-1 text-[14px] lg:text-[12px] text-white">
+            <ul className="space-y-1 text-[14px] lg:text-[12px] text-[#ffffff]">
               {loading ? (
                 // 🔹 Inline skeleton (4 items)
                 Array.from({ length: 4 }).map((_, i) => (
@@ -232,7 +260,7 @@ const FooterBottom = () => {
 
             {/* Connect with Us */}
             <div className=" md:mt-8">
-              <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-white" style={{ fontFamily: robotoCondensed }}>
+              <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff]" style={{ fontFamily: robotoCondensed }}>
                 Connect with Us:
               </h4>
               <div className="flex justify-center md:justify-start gap-3">
@@ -243,7 +271,7 @@ const FooterBottom = () => {
                   className="hover:opacity-80"
                 >
                   <svg
-                    className="w-8 h-8 text-white "
+                    className="w-8 h-8 text-[#ffffff] "
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -257,7 +285,7 @@ const FooterBottom = () => {
                   className="hover:opacity-80"
                 >
                   <svg
-                    className="w-8 h-8 text-white"
+                    className="w-8 h-8 text-[#ffffff]"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -307,7 +335,7 @@ const FooterBottom = () => {
       {/* Bottom Bar */}
       <div className="bg-[#8b8b8b]  py-4">
         <div className="w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto px-4 xl:px-4 2xl:px-2 ">
-          <p className="text-white text-left text-base">
+          <p className="text-[#ffffff] text-left text-base">
             © {new Date().getFullYear()} Server Blink LLC |&nbsp;
             <Link href="/sitemap" className="hover:text-gray-300">
               Sitemap
