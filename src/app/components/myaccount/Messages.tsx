@@ -140,7 +140,7 @@ const Messages = ({ orders = [] }: SendMessageFormProps) => {
                         <Button
                             type="button"
                             onClick={handleClear}
-                            className="btn-primary h-[42px] w-full  !mt-4 sm:!mt-2  sm:w-auto "
+                            className="btn-primary h-[42px] w-full  !mt-4 sm:!mt-0  sm:w-auto "
                         >
                             Clear
                         </Button>
