@@ -3,16 +3,20 @@
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { fetchCustomerMessages, fetchUserOrders, sendCustomerMessage } from "@/redux/slices/OrderMessage";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
+import { useEffect } from "react";
+import { RootState } from "@/redux/store";
 
 interface SendMessageValues {
-    order_id: string;
+    order_id: number;
     subject: string;
     message: string;
 }
 
 interface Order {
     id: number;
-    order_number: string;
+    order_id: string;
     placed_on: string;
     total: string;
 }
@@ -21,7 +25,10 @@ interface SendMessageFormProps {
     orders?: Order[];
 }
 
-const Messages = ({ orders = [] }: SendMessageFormProps) => {
+const Messages = () => {
+    const dispatch = useAppDispatch()
+    const orders = useAppSelector((state: RootState) => state.customerMessage.orders)
+    const { sendLoading } = useAppSelector((state: RootState) => state.customerMessage)
     const {
         register,
         handleSubmit,
@@ -29,27 +36,28 @@ const Messages = ({ orders = [] }: SendMessageFormProps) => {
         formState: { errors },
     } = useForm<SendMessageValues>();
 
+    function reCallAPis() {
+        dispatch(fetchCustomerMessages({ page: 1, pageSize: 100 }))
+        dispatch(fetchUserOrders())
+    }
+
     const onSubmit = async (data: SendMessageValues) => {
-        console.log(data);
-        // API call here
+        const result = await dispatch(sendCustomerMessage(data));
+
+        if (sendCustomerMessage.fulfilled.match(result)) {
+            reset();
+            reCallAPis()
+        }
     };
 
     const handleClear = () => {
         reset();
     };
 
-    // Demo orders agar prop na aaye
-    const demoOrders: Order[] =
-        orders.length > 0
-            ? orders
-            : [
-                {
-                    id: 705613,
-                    order_number: "705613",
-                    placed_on: "Jun 17, 2026",
-                    total: "$919.38",
-                },
-            ];
+    useEffect(() => {
+        reCallAPis()
+    }, [])
+
 
     return (
         <section className="w-full text-[#545454]" style={{ fontFamily: "Roboto, Arial, Helvetica, sans-serif" }}>
@@ -73,11 +81,9 @@ const Messages = ({ orders = [] }: SendMessageFormProps) => {
                                     }`}
                                 {...register("order_id", { required: true })}
                             >
-                                <option value="">Select an order...</option>
-                                {demoOrders.map((order) => (
+                                {orders.map((order) => (
                                     <option key={order.id} value={order.id}>
-                                        Order #{order.order_number} - Placed on {order.placed_on}{" "}
-                                        for {order.total}
+                                        {order?.label}
                                     </option>
                                 ))}
                             </select>
@@ -100,7 +106,6 @@ const Messages = ({ orders = [] }: SendMessageFormProps) => {
                         </div>
                     </div>
 
-                    {/* Subject */}
                     {/* Subject */}
                     <div className="mb-8">
                         <div className="flex items-center justify-between mb-1">
@@ -134,8 +139,9 @@ const Messages = ({ orders = [] }: SendMessageFormProps) => {
                         <Button
                             type="submit"
                             className="btn-primary h-[42px]"
+                            disabled={sendLoading}
                         >
-                            Send Message
+                            {sendLoading ? "Loading..." : "Send Message"}
                         </Button>
                         <Button
                             type="button"
