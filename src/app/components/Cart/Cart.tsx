@@ -5,14 +5,20 @@ import OrderSummary from "./OrderSummary";
 import Link from "next/link";
 import { useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
+import BlogSkeleton from "../loader/BlogSkeleton";
+import CartTableSkeleton from "../loader/CartTableSkeleton";
 
- const roboto = "'Roboto', Arial, Helvetica, sans-serif";
-  const sans = "'Roboto', sans-serif";
+const roboto = "'Roboto', Arial, Helvetica, sans-serif";
+const sans = "'Roboto', sans-serif";
 const Cart = () => {
-  const cartItems = useAppSelector((state: RootState) => state?.cart?.items);
+  const cartItems = useAppSelector((state: RootState) => state?.carts?.items);
   const cartItemCount =
     cartItems?.reduce((sum: number, item: any) => sum + (item?.quantity ?? 1), 0) ??
     0;
+  const { cartLoading, loading } = useAppSelector((state: RootState) => state.carts);
+
+  const cartLoad = cartLoading || loading
+
   return (
     <main className="flex flex-col gap-8 w-full py-1">
       {/* Container: max-width 1170px, centered */}
@@ -42,9 +48,14 @@ const Cart = () => {
           )}
         </div>
 
+
+
         {/* Cart List */}
         {cartItemCount > 0 && <div className="w-full">
-          <CartList />
+
+          {cartLoad ? <div className="w-full">
+            <CartTableSkeleton />
+          </div> : <CartList />}
         </div>}
 
         {/* Order Summary */}

@@ -12,6 +12,7 @@ import Link from "next/link";
 import { RootState } from "@/redux/store";
 import BulkInquiryModal from "../modal/BulkInquiryModal";
 import AddReviewModal from "../modal/AddReviewModal";
+import { addCart, fetchCartList } from "@/redux/slices/cartsSlice";
 
 const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }: any) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,7 +24,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
   const robotoCondensed = "'Roboto Condensed'";
   const roboto = "'Roboto ', Arial, Helvetica, sans-serif";
 
-  const cart = useAppSelector((state: RootState) => state.cart.items);
+  const cart = useAppSelector((state: RootState) => state.carts?.items);
   const { reviews, reviewsLoading, reviewsError, stats } = useAppSelector(
     (state) => state.home
   );
@@ -205,11 +206,21 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
               }
 
               const quantityToAdd = Math.min(quantity, remainingQty);
-              dispatch(addToCart({ ...product, quantity: quantityToAdd }));
-              toast.success(
-                `${product.name} added to cart (${quantityToAdd})!`
-              );
-              router.push("/cart")
+              // dispatch(addToCart({ ...product, quantity: quantityToAdd }));
+
+              dispatch(addCart({
+                data: {
+                  productId: product?.id,
+                  quantity: quantityToAdd
+                }
+              })).unwrap().then(() => {
+                dispatch(fetchCartList());
+                toast.success(
+                  `${product.name} added to cart (${quantityToAdd})!`
+                );
+                router.push("/cart")
+              })
+
             }}
             className="btn-primary !w-full sm:!w-[51.7%] !py-3.5"
           >

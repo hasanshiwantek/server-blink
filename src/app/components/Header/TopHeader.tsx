@@ -13,6 +13,7 @@ import { fetchCategories } from "@/lib/api/category";
 import { clearSearch, globalSearch, setSearchQuery, setShowSearchDropdown } from "@/redux/slices/homeSlice";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { fetchCartList } from "@/redux/slices/cartsSlice";
 
 
 interface Category {
@@ -25,7 +26,7 @@ const isMobile = window.innerWidth < 768;
 
 const TopHeader = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const cart = useAppSelector((state: RootState) => state?.cart?.items);
+  const cart = useAppSelector((state: RootState) => state?.carts?.items);
   const auth = useAppSelector((state: RootState) => state?.auth);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -40,7 +41,7 @@ const TopHeader = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const cartItemCount =
-    cart?.reduce((sum, item: any) => sum + (item?.quantity ?? 1), 0) ?? 0;
+    cart?.reduce((sum: any, item: any) => sum + (item?.quantity ?? 1), 0) ?? 0;
   const [results, setResults] = useState<any[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
@@ -402,7 +403,7 @@ const TopHeader = () => {
                     </Link>
                     <span
                       className="font-bold"
-                    style={{ fontFamily: "Roboto, Arial, Helvetica, sans-serif" }}
+                      style={{ fontFamily: "Roboto, Arial, Helvetica, sans-serif" }}
                     >
                       or
                     </span>

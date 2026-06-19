@@ -5,7 +5,7 @@ import { persistReducer, persistStore } from "redux-persist";
 import homeReducer from "./slices/homeSlice";
 import authReducer from "./slices/authSlice";
 import configReducer from "./slices/configSlice";
-import cartSliceReducer from "./slices/cartSlice";
+import cartsSliceReducer from "./slices/cartsSlice";
 import currencyReducer from "./slices/currencySlice";
 import storeFrontReducer from "./slices/storeFrontSlice";
 import myaccountReducer from "./slices/myaccountSlice";
@@ -17,7 +17,8 @@ import multiAddressReducer from "./slices/multiAddressSlice";
 import contactReducer from "./slices/contactSlice";
 import advanceSearchReducer from "./slices/advanceSearchSlice";
 import scriptReducer from "./slices/scriptSlice";
-
+import cartSliceReducer from "./slices/cartSlice";
+import orderMessageReducer from "./slices/OrderMessage"
 // ✅ only cart persist hoga
 const cartPersistConfig = {
   key: "cart",
@@ -66,6 +67,9 @@ const rootReducer = combineReducers({
   contact: contactReducer,
   advanceSearch: advanceSearchReducer,
   scripts: scriptReducer,
+  carts: cartsSliceReducer,
+  customerMessage: orderMessageReducer,
+
 });
 
 export const store = configureStore({

@@ -17,6 +17,8 @@ import { registerUser } from "@/redux/slices/authSlice";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { Country, State, City } from "country-state-city";
+import { fetchCartList } from "@/redux/slices/cartsSlice";
+import { baseURL, storeId } from "@/lib/axiosInstance";
 
 interface SignupFormValues {
   firstName: string;
@@ -85,9 +87,23 @@ const SignupPage = () => {
       const result = await dispatch(registerUser(payload));
 
       if (registerUser.fulfilled.match(result)) {
-        reset();
-        // router.push("/auth/login");
-         router.push("/action");
+        const token = result?.payload?.token
+        const fetchCartListInner = async () => {
+          const sessionId = localStorage.getItem("sessionId")
+          const res = await fetch(`${baseURL}web/cart/transfer`, {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "storeId": storeId,
+              "X-Session-ID": sessionId || "",
+              "Content-Type": "application/json",
+            },
+          });
+          reset();
+          dispatch(fetchCartList());
+          router.push("/action");
+        };
+        fetchCartListInner()
       } else {
         const errorMessage =
           result.payload || "Registration failed. Please try again.";
@@ -133,7 +149,7 @@ const SignupPage = () => {
       </div>
 
       {/* Main Content */}
-      <div  className="pt-0 pb-[8px] md:py-8 md:pb-16 md:px-6 xl:px-0 w-full xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-7xl mx-auto">
+      <div className="pt-0 pb-[8px] md:py-8 md:pb-16 md:px-6 xl:px-0 w-full xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-7xl mx-auto">
         <h1 className="h1-lg !font-light text-[28px] mb-2">New Account</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

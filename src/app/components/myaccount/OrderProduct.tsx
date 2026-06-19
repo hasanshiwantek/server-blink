@@ -6,12 +6,14 @@ import { RootState } from "@/redux/store";
 import { fetchAccountOrders } from "@/redux/slices/myaccountSlice";
 import Link from "next/link";
 import ReturnItemsModal from "./ReturnItemsModal"; // Import modal
+import { cartTransfer } from "@/redux/slices/cartsSlice";
 
 const OrderProduct = () => {
   const dispatch = useAppDispatch();
   const { order, loading, error } = useAppSelector(
     (state: RootState) => state.myaccount
   );
+  const auth = useAppSelector((state: RootState) => state?.auth);
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -84,7 +86,7 @@ const OrderProduct = () => {
               {/* Product Image */}
               <div className="w-full max-w-[128px] h-32 relative flex-shrink-0">
                 <Image
-                 src={
+                  src={
                     item?.products?.[0]?.image?.[0]?.path || item?.products?.[1]?.image?.[0]?.path ||
                     "/default-product-image.svg"
                   }

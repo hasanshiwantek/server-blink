@@ -128,7 +128,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
     (state) => state.shippingZone,
   );
   const dispatch = useAppDispatch();
-  const cart = useAppSelector((state: RootState) => state?.cart?.items);
+  const cart = useAppSelector((state: RootState) => state?.carts?.items);
   // const [completedDestinations, setCompletedDestinations] = useState<any[]>([]);
   const { isMultiAddress, completedDestinations, destShippingRates } =
     useAppSelector((state) => state.multiAddress);
