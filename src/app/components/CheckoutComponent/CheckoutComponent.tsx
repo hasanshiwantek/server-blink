@@ -730,7 +730,7 @@ const CheckoutForm = () => {
         dispatch(resetShippingRates());      // ✅ ADD
         dispatch(setIsMultiAddress(false));
         localStorage.removeItem(CHECKOUT_STORAGE_KEY);
-        router.push("/order-success");
+        router.push("/checkout/order-information");
       } catch (err: any) {
         console.error("❌ Wallet payment failed:", err);
         event.complete("fail");
@@ -1002,7 +1002,7 @@ const CheckoutForm = () => {
       dispatch(resetShippingRates());      // ✅ ADD
       dispatch(setIsMultiAddress(false));
       localStorage.removeItem(CHECKOUT_STORAGE_KEY);
-      router.push("/order-success");
+      router.push("/checkout/order-information");
     } catch (err: any) {
       console.error("❌ Error processing order:", err);
       const errorMessage =
