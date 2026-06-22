@@ -132,7 +132,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   // const [completedDestinations, setCompletedDestinations] = useState<any[]>([]);
   const { isMultiAddress, completedDestinations, destShippingRates } =
     useAppSelector((state) => state.multiAddress);
-
+const roboto = "'Roboto', Arial, Helvetica, sans-serif";
   const [showSingleAddressModal, setShowSingleAddressModal] = useState(false);
 
   // Watch form values to check if shipping address is complete
@@ -662,7 +662,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             </h3>
 
             {!isShippingComplete && (
-              <p className="text-sm text-amber-600 mb-3 bg-amber-50 p-3 rounded border border-amber-200">
+              <p className="text-[15px] text-amber-600 mb-3 bg-amber-50 p-3 rounded border border-amber-200" style={{fontFamily:roboto}}>
                 Please complete all required shipping address fields to select a
                 shipping method.
               </p>
@@ -761,7 +761,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
           <div className="flex flex-col">
             <label
               htmlFor="orderComment"
-              className="text-base mb-2 text-gray-700"
+              className="text-base mb-2 text-[#545454]"
             >
               Order Comments
             </label>

@@ -23,7 +23,8 @@ interface CustomerStepProps {
   emailValue?: string;
   newsletter?: boolean;
 }
-
+const roboto = "'Roboto', Arial, Helvetica, sans-serif";
+const roboto1 = "'Roboto Condensed', Arial, Helvetica, sans-serif";
 const CustomerStep: React.FC<CustomerStepProps> = ({
   register,
   errors,
@@ -52,12 +53,12 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
       ) : isActive ? (
         // Show active form
         <div className="space-y-4 ">
-          <div className="flex flex-col">
+          <div className="flex flex-col" style={{fontFamily:roboto}}>
             {!showLogin ? (
               <>
                 <label
                   htmlFor="email"
-                  className="text-[13px] mb-2 text-gray-700"
+                  className="text-[13px] mb-2 text-[#545454]"
                 >
                   Email Address
                 </label>
@@ -96,7 +97,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
                       />
                       <label
                         htmlFor="newsletter"
-                        className="text-[13px] text-gray-700"
+                        className="text-[13px] text-[#545454]"
                       >
                         Subscribe to our newsletter.
                       </label>
@@ -105,18 +106,19 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
                   <button
                     type="button"
                     onClick={onContinue}
-                    className="btn-primary h-[44px] sm:h-[40px] w-full sm:w-auto order-3  sm:order-2"
+                    className="btn-primary h-[44px] sm:h-[40px]  sm:w-auto order-3  sm:order-2"
                   >
                     CONTINUE
                   </button>
                 </div>
 
-            {!auth?.isAuthenticated && <div className="text-[13px] text-gray-700 mt-10 sm:mt-4">
+            {!auth?.isAuthenticated && <div className="text-[13px] text-[#545454] mt-10 sm:mt-4">
                   Already have an account?{" "}
                   <button
                     type="button"
                     onClick={() => setShowLogin(true)}
-                    className="text-[var(--primary-color)]"
+                    className="text-[#D42020]"
+                    style={{fontFamily:roboto1}}
                   >
                     Sign in now
                   </button>

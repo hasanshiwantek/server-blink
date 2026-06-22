@@ -1176,7 +1176,7 @@ const CheckoutForm = () => {
             {/* STEP 1: Customer */}
           {/* STEP 1: Customer */}
             <div className="p-6 border-b-[1px] border-b-[#8b8b8b]">
-              <h2 className="hidden md:flextext-[1.92308rem] font-normal mb-4 text-[#545454]">
+              <h2 className="hidden md:flex text-[1.92308rem] font-normal mb-4 text-[#545454]">
                 Customer
               </h2>
               <CustomerStep
