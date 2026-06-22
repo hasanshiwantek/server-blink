@@ -75,7 +75,7 @@ interface CheckoutFormValues {
 // Inner component that uses Stripe hooks
 const CheckoutForm = () => {
   const dispatch = useAppDispatch();
-  const cart = useAppSelector((state: RootState) => state?.cart?.items);
+  const cart = useAppSelector((state: RootState) => state?.carts?.items);
   const auth = useAppSelector((state: RootState) => state?.auth);
   const orders = useAppSelector((state) => state.order.lastOrder) ?? [];
   const [localOrders] = useState(orders);
