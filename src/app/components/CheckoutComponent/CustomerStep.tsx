@@ -23,7 +23,7 @@ interface CustomerStepProps {
   emailValue?: string;
   newsletter?: boolean;
 }
-
+const roboto = "'Roboto', Arial, Helvetica, sans-serif";
 const CustomerStep: React.FC<CustomerStepProps> = ({
   register,
   errors,
@@ -52,7 +52,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
       ) : isActive ? (
         // Show active form
         <div className="space-y-4 ">
-          <div className="flex flex-col">
+          <div className="flex flex-col" style={{fontFamily:roboto}}>
             {!showLogin ? (
               <>
                 <label
