@@ -320,7 +320,7 @@ const CheckoutForm = () => {
 
     if (cart.length === 0) return 0;
     return cart.reduce((sum, item) => sum + Number(item.fixedShippingCost || 0), 0);
-  }, [isMultiAddress, destinations, destShippingRates, watchedShippingMethod, shippingRates, cart]);
+  }, [isMultiAddress, destinations, destShippingRates, watchedShippingMethod, shippingRates, cart,shippingDetail]);
 
   const tax = 0;
 
