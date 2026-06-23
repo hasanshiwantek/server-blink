@@ -112,6 +112,7 @@ interface CheckoutFormValues {
 const CheckoutForm = () => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state?.carts?.items);
+  const { loading } = useAppSelector((state: RootState) => state?.carts);
   const auth = useAppSelector((state: RootState) => state?.auth);
 
   // ADD COUPON STATE FROM REDUX
@@ -155,18 +156,20 @@ const CheckoutForm = () => {
   const { shippingDetail } = useAppSelector((state: any) => state.shippingZone);
 
   useEffect(() => {
-    if (cart.length === 0) {
-      if (skipEmptyCartCheckRef.current) {
-        return;
-      }
+    if (!loading) {
+      if (cart.length === 0) {
+        if (skipEmptyCartCheckRef.current) {
+          return;
+        }
 
-      if (!emptyCartWarningShownRef.current) {
-        emptyCartWarningShownRef.current = true;
-        toast.error("Please add something");
-        router.push("/cart");
+        if (!emptyCartWarningShownRef.current) {
+          emptyCartWarningShownRef.current = true;
+          toast.error("Please add something");
+          router.push("/cart");
+        }
+      } else {
+        emptyCartWarningShownRef.current = false;
       }
-    } else {
-      emptyCartWarningShownRef.current = false;
     }
   }, [cart.length, router]);
 
@@ -515,10 +518,7 @@ const CheckoutForm = () => {
 
     pr.canMakePayment()
       .then((result) => {
-        console.log("Stripe:", stripe);
-        console.log("Payment Request:", pr);
-        console.log("canMakePayment:", result);
-        console.log("User Agent:", navigator.userAgent);
+
         if (!isMounted) return;
         if (result) {
           setPaymentRequest(pr);
