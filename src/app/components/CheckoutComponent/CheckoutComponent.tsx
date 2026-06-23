@@ -42,7 +42,7 @@ import {
 import { useRouter } from "next/navigation";
 import { setLastOrder } from "@/redux/slices/orderslice";
 import { resetMultiAddress, restoreMultiAddress, setIsMultiAddress } from "@/redux/slices/multiAddressSlice";
-import { resetShippingRates } from "@/redux/slices/shippingSlice";
+import { fetchShippingRate, resetShippingRates } from "@/redux/slices/shippingSlice";
 // Import step components
 import CustomerStep from "./CustomerStep";
 import ShippingStep from "./Shippingstep";
@@ -152,7 +152,7 @@ const CheckoutForm = () => {
   const user: any = localStorage.getItem("persist:auth");
   const parsedAuth = auth ? JSON.parse(user) : null;
   const token = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
-  const logInUserDetail = parsedAuth?.user ? JSON.parse(parsedAuth.user) : null;
+  const { shippingDetail } = useAppSelector((state: any) => state.shippingZone);
 
   useEffect(() => {
     if (cart.length === 0) {
@@ -311,7 +311,7 @@ const CheckoutForm = () => {
     }
     // ✅ Cart page se localStorage mein saved cost
     if (typeof window !== "undefined") {
-      const savedCost = localStorage.getItem("shippingCost");
+      const savedCost = Number(shippingDetail?.rate?.total_charge);
       if (savedCost) return Number(savedCost);
     }
 
@@ -675,7 +675,8 @@ const CheckoutForm = () => {
         orderPayload
       );
       const orderData = orderResponse.data?.data || orderResponse.data;
-      localStorage.removeItem("shippingCost"); // ✅ Clear saved shipping cost after order is placed
+      dispatch(fetchShippingRate({}))
+      // localStorage.removeItem("shippingCost"); // ✅ Clear saved shipping cost after order is placed
       return orderData || null;
     },
     [buildOrderPayload]
@@ -741,7 +742,7 @@ const CheckoutForm = () => {
         dispatch(resetShippingRates());      // ✅ ADD
         dispatch(setIsMultiAddress(false));
         localStorage.removeItem(CHECKOUT_STORAGE_KEY);
-        // router.push("/checkout/order-information");
+        router.push("/checkout/order-information");
       } catch (err: any) {
         console.error("❌ Wallet payment failed:", err);
         event.complete("fail");
@@ -1013,7 +1014,7 @@ const CheckoutForm = () => {
       dispatch(resetShippingRates());      // ✅ ADD
       dispatch(setIsMultiAddress(false));
       localStorage.removeItem(CHECKOUT_STORAGE_KEY);
-      // router.push("/checkout/order-information");
+      router.push("/checkout/order-information");
     } catch (err: any) {
       console.error("❌ Error processing order:", err);
       const errorMessage =
