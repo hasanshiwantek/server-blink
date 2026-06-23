@@ -1,12 +1,14 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { UseFormRegister, FieldErrors } from "react-hook-form";
 import Link from "next/link";
-import { useAppSelector } from "@/hooks/useReduxHooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import LoginForm from "./LoginForm";
+import { logout } from "@/redux/slices/authSlice";
+import { useRouter } from "next/navigation";
 
 interface CustomerStepProps {
   register: UseFormRegister<any>;
@@ -38,22 +40,47 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
 }) => {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   const auth = useAppSelector((state: RootState) => state?.auth);
+  const handleSignOut = () => {
+    dispatch(logout());
+  };
 
+  useEffect(() => {
+    if (auth?.isAuthenticated) {
+      onContinue()
+    }
+  }, [auth?.isAuthenticated])
   return (
     <>
       {isCompleted && !isActive ? (
         // Show completed state with email and edit button
         <div className="flex items-center justify-between">
           <span className="text-base text-gray-600">{emailValue}</span>
-          <button type="button" onClick={onEdit} className="btn-primary">
-            EDIT
-          </button>
+
+          {auth?.isAuthenticated ? (
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className="btn-primary"
+            >
+              SIGN OUT
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={onEdit}
+              className="btn-primary"
+            >
+              EDIT
+            </button>
+          )}
         </div>
       ) : isActive ? (
         // Show active form
         <div className="space-y-4 ">
-          <div className="flex flex-col" style={{fontFamily:roboto}}>
+          <div className="flex flex-col" style={{ fontFamily: roboto }}>
             {!showLogin ? (
               <>
                 <label
@@ -68,9 +95,8 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
                     <Input
                       id="email"
                       type="email"
-                      className={`flex-1 h-[44px] w-full rounded-none ${
-                        errors.email ? "border-red-500" : ""
-                      }`}
+                      className={`flex-1 h-[44px] w-full rounded-none ${errors.email ? "border-red-500" : ""
+                        }`}
                       {...register("email", {
                         required: "Email is required",
                         pattern: {
@@ -112,13 +138,13 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
                   </button>
                 </div>
 
-            {!auth?.isAuthenticated && <div className="text-[13px] text-[#545454] mt-10 sm:mt-4">
+                {!auth?.isAuthenticated && <div className="text-[13px] text-[#545454] mt-10 sm:mt-4">
                   Already have an account?{" "}
                   <button
                     type="button"
                     onClick={() => setShowLogin(true)}
                     className="text-[#D42020]"
-                    style={{fontFamily:roboto1}}
+                    style={{ fontFamily: roboto1 }}
                   >
                     Sign in now
                   </button>

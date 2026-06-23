@@ -129,10 +129,12 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   );
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state?.carts?.items);
+  const auth = useAppSelector((state: RootState) => state?.auth);
+
   // const [completedDestinations, setCompletedDestinations] = useState<any[]>([]);
   const { isMultiAddress, completedDestinations, destShippingRates } =
     useAppSelector((state) => state.multiAddress);
-const roboto = "'Roboto', Arial, Helvetica, sans-serif";
+  const roboto = "'Roboto', Arial, Helvetica, sans-serif";
   const [showSingleAddressModal, setShowSingleAddressModal] = useState(false);
 
   // Watch form values to check if shipping address is complete
@@ -362,9 +364,8 @@ const roboto = "'Roboto', Arial, Helvetica, sans-serif";
                 <Input
                   id="firstName"
                   type="text"
-                  className={`w-full !max-w-full h-[40px] ${
-                    errors.firstName ? "border-red-500" : ""
-                  }`}
+                  className={`w-full !max-w-full h-[40px] ${errors.firstName ? "border-red-500" : ""
+                    }`}
                   {...register("firstName", {
                     required: "First name is required",
                   })}
@@ -389,9 +390,8 @@ const roboto = "'Roboto', Arial, Helvetica, sans-serif";
                 <Input
                   id="lastName"
                   type="text"
-                  className={`w-full !max-w-full h-[40px] ${
-                    errors.lastName ? "border-red-500" : ""
-                  }`}
+                  className={`w-full !max-w-full h-[40px] ${errors.lastName ? "border-red-500" : ""
+                    }`}
                   {...register("lastName", {
                     required: "Last name is required",
                   })}
@@ -449,9 +449,8 @@ const roboto = "'Roboto', Arial, Helvetica, sans-serif";
               <Input
                 id="address1"
                 type="text"
-                className={`w-full !max-w-full h-[40px] h-[44px] border border-[#cac9c9] rounded-none ${
-                  errors.address1 ? "border-red-500" : ""
-                }`}
+                className={`w-full !max-w-full h-[40px] h-[44px] border border-[#cac9c9] rounded-none ${errors.address1 ? "border-red-500" : ""
+                  }`}
                 {...register("address1", {
                   required: "Address is required",
                 })}
@@ -523,9 +522,8 @@ const roboto = "'Roboto', Arial, Helvetica, sans-serif";
                     value={field.value}
                   >
                     <SelectTrigger
-                      className={`w-full !max-w-full  !h-[44px] border border-[#cac9c9] rounded-none ${
-                        errors.country ? "border-red-500" : ""
-                      }`}
+                      className={`w-full !max-w-full  !h-[44px] border border-[#cac9c9] rounded-none ${errors.country ? "border-red-500" : ""
+                        }`}
                     >
                       <SelectValue placeholder="Select country" />
                     </SelectTrigger>
@@ -574,9 +572,8 @@ const roboto = "'Roboto', Arial, Helvetica, sans-serif";
                         value={field.value}
                       >
                         <SelectTrigger
-                          className={`w-full !max-w-full !h-[44px] border border-[#cac9c9] rounded-none ${
-                            errors.state ? "border-red-500" : ""
-                          }`}
+                          className={`w-full !max-w-full !h-[44px] border border-[#cac9c9] rounded-none ${errors.state ? "border-red-500" : ""
+                            }`}
                         >
                           <SelectValue placeholder="Select state/province" />
                         </SelectTrigger>
@@ -594,9 +591,8 @@ const roboto = "'Roboto', Arial, Helvetica, sans-serif";
                   <Input
                     id="state"
                     type="text"
-                    className={`w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none ${
-                      errors.state ? "border-red-500" : ""
-                    }`}
+                    className={`w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none ${errors.state ? "border-red-500" : ""
+                      }`}
                     {...register("state")}
                   />
                 )}
@@ -617,9 +613,8 @@ const roboto = "'Roboto', Arial, Helvetica, sans-serif";
                 <Input
                   id="zip"
                   type="text"
-                  className={`w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none ${
-                    errors.zip ? "border-red-500" : ""
-                  }`}
+                  className={`w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none ${errors.zip ? "border-red-500" : ""
+                    }`}
                   {...register("zip", { required: "Postal code is required" })}
                 />
                 {errors.zip && (
@@ -630,6 +625,20 @@ const roboto = "'Roboto', Arial, Helvetica, sans-serif";
               </div>
             </div>
 
+            {auth?.isAuthenticated && <div className="flex items-center gap-2 mt-4">
+              <input
+                type="checkbox"
+                id="isSaveAddressForShipping"
+                {...register("isSaveAddressForShipping")}
+                className="w-4 h-4"
+              />
+              <label
+                htmlFor="isSaveAddressForShipping"
+                className="text-[13px] text-[#545454]"
+              >
+                Save this address in my address book.
+              </label>
+            </div>}
             <div className="flex items-center gap-2 mt-4">
               <input
                 type="checkbox"
@@ -662,7 +671,7 @@ const roboto = "'Roboto', Arial, Helvetica, sans-serif";
             </h3>
 
             {!isShippingComplete && (
-              <p className="text-[15px] text-amber-600 mb-3 bg-amber-50 p-3 rounded border border-amber-200" style={{fontFamily:roboto}}>
+              <p className="text-[15px] text-amber-600 mb-3 bg-amber-50 p-3 rounded border border-amber-200" style={{ fontFamily: roboto }}>
                 Please complete all required shipping address fields to select a
                 shipping method.
               </p>
@@ -672,80 +681,78 @@ const roboto = "'Roboto', Arial, Helvetica, sans-serif";
               <div className=" border border-black">
                 {ratesLoader
                   ? // Skeleton
-                    Array.from({ length: 2 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="flex items-start gap-3 border rounded p-4 animate-pulse"
-                      >
-                        <div className="w-4 h-4 mt-1 bg-gray-200 rounded-full flex-shrink-0" />
-                        <div className="flex-1 space-y-2">
-                          <div className="h-4 bg-gray-200 rounded w-3/4" />
-                          <div className="h-5 bg-gray-200 rounded w-16" />
-                        </div>
+                  Array.from({ length: 2 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="flex items-start gap-3 border rounded p-4 animate-pulse"
+                    >
+                      <div className="w-4 h-4 mt-1 bg-gray-200 rounded-full flex-shrink-0" />
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 bg-gray-200 rounded w-3/4" />
+                        <div className="h-5 bg-gray-200 rounded w-16" />
                       </div>
-                    ))
+                    </div>
+                  ))
                   : shippingRates?.map((rate, i) => {
-                      return (
-                        <label
-                          key={`${rate.method_id}-${rate.service_type}`}
-                          className={`flex items-start gap-3 border rounded p-4 transition-colors ${
-                            isShippingComplete
-                              ? "cursor-pointer"
-                              : "cursor-not-allowed opacity-50"
-                          } ${
-                            watchedShippingMethod == rate.service_type
-                              ? "border-black  !bg-[#ffffff]"
-                              : ""
+                    return (
+                      <label
+                        key={`${rate.method_id}-${rate.service_type}`}
+                        className={`flex items-start gap-3 border rounded p-4 transition-colors ${isShippingComplete
+                          ? "cursor-pointer"
+                          : "cursor-not-allowed opacity-50"
+                          } ${watchedShippingMethod == rate.service_type
+                            ? "border-black  !bg-[#ffffff]"
+                            : ""
                           }`}
-                        >
-                          <input
-                            type="radio"
-                            value={rate.service_type}
-                            // {...register("shippingMethod")}
-                            {...register("shippingMethod", {
-                              required: "Please select a shipping method",
-                            })}
-                            onChange={(e) => {
-                              register("shippingMethod").onChange(e); // keep react-hook-form in sync
-                              const selectedRate = shippingRates?.find(
-                                (r: any) => r.service_type === e.target.value,
-                              );
-                              const cost = selectedRate
-                                ? Number(selectedRate.total_charge).toFixed(2)
-                                : "0";
-                              const shippingData = {
-                                country: country?.trim(),
-                                city: city?.trim(),
-                                state: state?.trim(),
-                                zip: zip?.trim(),
-                              };
-                              localStorage.setItem("shippingCost", cost);
-                              localStorage.setItem(
-                                "shippingData",
-                                JSON.stringify(shippingData),
-                              );
-                            }}
-                            className="mt-1"
-                            disabled={!isShippingComplete}
-                          />
-                          <div className="min-w-0 flex-1 flex items-center justify-between gap-3">
-                            <div className="flex items-center gap-2 text-[#545454] text-[14px] font-normal">
-                              {rate.is_fedex && <span>FedEx</span>}
-                              <span>
-                                {rate.is_fedex
-                                  ? `(${rate.service_name})`
-                                  : rate.display_name}
-                              </span>
-                            </div>
-                            <div className="text-[14px]  font-bold flex-shrink-0">
-                              {rate.total_charge === 0
-                                ? "Free"
-                                : `$${Number(rate.total_charge).toFixed(2)}`}
-                            </div>
+                      >
+                        <input
+                          type="radio"
+                          value={rate.service_type}
+                          // {...register("shippingMethod")}
+                          {...register("shippingMethod", {
+                            required: "Please select a shipping method",
+                          })}
+                          onChange={(e) => {
+                            register("shippingMethod").onChange(e); // keep react-hook-form in sync
+                            const selectedRate = shippingRates?.find(
+                              (r: any) => r.service_type === e.target.value,
+                            );
+                            const cost = selectedRate
+                              ? Number(selectedRate.total_charge).toFixed(2)
+                              : "0";
+                            const shippingData = {
+                              country: country?.trim(),
+                              city: city?.trim(),
+                              state: state?.trim(),
+                              zip: zip?.trim(),
+                            };
+                            localStorage.setItem("shippingCost", cost);
+                            localStorage.setItem(
+                              "shippingData",
+                              JSON.stringify(shippingData),
+                            );
+                          }}
+                          className="mt-1"
+                          disabled={!isShippingComplete}
+                        />
+                        <div className="min-w-0 flex-1 flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2 text-[#545454] text-[14px] font-normal">
+                            {rate.is_fedex && <span>FedEx</span>}
+                            <span>
+                              {rate.is_fedex
+                                ? `(${rate.service_name})`
+                                : rate.display_name}
+                            </span>
                           </div>
-                        </label>
-                      );
-                    })}
+                          <div className="text-[14px]  font-bold flex-shrink-0">
+                            {rate.total_charge === 0
+                              ? "Free"
+                              : `$${Number(rate.total_charge).toFixed(2)}`}
+                          </div>
+                        </div>
+                      </label>
+                    );
+                  })}
               </div>
             )}
 

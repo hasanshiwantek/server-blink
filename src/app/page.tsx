@@ -10,7 +10,7 @@ import Testimonials from "./components/Home/Testimonials";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://server-blink.vercel.app"),
-  title: "PC, Computer & Server Parts | IT Hardware Store | Server Blink",
+  title: "PC, Computer & Server Parts | IT Hardware Store",
   // title: "Home | Server Blink",
   description:
     "Welcome to Server Blink – your one-stop shop for servers, networking equipment, and IT solutions. Get the best prices and fast delivery.",
