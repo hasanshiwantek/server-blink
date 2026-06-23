@@ -313,7 +313,7 @@ const CheckoutForm = () => {
       return selected ? Number(selected.total_charge) : 0;
     }
     // ✅ Cart page se localStorage mein saved cost
-    if (typeof window !== "undefined") {
+    if (shippingDetail?.rate?.total_charge) {
       const savedCost = Number(shippingDetail?.rate?.total_charge);
       if (savedCost) return Number(savedCost);
     }
