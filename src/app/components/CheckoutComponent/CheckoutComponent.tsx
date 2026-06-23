@@ -1167,6 +1167,7 @@ const CheckoutForm = () => {
 
 
   useEffect(() => {
+     dispatch(fetchShippingRate({}))
     fetch('/api/get-ip')
       .then(res => res.json())
       .then(data => setIpAddress(data.ip));
