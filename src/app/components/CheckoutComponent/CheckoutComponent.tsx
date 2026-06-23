@@ -16,7 +16,7 @@ import {
   restoreCart,
 } from "@/redux/slices/cartSlice";
 import { applyCoupon, removeCoupon } from "@/redux/slices/couponSlice"; // ADD THIS
-import axiosInstance from "@/lib/axiosInstance";
+import axiosInstance, { baseURL } from "@/lib/axiosInstance";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -101,6 +101,11 @@ interface CheckoutFormValues {
   billingState: string;
   billingZip: string;
   newsletter?: boolean;
+
+  // 
+  ipAddress: string;
+  isSaveAddressForShipping?: boolean;
+  isSaveAddressForBilling?: boolean;
 }
 
 // Inner component that uses Stripe hooks
@@ -121,6 +126,7 @@ const CheckoutForm = () => {
   const [itemToDelete, setItemToDelete] = useState<any | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [ipAddress, setIpAddress] = useState('');
   const [cardCompletion, setCardCompletion] = useState({
     number: false,
     expiry: false,
@@ -143,6 +149,10 @@ const CheckoutForm = () => {
   const router = useRouter();
   const emptyCartWarningShownRef = useRef(false);
   const skipEmptyCartCheckRef = useRef(false);
+  const user: any = localStorage.getItem("persist:auth");
+  const parsedAuth = auth ? JSON.parse(user) : null;
+  const token = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
+  const logInUserDetail = parsedAuth?.user ? JSON.parse(parsedAuth.user) : null;
 
   useEffect(() => {
     if (cart.length === 0) {
@@ -430,7 +440,7 @@ const CheckoutForm = () => {
     pr.on("shippingaddresschange", async (event) => {
       try {
         const response = await fetch(
-          "https://backend.sparemicro.com/api/web/checkout/get-shipping-rates",
+          `${baseURL}web/checkout/get-shipping-rates`,
           {
             method: "POST",
             headers: {
@@ -505,10 +515,10 @@ const CheckoutForm = () => {
 
     pr.canMakePayment()
       .then((result) => {
-         console.log("Stripe:", stripe);
-          console.log("Payment Request:", pr);
-          console.log("canMakePayment:", result);
-          console.log("User Agent:", navigator.userAgent);
+        console.log("Stripe:", stripe);
+        console.log("Payment Request:", pr);
+        console.log("canMakePayment:", result);
+        console.log("User Agent:", navigator.userAgent);
         if (!isMounted) return;
         if (result) {
           setPaymentRequest(pr);
@@ -537,9 +547,6 @@ const CheckoutForm = () => {
     return "desktop";
   };
 
-  const user: any = localStorage.getItem("persist:auth");
-  const parsedAuth = auth ? JSON.parse(user) : null;
-  const token = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
 
   // const buildOrderPayload = useCallback(
   //   (data: CheckoutFormValues & { paymentIntentId?: string | null }) => ({
@@ -577,6 +584,7 @@ const CheckoutForm = () => {
         return {
           userType: token ? null : "guest",
           deviceType: getDeviceType(),
+          ipAddress: ipAddress,
           email: data.email,
           paymentMethod: data.paymentMethod,
           discountAmount: discountAmount ? finalTotal : 0,
@@ -628,6 +636,9 @@ const CheckoutForm = () => {
       return {
         userType: token ? null : "guest",
         deviceType: getDeviceType(),
+        ipAddress: ipAddress,
+        isSaveAddressForShipping: data?.isSaveAddressForShipping,
+        billingSame: data?.billingSame,
         firstName: data.firstName,
         lastName: data.lastName,
         companyName: data.company || "",
@@ -730,7 +741,7 @@ const CheckoutForm = () => {
         dispatch(resetShippingRates());      // ✅ ADD
         dispatch(setIsMultiAddress(false));
         localStorage.removeItem(CHECKOUT_STORAGE_KEY);
-        router.push("/checkout/order-information");
+        // router.push("/checkout/order-information");
       } catch (err: any) {
         console.error("❌ Wallet payment failed:", err);
         event.complete("fail");
@@ -1002,7 +1013,7 @@ const CheckoutForm = () => {
       dispatch(resetShippingRates());      // ✅ ADD
       dispatch(setIsMultiAddress(false));
       localStorage.removeItem(CHECKOUT_STORAGE_KEY);
-      router.push("/checkout/order-information");
+      // router.push("/checkout/order-information");
     } catch (err: any) {
       console.error("❌ Error processing order:", err);
       const errorMessage =
@@ -1154,6 +1165,15 @@ const CheckoutForm = () => {
     destShippingRates, cart]);
 
 
+  useEffect(() => {
+    fetch('/api/get-ip')
+      .then(res => res.json())
+      .then(data => setIpAddress(data.ip));
+  }, []);
+
+
+
+
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
       {paymentRequest && (
@@ -1174,7 +1194,7 @@ const CheckoutForm = () => {
           {/* LEFT SECTION - Multi-step form */}
           <div className="lg:col-span-2 space-y-0">
             {/* STEP 1: Customer */}
-          {/* STEP 1: Customer */}
+            {/* STEP 1: Customer */}
             <div className="p-6 border-b-[1px] border-b-[#8b8b8b]">
               <h2 className="hidden md:flex text-[1.92308rem] font-normal mb-4 text-[#545454]">
                 Customer

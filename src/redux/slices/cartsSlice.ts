@@ -8,7 +8,14 @@ export interface CartItem {
     // baki jo bhi props product ke andar aate hain unhe dynamically allow karenge
     [key: string]: any;
 }
-
+interface ShippingRates {
+    country: string;
+    state: string;
+    city: string;
+    zip: string;
+    cartIds: number[]; // ya string[]
+    rate: any
+}
 interface CartState {
     items: CartItem[];
     loading: boolean;
@@ -105,6 +112,7 @@ export const deleteCart = createAsyncThunk(
         }
     }
 );
+
 
 
 // Helper function to save cart into checkout localStorage
@@ -268,6 +276,8 @@ const cartsSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message || "Failed update cart";
             })
+
+
 
 
     },
