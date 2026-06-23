@@ -42,7 +42,7 @@ import {
 import { useRouter } from "next/navigation";
 import { setLastOrder } from "@/redux/slices/orderslice";
 import { resetMultiAddress, restoreMultiAddress, setIsMultiAddress } from "@/redux/slices/multiAddressSlice";
-import { resetShippingRates } from "@/redux/slices/shippingSlice";
+import { fetchShippingRate, resetShippingRates } from "@/redux/slices/shippingSlice";
 // Import step components
 import CustomerStep from "./CustomerStep";
 import ShippingStep from "./Shippingstep";
@@ -112,6 +112,7 @@ interface CheckoutFormValues {
 const CheckoutForm = () => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state?.carts?.items);
+  const { loading } = useAppSelector((state: RootState) => state?.carts);
   const auth = useAppSelector((state: RootState) => state?.auth);
 
   // ADD COUPON STATE FROM REDUX
@@ -152,21 +153,23 @@ const CheckoutForm = () => {
   const user: any = localStorage.getItem("persist:auth");
   const parsedAuth = auth ? JSON.parse(user) : null;
   const token = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
-  const logInUserDetail = parsedAuth?.user ? JSON.parse(parsedAuth.user) : null;
+  const { shippingDetail } = useAppSelector((state: any) => state.shippingZone);
 
   useEffect(() => {
-    if (cart.length === 0) {
-      if (skipEmptyCartCheckRef.current) {
-        return;
-      }
+    if (!loading) {
+      if (cart.length === 0) {
+        if (skipEmptyCartCheckRef.current) {
+          return;
+        }
 
-      if (!emptyCartWarningShownRef.current) {
-        emptyCartWarningShownRef.current = true;
-        toast.error("Please add something");
-        router.push("/cart");
+        if (!emptyCartWarningShownRef.current) {
+          emptyCartWarningShownRef.current = true;
+          toast.error("Please add something");
+          router.push("/cart");
+        }
+      } else {
+        emptyCartWarningShownRef.current = false;
       }
-    } else {
-      emptyCartWarningShownRef.current = false;
     }
   }, [cart.length, router]);
 
@@ -311,7 +314,7 @@ const CheckoutForm = () => {
     }
     // ✅ Cart page se localStorage mein saved cost
     if (typeof window !== "undefined") {
-      const savedCost = localStorage.getItem("shippingCost");
+      const savedCost = Number(shippingDetail?.rate?.total_charge);
       if (savedCost) return Number(savedCost);
     }
 
@@ -515,10 +518,7 @@ const CheckoutForm = () => {
 
     pr.canMakePayment()
       .then((result) => {
-        console.log("Stripe:", stripe);
-        console.log("Payment Request:", pr);
-        console.log("canMakePayment:", result);
-        console.log("User Agent:", navigator.userAgent);
+
         if (!isMounted) return;
         if (result) {
           setPaymentRequest(pr);
@@ -675,7 +675,8 @@ const CheckoutForm = () => {
         orderPayload
       );
       const orderData = orderResponse.data?.data || orderResponse.data;
-      localStorage.removeItem("shippingCost"); // ✅ Clear saved shipping cost after order is placed
+      dispatch(fetchShippingRate({}))
+      // localStorage.removeItem("shippingCost"); // ✅ Clear saved shipping cost after order is placed
       return orderData || null;
     },
     [buildOrderPayload]
@@ -741,7 +742,7 @@ const CheckoutForm = () => {
         dispatch(resetShippingRates());      // ✅ ADD
         dispatch(setIsMultiAddress(false));
         localStorage.removeItem(CHECKOUT_STORAGE_KEY);
-        // router.push("/checkout/order-information");
+        router.push("/checkout/order-information");
       } catch (err: any) {
         console.error("❌ Wallet payment failed:", err);
         event.complete("fail");
@@ -1013,7 +1014,7 @@ const CheckoutForm = () => {
       dispatch(resetShippingRates());      // ✅ ADD
       dispatch(setIsMultiAddress(false));
       localStorage.removeItem(CHECKOUT_STORAGE_KEY);
-      // router.push("/checkout/order-information");
+      router.push("/checkout/order-information");
     } catch (err: any) {
       console.error("❌ Error processing order:", err);
       const errorMessage =
