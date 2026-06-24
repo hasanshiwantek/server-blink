@@ -38,7 +38,9 @@ export async function generateMetadata({
 
   if (webPages) {
     return {
-      title: `${webPages.pageTitle || webPages.pageName} | Server Blink`,
+      title: {
+        absolute: webPages.pageTitle || webPages.pageName,  // ← changed
+      },
       description:
         webPages.metaDescription?.substring(0, 160) ||
         webPages.pageName,
@@ -60,11 +62,12 @@ export async function generateMetadata({
     };
   }
   return {
-    title: `${product.pageTitle || product.name} | Server Blink`,
+    title: {
+      absolute: product.pageTitle || product.name,  // ← changed
+    },
     description:
       product.metaDescription?.substring(0, 160) ||
-      product.description?.substring(0, 160) ||
-      "Buy quality servers, networking equipment, and IT solutions at Server Blink.",
+      product.description?.substring(0, 160),
     keywords:
       product.searchKeywords ||
       `${product.name}, ${product.brand?.name}, Server Blink`,
@@ -75,7 +78,7 @@ export async function generateMetadata({
       title: product.pageTitle || product.name,
       description: product.metaDescription || product.description,
       url,
-      siteName: "Server Blink",
+      siteName: "",
       images: [
         {
           url: product.image?.[0]?.path || "/default-product-image.svg",

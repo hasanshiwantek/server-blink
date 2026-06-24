@@ -9,7 +9,7 @@ export const fetchCategories = async () => {
       storeId: storeId,
     },
     // ✅ ISR: cache once, refresh every 5 min
-    next: { revalidate: 60 },
+    next: { revalidate: 5 },
   });
 
   if (!res.ok) throw new Error("Failed to fetch categories");
