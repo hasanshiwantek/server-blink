@@ -45,6 +45,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
   const auth = useAppSelector((state: RootState) => state?.auth);
   const handleSignOut = () => {
     dispatch(logout());
+    window.location.reload()
   };
 
   useEffect(() => {
