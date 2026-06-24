@@ -10,7 +10,7 @@ const ShopNow = () => {
       <div className="sm:hidden">
         <div
           className="relative w-full h-[220px] bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/about/about-us.jpg')" }}
+          style={{ backgroundImage: "url('/about/about-us-update.webp')" }}
           aria-hidden
         >
           <div className="absolute inset-0 bg-white/35" />
