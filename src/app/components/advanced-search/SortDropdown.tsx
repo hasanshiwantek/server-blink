@@ -28,7 +28,7 @@ export default function SortDropdown({ filters, setFilters }: any) {
     }, []);
 
     return (
-        <div ref={ref} className="relative lg:w-80">
+        <div ref={ref} className="relative w-[189px] md:w-80">
             {/* Trigger button */}
             <button
                 type="button"

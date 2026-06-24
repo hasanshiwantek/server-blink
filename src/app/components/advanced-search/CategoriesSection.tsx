@@ -12,7 +12,7 @@ const CategoriesSection = ({ categories }: { categories: any[] }) => {
   })
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-3 text-sm">
+    <div className="grid grid-cols-1 gap-x-5 md:grid-cols-3 gap-x-12 gap-y-3 text-sm">
       {categoryPairs?.map((pair, index) => (
         <div key={index} className="text-[15px]">
           <Link
