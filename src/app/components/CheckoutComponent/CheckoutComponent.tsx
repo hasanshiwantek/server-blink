@@ -260,16 +260,12 @@ const CheckoutForm = () => {
         const res = await fetch("/api/detect-country"); // apna Next.js route
         const data = await res.json();
         if (data.country_code) {
-          const checkoutFormData = JSON.parse(localStorage.getItem("checkoutFormData") || "");
-          if (checkoutFormData?.country && checkoutFormData?.state && checkoutFormData?.city) {
-            // Agar localStorage mein data hai, toh usko update karo detected country se
-          } else {
-            setValue("country", data.country_code);
-            setValue("state", data.state);
+          dispatch(fetchShippingRate({}))
+          setValue("country", data.country_code);
+          setValue("state", data.state);
 
-            setValue("billingCountry", data.country_code);
-            setValue("billingState", data.state);
-          }
+          setValue("billingCountry", data.country_code);
+          setValue("billingState", data.state);
         }
       } catch {
         setValue("country", "US");
@@ -279,6 +275,15 @@ const CheckoutForm = () => {
 
     detectCountry();
   }, [setValue]);
+
+  useEffect(() => {
+    if (shippingDetail?.country) {
+      setValue("country", shippingDetail.country);
+      setValue("state", shippingDetail.state);
+      setValue("city", shippingDetail.city);
+      setValue("zip", shippingDetail.zip);
+    }
+  }, [shippingDetail]);
 
   const shipping = useMemo(() => {
     if (isMultiAddress) {
