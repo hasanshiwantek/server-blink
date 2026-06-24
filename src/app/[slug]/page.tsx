@@ -1,32 +1,26 @@
-import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 import Script from "next/script";
 import { headers } from "next/headers";
-import dynamic from "next/dynamic";
-import { fetchProductBySlug, fetchProductBySlugAndUrl, fetchProducts, fetchWebPages } from "@/lib/api/products";
+import { fetchProductBySlugAndUrl, fetchWebPages } from "@/lib/api/products";
 import ProductCard from "@/app/components/Product/ProductCard";
 import ProductOverview from "@/app/components/Product/ProductOverview";
 import ProductExtras from "@/app/components/Product/ProductExtras";
 import { Suspense } from "react";
 import CategoriesSidebar from "../components/Home/CategoriesSidebar";
 import BrandsSidebar from "../components/Home/BrandsSidebar";
-import { notFound, redirect } from "next/navigation";
-import Link from "next/link";
+import { notFound } from "next/navigation";
 import DynamicWebPage from "../components/Product/DynamicWebPage";
 
-// ✅ Dynamic metadata for SEO
+//  Dynamic metadata for SEO
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params; // <-- await here
+  const { slug } = await params;
   const headersList = await headers();
 
-  // ✅ Most reliable - Next.js sets this automatically
-  const fullUrl = headersList.get("x-full-url");
   const pathname: any = headersList.get("x-pathname");
-
-
   const product = await fetchProductBySlugAndUrl(pathname);
   const webPages = await fetchWebPages(pathname);
 
@@ -110,31 +104,30 @@ export async function generateMetadata({
   };
 }
 
-// ✅ Page component (server-side)
+//  Page component (server-side)
 export default async function ProductPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params; // <-- await here
   const headersList = await headers();
-  // ✅ Most reliable - Next.js sets this automatically
+  //  Most reliable - Next.js sets this automatically
   const fullUrl = headersList.get("x-full-url");
   const pathname: any = headersList.get("x-pathname");
 
-  // 🔥 Parallel data fetching
+  //  Parallel data fetching
   const product = await fetchProductBySlugAndUrl(pathname);
   const webPages = await fetchWebPages(pathname);
 
   if (!product && !webPages) {
-    notFound(); // 🔥 THIS IS THE KEY
+    notFound();
   }
   const backendSchema = product?.schema;
 
   return (
     <>
       {webPages ? <DynamicWebPage webPages={webPages} /> : <div>
-        {/* ✅ Structured Data (SEO safe) */}
+        {/* Structured Data (SEO safe) */}
         {backendSchema && (
           <Script
             id="product-jsonld"

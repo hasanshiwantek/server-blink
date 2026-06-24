@@ -2,13 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogClose,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -83,14 +79,8 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="!max-w-[65rem] w-full max-h-[100vh] overflow-y-auto p-0 rounded-lg shadow-sm">
         {/* Header with Close */}
-        {/* <DialogHeader className="flex justify-end p-4"> */}
-        {/* <DialogClose className="text-gray-500 hover:text-gray-700">
-            <X className="w-6 h-6" />
-          </DialogClose> */}
-        {/* </DialogHeader> */}
 
         <div className="flex flex-col md:flex-row">
-          {/* Left Side - Product Image */}
           <div className="md:w-3/5 bg-white p-8 flex flex-col items-center justify-center">
             {product?.image ? (
               <Image
@@ -114,7 +104,6 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
 
           {/* Right Side - Form */}
           <div className="md:w-3/5 p-8 bg-white relative flex flex-col items-center">
-            {/* Red Banner with Title + Close */}
             <div style={{ borderRadius: "49% 51% 51% 49% / 0% 0% 50% 50%" }} className="absolute top-0 right-0 bg-[#d40511] text-white px-6 py-5 w-full flex justify-center items-center">
               <h2 className="text-3xl">Request A Bulk Quote</h2>
             </div>
