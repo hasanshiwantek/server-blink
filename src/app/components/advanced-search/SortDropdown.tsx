@@ -42,7 +42,7 @@ export default function SortDropdown({ filters, setFilters }: any) {
           ${open ? " " : ""}
         `}
             >
-                {selected?.label || "Sort Byy"}
+                {selected?.label || "Sort By"}
             </button>
 
             {/* Chevron */}
