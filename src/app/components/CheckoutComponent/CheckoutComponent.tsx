@@ -313,14 +313,14 @@ const CheckoutForm = () => {
       return selected ? Number(selected.total_charge) : 0;
     }
     // ✅ Cart page se localStorage mein saved cost
-    if (shippingDetail?.rate?.total_charge) {
+    if (typeof window !== "undefined") {
       const savedCost = Number(shippingDetail?.rate?.total_charge);
       if (savedCost) return Number(savedCost);
     }
 
     if (cart.length === 0) return 0;
     return cart.reduce((sum, item) => sum + Number(item.fixedShippingCost || 0), 0);
-  }, [isMultiAddress, destinations, destShippingRates, watchedShippingMethod, shippingRates, cart,shippingDetail]);
+  }, [isMultiAddress, destinations, destShippingRates, watchedShippingMethod, shippingRates, cart]);
 
   const tax = 0;
 
@@ -1167,7 +1167,6 @@ const CheckoutForm = () => {
 
 
   useEffect(() => {
-     dispatch(fetchShippingRate({}))
     fetch('/api/get-ip')
       .then(res => res.json())
       .then(data => setIpAddress(data.ip));

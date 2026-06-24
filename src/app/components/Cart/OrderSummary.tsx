@@ -216,8 +216,8 @@ const OrderSummary = () => {
             {shippingCostLoading || loadingDetectCountry ? <span
               className={
                 showShipping
-                  ? " text-[14px]  border-b hover:border-red-500 border-gray-500 inline-block cursor-pointer italic hover:text-red-500"
-                  : "hover:border-red-500 hover:text-red-500 text-[14px] border-b border-gray-500 inline-block cursor-pointer"
+                  ? " text-[14px]   border-gray-500 inline-block cursor-pointer italic "
+                  : " text-[14px] border-b border-gray-500 inline-block "
               }
             >
               Loading..

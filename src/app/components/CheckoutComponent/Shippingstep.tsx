@@ -19,7 +19,7 @@ import {
   UseFormSetValue,
 } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { fetchShippingRates } from "@/redux/slices/shippingSlice";
+import { addShippingCost, fetchShippingRates } from "@/redux/slices/shippingSlice";
 import { RootState } from "@/redux/store";
 import MultiAddressShipping from "./MultiAddressShipping";
 import {
@@ -130,6 +130,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state?.carts?.items);
   const auth = useAppSelector((state: RootState) => state?.auth);
+  const shippingCostLoading = useAppSelector((state: RootState) => state.shippingZone?.loading);
 
   // const [completedDestinations, setCompletedDestinations] = useState<any[]>([]);
   const { isMultiAddress, completedDestinations, destShippingRates } =
@@ -712,7 +713,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                           {...register("shippingMethod", {
                             required: "Please select a shipping method",
                           })}
-                          onChange={(e) => {
+                          onChange={async (e) => {
                             register("shippingMethod").onChange(e); // keep react-hook-form in sync
                             const selectedRate = shippingRates?.find(
                               (r: any) => r.service_type === e.target.value,
@@ -720,17 +721,25 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                             const cost = selectedRate
                               ? Number(selectedRate.total_charge).toFixed(2)
                               : "0";
-                            const shippingData = {
+                            const shippingData: any = {
                               country: country?.trim(),
                               city: city?.trim(),
                               state: state?.trim(),
                               zip: zip?.trim(),
+                              "cartId": cart?.map(item => item.cartItemId),
+                              "rate": {
+                                "service_type": selectedRate?.service_type,
+                                "method_type": selectedRate?.method_type,
+                                "total_charge": cost
+                              }
                             };
-                            localStorage.setItem("shippingCost", cost);
-                            localStorage.setItem(
-                              "shippingData",
-                              JSON.stringify(shippingData),
-                            );
+                            await dispatch(addShippingCost(shippingData)).unwrap().then(() => {
+                            })
+                            // localStorage.setItem("shippingCost", cost);
+                            // localStorage.setItem(
+                            //   "shippingData",
+                            //   JSON.stringify(shippingData),
+                            // );
                           }}
                           className="mt-1"
                           disabled={!isShippingComplete}
@@ -781,14 +790,14 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             />
           </div>
 
-          <button
-            disabled={ratesLoader}
+          {shippingRates?.length ? <button
+            disabled={ratesLoader || shippingCostLoading}
             type="button"
             onClick={onContinue}
             className="btn-primary"
           >
             CONTINUE
-          </button>
+          </button> : <></>}
         </>
       )}
     </div>
