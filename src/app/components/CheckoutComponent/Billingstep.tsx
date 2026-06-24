@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
@@ -10,6 +10,8 @@ import {
   SelectContent,
 } from "@/components/ui/select";
 import { UseFormRegister, FieldErrors, Control, Controller, UseFormSetValue } from "react-hook-form";
+import { useAppSelector } from "@/hooks/useReduxHooks";
+import { RootState } from "@/redux/store";
 
 interface BillingStepProps {
   register: UseFormRegister<any>;
@@ -32,6 +34,7 @@ interface BillingStepProps {
     country: string;
     zip: string;
   };
+  onAddressSelect?: (address: any) => void;
 }
 
 const BillingStep: React.FC<BillingStepProps> = ({
@@ -47,7 +50,12 @@ const BillingStep: React.FC<BillingStepProps> = ({
   isCompleted,
   onEdit,
   billingInfo,
+  onAddressSelect,
 }) => {
+  const auth = useAppSelector((state: RootState) => state?.auth);
+  const { address, loading } = useAppSelector((state: RootState) => state.myaccount);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedLabel, setSelectedLabel] = useState<any>("ENTER A NEW ADDRESS");
   if (isCompleted && !isActive &&
     billingInfo?.firstName &&
     billingInfo?.city &&
@@ -78,7 +86,55 @@ const BillingStep: React.FC<BillingStepProps> = ({
   return (
     <div className="space-y-6">
       <h3 className="text-sm font-medium mb-4 text-gray-700">Billing Address</h3>
+      {auth?.isAuthenticated && address?.addresses?.length > 0 && (
+        <div className="relative mb-4">
+          {/* Trigger */}
+          <button
+            type="button"
+            className="w-full h-[44px] border border-[#cac9c9] px-3 text-left text-sm text-[#545454] bg-white flex justify-between items-center"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            <span>{selectedLabel?.customerName}</span>
+            <span className="text-xs">▼</span>
+          </button>
 
+          {/* Dropdown List */}
+          {isOpen && (
+            <div className="absolute z-50 w-full border border-[#cac9c9] bg-white shadow-lg max-h-72 overflow-y-auto">
+
+              {/* Default option */}
+              <div
+                className="px-3 py-2 text-2xl hover:bg-gray-100 cursor-pointer"
+                onClick={() => {
+                  setSelectedLabel("ENTER A NEW ADDRESS");
+                  setIsOpen(false);
+                }}
+              >
+                ENTER A NEW ADDRESS
+              </div>
+
+              {/* Address options */}
+              {address?.addresses?.map((item: any, i: number) => (
+                <div
+                  key={i}
+                  className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer border-t border-gray-100"
+                  onClick={() => {
+                    setSelectedLabel(item?.customerName);
+                    setIsOpen(false);
+                    onAddressSelect?.(item);
+                  }}
+                >
+                  <p className="font-medium text-[13px] text-[#545454]">{item.customerName}</p>
+                  <p className=" text-[#545454] text-[13px]">{item.addressLine1}</p>
+                  {item.addressLine2 && <p className="text-[13px] text-[#545454]">{item.addressLine2}</p>}
+                  <p className="text-[13px] text-[#545454]">{item.city}, {item.state} {item.zip}</p>
+                  <p className="text-[13px] text-[#545454]">{item.country}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col">
           <label

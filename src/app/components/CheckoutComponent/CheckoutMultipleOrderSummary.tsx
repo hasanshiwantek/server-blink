@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAppSelector } from "@/hooks/useReduxHooks";
 import { Button } from "@/components/ui/button";
 import EditCartShipModal from "./EditCartShipModal";
+import { usePathname } from "next/navigation";
 interface OrderSummaryProps {
     cart: any[];
     subtotal: number;
@@ -25,6 +26,8 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
     discountAmount, appliedCoupon, promoCode, setPromoCode,
     onApplyCoupon, onRemoveCoupon,
 }) => {
+    const pathname = usePathname();
+    const isOrderInfo = pathname === "/checkout/order-information";
     const [showPromo, setShowPromo] = useState(false);
     const [discountOpen, setDiscountOpen] = useState(false);
     const [showAllItems, setShowAllItems] = useState(false);
@@ -145,7 +148,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
             isAllocated: true,
         }));
     const INITIAL_SHOW = 3;
-      const roboto = "'Roboto', Arial, Helvetica, sans-serif";
+    const roboto = "'Roboto', Arial, Helvetica, sans-serif";
     // const cartItemCount = cart.reduce((sum, item: any) => sum + (item?.quantity ?? 1), 0);
     const cartItemCount = isMultiAddress && destinations.some((d) => d.allocatedItems.length > 0)
         ? destinations.reduce((sum, d) => sum + d.allocatedItems.length, 0)
@@ -166,14 +169,14 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                     <h2 className="text-xl font-normal text-[#545454] p-4" style={{ fontFamily: roboto }}>
                         Order Summary
                     </h2>
-                    <span onClick={() => {
+                    {!isOrderInfo && <span onClick={() => {
                         if (isMultiAddress) {
                             setShowSingleAddressModal(true);
                         }
 
                     }} className="text-[13px] text-[#D42020] hover:underline cursor-pointer">
                         Edit Cart
-                    </span>
+                    </span>}
                 </div>
 
                 {/* Item count */}
@@ -255,7 +258,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                 </div>
 
                 {/* Promo */}
-                <div className="mb-6 border-b-[1px] px-6 border-[#8b8b8b] py-4">
+                {!isOrderInfo && <div className="mb-6 border-b-[1px] px-6 border-[#8b8b8b] py-4">
                     <button type="button" className="text-[13px] text-[#D42020]" onClick={() => setShowPromo((prev) => !prev)}>
                         Promo/Gift Certificate
                     </button>
@@ -282,7 +285,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                         </div>
                     )}
                 </div>
-
+                }
                 {/* Totals */}
                 <div className="space-y-3  pt-4 px-6">
                     <div className="flex justify-between text-[13px] text-[#545454]" style={{ fontFamily: roboto }}>

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface OrderSummaryProps {
   cart: any[];
@@ -32,14 +33,16 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
   onApplyCoupon,
   onRemoveCoupon,
 }) => {
+  const pathname = usePathname();
+  const isOrderInfo = pathname === "/checkout/order-information";
   const [showPromo, setShowPromo] = useState(false);
   const [discountOpen, setDiscountOpen] = useState(false);
   const cartItemCount = cart.reduce(
     (sum, item: any) => sum + (item?.quantity ?? 1),
     0
   );
-   const robotoCondensed = "'Roboto Condensed', Arial, Helvetica, sans-serif";
-    const roboto = "'Roboto', Arial, Helvetica, sans-serif";
+  const robotoCondensed = "'Roboto Condensed', Arial, Helvetica, sans-serif";
+  const roboto = "'Roboto', Arial, Helvetica, sans-serif";
 
   useEffect(() => {
     if (appliedCoupon && discountAmount > 0) {
@@ -53,12 +56,12 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
         <h2 className="text-xl font-normal text-[#544545] p-4">
           Order Summary
         </h2>
-        <Link
+        {!isOrderInfo && <Link
           href="/cart"
           className="text-[13px] text-[#D42020] hover:underline"
         >
           Edit Cart
-        </Link>
+        </Link>}
       </div>
 
       <div className="mb-4 text-[13px] text-[#544545] px-6" style={{ fontFamily: roboto }}>
@@ -100,7 +103,7 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
       </div>
 
       {/* Promo/Gift Certificate */}
-      <div className="mb-6 border-b-[1px] px-6 border-[#8b8b8b] py-4">
+      {!isOrderInfo && <div className="mb-6 border-b-[1px] px-6 border-[#8b8b8b] py-4">
         <button
           type="button"
           className="text-[13px] text-[#D42020] py-4 "
@@ -146,7 +149,7 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
             )}
           </div>
         )}
-      </div>
+      </div>}
 
       {/* Totals */}
       <div className="space-y-3  pt-4 px-6">

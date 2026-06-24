@@ -16,7 +16,7 @@ import {
   restoreCart,
 } from "@/redux/slices/cartSlice";
 import { applyCoupon, removeCoupon } from "@/redux/slices/couponSlice"; // ADD THIS
-import axiosInstance from "@/lib/axiosInstance";
+import axiosInstance, { baseURL } from "@/lib/axiosInstance";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -42,7 +42,7 @@ import {
 import { useRouter } from "next/navigation";
 import { setLastOrder } from "@/redux/slices/orderslice";
 import { resetMultiAddress, restoreMultiAddress, setIsMultiAddress } from "@/redux/slices/multiAddressSlice";
-import { resetShippingRates } from "@/redux/slices/shippingSlice";
+import { fetchShippingRate, resetShippingRates } from "@/redux/slices/shippingSlice";
 // Import step components
 import CustomerStep from "./CustomerStep";
 import ShippingStep from "./Shippingstep";
@@ -51,6 +51,7 @@ import PaymentStep from "./Paymentstep";
 import CheckoutOrderSummary from "./CheckoutOrderSummary";
 import CheckoutMultipleOrderSummary from "./CheckoutMultipleOrderSummary";
 import { calculatePackage } from "./Shippingstep";
+import { fetchAccountAddress } from "@/redux/slices/myaccountSlice";
 
 export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
 
@@ -101,12 +102,18 @@ interface CheckoutFormValues {
   billingState: string;
   billingZip: string;
   newsletter?: boolean;
+
+  // 
+  ipAddress: string;
+  isSaveAddressForShipping?: boolean;
+  isSaveAddressForBilling?: boolean;
 }
 
 // Inner component that uses Stripe hooks
 const CheckoutForm = () => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state?.carts?.items);
+  const { loading } = useAppSelector((state: RootState) => state?.carts);
   const auth = useAppSelector((state: RootState) => state?.auth);
 
   // ADD COUPON STATE FROM REDUX
@@ -121,6 +128,7 @@ const CheckoutForm = () => {
   const [itemToDelete, setItemToDelete] = useState<any | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [ipAddress, setIpAddress] = useState('');
   const [cardCompletion, setCardCompletion] = useState({
     number: false,
     expiry: false,
@@ -143,20 +151,26 @@ const CheckoutForm = () => {
   const router = useRouter();
   const emptyCartWarningShownRef = useRef(false);
   const skipEmptyCartCheckRef = useRef(false);
+  const user: any = localStorage.getItem("persist:auth");
+  const parsedAuth = auth ? JSON.parse(user) : null;
+  const token = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
+  const { shippingDetail } = useAppSelector((state: any) => state.shippingZone);
 
   useEffect(() => {
-    if (cart.length === 0) {
-      if (skipEmptyCartCheckRef.current) {
-        return;
-      }
+    if (!loading) {
+      if (cart.length === 0) {
+        if (skipEmptyCartCheckRef.current) {
+          return;
+        }
 
-      if (!emptyCartWarningShownRef.current) {
-        emptyCartWarningShownRef.current = true;
-        toast.error("Please add something");
-        router.push("/cart");
+        if (!emptyCartWarningShownRef.current) {
+          emptyCartWarningShownRef.current = true;
+          toast.error("Please add something");
+          router.push("/cart");
+        }
+      } else {
+        emptyCartWarningShownRef.current = false;
       }
-    } else {
-      emptyCartWarningShownRef.current = false;
     }
   }, [cart.length, router]);
 
@@ -247,16 +261,12 @@ const CheckoutForm = () => {
         const res = await fetch("/api/detect-country"); // apna Next.js route
         const data = await res.json();
         if (data.country_code) {
-          const checkoutFormData = JSON.parse(localStorage.getItem("checkoutFormData") || "");
-          if (checkoutFormData?.country && checkoutFormData?.state && checkoutFormData?.city) {
-            // Agar localStorage mein data hai, toh usko update karo detected country se
-          } else {
-            setValue("country", data.country_code);
-            setValue("state", data.state);
+          dispatch(fetchShippingRate({}))
+          setValue("country", data.country_code);
+          setValue("state", data.state);
 
-            setValue("billingCountry", data.country_code);
-            setValue("billingState", data.state);
-          }
+          setValue("billingCountry", data.country_code);
+          setValue("billingState", data.state);
         }
       } catch {
         setValue("country", "US");
@@ -266,6 +276,15 @@ const CheckoutForm = () => {
 
     detectCountry();
   }, [setValue]);
+
+  useEffect(() => {
+    if (shippingDetail?.country) {
+      setValue("country", shippingDetail.country);
+      setValue("state", shippingDetail.state);
+      setValue("city", shippingDetail.city);
+      setValue("zip", shippingDetail.zip);
+    }
+  }, [shippingDetail]);
 
   const shipping = useMemo(() => {
     if (isMultiAddress) {
@@ -301,7 +320,7 @@ const CheckoutForm = () => {
     }
     // ✅ Cart page se localStorage mein saved cost
     if (typeof window !== "undefined") {
-      const savedCost = localStorage.getItem("shippingCost");
+      const savedCost = Number(shippingDetail?.rate?.total_charge);
       if (savedCost) return Number(savedCost);
     }
 
@@ -430,7 +449,7 @@ const CheckoutForm = () => {
     pr.on("shippingaddresschange", async (event) => {
       try {
         const response = await fetch(
-          "https://backend.sparemicro.com/api/web/checkout/get-shipping-rates",
+          `${baseURL}web/checkout/get-shipping-rates`,
           {
             method: "POST",
             headers: {
@@ -505,10 +524,7 @@ const CheckoutForm = () => {
 
     pr.canMakePayment()
       .then((result) => {
-         console.log("Stripe:", stripe);
-          console.log("Payment Request:", pr);
-          console.log("canMakePayment:", result);
-          console.log("User Agent:", navigator.userAgent);
+
         if (!isMounted) return;
         if (result) {
           setPaymentRequest(pr);
@@ -537,9 +553,6 @@ const CheckoutForm = () => {
     return "desktop";
   };
 
-  const user: any = localStorage.getItem("persist:auth");
-  const parsedAuth = auth ? JSON.parse(user) : null;
-  const token = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
 
   // const buildOrderPayload = useCallback(
   //   (data: CheckoutFormValues & { paymentIntentId?: string | null }) => ({
@@ -577,6 +590,7 @@ const CheckoutForm = () => {
         return {
           userType: token ? null : "guest",
           deviceType: getDeviceType(),
+          ipAddress: ipAddress,
           email: data.email,
           paymentMethod: data.paymentMethod,
           discountAmount: discountAmount ? finalTotal : 0,
@@ -628,6 +642,9 @@ const CheckoutForm = () => {
       return {
         userType: token ? null : "guest",
         deviceType: getDeviceType(),
+        ipAddress: ipAddress,
+        isSaveAddressForShipping: data?.isSaveAddressForShipping,
+        billingSame: data?.billingSame,
         firstName: data.firstName,
         lastName: data.lastName,
         companyName: data.company || "",
@@ -664,7 +681,8 @@ const CheckoutForm = () => {
         orderPayload
       );
       const orderData = orderResponse.data?.data || orderResponse.data;
-      localStorage.removeItem("shippingCost"); // ✅ Clear saved shipping cost after order is placed
+      dispatch(fetchShippingRate({}))
+      // localStorage.removeItem("shippingCost"); // ✅ Clear saved shipping cost after order is placed
       return orderData || null;
     },
     [buildOrderPayload]
@@ -730,7 +748,7 @@ const CheckoutForm = () => {
         dispatch(resetShippingRates());      // ✅ ADD
         dispatch(setIsMultiAddress(false));
         localStorage.removeItem(CHECKOUT_STORAGE_KEY);
-        router.push("/order-success");
+        router.push("/checkout/order-information");
       } catch (err: any) {
         console.error("❌ Wallet payment failed:", err);
         event.complete("fail");
@@ -1002,7 +1020,7 @@ const CheckoutForm = () => {
       dispatch(resetShippingRates());      // ✅ ADD
       dispatch(setIsMultiAddress(false));
       localStorage.removeItem(CHECKOUT_STORAGE_KEY);
-      router.push("/order-success");
+      router.push("/checkout/order-information");
     } catch (err: any) {
       console.error("❌ Error processing order:", err);
       const errorMessage =
@@ -1153,6 +1171,42 @@ const CheckoutForm = () => {
     completedDestinations,   // ← Important
     destShippingRates, cart]);
 
+  const handleShippingAddressSelect = useCallback((selected: any) => {
+    setValue("firstName", selected.firstName || "");
+    setValue("lastName", selected.lastName || "");
+    setValue("company", selected.companyName || "");
+    setValue("phone", selected.phone || "");
+    setValue("address1", selected.addressLine1 || "");
+    setValue("address2", selected.addressLine2 || "");
+    setValue("city", selected.city || "");
+    setValue("country", selected.country || "");
+    setValue("state", selected.state || "");
+    setValue("zip", selected.zip || "");
+  }, [setValue]);
+  const handleBillingAddressSelect = useCallback((selected: any) => {
+    setValue("billingFirstName", selected.billingFirstName || "");
+    setValue("billingLastName", selected.billingLastName || "");
+    setValue("billingCompany", selected.billingCompany || "");
+    setValue("billingPhone", selected.billingPhone || "");
+    setValue("billingAddress1", selected.billingAddress1 || "");
+    setValue("billingAddress2", selected.billingAddress2 || "");
+    setValue("billingCity", selected.billingCity || "");
+    setValue("billingCountry", selected.billingCountry || "");
+    setValue("billingState", selected.billingState || "");
+    setValue("billingZip", selected.billingZip || "");
+  }, [setValue]);
+
+  useEffect(() => {
+    fetch('/api/get-ip')
+      .then(res => res.json())
+      .then(data => setIpAddress(data.ip));
+  }, []);
+
+  useEffect(() => {
+    if (auth?.isAuthenticated) {
+      dispatch(fetchAccountAddress());
+    }
+  }, [auth?.isAuthenticated]);
 
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
@@ -1174,7 +1228,7 @@ const CheckoutForm = () => {
           {/* LEFT SECTION - Multi-step form */}
           <div className="lg:col-span-2 space-y-0">
             {/* STEP 1: Customer */}
-          {/* STEP 1: Customer */}
+            {/* STEP 1: Customer */}
             <div className="p-6 border-b-[1px] border-b-[#8b8b8b]">
               <h2 className="hidden md:flex text-[1.92308rem] font-normal mb-4 text-[#545454]">
                 Customer
@@ -1209,6 +1263,7 @@ const CheckoutForm = () => {
                 isActive={currentStep === 2}
                 isCompleted={completedSteps.includes(2)}
                 onEdit={handleEditShipping}
+                onAddressSelect={handleShippingAddressSelect}
                 shippingInfo={{
                   firstName: watch("firstName"),
                   lastName: watch("lastName"),
@@ -1264,6 +1319,7 @@ const CheckoutForm = () => {
                 isActive={currentStep === 3}
                 isCompleted={completedSteps.includes(3)}
                 onEdit={handleEditBilling}
+                onAddressSelect={handleBillingAddressSelect}
                 billingInfo={{
                   firstName: watch("billingFirstName"),
                   lastName: watch("billingLastName"),

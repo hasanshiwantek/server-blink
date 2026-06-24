@@ -28,10 +28,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     category?.seo?.page_title || slug.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 
   const title = `${formattedCategory} `;
-  const description = `Browse our collection of ${formattedCategory}. Genuine components, affordable prices, and fast shipping.`;
+  const description = category?.seo?.meta_description;
 
   return {
-    title,
+    title: {
+      absolute: formattedCategory,  // ← changed
+    },
     description,
     alternates: {
       canonical: `https://server-blink.vercel.app/category/${slug}`,

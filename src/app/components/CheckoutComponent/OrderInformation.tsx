@@ -1,5 +1,4 @@
 "use client";
-import { Star } from "lucide-react";
 
 import React, {
   useState,
@@ -15,7 +14,6 @@ import {
   increaseQty,
   removeFromCart,
   clearCart,
-  restoreCart,
 } from "@/redux/slices/cartSlice";
 import { applyCoupon, removeCoupon } from "@/redux/slices/couponSlice"; // ADD THIS
 import axiosInstance from "@/lib/axiosInstance";
@@ -29,51 +27,20 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import countries from "world-countries";
 import { Country, State, City } from "country-state-city";
 import { useForm } from "react-hook-form";
-import { loadStripe } from "@stripe/stripe-js";
 import type { PaymentRequest as StripePaymentRequest } from "@stripe/stripe-js";
-import {
-  Elements,
-  CardNumberElement,
-  PaymentRequestButtonElement,
-  useStripe,
-  useElements,
-} from "@stripe/react-stripe-js";
+
 import { useRouter } from "next/navigation";
-import { setLastOrder } from "@/redux/slices/orderslice";
-import { resetMultiAddress, restoreMultiAddress, setIsMultiAddress } from "@/redux/slices/multiAddressSlice";
-import { resetShippingRates } from "@/redux/slices/shippingSlice";
 // Import step components
-import CustomerStep from "./CustomerStep";
-import ShippingStep from "./Shippingstep";
-import BillingStep from "./Billingstep";
-import PaymentStep from "./Paymentstep";
 import CheckoutOrderSummary from "./CheckoutOrderSummary";
 import CheckoutMultipleOrderSummary from "./CheckoutMultipleOrderSummary";
-import { calculatePackage } from "./Shippingstep";
 import LoadTrustpilotScript from "./TrustpilotWidget";
 export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
 
 
 
-// Stripe publishable key
-const stripePromise = loadStripe(
-  "pk_test_51TTnoo8vkezGA3pyz8ekc5xIQNyhweCnxiumTB1si5Dejq5YWPGHDJIJPpBHMLw9hYRkbSkOGpdCzPrlW8g59HZ600cueNQymh"
-);
-
-// Pre-compute country list at module level
-// const countryList = countries
-//   .map((country) => ({
-//     name: country.name.common,
-//     code: country.cca2,
-//   }))
-//   .sort((a, b) => a.name.localeCompare(b.name));
-const countryList = Country.getAllCountries().map((c) => ({
-  name: c.name,
-  code: c.isoCode,
-}));
+const roboto = "'Roboto', Arial, Helvetica, sans-serif";
 
 interface CheckoutFormValues {
   email: string;
@@ -108,9 +75,11 @@ interface CheckoutFormValues {
 // Inner component that uses Stripe hooks
 const CheckoutForm = () => {
   const dispatch = useAppDispatch();
-  const cart = useAppSelector((state: RootState) => state?.cart?.items);
+  const cart = useAppSelector((state: RootState) => state?.carts?.items);
   const auth = useAppSelector((state: RootState) => state?.auth);
-
+  const orders = useAppSelector((state) => state.order.lastOrder) ?? [];
+  const [localOrders] = useState(orders);
+  const orderCustomer = localOrders[0]
   // ADD COUPON STATE FROM REDUX
   const { appliedCoupon, discountAmount } = useAppSelector(
     (state: RootState) => state.coupon
@@ -140,27 +109,10 @@ const CheckoutForm = () => {
   const { isMultiAddress, completedDestinations, destinations, destShippingRates } = useAppSelector(
     (state) => state.multiAddress
   );
-  const stripe = useStripe();
-  const elements = useElements();
   const router = useRouter();
   const emptyCartWarningShownRef = useRef(false);
   const skipEmptyCartCheckRef = useRef(false);
 
-  useEffect(() => {
-    if (cart.length === 0) {
-      if (skipEmptyCartCheckRef.current) {
-        return;
-      }
-
-      if (!emptyCartWarningShownRef.current) {
-        emptyCartWarningShownRef.current = true;
-        toast.error("Please add something");
-        router.push("/cart");
-      }
-    } else {
-      emptyCartWarningShownRef.current = false;
-    }
-  }, [cart.length, router]);
 
   const {
     register,
@@ -387,140 +339,6 @@ const CheckoutForm = () => {
     [setValue, setCardCompletion, setCardError]
   );
 
-  useEffect(() => {
-    if (!stripe || cart.length === 0) {
-      setPaymentRequest(null);
-      setWalletSupport({ applePay: false, googlePay: false });
-      return;
-    }
-
-    // const pr = stripe.paymentRequest({
-    //   country: "US",
-    //   currency: "usd",
-    //   total: {
-    //     label: "Order Total",
-    //     amount: Math.max(0, Math.round(finalTotal * 100)), // USE finalTotal
-    //   },
-    //   requestPayerName: true,
-    //   requestPayerEmail: true,
-    //   requestPayerPhone: true,
-    // });
-
-    const pr = stripe.paymentRequest({
-      country: "US",
-      currency: "usd",
-
-      total: {
-        label: "Order Total",
-        amount: Math.max(0, Math.round(finalTotal * 100)),
-      },
-
-      requestPayerName: true,
-      requestPayerEmail: true,
-      requestPayerPhone: true,
-
-      requestShipping: true,
-    });
-
-    pr.on("shippingaddresschange", async (event) => {
-      try {
-        const response = await fetch(
-          "https://backend.sparemicro.com/api/web/checkout/get-shipping-rates",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              destination: {
-                state: event.shippingAddress.region,
-                country_code: event.shippingAddress.country,
-                postal_code: event.shippingAddress.postalCode,
-              },
-
-              package: {
-                total_weight: calculatePackage(cart).total_weight,
-                weight_unit: "LB",
-                order_total: finalTotal,
-                item_count: calculatePackage(cart).item_count,
-                package_value: finalTotal,
-              },
-            }),
-          }
-        );
-
-        const data = await response.json();
-
-        if (!data.success || !data.rates?.length) {
-          event.updateWith({
-            status: "invalid_shipping_address",
-          });
-
-          return;
-        }
-
-        event.updateWith({
-          status: "success",
-
-          shippingOptions: data.rates.map((rate: any) => ({
-            id: String(rate.method_id),
-            label: rate.display_name,
-            detail: rate.display_name,
-            amount: Math.round(
-              Number(rate.total_charge) * 100
-            ),
-          })),
-        });
-      } catch (err) {
-        console.error(err);
-
-        event.updateWith({
-          status: "fail",
-        });
-      }
-    });
-
-    pr.on("shippingoptionchange", (event) => {
-      const shippingCost =
-        Number(event.shippingOption.amount || 0);
-
-      event.updateWith({
-        status: "success",
-
-        total: {
-          label: "Order Total",
-          amount:
-            Math.round(finalTotal * 100) +
-            shippingCost,
-        },
-      });
-    });
-
-    let isMounted = true;
-
-    pr.canMakePayment()
-      .then((result) => {
-         console.log("Stripe:", stripe);
-          console.log("Payment Request:", pr);
-          console.log("canMakePayment:", result);
-          console.log("User Agent:", navigator.userAgent);
-        if (!isMounted) return;
-        if (result) {
-          setPaymentRequest(pr);
-          setWalletSupport({
-            applePay: Boolean(result.applePay),
-            googlePay: Boolean(result.googlePay || result.browserPay),
-          });
-        } else {
-          setPaymentRequest(null);
-          setWalletSupport({ applePay: true, googlePay: true });
-        }
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [stripe, cart, finalTotal]); // DEPENDENCY: finalTotal instead of total
   const getDeviceType = () => {
     if (typeof window === "undefined") return "desktop";
 
@@ -685,80 +503,7 @@ const CheckoutForm = () => {
     [cart, finalTotal] // ADD finalTotal as dependency
   );
 
-  useEffect(() => {
-    if (!paymentRequest) {
-      return;
-    }
 
-    const handlePaymentMethod = async (event: any) => {
-      if (!pendingWalletForm) {
-        event.complete("fail");
-        toast.error("Unable to process wallet payment. Please try again.");
-        setIsProcessing(false);
-        return;
-      }
-
-      try {
-        const paymentIntentId = await handleStripeCharge(
-          event.paymentMethod.id
-        );
-
-        if (!paymentIntentId) {
-          event.complete("fail");
-          toast.error("Failed to generate payment intent.");
-          setIsProcessing(false);
-          return;
-        }
-
-        const orderData = await placeOrder({
-          ...pendingWalletForm,
-          paymentIntentId,
-        });
-
-        event.complete("success");
-
-        skipEmptyCartCheckRef.current = true;
-        dispatch(setLastOrder(orderData));
-        dispatch(clearCart());
-        dispatch(removeCoupon());
-        dispatch(resetMultiAddress());       // ✅ ADD
-        dispatch(resetShippingRates());      // ✅ ADD
-        dispatch(setIsMultiAddress(false));
-        localStorage.removeItem(CHECKOUT_STORAGE_KEY);
-        router.push("/order-success");
-      } catch (err: any) {
-        console.error("❌ Wallet payment failed:", err);
-        event.complete("fail");
-        const errorMessage =
-          err?.response?.data?.message || err?.message || "Payment failed.";
-
-        toast.error(errorMessage);
-        setIsProcessing(false);
-      } finally {
-        setPendingWalletForm(null);
-      }
-    };
-
-    const handleCancel = () => {
-      setIsProcessing(false);
-      setPendingWalletForm(null);
-    };
-
-    paymentRequest.on("paymentmethod", handlePaymentMethod);
-    paymentRequest.on("cancel", handleCancel);
-
-    return () => {
-      paymentRequest.off("paymentmethod", handlePaymentMethod);
-      paymentRequest.off("cancel", handleCancel);
-    };
-  }, [
-    paymentRequest,
-    pendingWalletForm,
-    handleStripeCharge,
-    placeOrder,
-    dispatch,
-    router,
-  ]);
 
   // Step navigation handlers
   // const handleContinueToShipping = async () => {
@@ -791,503 +536,94 @@ const CheckoutForm = () => {
     }
   };
 
-  const handleContinueToBilling = async () => {
-    const isValid = await trigger([
-      "firstName",
-      "lastName",
-      "address1",
-      "city",
-      "country",
-      "zip",
-      "shippingMethod",
-    ]);
-    if (isValid) {
-      setCompletedSteps((prev) => [...new Set([...prev, 2])]);
-      if (watchedBillingSame && !isMultiAddress) {
-        setCurrentStep(4);
-      } else {
-        setCurrentStep(3);
-      }
-    }
-  };
-
-  const handleContinueToPayment = async () => {
-    if (!watchedBillingSame) {
-      const isValid = await trigger([
-        "billingFirstName",
-        "billingLastName",
-        "billingAddress1",
-        "billingCity",
-        "billingCountry",
-        "billingZip",
-      ]);
-      if (isValid) {
-        setCompletedSteps((prev) => [...new Set([...prev, 3])]);
-        setCurrentStep(4);
-      }
-    } else {
-      setCurrentStep(4);
-    }
-  };
-
-  // Edit handlers
-  const handleEditCustomer = () => {
-    setCurrentStep(1);
-  };
-
-  const handleEditShipping = () => {
-    setCurrentStep(2);
-  };
-
-  const handleEditBilling = () => {
-    setCurrentStep(3);
-  };
-
-  const handleEditPayment = () => {
-    setCurrentStep(4);
-  };
-
-  const handleWalletClick = (method: string) => {
-    handlePaymentSelection(method);
-
-    if (!paymentRequest) {
-      const methodName = method === "apple_pay" ? "Apple Pay" : "Google Pay";
-      toast.error(
-        `${methodName} is not available. Please use a supported device/browser or try credit card payment.`
-      );
-      return;
-    }
-
-    const formData = watch();
-    setPendingWalletForm(formData as CheckoutFormValues);
-    setIsProcessing(true);
-
-    try {
-      paymentRequest.show();
-    } catch (err: any) {
-      console.error("❌ Unable to launch wallet:", err);
-      const methodName = method === "apple_pay" ? "Apple Pay" : "Google Pay";
-      toast.error(
-        `Could not open ${methodName}. Please ensure you have a card set up in your wallet or try credit card payment.`
-      );
-      setIsProcessing(false);
-      setPendingWalletForm(null);
-    }
-  };
-
-  const onSubmit = async (data: CheckoutFormValues) => {
-    const selectedPaymentMethod = data.paymentMethod || "credit_card";
-
-    const requiresStripeCard = stripeCardMethods.includes(
-      selectedPaymentMethod
-    );
-    const isWalletMethod = walletMethods.includes(selectedPaymentMethod);
-
-    if (requiresStripeCard) {
-      if (
-        !cardCompletion.number ||
-        !cardCompletion.expiry ||
-        !cardCompletion.cvc
-      ) {
-        const message =
-          "Please complete your card details before placing the order.";
-        setCardError(message);
-        toast.error(message);
-        return;
-      }
-
-      if (cardError) {
-        toast.error(cardError);
-        return;
-      }
-    }
-
-    if (isWalletMethod) {
-      const walletAvailable =
-        selectedPaymentMethod === "apple_pay"
-          ? walletSupport.applePay
-          : walletSupport.googlePay;
-
-      if (!paymentRequest || !walletAvailable) {
-        toast.error("This wallet is not available on your device.");
-        return;
-      }
-
-      setPendingWalletForm(data);
-      setIsProcessing(true);
-
-      try {
-        paymentRequest.show();
-      } catch (err: any) {
-        console.error("❌ Unable to launch wallet:", err);
-        toast.error("Could not open the wallet sheet. Please try again.");
-        setIsProcessing(false);
-        setPendingWalletForm(null);
-      }
-
-      return;
-    }
-
-    setIsProcessing(true);
-
-    try {
-      let paymentIntentId: string | null = null;
-
-      if (requiresStripeCard) {
-        if (!stripe || !elements) {
-          toast.error("Payment service is not ready yet. Please try again.");
-          setIsProcessing(false);
-          return;
-        }
-
-        const cardNumberElement = elements.getElement(CardNumberElement);
-
-        if (!cardNumberElement) {
-          toast.error(
-            "Payment form is not ready. Please refresh and try again."
-          );
-          setIsProcessing(false);
-          return;
-        }
-
-        const { error: pmError, paymentMethod } =
-          await stripe.createPaymentMethod({
-            type: "card",
-            card: cardNumberElement,
-            billing_details: {
-              name: `${data.billingFirstName} ${data.billingLastName}`,
-              email: data.email,
-              phone: data.billingPhone,
-              address: {
-                line1: data.billingAddress1,
-                line2: data.billingAddress2,
-                city: data.billingCity,
-                state: data.billingState,
-                postal_code: data.billingZip,
-                country: data.billingCountry,
-              },
-            },
-
-          });
-
-        if (pmError) {
-          console.error("Payment method error:", pmError);
-          toast.error(pmError.message || "Unable to create payment method.");
-          setIsProcessing(false);
-          return;
-        }
-
-        if (paymentMethod) {
-          paymentIntentId = await handleStripeCharge(paymentMethod.id);
-
-          if (!paymentIntentId) {
-            toast.error("Failed to generate payment intent.");
-            setIsProcessing(false);
-            return;
-          }
-        }
-      }
-
-      const orderData = await placeOrder({ ...data, paymentIntentId });
-      skipEmptyCartCheckRef.current = true;
-      dispatch(setLastOrder(orderData));
-      dispatch(clearCart());
-      dispatch(removeCoupon());
-      dispatch(resetMultiAddress());       // ✅ ADD
-      dispatch(resetShippingRates());      // ✅ ADD
-      dispatch(setIsMultiAddress(false));
-      localStorage.removeItem(CHECKOUT_STORAGE_KEY);
-      router.push("/order-success");
-    } catch (err: any) {
-      console.error("❌ Error processing order:", err);
-      const errorMessage =
-        err.response?.data?.message ||
-        err.message ||
-        "An error occurred while processing your order.";
-
-      toast.error(errorMessage);
-      setIsProcessing(false);
-    }
-  };
-
-  // watchedBillingSame ke saath useEffect add karo
-  useEffect(() => {
-    if (watchedBillingSame && !isMultiAddress) {
-      setValue("billingFirstName", watchedFirstName);
-      setValue("billingLastName", watchedLastName);
-      setValue("billingCompany", watchedCompany);
-      setValue("billingPhone", watchedPhone);
-      setValue("billingAddress1", watchedAddress1);
-      setValue("billingAddress2", watchedAddress2);
-      setValue("billingCity", watchedCity);
-      setValue("billingState", watchedState);
-      setValue("billingCountry", watchedCountry);
-      setValue("billingZip", watchedZip);
-      setCompletedSteps((prev) => [...new Set([...prev, 3])]);
-    } else if (!watchedBillingSame) {
-      setValue("billingFirstName", "");
-      setValue("billingLastName", "");
-      setValue("billingCompany", "");
-      setValue("billingPhone", "");
-      setValue("billingAddress1", "");
-      setValue("billingAddress2", "");
-      setValue("billingCity", "");
-      setValue("billingZip", "");
-      setCompletedSteps((prev) => prev.filter((s) => s !== 3));
-    }
-  }, [watchedBillingSame, watchedState, watchedCountry, watchedFirstName, watchedLastName, watchedZip, watchedAddress2, watchedAddress1, watchedCompany, watchedPhone, watchedCity]);
-
-    const roboto = "'Roboto', Arial, Helvetica, sans-serif";
-
-  // ✅ Restore from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem(CHECKOUT_STORAGE_KEY);
-    if (!saved) return;
-
-    try {
-      const parsed = JSON.parse(saved);
-      const fieldsToRestore: (keyof CheckoutFormValues)[] = [
-        "email", "firstName", "lastName", "company", "phone",
-        "address1", "address2", "city", "country", "state", "zip",
-        "billingFirstName", "billingLastName", "billingCompany",
-        "billingPhone", "billingAddress1", "billingAddress2",
-        "billingCity", "billingCountry", "billingState", "billingZip",
-        "billingSame", "orderComment", "newsletter", "shippingMethod",
-      ];
-
-      fieldsToRestore?.forEach((field) => {
-        if (parsed[field] !== undefined && parsed[field] !== "") {
-          setValue(field, parsed[field]);
-        }
-      });
-      if (parsed._isMultiAddress && parsed._destinations?.length) {
-        dispatch(restoreMultiAddress({
-          isMultiAddress: true,
-          destinations: parsed._destinations,
-          completedDestinations: parsed._completedDestinations || [],
-          destShippingRates: parsed._destShippingRates || {},
-          orderComment: parsed._orderComment || "",
-        }));
-      }
-      // Restore completed steps
-      if (parsed._completedSteps) {
-        setCompletedSteps(parsed._completedSteps);
-      }
-      if (parsed._currentStep) {
-        setCurrentStep(parsed._currentStep);
-      }
-      // ✅ Restore Cart Items
-      if (parsed._cartItems?.length) {
-        dispatch(restoreCart(parsed._cartItems));
-      }
-    } catch (e) {
-      console.error("Failed to restore checkout data:", e);
-    }
-  }, [dispatch, setValue]);
-  // ✅ Save to localStorage on form changes (debounced)
-  const watchedValues = watch();
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  useEffect(() => {
-    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-
-    saveTimeoutRef.current = setTimeout(() => {
-      const dataToSave = {
-        email: watchedValues.email,
-        firstName: watchedValues.firstName,
-        lastName: watchedValues.lastName,
-        company: watchedValues.company,
-        phone: watchedValues.phone,
-        address1: watchedValues.address1,
-        address2: watchedValues.address2,
-        city: watchedValues.city,
-        country: watchedValues.country,
-        state: watchedValues.state,
-        zip: watchedValues.zip,
-
-        billingFirstName: watchedValues.billingFirstName,
-        billingLastName: watchedValues.billingLastName,
-        billingCompany: watchedValues.billingCompany,
-        billingPhone: watchedValues.billingPhone,
-        billingAddress1: watchedValues.billingAddress1,
-        billingAddress2: watchedValues.billingAddress2,
-        billingCity: watchedValues.billingCity,
-        billingCountry: watchedValues.billingCountry,
-        billingState: watchedValues.billingState,
-        billingZip: watchedValues.billingZip,
-        billingSame: watchedValues.billingSame,
-        orderComment: watchedValues.orderComment,
-        newsletter: watchedValues.newsletter,
-        shippingMethod: watchedValues.shippingMethod,
-        _completedSteps: completedSteps,
-        _currentStep: currentStep,
-
-        // ✅ Multi-address data
-        _isMultiAddress: isMultiAddress,                     // ✅ ADD
-        _destinations: destinations,                         // ✅ ADD
-        _completedDestinations: completedDestinations,       // ✅ ADD
-        _destShippingRates: destShippingRates,               // ✅ ADD
-        _orderComment: watchedValues.orderComment || "",     // ✅ ADD
-        // ✅ NEW: Save current cart state
-        _cartItems: cart.map(item => ({
-          id: item.id,
-          name: item.name,
-          quantity: item.quantity,
-          price: item.price,
-        })),
-      };
-      localStorage.setItem(CHECKOUT_STORAGE_KEY, JSON.stringify(dataToSave));
-    }, 500);
-
-    return () => {
-      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-    };
-  }, [watchedValues,           // This already covers most form fields
-    completedSteps,
-    currentStep,
-    isMultiAddress,
-    destinations,            // ← Important: Add this
-    completedDestinations,   // ← Important
-    destShippingRates, cart]);
 
 
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
-      {paymentRequest && (
-        <div className="">
-          {/* <PaymentRequestButtonElement options={{ paymentRequest }} /> */}
-          {paymentRequest && (
-            <PaymentRequestButtonElement
-              options={{
-                paymentRequest,
-              }}
-            />
-          )}
+
+      <form>
+        <div className="flex justify-center mb-8">
+          <LoadTrustpilotScript />
         </div>
-      )}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start ">
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-     <div className="flex justify-center mb-8">
+          {/* LEFT SIDE */}
+          <div className="lg:col-span-2 mt-[18px]" style={{ fontFamily: roboto }}>
+            <div className="mt-[1px]">
+              <h2 className="text-4xl font-normal text-[#545454] mb-8">
+                Thank You {orderCustomer?.customer?.firstName} {orderCustomer?.customer?.lastName}!
+              </h2>
 
-        <LoadTrustpilotScript />
-  {/* <div className="flex items-center gap-2 bg-white py-5 px-8 border-4 border-[#b6ddce] rounded-md w-fit" style={{ fontFamily: roboto }}>
-    <span className="font-semibold text-[#545454]">
-      Review us on
-    </span>
+              <h6 className="text-lg font-medium mb-6 text-[#545454]">
+                Your order number is{" "}
+                <span className="font-bold text-[#545454]">
+                  {orderCustomer?.orderNumber}
+                </span>
+              </h6>
 
-    <Star className="w-6 h-6 text-[#35b77b] fill-[#35b77b]" />
+              <p className="text-[#545454] leading-7 mb-8">
+                An email will be sent containing information about your purchase.
+                If you have any questions about your purchase, email us at{" "}
+                <span className="font-semibold text-[#D42020]">
+                  info@serverblink.uk
+                </span>{" "}
+                or call us at{" "}
+                <span className="font-semibold text-[#D42020]">
+                  {/* +44 123 456 7890 */}
+                </span>.
+              </p>
 
-    <span className="font-bold text-[#545454]">
-      Trustpilot
-    </span>
-  </div> */}
-</div>
-  <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start ">
+              <hr className="my-8 border-0 h-[0.5px] bg-[#545454]" />
 
-    {/* LEFT SIDE */}
-    <div className="lg:col-span-2 mt-[18px]" style={{ fontFamily: roboto }}>
-      <div className="mt-[1px]">
-        <h2 className="text-4xl font-normal text-[#545454] mb-8">
-          Thank You Areeb! 
-        </h2>
+              <button
+                type="button"
+                onClick={() => router.push("/")}
+                className="btn-primary !px-6 !py-3 h-[44px] !text-lg"
+              >
+                Continue Shopping
+              </button>
+            </div>
+          </div>
 
-        <h6 className="text-lg font-medium mb-6 text-[#545454]">
-          Your order number is{" "}
-          <span className="font-bold text-[#545454]">
-            #75892
-          </span>
-        </h6>
+          {/* RIGHT SIDE */}
+          <div className="lg:col-span-1 lg:sticky lg:top-6">
+            {!isMultiAddress ? (
+              <CheckoutOrderSummary
+                cart={cart}
+                subtotal={subtotal}
+                shipping={shipping}
+                tax={tax}
+                total={totalBeforeDiscount}
+                finalTotal={finalTotal}
+                discountAmount={discountAmount}
+                appliedCoupon={appliedCoupon}
+                promoCode={promoCode}
+                setPromoCode={setPromoCode}
+                onApplyCoupon={handleApplyCoupon}
+                onRemoveCoupon={handleRemoveCoupon}
+              />
+            ) : (
+              <CheckoutMultipleOrderSummary
+                cart={cart}
+                subtotal={subtotal}
+                shipping={shipping}
+                tax={tax}
+                total={totalBeforeDiscount}
+                finalTotal={finalTotal}
+                discountAmount={discountAmount}
+                appliedCoupon={appliedCoupon}
+                promoCode={promoCode}
+                setPromoCode={setPromoCode}
+                onApplyCoupon={handleApplyCoupon}
+                onRemoveCoupon={handleRemoveCoupon}
+              />
+            )}
+          </div>
 
-        <p className="text-[#545454] leading-7 mb-8">
-          An email will be sent containing information about your purchase.
-          If you have any questions about your purchase, email us at{" "}
-          <span className="font-semibold text-[#D42020]">
-            info@serverblink.uk
-          </span>{" "}
-          or call us at{" "}
-          <span className="font-semibold text-[#D42020]">
-            +44 123 456 7890
-          </span>.
-        </p>
+        </div>
+      </form>
 
-        <hr className="my-8 border-0 h-[0.5px] bg-[#545454]" />
-
-        <button
-          type="button"
-          onClick={() => router.push("/")}
-          className="btn-primary !px-6 !py-3 h-[44px] !text-lg"
-        >
-          Continue Shopping
-        </button>
-      </div>
-    </div>
-
-    {/* RIGHT SIDE */}
-    <div className="lg:col-span-1 lg:sticky lg:top-6">
-      {!isMultiAddress ? (
-        <CheckoutOrderSummary
-          cart={cart}
-          subtotal={subtotal}
-          shipping={shipping}
-          tax={tax}
-          total={totalBeforeDiscount}
-          finalTotal={finalTotal}
-          discountAmount={discountAmount}
-          appliedCoupon={appliedCoupon}
-          promoCode={promoCode}
-          setPromoCode={setPromoCode}
-          onApplyCoupon={handleApplyCoupon}
-          onRemoveCoupon={handleRemoveCoupon}
-        />
-      ) : (
-        <CheckoutMultipleOrderSummary
-          cart={cart}
-          subtotal={subtotal}
-          shipping={shipping}
-          tax={tax}
-          total={totalBeforeDiscount}
-          finalTotal={finalTotal}
-          discountAmount={discountAmount}
-          appliedCoupon={appliedCoupon}
-          promoCode={promoCode}
-          setPromoCode={setPromoCode}
-          onApplyCoupon={handleApplyCoupon}
-          onRemoveCoupon={handleRemoveCoupon}
-        />
-      )}
-    </div>
-
-  </div>
-</form>
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[400px]">
-          <DialogHeader>
-            <DialogTitle>Delete Item</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to remove{" "}
-              <strong>{itemToDelete?.name}</strong> from your cart? This action
-              cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="flex justify-end gap-3">
-            <Button
-              variant="outline"
-              onClick={() => setIsDialogOpen(false)}
-              className="!p-4 !text-lg"
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={confirmDelete}
-              className="!p-4 !text-lg"
-            >
-              Confirm
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+    
     </div>
   );
 };
@@ -1295,9 +631,7 @@ const CheckoutForm = () => {
 // Main component with Stripe Elements provider
 const OrderInformation = () => {
   return (
-    <Elements stripe={stripePromise}>
-      <CheckoutForm />
-    </Elements>
+    <CheckoutForm />
   );
 };
 
