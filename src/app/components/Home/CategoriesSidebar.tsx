@@ -12,7 +12,7 @@ interface Category {
 }
 
 interface CategoriesSidebarProps {
-  activeCategoryId?: number; // ✅ pass the active category
+  activeCategoryId?: number; //  pass the active category
 }
 
 const CategoriesSidebar: React.FC<CategoriesSidebarProps> = ({ activeCategoryId }) => {
@@ -43,7 +43,7 @@ const CategoriesSidebar: React.FC<CategoriesSidebarProps> = ({ activeCategoryId 
 
         setCategories(data);
 
-        // ✅ Expand parent categories of the active category automatically
+        // Expand parent categories of the active category automatically
         if (activeCategoryId) {
           const idsToExpand = new Set<number>();
 
@@ -69,7 +69,6 @@ const CategoriesSidebar: React.FC<CategoriesSidebarProps> = ({ activeCategoryId 
       } catch (err) {
         if (!isMounted) return;
 
-        console.error(err);
         setError("Failed to load categories. Please try again.");
       } finally {
         if (isMounted) setLoading(false);
@@ -114,14 +113,11 @@ const CategoriesSidebar: React.FC<CategoriesSidebarProps> = ({ activeCategoryId 
       </div>
     );
 
-  // 4️⃣ Success
   return (
-    <div className="rounded-xs overflow-hidden mb-5" 
-    >
+    <div className="rounded-xs overflow-hidden mb-5">
       <div className="bg-[#393939] px-3 py-2 uppercase tracking-wide border-b-3 border-[#8b8b8b]">
         <h2 className="text-[13px] lg:text-[15px] font-bold text-white ">SHOP BY CATEGORY</h2>
       </div>
-    
       <div className="py-2 px-2 bg-white text-[#545454]" style={{ fontFamily: '"Roboto Condensed"' }}>
         {categories?.slice(0, 10).map((category) => (
           <CategoryItem

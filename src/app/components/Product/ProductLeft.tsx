@@ -182,13 +182,6 @@ const ProductLeft = ({
 
               {/* Center image panel */}
               <div className="flex flex-1 items-center justify-center px-4 pb-8 pt-16 sm:px-8 sm:pt-20">
-                {/* 
-                  CHANGED: 
-                  - When expanded=false → normal constrained size (original behavior)
-                  - When expanded=true  → nearly fullscreen (like BigCommerce)
-                  - Click on image toggles expanded state
-                  - cursor changes to zoom-in/zoom-out to hint the behavior
-                */}
                 <div
                   className={cn(
                     "flex items-center justify-center bg-white p-4 shadow-lg sm:p-5 transition-all duration-300",
@@ -207,7 +200,7 @@ const ProductLeft = ({
                   >
                     <Image
                       src={modalSrc}
-                      alt=""
+                      alt="procduct-img"
                       width={1200}
                       height={1200}
                       onClick={() => setExpanded((e) => !e)}
