@@ -124,12 +124,13 @@ const CartList = () => {
       </div>
       {cart?.length > 0 ? (
         cart?.map((item, index) => {
-          const minQty = item.minPurchaseQuantity;
-          const maxQty = item.maxPurchaseQuantity;
+          const minQty = item?.minPurchaseQuantity;
+          const maxQty = item?.maxPurchaseQuantity;
 
-          return <>
+          return <div
+            key={index}
+          >
             <div
-              key={item?.id}
               className="flex flex-col xl:flex-row items-center justify-between py-5"
             >
               <div className="flex flex-row items-start  xl:flex-row items-center xl:w-[65.1%] 2xl:w-[64.5%]">
@@ -329,7 +330,7 @@ const CartList = () => {
 
             {/* line grey */}
             <div className="w-[97%] mx-auto h-[1px] bg-gray-300" ></div>
-          </>
+          </div>
         })
       ) : (
         <div className="text-7xl text-[#4A4A4A] text-center my-16">

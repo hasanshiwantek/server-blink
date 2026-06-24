@@ -19,7 +19,7 @@ import {
   UseFormSetValue,
 } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { addShippingCost, fetchShippingRates } from "@/redux/slices/shippingSlice";
+import { addShippingCost, fetchShippingRate, fetchShippingRates } from "@/redux/slices/shippingSlice";
 import { RootState } from "@/redux/store";
 import MultiAddressShipping from "./MultiAddressShipping";
 import {
@@ -28,6 +28,7 @@ import {
 } from "@/redux/slices/multiAddressSlice";
 import ShipToSingleAddressModal from "./ShipToSingleAddressModal";
 import { CHECKOUT_STORAGE_KEY } from "./CheckoutComponent";
+import { fetchAccountAddress } from "@/redux/slices/myaccountSlice";
 
 interface ShippingStepProps {
   register: UseFormRegister<any>;
@@ -51,6 +52,7 @@ interface ShippingStepProps {
     zip: string;
   };
   watchedShippingMethod?: string;
+  onAddressSelect?: (address: any) => void;
 }
 
 // Har product = apna alag package
@@ -123,6 +125,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   onEdit,
   shippingInfo,
   watchedShippingMethod,
+  onAddressSelect,
 }) => {
   const { shippingRates, ratesLoader } = useAppSelector(
     (state) => state.shippingZone,
@@ -131,7 +134,9 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   const cart = useAppSelector((state: RootState) => state?.carts?.items);
   const auth = useAppSelector((state: RootState) => state?.auth);
   const shippingCostLoading = useAppSelector((state: RootState) => state.shippingZone?.loading);
-
+  const { address, loading } = useAppSelector((state: RootState) => state.myaccount);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedLabel, setSelectedLabel] = useState<any>("ENTER A NEW ADDRESS");
   // const [completedDestinations, setCompletedDestinations] = useState<any[]>([]);
   const { isMultiAddress, completedDestinations, destShippingRates } =
     useAppSelector((state) => state.multiAddress);
@@ -169,7 +174,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   useEffect(() => {
     if (!city?.trim() && !country?.trim() && !zip?.trim() && !state?.trim())
       return;
-    if (city?.trim() && country?.trim() && zip?.trim() && state?.trim()) {
+    if (city?.trim() && country?.trim() && zip?.trim() && state?.trim() && cart?.length) {
       const pkg = calculatePackage(cart);
       const timer = setTimeout(() => {
         dispatch(
@@ -337,7 +342,55 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             </button>
           )}
         </div>
+        {!isMultiAddress && auth?.isAuthenticated && address?.addresses?.length > 0 && (
+          <div className="relative mb-4">
+            {/* Trigger */}
+            <button
+              type="button"
+              className="w-full h-[44px] border border-[#cac9c9] px-3 text-left text-sm text-[#545454] bg-white flex justify-between items-center"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              <span>{selectedLabel}</span>
+              <span className="text-xs">▼</span>
+            </button>
 
+            {/* Dropdown List */}
+            {isOpen && (
+              <div className="absolute z-50 w-full border border-[#cac9c9] bg-white shadow-lg max-h-72 overflow-y-auto">
+
+                {/* Default option */}
+                <div
+                  className="px-3 py-2 text-2xl hover:bg-gray-100 cursor-pointer"
+                  onClick={() => {
+                    setSelectedLabel("ENTER A NEW ADDRESS");
+                    setIsOpen(false);
+                  }}
+                >
+                  ENTER A NEW ADDRESS
+                </div>
+
+                {/* Address options */}
+                {address?.addresses?.map((item: any, i: number) => (
+                  <div
+                    key={i}
+                    className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer border-t border-gray-100"
+                    onClick={() => {
+                      setSelectedLabel(item.customerName);
+                      setIsOpen(false);
+                      onAddressSelect?.(item);
+                    }}
+                  >
+                    <p className="font-medium text-[13px] text-[#545454]">{item.customerName}</p>
+                    <p className=" text-[#545454] text-[13px]">{item.addressLine1}</p>
+                    {item.addressLine2 && <p className="text-[13px] text-[#545454]">{item.addressLine2}</p>}
+                    <p className="text-[13px] text-[#545454]">{item.city}, {item.state} {item.zip}</p>
+                    <p className="text-[13px] text-[#545454]">{item.country}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
         {isMultiAddress ? (
           <MultiAddressShipping
             cart={cart}
@@ -734,6 +787,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                               }
                             };
                             await dispatch(addShippingCost(shippingData)).unwrap().then(() => {
+                              dispatch(fetchShippingRate({}))
                             })
                             // localStorage.setItem("shippingCost", cost);
                             // localStorage.setItem(

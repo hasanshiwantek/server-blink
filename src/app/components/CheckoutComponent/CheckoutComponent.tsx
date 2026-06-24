@@ -51,6 +51,7 @@ import PaymentStep from "./Paymentstep";
 import CheckoutOrderSummary from "./CheckoutOrderSummary";
 import CheckoutMultipleOrderSummary from "./CheckoutMultipleOrderSummary";
 import { calculatePackage } from "./Shippingstep";
+import { fetchAccountAddress } from "@/redux/slices/myaccountSlice";
 
 export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
 
@@ -260,16 +261,12 @@ const CheckoutForm = () => {
         const res = await fetch("/api/detect-country"); // apna Next.js route
         const data = await res.json();
         if (data.country_code) {
-          const checkoutFormData = JSON.parse(localStorage.getItem("checkoutFormData") || "");
-          if (checkoutFormData?.country && checkoutFormData?.state && checkoutFormData?.city) {
-            // Agar localStorage mein data hai, toh usko update karo detected country se
-          } else {
-            setValue("country", data.country_code);
-            setValue("state", data.state);
+          dispatch(fetchShippingRate({}))
+          setValue("country", data.country_code);
+          setValue("state", data.state);
 
-            setValue("billingCountry", data.country_code);
-            setValue("billingState", data.state);
-          }
+          setValue("billingCountry", data.country_code);
+          setValue("billingState", data.state);
         }
       } catch {
         setValue("country", "US");
@@ -279,6 +276,15 @@ const CheckoutForm = () => {
 
     detectCountry();
   }, [setValue]);
+
+  useEffect(() => {
+    if (shippingDetail?.country) {
+      setValue("country", shippingDetail.country);
+      setValue("state", shippingDetail.state);
+      setValue("city", shippingDetail.city);
+      setValue("zip", shippingDetail.zip);
+    }
+  }, [shippingDetail]);
 
   const shipping = useMemo(() => {
     if (isMultiAddress) {
@@ -1165,6 +1171,30 @@ const CheckoutForm = () => {
     completedDestinations,   // ← Important
     destShippingRates, cart]);
 
+  const handleShippingAddressSelect = useCallback((selected: any) => {
+    setValue("firstName", selected.firstName || "");
+    setValue("lastName", selected.lastName || "");
+    setValue("company", selected.companyName || "");
+    setValue("phone", selected.phone || "");
+    setValue("address1", selected.addressLine1 || "");
+    setValue("address2", selected.addressLine2 || "");
+    setValue("city", selected.city || "");
+    setValue("country", selected.country || "");
+    setValue("state", selected.state || "");
+    setValue("zip", selected.zip || "");
+  }, [setValue]);
+  const handleBillingAddressSelect = useCallback((selected: any) => {
+    setValue("billingFirstName", selected.billingFirstName || "");
+    setValue("billingLastName", selected.billingLastName || "");
+    setValue("billingCompany", selected.billingCompany || "");
+    setValue("billingPhone", selected.billingPhone || "");
+    setValue("billingAddress1", selected.billingAddress1 || "");
+    setValue("billingAddress2", selected.billingAddress2 || "");
+    setValue("billingCity", selected.billingCity || "");
+    setValue("billingCountry", selected.billingCountry || "");
+    setValue("billingState", selected.billingState || "");
+    setValue("billingZip", selected.billingZip || "");
+  }, [setValue]);
 
   useEffect(() => {
     fetch('/api/get-ip')
@@ -1172,8 +1202,11 @@ const CheckoutForm = () => {
       .then(data => setIpAddress(data.ip));
   }, []);
 
-
-
+  useEffect(() => {
+    if (auth?.isAuthenticated) {
+      dispatch(fetchAccountAddress());
+    }
+  }, [auth?.isAuthenticated]);
 
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
@@ -1230,6 +1263,7 @@ const CheckoutForm = () => {
                 isActive={currentStep === 2}
                 isCompleted={completedSteps.includes(2)}
                 onEdit={handleEditShipping}
+                onAddressSelect={handleShippingAddressSelect}
                 shippingInfo={{
                   firstName: watch("firstName"),
                   lastName: watch("lastName"),
@@ -1285,6 +1319,7 @@ const CheckoutForm = () => {
                 isActive={currentStep === 3}
                 isCompleted={completedSteps.includes(3)}
                 onEdit={handleEditBilling}
+                onAddressSelect={handleBillingAddressSelect}
                 billingInfo={{
                   firstName: watch("billingFirstName"),
                   lastName: watch("billingLastName"),

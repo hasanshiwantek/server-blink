@@ -10,7 +10,6 @@ export const fetchBrands = async () => {
       storeId: storeId,
     },
     // ✅ ISR: cache once, refresh every 5 min
-    next: { revalidate: 30 },
   });
 
   if (!res.ok) throw new Error("Failed to fetch brands");
