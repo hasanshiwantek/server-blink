@@ -71,7 +71,7 @@ export default function ProductPage({
 
                     {/* Main Product Content - Fixed 912px max on desktop */}
                     <article className="w-full lg:max-w-[78%]">
-                        <div className="mb-4 px-4 md:px-0">
+                        <div className="hidden md:flex mb-4 px-4 md:px-0">
                             <h2>
                                 <Link href={"/"} className="text-[11px]" itemProp="name">
                                     Home
