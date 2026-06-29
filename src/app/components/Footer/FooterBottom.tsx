@@ -11,8 +11,9 @@ import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { logout } from "@/redux/slices/authSlice";
+import { customerProfile, logout } from "@/redux/slices/authSlice";
 import { cartTransfer, fetchCartList } from "@/redux/slices/cartsSlice";
+import { useSearchParams } from "next/navigation";
 
 interface Category {
   id: number;
@@ -24,22 +25,19 @@ interface Category {
 const robotoCondensedStyle = { fontFamily: '"Roboto Condensed"' };
 
 const FooterBottom = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const searchParams = useSearchParams();
+  const paramsToken = searchParams.get("token");
   const auth = useAppSelector((state: RootState) => state?.auth);
   const user: any = localStorage.getItem("persist:auth");
   const parsedAuth = auth ? JSON.parse(user) : null;
   const token = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
-  const [filters, setFilters] = useState({ page: 1, perPage: 20 });
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
   const robotoCondensed = "'Roboto ', Arial, Helvetica, sans-serif";
-  const { newsletterLoading, newsletterSuccess, newsletterError } = useSelector((state: any) => state.contact);
+  const { newsletterLoading } = useSelector((state: any) => state.contact);
   const { blogs, webPages, error, loading } = useAppSelector(
     (state: any) => state.storeFront
   );
-  const cart = useAppSelector((state: RootState) => state.cart?.items);
-  const carts = useAppSelector((state: RootState) => state.carts.items);
-
 
   const pagesList = webPages?.data || [];
   const visiblePages = pagesList?.filter((page: any) =>
@@ -73,12 +71,34 @@ const FooterBottom = () => {
   }, [])
 
   useEffect(() => {
-    dispatch(getBlogs(filters));
+    dispatch(getBlogs({ page: 1, perPage: 20 }));
     dispatch(getWebPages({ page: 1, perPage: 100 }));
     dispatch(fetchCartList());
+
   }, [dispatch]);
 
+  useEffect(() => {
+    if (!paramsToken) return;
 
+    const login = async () => {
+      const auth = {
+        token: JSON.stringify(paramsToken),
+      };
+
+      localStorage.setItem("persist:auth", JSON.stringify(auth));
+
+      const result = await dispatch(customerProfile());
+
+      if (customerProfile.fulfilled.match(result)) {
+        dispatch(getBlogs({ page: 1, perPage: 20 }));
+        dispatch(getWebPages({ page: 1, perPage: 100 }));
+        dispatch(fetchCartList());
+        router.push("/my-account/orders");
+      }
+    };
+
+    login();
+  }, [paramsToken, dispatch, router]);
   return (
     <footer
       className="bg-[#333333] text-[#ffffff] w-full mx-auto"
