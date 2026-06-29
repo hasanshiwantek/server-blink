@@ -1,16 +1,35 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Script from "next/script";
+import dynamic from "next/dynamic";
+import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { fetchProductBySlugAndUrl, fetchWebPages } from "@/lib/api/products";
-import ProductCard from "@/app/components/Product/ProductCard";
-import ProductOverview from "@/app/components/Product/ProductOverview";
-import ProductExtras from "@/app/components/Product/ProductExtras";
-import { Suspense } from "react";
-import CategoriesSidebar from "../components/Home/CategoriesSidebar";
-import BrandsSidebar from "../components/Home/BrandsSidebar";
-import { notFound } from "next/navigation";
-import DynamicWebPage from "../components/Product/DynamicWebPage";
+// import ProductCard from "@/app/components/Product/ProductCard";
+// import ProductOverview from "@/app/components/Product/ProductOverview";
+// import ProductExtras from "@/app/components/Product/ProductExtras";
+// import CategoriesSidebar from "../components/Home/CategoriesSidebar";
+// import BrandsSidebar from "../components/Home/BrandsSidebar";
+// import DynamicWebPage from "../components/Product/DynamicWebPage";
+const CategoriesSidebar = dynamic(
+  () => import("../components/Home/CategoriesSidebar")
+);
 
+const BrandsSidebar = dynamic(
+  () => import("../components/Home/BrandsSidebar")
+);
+const ProductExtras = dynamic(
+  () => import("../components/Product/ProductExtras")
+);
+const ProductOverview = dynamic(
+  () => import("../components/Product/ProductOverview")
+);
+const ProductCard = dynamic(
+  () => import("../components/Product/ProductCard")
+);
+const DynamicWebPage = dynamic(
+  () => import("../components/Product/DynamicWebPage")
+);
 //  Dynamic metadata for SEO
 export async function generateMetadata({
   params,
