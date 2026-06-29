@@ -3,10 +3,10 @@ import WebContactForm from "./WebContactForm";
 
 const DynamicWebPage = ({ webPages }: { webPages: any }) => {
     const showTheseFields = webPages?.showTheseFields
-const html =
-  webPages?.pageType == "4"
-    ? webPages?.rawHtml
-    : webPages?.pageContent;
+    const html =
+        webPages?.pageType == "4"
+            ? webPages?.rawHtml
+            : webPages?.pageContent;
     return (
         <main className="flex flex-col gap-30" role="main">
             <div className="w-full max-w-[1170px] mx-auto lg:px-6 xl:px-0">
@@ -30,7 +30,7 @@ const html =
                                 {webPages?.pageName}
                             </h1>
 
-                           <div
+                            <div
                                 className="prose prose-sm sm:prose-base max-w-none 
                text-[14px] leading-[20px] 
                [&_ol]:space-y-6 [&_ol]:list-decimal [&_ol]:pl-5 
@@ -42,9 +42,9 @@ const html =
                [&_td]:border [&_th]:border [&_td]:p-2 [&_th]:p-2
                break-words"
                                 dangerouslySetInnerHTML={{
-    __html: html || "",
-  }}
-                            /> 
+                                    __html: html || "",
+                                }}
+                            />
                             {webPages?.pageType == "3" && (
                                 <WebContactForm showTheseFields={showTheseFields} />
                             )}
