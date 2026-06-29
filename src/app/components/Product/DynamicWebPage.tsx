@@ -1,13 +1,6 @@
 import Link from 'next/link'
-import dynamic from 'next/dynamic';
+import WebContactForm from "./WebContactForm";
 
-const WebContactForm = dynamic(
-    () => import("./WebContactForm"),
-    {
-        ssr: false,
-        loading: () => <div className="py-6">Loading form...</div>,
-    }
-);
 const DynamicWebPage = ({ webPages }: { webPages: any }) => {
     const showTheseFields = webPages?.showTheseFields
 const html =
