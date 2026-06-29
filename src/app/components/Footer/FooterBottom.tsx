@@ -93,7 +93,8 @@ const FooterBottom = () => {
         dispatch(getBlogs({ page: 1, perPage: 20 }));
         dispatch(getWebPages({ page: 1, perPage: 100 }));
         dispatch(fetchCartList());
-        router.push("/my-account/orders");
+          window.location.href = "/my-account/orders";
+        //router.push("/my-account/orders");
       }
     };
 
