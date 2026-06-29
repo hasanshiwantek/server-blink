@@ -4,7 +4,7 @@ import WebContactForm from "./WebContactForm";
 const DynamicWebPage = ({ webPages }: { webPages: any }) => {
     const showTheseFields = webPages?.showTheseFields
 const html =
-  webPages?.pageType === "4"
+  webPages?.pageType == "4"
     ? webPages?.rawHtml
     : webPages?.pageContent;
     return (
