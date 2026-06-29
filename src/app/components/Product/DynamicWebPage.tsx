@@ -1,16 +1,10 @@
-import dynamic from 'next/dynamic';
 import Link from 'next/link'
-const WebContactForm = dynamic(
-    () => import("./WebContactForm"),
-    {
-        ssr: false,
-        loading: () => <div className="py-6">Loading form...</div>,
-    }
-);
+import WebContactForm from "./WebContactForm";
+
 const DynamicWebPage = ({ webPages }: { webPages: any }) => {
     const showTheseFields = webPages?.showTheseFields
     const html =
-        webPages?.pageType === "4"
+        webPages?.pageType == "4"
             ? webPages?.rawHtml
             : webPages?.pageContent;
     return (

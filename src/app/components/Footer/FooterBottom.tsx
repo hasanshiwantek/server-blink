@@ -1,18 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { fetchCategories } from "@/lib/api/category";
 import Image from "next/image";
-import FooterSkeleton from "../loader/FooterSkeleton";
 import { subscribeNewsletter } from "@/redux/slices/contactSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { getBlogs, getWebPages, visitorSession } from "@/redux/slices/storeFrontSlice";
 import { RootState } from "@/redux/store";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { customerProfile, logout } from "@/redux/slices/authSlice";
-import { cartTransfer, fetchCartList } from "@/redux/slices/cartsSlice";
+import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { useSearchParams } from "next/navigation";
 
 interface Category {
@@ -74,7 +72,6 @@ const FooterBottom = () => {
     dispatch(getBlogs({ page: 1, perPage: 20 }));
     dispatch(getWebPages({ page: 1, perPage: 100 }));
     dispatch(fetchCartList());
-
   }, [dispatch]);
 
   useEffect(() => {
@@ -90,11 +87,8 @@ const FooterBottom = () => {
       const result = await dispatch(customerProfile());
 
       if (customerProfile.fulfilled.match(result)) {
-        dispatch(getBlogs({ page: 1, perPage: 20 }));
-        dispatch(getWebPages({ page: 1, perPage: 100 }));
         dispatch(fetchCartList());
-          window.location.href = "/my-account/orders";
-        //router.push("/my-account/orders");
+        window.location.href = "/my-account/orders";
       }
     };
 
