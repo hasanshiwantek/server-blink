@@ -55,7 +55,7 @@ export default function SortingBar({
           <button
             onClick={() => setView("grid")}
             className={`w-[35px] h-[35px] flex items-center justify-center border transition-colors ${view === "grid"
-                ? "bg-[var(--primary-color)] text-white border-orange-500 shadow-md"
+                ? "bg-[var(--primary-color)] text-white shadow-md"
                 : "bg-white text-gray-600 border-gray-300 hover:bg-gray-100"
               }`}
           >

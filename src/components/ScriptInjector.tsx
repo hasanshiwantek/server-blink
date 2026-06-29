@@ -39,6 +39,7 @@ export default function ScriptInjector() {
                 const content = script.script_content
                     .replace(/<\/?script[^>]*>/gi, "")
                     .trim();
+                  
 
                 if (!content) return;
 
@@ -46,7 +47,7 @@ export default function ScriptInjector() {
                     const scriptEl = document.createElement("script");
                     scriptEl.id = `injected-script-${script.id}`;
                     scriptEl.textContent = content;
-                    document[target].appendChild(scriptEl);
+                    document[target]?.appendChild(scriptEl);
                 } catch (err) {
                     console.error(`Failed to execute script ${script.id}:`, err);
                 }

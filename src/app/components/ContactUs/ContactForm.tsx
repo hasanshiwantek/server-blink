@@ -81,14 +81,14 @@ const ContactForm = () => {
           rates may apply. If you need further assistance, please reply “HELP”.
           You can also opt out by replying “STOP.” For more information on how
           your data will be handled, please visit&nbsp;
-          <a
+          <Link
             href="/privacy-Policy"
             className="text-[#D42020] underline cursor-pointer"
             target="_blank"
             rel="noopener noreferrer"
           >
             https://www.serverblink.uk/privacy-policy.
-          </a>
+          </Link>
         </p>
       </div>
 

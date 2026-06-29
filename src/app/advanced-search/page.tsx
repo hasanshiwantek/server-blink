@@ -27,7 +27,7 @@ export default function ProductPage({
     const [query, setQuery] = useState("");
     const [category, setCategory] = useState([]);
     const [brand, setBrand] = useState([]);
-
+const roboto = "'Roboto', Arial, Helvetica, sans-serif";
     useEffect(() => {
         const stored = localStorage.getItem("advancedSearchFilters");
         if (stored) {
@@ -70,7 +70,7 @@ export default function ProductPage({
                     </aside>
 
                     {/* Main Product Content - Fixed 912px max on desktop */}
-                    <article className="w-full lg:max-w-[78%]">
+                    <article className="w-full lg:max-w-[78%]" style={{fontFamily:roboto}}>
                         <div className="hidden md:flex mb-4 px-4 md:px-0">
                             <h2>
                                 <Link href={"/"} className="text-[11px]" itemProp="name">
@@ -78,7 +78,7 @@ export default function ProductPage({
                                 </Link>
                                 <span>
                                     <span
-                                        className="mt-2 mx-3 text-gray-400 text-[11px]"
+                                        className="mt-2 mx-3 text-[#393939] text-[11px]"
                                         aria-hidden="true"
                                     >
                                         /
@@ -95,7 +95,7 @@ export default function ProductPage({
                             </h2>
                         </div>
                         <div>
-                            <h1 className="text-[28px] text-[#545454]">
+                            <h1 className="text-[28px] !font-normal text-[#545454]">
                                 {productCount || 0} results for {query}
                             </h1>
                         </div>
@@ -103,7 +103,7 @@ export default function ProductPage({
                             <ProductTabs
                                 tabs={[
                                     { label: "PRODUCTS", count: productCount },
-                                    { label: "NEWS & INFORMATION", count: 0 },
+                                    // { label: "NEWS & INFORMATION", count: 0 },
                                     { label: searchForm ? "HIDE SEARCH FORM" : "SHOW SEARCH FORM", isDivided: true },
                                 ]}
                                 activeTab={currentTab}
