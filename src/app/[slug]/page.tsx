@@ -149,12 +149,12 @@ export default async function ProductPage({
         {/* Structured Data (SEO safe) */}
         {backendSchema && (
           <Script
-            id="product-jsonld"
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify(backendSchema),
-            }}
-            strategy="afterInteractive"
+            id="schema"
+    type="application/ld+json"
+    strategy="beforeInteractive"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify(backendSchema),
+    }}
           />
         )}
 
