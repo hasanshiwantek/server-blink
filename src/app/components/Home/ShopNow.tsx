@@ -1,6 +1,3 @@
-"use client";
-
-import React from "react";
 import Link from "next/link";
 
 const ShopNow = () => {
@@ -43,7 +40,7 @@ const ShopNow = () => {
       <div
         className="relative hidden sm:block w-full bg-cover bg-center bg-no-repeat h-[350px] md:h-[490px]"
         style={{
-          backgroundImage: "url('/about/about-us.jpg')",
+           backgroundImage: "url('/about/about-us-update.webp')",
         }}
       >
         <div className="absolute inset-0 bg-white/35 pointer-events-none" aria-hidden />
