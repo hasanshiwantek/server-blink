@@ -27,8 +27,7 @@ const ProductCard = ({ product }: { product: any }) => {
         toast.error(`You have already reached the maximum limit (${maxQty}) for this product.`);
         return;
       }
-      // dispatch(addToCart(product));
-      // Add only up to the allowed maximum
+
       const quantityToAdd = Math.min(minQty, remaining);
 
       dispatch(
@@ -42,8 +41,6 @@ const ProductCard = ({ product }: { product: any }) => {
       toast.success(`${product.name} added to cart!`);
       // router.push("/cart")
     }
-    // dispatch(addToCart(product));
-    // toast.success(`${product?.name} added to cart!`);
   };
 
   const images =
@@ -62,19 +59,15 @@ const ProductCard = ({ product }: { product: any }) => {
         sku: product.sku,
         slug: product.slug,
         productUrl: product.productUrl,
-
         brand: product.brand,
-
         name: product.name,
-
         price: product.price,
         msrp: product.msrp,
-
         image: product.image,
         purchasabilityStatus: product?.purchasabilityStatus
       })
     );
-  }, [product, dispatch]);
+  }, [product.id]);
 
   const increment = () => {
     if (
@@ -87,6 +80,8 @@ const ProductCard = ({ product }: { product: any }) => {
 
 
   const decrement = () => quantity > minQty && setQuantity(quantity - 1);
+
+  
   return (
     <div className="max-w-full mx-auto">
       <div className=" rounded-xl w-full px-0">

@@ -1,10 +1,8 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
-import { Plus, Minus, ChevronDown, ChevronUp } from "lucide-react";
-import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { toast } from "sonner";
-import { addToCart } from "@/redux/slices/cartSlice";
 import { useRouter } from "next/navigation";
 import ProductPrice from "../productprice/ProductPrice";
 import { fetchReviews, fetchStats } from "@/redux/slices/homeSlice";
@@ -22,20 +20,10 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
   const minQty = product?.minPurchaseQuantity || 1;
   const maxQty = product?.maxPurchaseQuantity;
   const robotoCondensed = "'Roboto Condensed'";
-  const roboto = "'Roboto ', Arial, Helvetica, sans-serif";
-
   const cart = useAppSelector((state: RootState) => state.carts?.items);
-  const { reviews, reviewsLoading, reviewsError, stats } = useAppSelector(
-    (state) => state.home
-  );
   const availableForSale = product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
 
-  const handleSeeMore = useCallback(() => {
-    window.open(
-      "https://www.trustpilot.com/review/newtownspares.com",
-      "_blank"
-    );
-  }, []);
+
 
   useEffect(() => {
     dispatch(fetchReviews());
@@ -206,8 +194,6 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
               }
 
               const quantityToAdd = Math.min(quantity, remainingQty);
-              // dispatch(addToCart({ ...product, quantity: quantityToAdd }));
-
               dispatch(addCart({
                 data: {
                   productId: product?.id,
