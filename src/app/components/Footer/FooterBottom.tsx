@@ -94,7 +94,6 @@ const FooterBottom = () => {
         dispatch(getWebPages({ page: 1, perPage: 100 }));
         dispatch(fetchCartList());
         router.push("/my-account/orders");
-        window.location.reload()
       }
     };
 
