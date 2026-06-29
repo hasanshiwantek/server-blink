@@ -61,23 +61,23 @@ const Navbar: React.FC = () => {
               <div className="flex flex-col text-gray-800" style={{ fontFamily: "Roboto, Arial, Helvetica, sans-serif" }}>
                 <p className="text-[15px] font-semibold">
                   Call:{" "}
-                  <a
+                  <Link
                     // href="tel:+15022063033"
                     href="#"
                     className="text-[var(--primary-color)] text-[18px] hover:underline"
                   >
                     {/* +1 502-206-3033 */}
-                  </a>
+                  </Link>
                 </p>
 
                 <p className="text-[15px] font-semibold">
                   Email:{" "}
-                  <a
+                  <Link
                     href="mailto:info@serverblink.uk"
                     className="text-[var(--primary-color)] text-[14px] hover:underline"
                   >
                     info@serverblink.uk
-                  </a>
+                  </Link>
                 </p>
               </div>
             </div>
@@ -149,12 +149,12 @@ const Navbar: React.FC = () => {
                 </p>
                 <p className="text-sm">
                   Email:{" "}
-                  <a
+                  <Link
                     href="mailto:info@serverblink.uk"
                     className="hover:text-red-600"
                   >
                     info@serverblink.uk
-                  </a>
+                  </Link>
                 </p>
               </div>
             </div>

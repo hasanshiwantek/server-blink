@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useEffect, useRef } from "react";
  
 declare global {
@@ -64,9 +65,9 @@ export default function TrustpilotWidget({
         data-style-height={height}
         data-style-width={width}
 >
-<a href={reviewUrl} target="_blank" rel="noopener noreferrer">
+<Link href={reviewUrl} target="_blank" rel="noopener noreferrer">
           Trustpilot
-</a>
+</Link>
 </div>
 </div>
   );

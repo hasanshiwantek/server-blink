@@ -181,7 +181,7 @@ export const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>(
           maxWidth: "900px",
           margin: "0 auto",
           lineHeight: 1.4,
-          border: "2px solid #dcdcdc",
+          border: "3px solid #dcdcdc",
         }}
       >
         {/* ── Logo ── */}
@@ -211,7 +211,7 @@ export const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>(
         </div>
 
         {/* ── Company address ── */}
-        <div className="text-[14px] italic font-bold leading-4 mb-5">
+        <div className="text-[14px] italic font-bold leading-4 mb-5" style={{visibility:"hidden"}}>
           <span className="inline-block mb-[2px]"> Address:</span>
           <br />
           2210 Goldsmith Lane
@@ -518,16 +518,21 @@ export const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>(
                   >
                     {fmt(lineTotal)}
                   </td>
+                  
                 </tr>
+                
               );
             })}
           </tbody>
+         
           <tfoot>
             {[
               { label: "Subtotal", value: subtotal },
               { label: "Shipping", value: shipping },
               { label: "Tax", value: tax },
+              
             ].map(({ label, value }) => (
+              
               <tr key={label}>
                 <td colSpan={3} />
                 <td

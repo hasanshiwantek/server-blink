@@ -8,6 +8,7 @@ import supportIcon3 from "@/assets/support/support-img3.png";
 import teamIcon from "@/assets/support/teams-icon.svg";
 import whatsappIcon from "@/assets/support/wp-icon.svg";
 import BulkInquiryModal from "../modal/BulkInquiryModal";
+import Link from "next/link";
  
 interface ProductRightProps {
   product?: {
@@ -104,7 +105,7 @@ const ProductRight: React.FC<ProductRightProps> = ({ product }) => {
           <div className="flex justify-center lg:gap-1 xl:gap-2 xl:mb-2 2xl:mb-3 mt-2">
             {/* Camera Icon */}
             {/* Team Icon */}
-            <a
+            <Link
               href="tel:+441929507277"
               className="border border-gray-300 p-1 rounded-md flex items-center justify-center hover:border-[#121e4d] transition-colors"
             >
@@ -115,10 +116,10 @@ const ProductRight: React.FC<ProductRightProps> = ({ product }) => {
                 width={40}
                 height={40}
               />
-            </a>
+            </Link>
 
             {/* WhatsApp Icon */}
-            <a
+            <Link
               href="https://wa.me/441929507277"
               target="_blank"
               rel="noopener noreferrer"
@@ -131,16 +132,16 @@ const ProductRight: React.FC<ProductRightProps> = ({ product }) => {
                 width={40}
                 height={40}
               />
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="https://wa.me/441929507277"
               target="_blank"
               rel="noopener noreferrer"
               className="border border-gray-300 p-1 px-2 rounded-md flex items-center justify-center lg:text-sm xl:text-[13.6px] 2xl:text-[17px] text-[#121e4d] hover:text-[#25D366] transition-colors"
             >
               +44 (192) 9507-277
-            </a>
+            </Link>
           </div>
         </div>
  

@@ -148,21 +148,21 @@ const FooterBottom = () => {
               <p>Louisville, KY 40218</p>
               <p className="mt-3">
                 <span className="font-semibold">Phone Number:</span>{" "}
-                <a
+                <Link
                   // href="tel:+15022063033"
                   href="#"
                   className="text-gray-300">
                   {/* +1502-206-3033 */}
-                </a>
+                </Link>
               </p>
               <p>
                 <span className="font-semibold">Email:</span>{" "}
-                <a
+                <Link
                   href="mailto:info@serverblink.uk"
                   className="text-gray-300"
                 >
                   info@serverblink.uk
-                </a>
+                </Link>
               </p>
               <p className="mt-3">
                 <span className="font-semibold">Hours of Operations:</span>

@@ -76,14 +76,14 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
     }, []);
     return (
         <div className="py-6">
-            <h3 className="text-[15px] text-[#545454] mb-4">Advanced Search</h3>
+            <h3 className="text-[15px] text-[#545454] !font-normal mb-4">Advanced Search</h3>
 
             {/* Search Keyword + Categories Row */}
             <div className="flex flex-col md:flex-row gap-6">
                 {/* Left: Search Keyword + Brands */}
                 <div className="flex-1">
                     <div className="text-[#545454] flex justify-between mb-2">
-                        <label className="block text-[1rem] leading-[1.2]  ">Search Keyword</label>
+                        <label className="block text-[14px] leading-[1.2]  ">Search Keyword</label>
                         <span>*</span>
                     </div>
                     <input
@@ -96,11 +96,12 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
                     />
 
                     <div className="mt-6">
-                        <label className="block text-[1rem] leading-[1.2] text-[#545454] mb-2">Brands</label>
+                        <label className="block text-[14px] leading-[1.2] text-[#545454] mb-2">Brands</label>
                         <select
                             value={selectedBrand}
                             onChange={(e) => setSelectedBrand(e.target.value)}
-                            className="w-full border border-gray-300 rounded px-3 py-2 text-[1rem] focus:outline-none focus:border-gray-500 bg-white h-[3rem]"
+                            className="w-full border border-gray-300 rounded px-3 
+    !pr-10 py-2  text-[1rem] focus:outline-none focus:border-gray-500 bg-white h-[42px]"
                         >
                             <option value="">No Preference</option>
                             {brands?.map(({ brand }: any) => (
@@ -114,14 +115,14 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
 
                 {/* Right: Categories Tree */}
                 <div className="flex-1">
-                    <label className="block text-[1rem] text-[#545454] mb-1">Categories</label>
+                    <label className="block text-[14px] text-[#545454] mb-1">Categories</label>
                     <CategoryTree
                         categories={categories || []}
                         selectedCategories={selectedCategories}
                         setSelectedCategories={setSelectedCategories}
                     />
 
-                    <label className="flex items-center gap-2 mt-2 text-[1rem] text-[#545454]">
+                    <label className="flex items-center gap-2 mt-8 text-[14px] text-[#545454]">
                         <input
                             type="checkbox"
                             checked={autoSearchSub}
@@ -138,22 +139,22 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
                 <h3 className="text-[15px] text-[#545454] mb-4">Search By Price</h3>
 
                 <div>
-                    <span className="text-[1rem] text-[#545454] leading-[1.2] ">Price Range</span>
+                    <span className="text-[14px] text-[#545454] leading-[1.2] ">Price Range</span>
 
-                    <div className="mt-3 flex items-center gap-2">
-                        <span className="text-[1rem] text-[#545454] ml-2">From</span>
+                    <div className="mt-3 flex items-center mb-3 gap-2">
+                        <span className="text-[14px] text-[#545454] ml-4">From</span>
                         <input
                             type="number"
                             value={priceFrom}
                             onChange={(e) => setPriceFrom(e.target.value)}
-                            className="border border-gray-300 rounded px-2 py-1 w-24 text-[1rem] focus:outline-none bg-white h-[3rem]"
+                            className="border border-gray-300 rounded px-2 py-1 w-27 text-[1rem] focus:outline-none bg-white h-[2.6rem]"
                         />
-                        <span className="text-[1rem] text-[#545454]">to</span>
+                        <span className="text-[1rem] text-[#545454] ml-4 mr-4">to</span>
                         <input
                             type="number"
                             value={priceTo}
                             onChange={(e) => setPriceTo(e.target.value)}
-                            className="border border-gray-300 rounded px-2 py-1 w-24 text-[1rem] focus:outline-none bg-white h-[3rem]"
+                            className="border border-gray-300 rounded px-2 py-1 w-27 text-[1rem] focus:outline-none bg-white h-[2.6rem]"
                         />
                     </div>
                 </div>
@@ -164,11 +165,11 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
                 <h4 className="text-[15px] text-[#545454] mb-4">Search By Setting</h4>
                 <div className="flex flex-col md:flex-row gap-4 ">
                     <div className="flex-1">
-                        <label className="block  text-[1rem] leading-[1.2] mb-2">Featured Products</label>
+                        <label className="block  text-[14px] text-[#545454] leading-[1.2] mb-2">Featured Products</label>
                         <select
                             value={featured}
                             onChange={(e) => setFeatured(e.target.value)}
-                            className="w-full border border-gray-300 rounded px-3 py-2 text-[1rem] bg-white focus:outline-none h-[3rem]"
+                            className="w-full border border-gray-300 rounded px-3 py-2 text-[1rem] bg-white focus:outline-none h-[3.2rem]"
                         >
                             <option value="">No Preference</option>
                             <option value="only_featured">Only Featured Products</option>
@@ -176,11 +177,11 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
                         </select>
                     </div>
                     <div className="flex-1">
-                        <label className="block text-[1rem] leading-[1.2] mb-2">Free Shipping</label>
+                        <label className="block text-[14px] text-[#545454] leading-[1.2] text=[#545454] mb-2">Free Shipping</label>
                         <select
                             value={freeShipping}
                             onChange={(e) => setFreeShipping(e.target.value)}
-                            className="w-full border h-[3rem] border-gray-300 rounded px-3 py-2 text-[1rem] bg-white focus:outline-none"
+                            className="w-full border h-[3.2rem] border-gray-300 rounded px-3 py-2 text-[1rem] bg-white focus:outline-none"
                         >
                             <option value="">No Preference</option>
                             <option value="only_free">Only Free Shipping</option>
@@ -194,7 +195,7 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
             <div className="mt-6">
                 <button
                     onClick={handleSearch}
-                    className="btn-primary h-[32px] !p-3 !rounded-sm w-[40%] md:w-[30%] max-w-[9rem]"
+                    className="btn-primary h-[36px] !p-3 !rounded-none w-[40%] md:w-[30%] max-w-[9rem]"
                 >
                     Search
                 </button>

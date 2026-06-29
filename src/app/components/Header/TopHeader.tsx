@@ -453,9 +453,11 @@ const TopHeader = () => {
                             ).map((item) => (
                               <Link key={item?.id} href={item?.productUrl || "#"} onClick={() => setIsOpen(false)} className=" px-2 flex gap-3 items-center cursor-pointer border-b border-gray-300 pb-1 last:border-b-0">
                                 <div className="w-16 h-16 flex-shrink-0 border border-gray-100 rounded-none">
-                                  <img
+                                  <Image
                                     src={item?.image?.[0]?.path || "/default-product-image.svg"}
                                     alt={item?.name}
+                                    width={64}
+                                    height={64}
                                     className="w-full h-full object-contain"
                                   />
                                 </div>

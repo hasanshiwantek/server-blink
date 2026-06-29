@@ -79,7 +79,7 @@ export default function CategoryTree({ categories, selectedCategories, setSelect
                         <path d="M1 5.5H15V12.5C15 13.33 14.33 14 13.5 14H2.5C1.67 14 1 13.33 1 12.5V5.5Z" fill="#F5DFA0" stroke="#C4A83A" strokeWidth="0.5" />
                     </svg>
 
-                    <span className="text-[13px] text-[#545454] whitespace-nowrap">{cat.name}</span>
+                    <span className="text-[14px] text-[#545454] whitespace-nowrap">{cat.name}</span>
                 </div>
 
                 {isExpanded && hasChildren && (

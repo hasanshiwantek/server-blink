@@ -20,10 +20,11 @@ export default function ProductTabs({ tabs, activeTab: controlledActive, onTabCh
 
   const defaultTabs: Tab[] = [
     { label: "PRODUCTS", count: 10000 },
-    { label: "NEWS & INFORMATION", count: 0 },
+    // { label: "NEWS & INFORMATION", count: 0 },
     { label: "SHOW SEARCH FORM", isDivided: true },
   ];
 
+   const roboto = "'Roboto', Arial, Helvetica, sans-serif";
   const items = tabs || defaultTabs;
 
   const handleClick = (index: number) => {
@@ -37,7 +38,7 @@ export default function ProductTabs({ tabs, activeTab: controlledActive, onTabCh
   return (
     <div className="flex flex-col md:flex-row items-center w-full justify-center gap-1 border-b border-gray-200 pb-3 mt-0 text-[14px] font-light  sm:gap-3.5">
       {items.map((tab, index) => (
-        <div key={index} className="flex items-center gap-3.5">
+        <div key={index} className="flex items-center gap-3.5" style={{fontFamily:roboto}}>
           {tab.isDivided && (
             <div className="hidden md:flex w-px h-7 bg-gray-400" />
           )}

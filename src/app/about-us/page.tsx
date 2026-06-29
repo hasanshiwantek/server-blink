@@ -1,12 +1,7 @@
 import React from "react";
-import AboutBanner from "../components/about/AboutBanner";
-import GlobalSupplier from "../components/about/GlobalSupplier";
-import AboutStats from "../components/about/AboutStats";
-import AboutBrandSection from "../components/about/AboutBrandSection";
-import SocialResponsibilitySection from "../components/about/SocialResponsibiltySection";
-// import GetInTouch from "../components/Home/GetInTouch";
+
 import dynamic from "next/dynamic";
-import ProductServicesSection from "../components/about/ProductServicesSection";
+
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
