@@ -51,7 +51,7 @@ import PaymentStep from "./Paymentstep";
 import CheckoutOrderSummary from "./CheckoutOrderSummary";
 import CheckoutMultipleOrderSummary from "./CheckoutMultipleOrderSummary";
 import { calculatePackage } from "./Shippingstep";
-import { fetchAccountAddress } from "@/redux/slices/myaccountSlice";
+import { fetchAccountAddress, fetchCustomerAddress } from "@/redux/slices/myaccountSlice";
 
 export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
 
@@ -1208,7 +1208,7 @@ const CheckoutForm = () => {
 
   useEffect(() => {
     if (auth?.isAuthenticated) {
-      dispatch(fetchAccountAddress());
+      dispatch(fetchCustomerAddress());
     }
   }, [auth?.isAuthenticated]);
 
