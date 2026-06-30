@@ -797,7 +797,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
       </div>
 
       {/* Shipping Method */}
-      {!isMultiAddress && addressMode !== "none" && (
+      {!isMultiAddress && (
         <>
           <div>
             <h3
