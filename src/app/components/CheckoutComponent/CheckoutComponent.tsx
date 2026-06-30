@@ -89,6 +89,9 @@ interface CheckoutFormValues {
   shippingMethod: string;
   orderComment: string;
   paymentMethod: string;
+  addressLine1: string;
+  addressLine2: string
+
   paymentIntentId?: string | null;
   billingSame: boolean;
   billingFirstName: string;
@@ -644,6 +647,7 @@ const CheckoutForm = () => {
         deviceType: getDeviceType(),
         ipAddress: ipAddress,
         isSaveAddressForShipping: data?.isSaveAddressForShipping,
+        isSaveAddressForBilling: data?.isSaveAddressForBilling,
         billingSame: data?.billingSame,
         firstName: data.firstName,
         lastName: data.lastName,
@@ -1016,8 +1020,8 @@ const CheckoutForm = () => {
       dispatch(setLastOrder(orderData));
       dispatch(clearCart());
       dispatch(removeCoupon());
-      dispatch(resetMultiAddress());       // ✅ ADD
-      dispatch(resetShippingRates());      // ✅ ADD
+      dispatch(resetMultiAddress());
+      dispatch(resetShippingRates());
       dispatch(setIsMultiAddress(false));
       localStorage.removeItem(CHECKOUT_STORAGE_KEY);
       router.push("/checkout/order-information");
@@ -1184,16 +1188,16 @@ const CheckoutForm = () => {
     setValue("zip", selected.zip || "");
   }, [setValue]);
   const handleBillingAddressSelect = useCallback((selected: any) => {
-    setValue("billingFirstName", selected.billingFirstName || "");
-    setValue("billingLastName", selected.billingLastName || "");
-    setValue("billingCompany", selected.billingCompany || "");
-    setValue("billingPhone", selected.billingPhone || "");
-    setValue("billingAddress1", selected.billingAddress1 || "");
-    setValue("billingAddress2", selected.billingAddress2 || "");
-    setValue("billingCity", selected.billingCity || "");
-    setValue("billingCountry", selected.billingCountry || "");
-    setValue("billingState", selected.billingState || "");
-    setValue("billingZip", selected.billingZip || "");
+    setValue("billingFirstName", selected.firstName || "");
+    setValue("billingLastName", selected.lastName || "");
+    setValue("billingCompany", selected.companyName || "");
+    setValue("billingPhone", selected.phone || "");
+    setValue("billingAddress1", selected.addressLine1 || "");
+    setValue("billingAddress2", selected.addressLine2 || "");
+    setValue("billingCity", selected.city || "");
+    setValue("billingCountry", selected.country || "");
+    setValue("billingState", selected.state || "");
+    setValue("billingZip", selected.zip || "");
   }, [setValue]);
 
   useEffect(() => {
@@ -1272,6 +1276,11 @@ const CheckoutForm = () => {
                   state: watch("state"),
                   country: watch("country"),
                   zip: watch("zip"),
+
+                  company: watch("company"),
+                  address1: watch("address1"),
+                  address2: watch("address2"),
+                  phone: watch("phone"),
                 }}
                 watchedShippingMethod={watchedShippingMethod}
               />
@@ -1282,31 +1291,6 @@ const CheckoutForm = () => {
               <h2 className="text-[1.92308rem] font-normal mb-4 text-[#545454]">
                 Billing
               </h2>
-              {/* {!watchedBillingSame && (
-                <BillingStep
-                  register={register}
-                  errors={errors}
-                  control={control}
-                  setValue={setValue}
-                  onContinue={handleContinueToPayment}
-                  countryList={countryList}
-                  stateList={stateList}
-                  cityList={cityList}
-                  isActive={currentStep === 3}
-                  isCompleted={completedSteps.includes(3)}
-                  onEdit={handleEditBilling}
-                  billingInfo={{
-                    firstName: watch("billingFirstName"),
-                    lastName: watch("billingLastName"),
-                    address: watch("billingAddress1"),
-                    city: watch("billingCity"),
-                    state: watch("billingState"),
-                    country: watch("billingCountry"),
-                    zip: watch("billingZip"),
-                  }}
-                />
-              )} */}
-              {/* {!watchedBillingSame && ( */}
               <BillingStep
                 register={register}
                 errors={errors}
@@ -1328,9 +1312,16 @@ const CheckoutForm = () => {
                   state: watch("billingState"),
                   country: watch("billingCountry"),
                   zip: watch("billingZip"),
+
+                  company: watch("billingCompany"),
+                  address1: watch("billingAddress1"),
+                  address2: watch("billingAddress2"),
+                  phone: watch("billingPhone"),
+
+                  // isSaveAddressForBilling: watch("isSaveAddressForBilling"), // ✅ add this
+
                 }}
               />
-              {/* )} */}
             </div>
 
             {/* STEP 4: Payment */}

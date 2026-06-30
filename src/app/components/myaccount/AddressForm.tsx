@@ -13,6 +13,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import countries from "world-countries";
 
 interface AddressFormValues {
+  firstName: string;
+  lastName: string;
+  companyName?: string;
+  phone: string;
   address1?: string;
   address2?: string;
   suburb: string;
@@ -41,6 +45,10 @@ const AddressForm = () => {
       const mergedData = {
         addresses: [
           {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            companyName: data.companyName || "",
+            phoneNumber: data.phone,
             addressLine1: data.address1 || "",
             addressLine2: data.address2 || "",
             city: data.suburb,
@@ -74,6 +82,50 @@ const AddressForm = () => {
     <div className="max-w-full mx-auto p-8 rounded-lg">
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        {/* Row 0: First Name & Last Name */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <Label className="text-[14px] text-[#545454] flex md:justify-between" htmlFor="firstName">First Name <span className="">*</span></Label>
+            <Input
+              id="firstName"
+              {...register("firstName", { required: "First name is required" })}
+              className={inputClass}
+            />
+            {errors.firstName && <p className="text-sm text-red-500">{errors.firstName.message}</p>}
+          </div>
+          <div>
+            <Label className="text-[14px] text-[#545454] flex md:justify-between" htmlFor="lastName">Last Name <span className="">*</span></Label>
+            <Input
+              id="lastName"
+              {...register("lastName", { required: "Last name is required" })}
+              className={inputClass}
+            />
+            {errors.lastName && <p className="text-sm text-red-500">{errors.lastName.message}</p>}
+          </div>
+        </div>
+
+        {/* Row 0.5: Company Name & Phone Number */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <Label className="text-[14px] text-[#545454] flex md:justify-between" htmlFor="companyName">Company Name</Label>
+            <Input
+              id="companyName"
+              {...register("companyName")}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <Label className="text-[14px] text-[#545454] flex md:justify-between" htmlFor="phone">Phone Number <span className="">*</span></Label>
+            <Input
+              id="phone"
+              {...register("phone", { required: "Phone number is required" })}
+              className={inputClass}
+            />
+            {errors.phone && <p className="text-sm text-red-500">{errors.phone.message}</p>}
+          </div>
+        </div>
+
+
         {/* Row 1: Address Line 1 & Address Line 2 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
