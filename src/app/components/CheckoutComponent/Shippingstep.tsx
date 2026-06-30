@@ -192,17 +192,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                 ...(city?.trim() && { city: city.trim() }),
               },
               package: pkg,
-              // "package": {
-              //   "total_weight": 2.5,
-              //   "weight_unit": "LB",
-              //   "package_length": 10,
-              //   "package_width": 6,
-              //   "package_height": 4,
-              //   "dimension_unit": "IN",
-              //   "order_total": 75.00,
-              //   "item_count": 1,
-              //   "package_value": 75.00
-              // }
             },
           }),
         );
@@ -403,8 +392,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                 <div
                   className="px-3 py-2 text-2xl hover:bg-gray-100 cursor-pointer"
                   onClick={() => {
-                    // setSelectedLabel("ENTER A NEW ADDRESS");
-                    // setIsOpen(false);
+                    // dispatch(resetShippingRates())
                     setSelectedLabel("ENTER A NEW ADDRESS");
                     setAddressMode("new");          // ✅ form fields show honge
                     setIsOpen(false);
@@ -453,11 +441,31 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     key={i}
                     className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer border-t border-gray-100"
                     onClick={() => {
-                      // dispatch(resetShippingRates())
+
                       setSelectedLabel(item);
                       setAddressMode("selected");
                       setIsOpen(false);
                       onAddressSelect?.(item);
+
+
+                      if (!item?.city?.trim() && !item?.country?.trim() && !item?.zip?.trim() && !item?.state?.trim())
+                        return;
+                      if (item?.city?.trim() && item?.country?.trim() && item?.zip?.trim() && item?.state?.trim() && cart?.length) {
+                        const pkg = calculatePackage(cart);
+                        dispatch(
+                          fetchShippingRates({
+                            data: {
+                              destination: {
+                                country_code: item?.country?.trim(),
+                                state: item?.state?.trim(),
+                                postal_code: item?.zip?.trim(),
+                                ...(city?.trim() && { city: item?.city.trim() }),
+                              },
+                              package: pkg,
+                            },
+                          }),
+                        );
+                      }
                     }}
                   >
                     <p className="font-medium text-[13px] text-[#545454]">{item.firstName} {item.lastName}</p>
@@ -816,19 +824,27 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
               </p>
             )}
 
-            {shippingRates?.length > 0 && (
+            {shippingRates?.length > 0 && addressMode !== "none" && (
               <div className=" border border-black">
                 {ratesLoader
                   ? // Skeleton
-                  Array.from({ length: 2 }).map((_, i) => (
+                  Array.from({ length: 3 }).map((_, i) => (
                     <div
                       key={i}
-                      className="flex items-start gap-3 border rounded p-4 animate-pulse"
+                      className="flex items-start gap-3 border rounded p-4"
                     >
-                      <div className="w-4 h-4 mt-1 bg-gray-200 rounded-full flex-shrink-0" />
-                      <div className="flex-1 space-y-2">
-                        <div className="h-4 bg-gray-200 rounded w-3/4" />
-                        <div className="h-5 bg-gray-200 rounded w-16" />
+                      {/* Radio circle */}
+                      <div className="w-4 h-4 mt-1 rounded-full border-2 border-gray-200 flex-shrink-0 animate-pulse" />
+
+                      <div className="min-w-0 flex-1 flex items-center justify-between gap-3">
+                        {/* Left: service name */}
+                        <div className="flex items-center gap-2">
+                          <div className="h-4 bg-gray-200 rounded animate-pulse w-12" />
+                          <div className="h-4 bg-gray-200 rounded animate-pulse w-32" />
+                        </div>
+
+                        {/* Right: price */}
+                        <div className="h-4 bg-gray-200 rounded animate-pulse w-14 flex-shrink-0" />
                       </div>
                     </div>
                   ))
