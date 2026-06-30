@@ -57,17 +57,37 @@ const BillingStep: React.FC<BillingStepProps> = ({
   onAddressSelect,
 }) => {
   const auth = useAppSelector((state: RootState) => state?.auth);
-  const { address, loading } = useAppSelector((state: RootState) => state.myaccount);
   const [isOpen, setIsOpen] = useState(false);
   const [addressMode, setAddressMode] = useState<"none" | "selected" | "new">("none");
   const [selectedLabel, setSelectedLabel] = useState<any>("ENTER A NEW ADDRESS");
+  const { customerAddresses } = useAppSelector((state: RootState) => state.myaccount);
+
+  const userAddresses = customerAddresses?.map((item: any) => ({
+    id: item.id,
+    storeId: item.store_id,
+    customerId: item.customer_id,
+    firstName: item.first_name,
+    lastName: item.last_name,
+    companyName: item.company_name,
+    phone: item.phone_number,
+    addressLine1: item.address_line_1,
+    addressLine2: item.address_line_2,
+    city: item.city,
+    state: item.state,
+    zip: item.zip,
+    country: item.country,
+    isDefault: item.is_default,
+    createdAt: item.created_at,
+    updatedAt: item.updated_at,
+  }));
   useEffect(() => {
     // Guest user ya jiska koi saved address nahi — direct form dikhao
-    if (!auth?.isAuthenticated) {
-      // if (!auth?.isAuthenticated || !address?.addresses?.length) {
+    // if (!auth?.isAuthenticated) {
+    if (!auth?.isAuthenticated || !userAddresses?.length) {
       setAddressMode("new");
     }
-  }, [auth?.isAuthenticated, address?.addresses]);
+  }, [auth?.isAuthenticated, userAddresses]);
+
   if (isCompleted && !isActive &&
     billingInfo?.firstName &&
     billingInfo?.city &&
@@ -100,7 +120,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
   return (
     <div className="space-y-6">
       <h3 className="text-sm font-medium mb-4 text-gray-700">Billing Address</h3>
-      {auth?.isAuthenticated && address?.addresses?.length > 0 && (
+      {auth?.isAuthenticated && userAddresses?.length > 0 && (
         <div className="relative mb-4">
           {/* Trigger */}
           {/* Trigger */}
@@ -172,33 +192,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
               </div>
 
               {/* Address options */}
-              {/* {address?.addresses?.map((item: any, i: number) => ( */}
-              {[
-                {
-                  "firstName": "John",
-                  "lastName": "Doe",
-                  "companyName": "Acme Corp",
-                  "phone": "+1 213-555-0147",
-                  "addressLine1": "883 North White Second Avenue",
-                  "addressLine2": "Ut unde dolorem est",
-                  "city": "Los Angeles",
-                  "state": "CA",
-                  "zip": "90001",
-                  "country": "US"
-                },
-                {
-                  "firstName": "Kaamk",
-                  "lastName": "Doe",
-                  "companyName": "Mecro",
-                  "phone": "+1 213-555-0147",
-                  "addressLine1": "883 North White Second Avenue",
-                  "addressLine2": "Ut unde dolorem est",
-                  "city": "Los Angeles",
-                  "state": "CA",
-                  "zip": "90001",
-                  "country": "US"
-                }
-              ]?.map((item: any, i: number) => (
+              {userAddresses?.map((item: any, i: number) => (
                 <div
                   key={i}
                   className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer border-t border-gray-100"

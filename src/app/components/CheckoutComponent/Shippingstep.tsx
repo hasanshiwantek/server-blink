@@ -138,7 +138,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   const cart = useAppSelector((state: RootState) => state?.carts?.items);
   const auth = useAppSelector((state: RootState) => state?.auth);
   const shippingCostLoading = useAppSelector((state: RootState) => state.shippingZone?.loading);
-  const { address, loading } = useAppSelector((state: RootState) => state.myaccount);
+  const { address, loading, customerAddresses } = useAppSelector((state: RootState) => state.myaccount);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState<any>("ENTER A NEW ADDRESS");
   // const [completedDestinations, setCompletedDestinations] = useState<any[]>([]);
@@ -147,7 +147,24 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   const roboto = "'Roboto', Arial, Helvetica, sans-serif";
   const [showSingleAddressModal, setShowSingleAddressModal] = useState(false);
   const [addressMode, setAddressMode] = useState<"none" | "selected" | "new">("none");
-
+  const userAddresses = customerAddresses?.map((item: any) => ({
+    id: item.id,
+    storeId: item.store_id,
+    customerId: item.customer_id,
+    firstName: item.first_name,
+    lastName: item.last_name,
+    companyName: item.company_name,
+    phone: item.phone_number,
+    addressLine1: item.address_line_1,
+    addressLine2: item.address_line_2,
+    city: item.city,
+    state: item.state,
+    zip: item.zip,
+    country: item.country,
+    isDefault: item.is_default,
+    createdAt: item.created_at,
+    updatedAt: item.updated_at,
+  }));
   // Watch form values to check if shipping address is complete
   const firstName = useWatch({ control, name: "firstName" });
   const lastName = useWatch({ control, name: "lastName" });
@@ -192,17 +209,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                 ...(city?.trim() && { city: city.trim() }),
               },
               package: pkg,
-              // "package": {
-              //   "total_weight": 2.5,
-              //   "weight_unit": "LB",
-              //   "package_length": 10,
-              //   "package_width": 6,
-              //   "package_height": 4,
-              //   "dimension_unit": "IN",
-              //   "order_total": 75.00,
-              //   "item_count": 1,
-              //   "package_value": 75.00
-              // }
             },
           }),
         );
@@ -212,12 +218,10 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
     }
   }, [city, country, zip, state]);
   useEffect(() => {
-    // Guest user ya jiska koi saved address nahi — direct form dikhao
-    if (!auth?.isAuthenticated) {
-      // if (!auth?.isAuthenticated || !address?.addresses?.length) {
+    if (!auth?.isAuthenticated || !userAddresses?.length) {
       setAddressMode("new");
     }
-  }, [auth?.isAuthenticated, address?.addresses]);
+  }, [auth?.isAuthenticated, userAddresses]);
   if (isCompleted && !isActive) {
     // ✅ Check karo agar multi address tha
     if (isMultiAddress) {
@@ -361,7 +365,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             </button>
           )}
         </div>
-        {!isMultiAddress && auth?.isAuthenticated && address?.addresses?.length > 0 && (
+        {!isMultiAddress && auth?.isAuthenticated && userAddresses?.length > 0 && (
           <div className="relative mb-4">
             {/* Trigger */}
             <button
@@ -403,8 +407,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                 <div
                   className="px-3 py-2 text-2xl hover:bg-gray-100 cursor-pointer"
                   onClick={() => {
-                    // setSelectedLabel("ENTER A NEW ADDRESS");
-                    // setIsOpen(false);
+                    // dispatch(resetShippingRates())
                     setSelectedLabel("ENTER A NEW ADDRESS");
                     setAddressMode("new");          // ✅ form fields show honge
                     setIsOpen(false);
@@ -423,41 +426,36 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
 
                 {/* Address options */}
                 {/* {address?.addresses?.map((item: any, i: number) => ( */}
-                {[
-                  {
-                    "firstName": "John",
-                    "lastName": "Doe",
-                    "companyName": "Acme Corp",
-                    "phone": "+1 213-555-0147",
-                    "addressLine1": "883 North White Second Avenue",
-                    "addressLine2": "Ut unde dolorem est",
-                    "city": "Los Angeles",
-                    "state": "CA",
-                    "zip": "90001",
-                    "country": "US"
-                  },
-                  {
-                    "firstName": "Kaamk",
-                    "lastName": "Doe",
-                    "companyName": "Mecro",
-                    "phone": "+1 213-555-0147",
-                    "addressLine1": "883 North White Second Avenue",
-                    "addressLine2": "Ut unde dolorem est",
-                    "city": "Los Angeles",
-                    "state": "CA",
-                    "zip": "90001",
-                    "country": "US"
-                  }
-                ]?.map((item: any, i: number) => (
+                {userAddresses?.map((item: any, i: number) => (
                   <div
                     key={i}
                     className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer border-t border-gray-100"
                     onClick={() => {
-                      // dispatch(resetShippingRates())
+
                       setSelectedLabel(item);
                       setAddressMode("selected");
                       setIsOpen(false);
                       onAddressSelect?.(item);
+
+
+                      if (!item?.city?.trim() && !item?.country?.trim() && !item?.zip?.trim() && !item?.state?.trim())
+                        return;
+                      if (item?.city?.trim() && item?.country?.trim() && item?.zip?.trim() && item?.state?.trim() && cart?.length) {
+                        const pkg = calculatePackage(cart);
+                        dispatch(
+                          fetchShippingRates({
+                            data: {
+                              destination: {
+                                country_code: item?.country?.trim(),
+                                state: item?.state?.trim(),
+                                postal_code: item?.zip?.trim(),
+                                ...(city?.trim() && { city: item?.city.trim() }),
+                              },
+                              package: pkg,
+                            },
+                          }),
+                        );
+                      }
                     }}
                   >
                     <p className="font-medium text-[13px] text-[#545454]">{item.firstName} {item.lastName}</p>
@@ -820,15 +818,23 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
               <div className=" border border-black">
                 {ratesLoader
                   ? // Skeleton
-                  Array.from({ length: 2 }).map((_, i) => (
+                  Array.from({ length: 3 }).map((_, i) => (
                     <div
                       key={i}
-                      className="flex items-start gap-3 border rounded p-4 animate-pulse"
+                      className="flex items-start gap-3 border rounded p-4"
                     >
-                      <div className="w-4 h-4 mt-1 bg-gray-200 rounded-full flex-shrink-0" />
-                      <div className="flex-1 space-y-2">
-                        <div className="h-4 bg-gray-200 rounded w-3/4" />
-                        <div className="h-5 bg-gray-200 rounded w-16" />
+                      {/* Radio circle */}
+                      <div className="w-4 h-4 mt-1 rounded-full border-2 border-gray-200 flex-shrink-0 animate-pulse" />
+
+                      <div className="min-w-0 flex-1 flex items-center justify-between gap-3">
+                        {/* Left: service name */}
+                        <div className="flex items-center gap-2">
+                          <div className="h-4 bg-gray-200 rounded animate-pulse w-12" />
+                          <div className="h-4 bg-gray-200 rounded animate-pulse w-32" />
+                        </div>
+
+                        {/* Right: price */}
+                        <div className="h-4 bg-gray-200 rounded animate-pulse w-14 flex-shrink-0" />
                       </div>
                     </div>
                   ))
