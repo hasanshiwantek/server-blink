@@ -824,7 +824,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
               </p>
             )}
 
-            {shippingRates?.length > 0 && addressMode !== "none" && (
+            {shippingRates?.length > 0 &&  (
               <div className=" border border-black">
                 {ratesLoader
                   ? // Skeleton
