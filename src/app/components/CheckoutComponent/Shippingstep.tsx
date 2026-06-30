@@ -19,7 +19,7 @@ import {
   UseFormSetValue,
 } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { addShippingCost, fetchShippingRate, fetchShippingRates } from "@/redux/slices/shippingSlice";
+import { addShippingCost, fetchShippingRate, fetchShippingRates, resetShippingRates } from "@/redux/slices/shippingSlice";
 import { RootState } from "@/redux/store";
 import MultiAddressShipping from "./MultiAddressShipping";
 import {
@@ -50,6 +50,10 @@ interface ShippingStepProps {
     state: string;
     country: string;
     zip: string;
+    company: string;
+    address1: string;
+    address2: string;
+    phone: string
   };
   watchedShippingMethod?: string;
   onAddressSelect?: (address: any) => void;
@@ -142,6 +146,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
     useAppSelector((state) => state.multiAddress);
   const roboto = "'Roboto', Arial, Helvetica, sans-serif";
   const [showSingleAddressModal, setShowSingleAddressModal] = useState(false);
+  const [addressMode, setAddressMode] = useState<"none" | "selected" | "new">("none");
 
   // Watch form values to check if shipping address is complete
   const firstName = useWatch({ control, name: "firstName" });
@@ -206,7 +211,13 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
       return () => clearTimeout(timer);
     }
   }, [city, country, zip, state]);
-
+  useEffect(() => {
+    // Guest user ya jiska koi saved address nahi — direct form dikhao
+    if (!auth?.isAuthenticated) {
+      // if (!auth?.isAuthenticated || !address?.addresses?.length) {
+      setAddressMode("new");
+    }
+  }, [auth?.isAuthenticated, address?.addresses]);
   if (isCompleted && !isActive) {
     // ✅ Check karo agar multi address tha
     if (isMultiAddress) {
@@ -286,8 +297,8 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
     // Single address completed view
     return (
       <div className="flex items-start justify-between">
-        <div className="text-base text-gray-600">
-          <p>
+        {/* <div className="text-base text-gray-600">
+          <p className="font-medium text-[13px] text-[#545454]">
             {shippingInfo?.firstName} {shippingInfo?.lastName}
           </p>
           <p>{shippingInfo?.address}</p>
@@ -295,6 +306,14 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             {shippingInfo?.city}, {shippingInfo?.state} {shippingInfo?.zip}
           </p>
           <p>{shippingInfo?.country}</p>
+        </div> */}
+        <div className="text-base text-gray-600">
+          <p className="font-medium text-[13px] text-[#545454]">
+            {shippingInfo?.firstName} {shippingInfo?.lastName}
+          </p>
+          <p className=" text-[#545454] text-[13px]">{shippingInfo?.company} {shippingInfo?.phone}</p>
+          <p className=" text-[#545454] text-[13px]">{shippingInfo?.address1} / {shippingInfo?.address2}</p>
+          <p className="text-[13px] text-[#545454]">{shippingInfo?.city}, {shippingInfo?.state} {shippingInfo?.zip} / {shippingInfo?.country}</p>
         </div>
         <button type="button" onClick={onEdit} className="btn-primary">
           EDIT
@@ -347,11 +366,33 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             {/* Trigger */}
             <button
               type="button"
-              className="w-full h-[44px] border border-[#cac9c9] px-3 text-left text-sm text-[#545454] bg-white flex justify-between items-center"
-              onClick={() => setIsOpen(!isOpen)}
+              className="w-full  border border-[#cac9c9] px-3 py-3 text-left text-sm text-[#545454] bg-white flex justify-between items-center"
+              onClick={() => {
+                dispatch(resetShippingRates())
+                setIsOpen(!isOpen)
+              }
+              }
             >
-              <span>{selectedLabel}</span>
-              <span className="text-xs">▼</span>
+              {typeof selectedLabel === "object" ? (
+                <div className="space-y-0.5">
+                  <p className="font-semibold uppercase">{selectedLabel.firstName} {selectedLabel.lastName}</p>
+                  {(selectedLabel.companyName || selectedLabel.phone) && (
+                    <p className="uppercase">
+                      {selectedLabel.companyName} {selectedLabel.phone}
+                    </p>
+                  )}
+                  <p className="uppercase">
+                    {selectedLabel.addressLine1}
+                    {selectedLabel.addressLine2 && ` / ${selectedLabel.addressLine2}`}
+                  </p>
+                  <p className="uppercase">
+                    {selectedLabel.city}, {selectedLabel.state}, {selectedLabel.zip} / {selectedLabel.country}
+                  </p>
+                </div>
+              ) : (
+                <span >{selectedLabel}</span>
+              )}
+              <span className="text-xs mt-1">▼</span>
             </button>
 
             {/* Dropdown List */}
@@ -362,29 +403,68 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                 <div
                   className="px-3 py-2 text-2xl hover:bg-gray-100 cursor-pointer"
                   onClick={() => {
+                    // setSelectedLabel("ENTER A NEW ADDRESS");
+                    // setIsOpen(false);
                     setSelectedLabel("ENTER A NEW ADDRESS");
+                    setAddressMode("new");          // ✅ form fields show honge
                     setIsOpen(false);
+                    // ✅ existing form fields clear karo
+                    setValue("firstName", "");
+                    setValue("lastName", "");
+                    setValue("address1", "");
+                    setValue("city", "");
+                    setValue("country", "");
+                    setValue("state", "");
+                    setValue("zip", "");
                   }}
                 >
                   ENTER A NEW ADDRESS
                 </div>
 
                 {/* Address options */}
-                {address?.addresses?.map((item: any, i: number) => (
+                {/* {address?.addresses?.map((item: any, i: number) => ( */}
+                {[
+                  {
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "companyName": "Acme Corp",
+                    "phone": "+1 213-555-0147",
+                    "addressLine1": "883 North White Second Avenue",
+                    "addressLine2": "Ut unde dolorem est",
+                    "city": "Los Angeles",
+                    "state": "CA",
+                    "zip": "90001",
+                    "country": "US"
+                  },
+                  {
+                    "firstName": "Kaamk",
+                    "lastName": "Doe",
+                    "companyName": "Mecro",
+                    "phone": "+1 213-555-0147",
+                    "addressLine1": "883 North White Second Avenue",
+                    "addressLine2": "Ut unde dolorem est",
+                    "city": "Los Angeles",
+                    "state": "CA",
+                    "zip": "90001",
+                    "country": "US"
+                  }
+                ]?.map((item: any, i: number) => (
                   <div
                     key={i}
                     className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer border-t border-gray-100"
                     onClick={() => {
-                      setSelectedLabel(item.customerName);
+                      // dispatch(resetShippingRates())
+                      setSelectedLabel(item);
+                      setAddressMode("selected");
                       setIsOpen(false);
                       onAddressSelect?.(item);
                     }}
                   >
-                    <p className="font-medium text-[13px] text-[#545454]">{item.customerName}</p>
-                    <p className=" text-[#545454] text-[13px]">{item.addressLine1}</p>
-                    {item.addressLine2 && <p className="text-[13px] text-[#545454]">{item.addressLine2}</p>}
-                    <p className="text-[13px] text-[#545454]">{item.city}, {item.state} {item.zip}</p>
-                    <p className="text-[13px] text-[#545454]">{item.country}</p>
+                    <p className="font-medium text-[13px] text-[#545454]">{item.firstName} {item.lastName}</p>
+                    <p className=" text-[#545454] text-[13px]">{item.companyName} {item.phone}</p>
+                    <p className=" text-[#545454] text-[13px]">{item.addressLine1} / {item.addressLine2}</p>
+                    <p className="text-[13px] text-[#545454]">{item.city}, {item.state} {item.zip} / {item.country}</p>
+                    <p className="text-[13px] text-[#545454]"></p>
                   </div>
                 ))}
               </div>
@@ -404,295 +484,300 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
           />
         ) : (
           <>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col">
-                <label
-                  htmlFor="firstName"
-                  className={cn(
-                    "mb-2 text-base",
-                    errors.firstName ? "text-red-500" : "text-[#545454]",
-                  )}
-                >
-                  First Name
-                </label>
-                <Input
-                  id="firstName"
-                  type="text"
-                  className={`w-full !max-w-full h-[40px] ${errors.firstName ? "border-red-500" : ""
-                    }`}
-                  {...register("firstName", {
-                    required: "First name is required",
-                  })}
-                />
-                {errors.firstName && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.firstName.message as string}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex flex-col">
-                <label
-                  htmlFor="lastName"
-                  className={cn(
-                    "mb-2 text-base",
-                    errors.lastName ? "text-red-500" : "text-[#545454]",
-                  )}
-                >
-                  Last Name
-                </label>
-                <Input
-                  id="lastName"
-                  type="text"
-                  className={`w-full !max-w-full h-[40px] ${errors.lastName ? "border-red-500" : ""
-                    }`}
-                  {...register("lastName", {
-                    required: "Last name is required",
-                  })}
-                />
-                {errors.lastName && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.lastName.message as string}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="flex flex-col mt-4">
-              <label
-                htmlFor="company"
-                className="mb-2 flex items-baseline justify-between gap-2 text-[13px] text-[#545454]"
-              >
-                <span>Company Names</span>
-                <span className="shrink-0 text-gray-400">(Optional)</span>
-              </label>
-              <Input
-                id="company"
-                type="text"
-                className="w-full !max-w-full h-[44px]  border border-[#cac9c9] rounded-none"
-                {...register("company")}
-              />
-            </div>
-
-            <div className="flex flex-col mt-4">
-              <label
-                htmlFor="phone"
-                className="mb-2 flex items-baseline justify-between gap-2 text-[13px] text-[#545454]"
-              >
-                <span>Phone Number</span>
-                <span className="shrink-0 text-gray-400">(Optional)</span>
-              </label>
-              <Input
-                id="phone"
-                type="text"
-                className="w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none"
-                {...register("phone")}
-              />
-            </div>
-
-            <div className="flex flex-col mt-4">
-              <label
-                htmlFor="address1"
-                className={cn(
-                  "mb-2 text-[13px]",
-                  errors.address1 ? "text-red-500" : "text-[#545454]",
-                )}
-              >
-                Address Line 1
-              </label>
-              <Input
-                id="address1"
-                type="text"
-                className={`w-full !max-w-full h-[40px] h-[44px] border border-[#cac9c9] rounded-none ${errors.address1 ? "border-red-500" : ""
-                  }`}
-                {...register("address1", {
-                  required: "Address is required",
-                })}
-              />
-              {errors.address1 && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.address1.message as string}
-                </p>
-              )}
-            </div>
-
-            <div className="flex flex-col mt-4">
-              <label
-                htmlFor="address2"
-                className="mb-2 flex items-baseline justify-between gap-2 text-[13px] text-[#545454]"
-              >
-                <span>Address Line 2</span>
-                <span className="shrink-0 text-gray-400">(Optional)</span>
-              </label>
-              <Input
-                id="address2"
-                type="text"
-                className="w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none"
-                {...register("address2")}
-              />
-            </div>
-            <div className="flex flex-col mt-4">
-              <label
-                className={cn(
-                  "mb-2 text-[13px]",
-                  errors.city ? "text-red-500" : "text-[#545454]",
-                )}
-              >
-                City
-              </label>
-              <Input
-                id="city"
-                type="text"
-                className="w-full !max-w-full  h-[44px] border border-[#cac9c9] rounded-none"
-                {...register("city", { required: "City is required" })}
-              />
-              {errors.city && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.city.message as string}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col mt-4">
-              <label
-                htmlFor="country"
-                className={cn(
-                  "mb-2 text-base",
-                  errors.country ? "text-red-500" : "text-[#545454]",
-                )}
-              >
-                Country
-              </label>
-              <Controller
-                name="country"
-                control={control}
-                rules={{ required: "Country is required" }}
-                render={({ field }) => (
-                  <Select
-                    // onValueChange={field.onChange}
-                    onValueChange={(val) => {
-                      field.onChange(val);
-                      setValue("state", ""); // ✅ state reset
-                    }}
-                    value={field.value}
-                  >
-                    <SelectTrigger
-                      className={`w-full !max-w-full  !h-[44px] border border-[#cac9c9] rounded-none ${errors.country ? "border-red-500" : ""
-                        }`}
+            {(addressMode === "new" || addressMode === "none") && (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="firstName"
+                      className={cn(
+                        "mb-2 text-base",
+                        errors.firstName ? "text-red-500" : "text-[#545454]",
+                      )}
                     >
-                      <SelectValue placeholder="Select country" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {countryList.map((country) => (
-                        <SelectItem key={country.code} value={country.code}>
-                          {country.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              {errors.country && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.country.message as string}
-                </p>
-              )}
-            </div>
+                      First Name
+                    </label>
+                    <Input
+                      id="firstName"
+                      type="text"
+                      className={`w-full !max-w-full h-[40px] ${errors.firstName ? "border-red-500" : ""
+                        }`}
+                      {...register("firstName", {
+                        required: "First name is required",
+                      })}
+                    />
+                    {errors.firstName && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.firstName.message as string}
+                      </p>
+                    )}
+                  </div>
 
-            <div className="grid grid-cols-2 gap-4 mt-4">
-              <div className="flex flex-col ">
-                <label
-                  htmlFor="country"
-                  className={cn(
-                    "mb-2 text-[13px] flex items-baseline justify-between",
-                    errors.state ? "text-red-500" : "text-[#545454]",
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="lastName"
+                      className={cn(
+                        "mb-2 text-base",
+                        errors.lastName ? "text-red-500" : "text-[#545454]",
+                      )}
+                    >
+                      Last Name
+                    </label>
+                    <Input
+                      id="lastName"
+                      type="text"
+                      className={`w-full !max-w-full h-[40px] ${errors.lastName ? "border-red-500" : ""
+                        }`}
+                      {...register("lastName", {
+                        required: "Last name is required",
+                      })}
+                    />
+                    {errors.lastName && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.lastName.message as string}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-col mt-4">
+                  <label
+                    htmlFor="company"
+                    className="mb-2 flex items-baseline justify-between gap-2 text-[13px] text-[#545454]"
+                  >
+                    <span>Company Names</span>
+                    <span className="shrink-0 text-gray-400">(Optional)</span>
+                  </label>
+                  <Input
+                    id="company"
+                    type="text"
+                    className="w-full !max-w-full h-[44px]  border border-[#cac9c9] rounded-none"
+                    {...register("company")}
+                  />
+                </div>
+
+                <div className="flex flex-col mt-4">
+                  <label
+                    htmlFor="phone"
+                    className="mb-2 flex items-baseline justify-between gap-2 text-[13px] text-[#545454]"
+                  >
+                    <span>Phone Number</span>
+                    <span className="shrink-0 text-gray-400">(Optional)</span>
+                  </label>
+                  <Input
+                    id="phone"
+                    type="text"
+                    className="w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none"
+                    {...register("phone")}
+                  />
+                </div>
+
+                <div className="flex flex-col mt-4">
+                  <label
+                    htmlFor="address1"
+                    className={cn(
+                      "mb-2 text-[13px]",
+                      errors.address1 ? "text-red-500" : "text-[#545454]",
+                    )}
+                  >
+                    Address Line 1
+                  </label>
+                  <Input
+                    id="address1"
+                    type="text"
+                    className={`w-full !max-w-full h-[40px] h-[44px] border border-[#cac9c9] rounded-none ${errors.address1 ? "border-red-500" : ""
+                      }`}
+                    {...register("address1", {
+                      required: "Address is required",
+                    })}
+                  />
+                  {errors.address1 && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.address1.message as string}
+                    </p>
                   )}
-                >
-                  <span className="">State/Province</span>
-                  {!stateList.length && (
-                    <span className="shrink-0 text-[#545454]">(Optional)</span>
+                </div>
+
+                <div className="flex flex-col mt-4">
+                  <label
+                    htmlFor="address2"
+                    className="mb-2 flex items-baseline justify-between gap-2 text-[13px] text-[#545454]"
+                  >
+                    <span>Address Line 2</span>
+                    <span className="shrink-0 text-gray-400">(Optional)</span>
+                  </label>
+                  <Input
+                    id="address2"
+                    type="text"
+                    className="w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none"
+                    {...register("address2")}
+                  />
+                </div>
+                <div className="flex flex-col mt-4">
+                  <label
+                    className={cn(
+                      "mb-2 text-[13px]",
+                      errors.city ? "text-red-500" : "text-[#545454]",
+                    )}
+                  >
+                    City
+                  </label>
+                  <Input
+                    id="city"
+                    type="text"
+                    className="w-full !max-w-full  h-[44px] border border-[#cac9c9] rounded-none"
+                    {...register("city", { required: "City is required" })}
+                  />
+                  {errors.city && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.city.message as string}
+                    </p>
                   )}
-                </label>
-                {stateList.length > 0 ? (
+                </div>
+                <div className="flex flex-col mt-4">
+                  <label
+                    htmlFor="country"
+                    className={cn(
+                      "mb-2 text-base",
+                      errors.country ? "text-red-500" : "text-[#545454]",
+                    )}
+                  >
+                    Country
+                  </label>
                   <Controller
-                    name="state"
-                    disabled={!country?.trim()}
+                    name="country"
                     control={control}
-                    rules={{ required: "State/Province is required" }}
+                    rules={{ required: "Country is required" }}
                     render={({ field }) => (
                       <Select
+                        // onValueChange={field.onChange}
                         onValueChange={(val) => {
                           field.onChange(val);
+                          setValue("state", ""); // ✅ state reset
                         }}
                         value={field.value}
                       >
                         <SelectTrigger
-                          className={`w-full !max-w-full !h-[44px] border border-[#cac9c9] rounded-none ${errors.state ? "border-red-500" : ""
+                          className={`w-full !max-w-full  !h-[44px] border border-[#cac9c9] rounded-none ${errors.country ? "border-red-500" : ""
                             }`}
                         >
-                          <SelectValue placeholder="Select state/province" />
+                          <SelectValue placeholder="Select country" />
                         </SelectTrigger>
                         <SelectContent>
-                          {stateList.map((state) => (
-                            <SelectItem key={state.code} value={state.code}>
-                              {state.name}
+                          {countryList.map((country) => (
+                            <SelectItem key={country.code} value={country.code}>
+                              {country.name}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     )}
                   />
-                ) : (
-                  <Input
-                    id="state"
-                    type="text"
-                    className={`w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none ${errors.state ? "border-red-500" : ""
-                      }`}
-                    {...register("state")}
+                  {errors.country && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.country.message as string}
+                    </p>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  <div className="flex flex-col ">
+                    <label
+                      htmlFor="country"
+                      className={cn(
+                        "mb-2 text-[13px] flex items-baseline justify-between",
+                        errors.state ? "text-red-500" : "text-[#545454]",
+                      )}
+                    >
+                      <span className="">State/Province</span>
+                      {!stateList.length && (
+                        <span className="shrink-0 text-[#545454]">(Optional)</span>
+                      )}
+                    </label>
+                    {stateList.length > 0 ? (
+                      <Controller
+                        name="state"
+                        disabled={!country?.trim()}
+                        control={control}
+                        rules={{ required: "State/Province is required" }}
+                        render={({ field }) => (
+                          <Select
+                            onValueChange={(val) => {
+                              field.onChange(val);
+                            }}
+                            value={field.value}
+                          >
+                            <SelectTrigger
+                              className={`w-full !max-w-full !h-[44px] border border-[#cac9c9] rounded-none ${errors.state ? "border-red-500" : ""
+                                }`}
+                            >
+                              <SelectValue placeholder="Select state/province" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {stateList.map((state) => (
+                                <SelectItem key={state.code} value={state.code}>
+                                  {state.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                    ) : (
+                      <Input
+                        id="state"
+                        type="text"
+                        className={`w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none ${errors.state ? "border-red-500" : ""
+                          }`}
+                        {...register("state")}
+                      />
+                    )}
+                    {errors.state && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.state.message as string}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="zip"
+                      className="mb-2 flex items-baseline justify-between gap-2 text-[13px] text-[#545454]"
+                    >
+                      <span> Postal Code</span>
+                    </label>
+                    <Input
+                      id="zip"
+                      type="text"
+                      className={`w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none ${errors.zip ? "border-red-500" : ""
+                        }`}
+                      {...register("zip", { required: "Postal code is required" })}
+                    />
+                    {errors.zip && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.zip.message as string}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {auth?.isAuthenticated && <div className="flex items-center gap-2 mt-4">
+                  <input
+                    type="checkbox"
+                    id="isSaveAddressForShipping"
+                    {...register("isSaveAddressForShipping")}
+                    className="w-4 h-4"
                   />
-                )}
-                {errors.state && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.state.message as string}
-                  </p>
-                )}
-              </div>
+                  <label
+                    htmlFor="isSaveAddressForShipping"
+                    className="text-[13px] text-[#545454]"
+                  >
+                    Save this address in my address book.
+                  </label>
+                </div>}
+              </>
+            )}
 
-              <div className="flex flex-col">
-                <label
-                  htmlFor="zip"
-                  className="mb-2 flex items-baseline justify-between gap-2 text-[13px] text-[#545454]"
-                >
-                  <span> Postal Code</span>
-                </label>
-                <Input
-                  id="zip"
-                  type="text"
-                  className={`w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none ${errors.zip ? "border-red-500" : ""
-                    }`}
-                  {...register("zip", { required: "Postal code is required" })}
-                />
-                {errors.zip && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.zip.message as string}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {auth?.isAuthenticated && <div className="flex items-center gap-2 mt-4">
-              <input
-                type="checkbox"
-                id="isSaveAddressForShipping"
-                {...register("isSaveAddressForShipping")}
-                className="w-4 h-4"
-              />
-              <label
-                htmlFor="isSaveAddressForShipping"
-                className="text-[13px] text-[#545454]"
-              >
-                Save this address in my address book.
-              </label>
-            </div>}
             <div className="flex items-center gap-2 mt-4">
               <input
                 type="checkbox"
@@ -712,7 +797,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
       </div>
 
       {/* Shipping Method */}
-      {!isMultiAddress && (
+      {!isMultiAddress && addressMode !== "none" && (
         <>
           <div>
             <h3

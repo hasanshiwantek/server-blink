@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
-// import CategoriesSidebar from "./components/Home/CategoriesSidebar";
-// import BrandsSidebar from "./components/Home/BrandsSidebar";
 import Banner from "./components/Home/Banner";
 import CategoryGrid from "./components/Home/CategoriyGrid";
 import FeaturedProducts from "./components/Home/FeaturedProducts";
@@ -13,50 +11,6 @@ import { fetchWebsiteSeo } from "@/lib/api/storeFront";
 const CategoriesSidebar = dynamic(() => import("./components/Home/CategoriesSidebar"));
 const BrandsSidebar = dynamic(() => import("./components/Home/BrandsSidebar"));
 
-// export const metadata: Metadata = {
-//   metadataBase: new URL("https://server-blink.vercel.app"),
-//   title: "PC, Computer & Server Parts | IT Hardware Store",
-//   // title: "Home | Server Blink",
-//   description:
-//     "Welcome to Server Blink – your one-stop shop for servers, networking equipment, and IT solutions. Get the best prices and fast delivery.",
-//   alternates: {
-//     canonical: "https://server-blink.vercel.app",
-//   },
-//   openGraph: {
-//     title: "Server Blink – Home",
-//     description:
-//       "Shop servers, networking gear, and IT solutions at Server Blink. Affordable, reliable, and delivered fast.",
-//     url: "https://server-blink.vercel.app",
-//     siteName: "Server Blink",
-//     images: [
-//       {
-//         url: "/serverblink-logo.png", // Replace with your actual logo
-//         width: 1200,
-//         height: 630,
-//         alt: "Server Blink Homepage",
-//       },
-//     ],
-//   },
-//   twitter: {
-//     card: "summary_large_image",
-//     title: "Server Blink – Home",
-//     description:
-//       "Buy servers, networking equipment, and IT solutions at Server Blink.",
-//     images: ["/serverblink-logo.png"], // Replace with actual logo path
-//   },
-//   robots: {
-//     index: true,
-//     follow: true,
-//     nocache: false,
-//     googleBot: {
-//       index: true,
-//       follow: true,
-//       "max-video-preview": -1,
-//       "max-image-preview": "large",
-//       "max-snippet": -1,
-//     },
-//   },
-// };
 // ✅ Dynamic metadata from backend
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await fetchWebsiteSeo();
