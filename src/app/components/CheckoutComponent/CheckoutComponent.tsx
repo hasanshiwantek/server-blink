@@ -1151,37 +1151,37 @@ const CheckoutForm = () => {
     // setCompletedSteps(saveDetail._completedSteps || []);
 
     // Shipping
-    setValue("email", shipping.email);
-    setValue("firstName", shipping.firstName);
-    setValue("lastName", shipping.lastName);
-    setValue("company", shipping.company);
-    setValue("phone", shipping.phone);
-    setValue("address1", shipping.address1);
-    setValue("address2", shipping.address2);
-    setValue("city", shipping.city);
-    setValue("state", shipping.state);
-    setValue("country", shipping.country);
-    setValue("zip", shipping.zip);
-    setValue("shippingMethod", shipping.shippingMethod);
-    setValue("isSaveAddressForShipping", shipping.isSaveAddressForShipping);
-    setValue("billingSame", shipping.billingSame);
+    setValue("email", shipping?.email);
+    setValue("firstName", shipping?.firstName);
+    setValue("lastName", shipping?.lastName);
+    setValue("company", shipping?.company);
+    setValue("phone", shipping?.phone);
+    setValue("address1", shipping?.address1);
+    setValue("address2", shipping?.address2);
+    setValue("city", shipping?.city);
+    setValue("state", shipping?.state);
+    setValue("country", shipping?.country);
+    setValue("zip", shipping?.zip);
+    setValue("shippingMethod", shipping?.shippingMethod);
+    setValue("isSaveAddressForShipping", shipping?.isSaveAddressForShipping);
+    setValue("billingSame", shipping?.billingSame);
 
 
     if (!auth?.isAuthenticated) {
-      setValue("newsletter", shipping.newsletter);
+      setValue("newsletter", shipping?.newsletter);
     }
     // Billing
-    setValue("billingFirstName", billing.billingFirstName);
-    setValue("billingLastName", billing.billingLastName);
-    setValue("billingCompany", billing.billingCompany);
-    setValue("billingPhone", billing.billingPhone);
-    setValue("billingAddress1", billing.billingAddress1);
-    setValue("billingAddress2", billing.billingAddress2);
-    setValue("billingCity", billing.billingCity);
-    setValue("billingState", billing.billingState);
-    setValue("billingCountry", billing.billingCountry);
-    setValue("billingZip", billing.billingZip);
-    setValue("isSaveAddressForBilling", billing.isSaveAddressForBilling);
+    setValue("billingFirstName", billing?.billingFirstName);
+    setValue("billingLastName", billing?.billingLastName);
+    setValue("billingCompany", billing?.billingCompany);
+    setValue("billingPhone", billing?.billingPhone);
+    setValue("billingAddress1", billing?.billingAddress1);
+    setValue("billingAddress2", billing?.billingAddress2);
+    setValue("billingCity", billing?.billingCity);
+    setValue("billingState", billing?.billingState);
+    setValue("billingCountry", billing?.billingCountry);
+    setValue("billingZip", billing?.billingZip);
+    setValue("isSaveAddressForBilling", billing?.isSaveAddressForBilling);
 
   }, [saveDetail]);
 

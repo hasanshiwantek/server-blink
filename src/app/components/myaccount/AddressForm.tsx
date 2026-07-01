@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { useForm } from "react-hook-form";
+import React, { useMemo, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import countries from "world-countries";
-import { useEffect } from "react";
+import { Country, State, City } from "country-state-city";
 
 interface AddressFormValues {
   firstName: string;
@@ -36,23 +36,32 @@ const AddressForm = () => {
   const {
     register,
     handleSubmit,
+    control,
     setValue,
+    watch,
     formState: { errors },
     reset,
   } = useForm<AddressFormValues>();
   const { loading, error } = useAppSelector(
     (state: RootState) => state.myaccount,
   );
+  const selectedCountry = watch("country");
   const auth = useAppSelector((state: RootState) => state.auth);
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const countryList = countries
-    .map((country) => ({
-      name: country.name.common,
-      code: country.cca2,
-    }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+  const countryList = Country.getAllCountries().map((c) => ({
+    name: c.name,
+    code: c.isoCode,
+  }));
+  const stateList = useMemo(() => {
+    if (!selectedCountry) return [];
+
+    return State.getStatesOfCountry(selectedCountry).map((s) => ({
+      name: s.name,
+      code: s.isoCode,
+    }));
+  }, [selectedCountry]);
 
   const onSubmit = async (data: AddressFormValues) => {
     try {
@@ -227,18 +236,33 @@ const AddressForm = () => {
             >
               Country <span className="text-[11px]">*</span>
             </Label>
-            <Select onValueChange={(value) => setValue("country", value)}>
-              <SelectTrigger className={` ${inputClass} !h-[44px]`}>
-                <SelectValue placeholder="Choose a Country" />
-              </SelectTrigger>
-              <SelectContent>
-                {countryList.map((country) => (
-                  <SelectItem key={country.code} value={country.code}>
-                    {country.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Controller
+              name="country"
+              control={control}
+              rules={{ required: "Country is required" }}
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    setValue("state", "");
+                  }}
+                >
+                  <SelectTrigger className={`${inputClass} !h-[44px]`}>
+                    <SelectValue placeholder="Choose a Country" />
+                  </SelectTrigger>
+
+                  <SelectContent>
+                    {countryList.map((country) => (
+                      <SelectItem key={country.code} value={country.code}>
+                        {country.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+
             {errors.country && (
               <p className="text-sm text-red-500">{errors.country.message}</p>
             )}
@@ -252,13 +276,40 @@ const AddressForm = () => {
               className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
               htmlFor="state"
             >
-              State / Province <span className="text-[11px]">*</span>
+              State <span className="text-[11px]">*</span>
             </Label>
-            <Input
-              id="state"
-              {...register("state", { required: "State/Province is required" })}
-              className={inputClass}
-            />
+            {stateList.length > 0 ? (
+              <Controller
+                name="state"
+                control={control}
+                rules={{ required: "State/Province is required" }}
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                  >
+                    <SelectTrigger className={`${inputClass} !h-[44px]`}>
+                      <SelectValue placeholder="Choose a State" />
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      {stateList.map((state) => (
+                        <SelectItem key={state.code} value={state.code}>
+                          {state.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            ) : (
+              <Input
+                {...register("state", {
+                  required: "State/Province is required",
+                })}
+                className={inputClass}
+              />
+            )}
             {errors.state && (
               <p className="text-sm text-red-500">{errors.state.message}</p>
             )}
