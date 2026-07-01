@@ -1164,7 +1164,7 @@ const CheckoutForm = () => {
     setValue("zip", shipping?.zip);
     setValue("shippingMethod", shipping?.shippingMethod);
     setValue("isSaveAddressForShipping", shipping?.isSaveAddressForShipping);
-    setValue("billingSame", shipping.billingSame);
+    setValue("billingSame", shipping?.billingSame);
 
 
     if (!auth?.isAuthenticated) {
