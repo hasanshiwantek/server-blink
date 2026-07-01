@@ -4,7 +4,8 @@ import { toast } from "react-toastify";
 
 export const baseURL = process.env.NEXT_PUBLIC_API_URL || 'https://backend.sparemicro.com/api/'
 export const storeId = "10";
-
+export const sitekey = "6LdD8CgtAAAAADZaKjM6MRA6nQ6VppSfiu2vspFr"
+export const secretkey = "6LdD8CgtAAAAAInOe8Ey4_ByJ8u5KNiVpSJo-C0Q"
 const axiosInstance = axios.create({
   baseURL: baseURL,
 });
