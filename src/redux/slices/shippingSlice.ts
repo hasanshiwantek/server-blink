@@ -49,7 +49,7 @@ export const getCheckoutForm = createAsyncThunk(
     "cart/checkout-form/get",
     async (_, thunkAPI) => {
         try {
-            const res = await axiosInstance.get(`dashboard/checkout-form/get`);
+            const res = await axiosInstance.get(`web/checkout-form/get`);
             return res.data;
         } catch (err: any) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,7 +64,7 @@ export const checkoutFormSave = createAsyncThunk(
     "shippingZone/checkout-form",
     async ({ data }: { data: any }, thunkAPI) => {
         try {
-            const res = await axiosInstance.post(`dashboard/checkout-form/save`, data);
+            const res = await axiosInstance.post(`web/checkout-form/save`, data);
             return res.data;
         } catch (err: any) {
             return thunkAPI.rejectWithValue(
