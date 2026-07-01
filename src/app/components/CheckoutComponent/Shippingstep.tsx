@@ -231,10 +231,10 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
 
 
   function handleChange() {
-    if (isInitialLoad.current) {
-      isInitialLoad.current = false;
-      return;
-    }
+    // if (isInitialLoad.current) {
+    //   isInitialLoad.current = false;
+    //   return;
+    // }
     console.log("im here");
 
     if (!saveDetail) return;
