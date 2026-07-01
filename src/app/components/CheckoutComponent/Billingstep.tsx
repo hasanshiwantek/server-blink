@@ -97,11 +97,11 @@ const BillingStep: React.FC<BillingStepProps> = ({
     if (isInitialLoad.current) {
       isInitialLoad.current = false;
       return;
-    }
-    if (!saveDetail) return;
+    // }
+    // if (!saveDetail) return;
 
-    const shipping = saveDetail.shipping_form_data;
-    const billing = saveDetail.billing_form_data;
+    // const shipping = saveDetail.shipping_form_data;
+    // const billing = saveDetail.billing_form_data;
     const checkoutData = {
       // billingFormData: {
       //   billingFirstName: billing.billingFirstName,
