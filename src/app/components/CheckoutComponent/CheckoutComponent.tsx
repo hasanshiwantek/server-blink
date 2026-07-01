@@ -1341,6 +1341,7 @@ const CheckoutForm = () => {
   lastName: watch("billingLastName") || saveDetail?.billing_form_data?.billingLastName,
   company: watch("billingCompany") || saveDetail?.billing_form_data?.billingCompany,
   phone: watch("billingPhone") || saveDetail?.billing_form_data?.billingPhone,
+        address: watch("billingAddress1") ||  saveDetail?.billing_form_data?.billingAddress1,
   address1: watch("billingAddress1") || saveDetail?.billing_form_data?.billingAddress1,
   address2: watch("billingAddress2") || saveDetail?.billing_form_data?.billingAddress2,
   city: watch("billingCity") || saveDetail?.billing_form_data?.billingCity,
