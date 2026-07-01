@@ -7,20 +7,27 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import {
   deletecustomeraddress,
+  fetchCustomerAddress,
   fetchAccountAddress,
   updatecustomer,
 } from "@/redux/slices/myaccountSlice";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import countries from "world-countries";
 
 const MyAddress = () => {
   const dispatch = useAppDispatch();
 
-  const { address, loading, error } = useAppSelector(
-    (state: RootState) => state.myaccount
+  const { address, loading, error, customerAddresses } = useAppSelector(
+    (state: RootState) => state.myaccount,
   );
 
   const auth = useAppSelector((state: RootState) => state.auth);
@@ -35,13 +42,9 @@ const MyAddress = () => {
     }))
     .sort((a, b) => a.name.localeCompare(b.name));
 
-  useEffect(() => {
-    dispatch(fetchAccountAddress());
-  }, [dispatch]);
-
   const handleDelete = async (id: number | string) => {
     const confirmDelete = confirm(
-      `Are you sure you want to delete address with ID: ${id}?`
+      `Are you sure you want to delete address with ID: ${id}?`,
     );
     if (confirmDelete) {
       try {
@@ -87,7 +90,7 @@ const MyAddress = () => {
         updatecustomer({
           id: auth?.user?.id,
           data: payload,
-        })
+        }),
       ).unwrap();
 
       setShowModal(false);
@@ -97,10 +100,12 @@ const MyAddress = () => {
     }
   };
 
+  useEffect(() => {
+    dispatch(fetchCustomerAddress());
+  }, [dispatch]);
+
   return (
     <div className="max-w-full">
-
-
       {/* -------------------- EDIT MODAL -------------------- */}
       {showModal ? (
         <div className="rounded-lg w-full max-w-full p-6 relative">
@@ -177,7 +182,9 @@ const MyAddress = () => {
               <Label className="text-[14px]">Country</Label>
               <Select
                 value={editData.country}
-                onValueChange={(value) => setEditData({ ...editData, country: value })}
+                onValueChange={(value) =>
+                  setEditData({ ...editData, country: value })
+                }
               >
                 <SelectTrigger className="!w-full !max-w-full !h-[42px]">
                   <SelectValue placeholder="Choose a Country" />
@@ -208,7 +215,6 @@ const MyAddress = () => {
             </Button>
           </div>
         </div>
-
       ) : (
         <>
           {/* Skeleton Loader */}
@@ -229,27 +235,31 @@ const MyAddress = () => {
           )}
 
           {error && (
-            <p className="text-red-500">
-              Failed to fetch address. {error}
-            </p>
+            <p className="text-red-500">Failed to fetch address. {error}</p>
           )}
 
-
           {!loading && !error && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6" style={{ fontFamily: roboto }}>
+            <div
+              className="grid grid-cols-1 md:grid-cols-2 gap-6"
+              style={{ fontFamily: roboto }}
+            >
               {/* Address List */}
-              {address?.addresses?.map((item: any) => (
+              {customerAddresses?.map((item: any) => (
                 <div
                   key={item.addressId}
                   className="bg-[#CAC9C9] rounded-none p-6 flex flex-col justify-between h-full"
                 >
                   <div className="flex flex-col gap-1 mb-4">
                     <p className="text-[15px] mb-6 text-[#545454]">
-                      {item.customerName || "N/A"}
+                      {item.first_name || "N/A"}
                     </p>
-                    <p className="text-[15px] text-[#545454]">{item.addressLine1}</p>
+                    <p className="text-[15px] text-[#545454]">
+                      {item.address_line_1}
+                    </p>
                     {item.addressLine2 && (
-                      <p className="text-[15px] text-[#545454]">{item.addressLine2}</p>
+                      <p className="text-[15px] text-[#545454]">
+                        {item.ddress_line_2}
+                      </p>
                     )}
                     <p className="text-[15px] text-[#545454]">
                       {item.city} {item.zip}
@@ -269,13 +279,11 @@ const MyAddress = () => {
 
                     {/* Delete Button */}
                     <button
-                      onClick={() => handleDelete(item.addressId)}
+                      onClick={() => handleDelete(item.id)}
                       className="w-50 px-4 py-3 rounded-none text-2xl font-bold bg-[#D42020] text-white border-b-2 border-black transition"
                     >
                       Delete
                     </button>
-
-
                   </div>
                 </div>
               ))}

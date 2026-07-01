@@ -11,6 +11,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
+  
 
 useEffect(() => {
   if (!isAuthenticated) {
@@ -18,6 +19,7 @@ useEffect(() => {
     router.replace(loginUrl);
     return;
   }
+  
 
   if (!expireAt) return;
 
@@ -52,3 +54,5 @@ useEffect(() => {
   // Render children if authenticated
   return <>{children}</>;
 }
+
+
