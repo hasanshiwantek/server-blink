@@ -1,17 +1,20 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
   Dialog,
   DialogContent,
 } from "@/components/ui/dialog";
+import ReCAPTCHA from "react-google-recaptcha";
+
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/hooks/useReduxHooks";
 import { bulkInquiry } from "@/redux/slices/homeSlice";
 import { toast } from "react-toastify";
+import { sitekey } from "@/lib/axiosInstance";
 interface BulkInquiryModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -36,6 +39,9 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
   });
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -52,9 +58,17 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
       quantity: "",
       comments: "",
     })
+    setCaptchaToken(null);          // ✅ modal close/open pe reset
+    recaptchaRef.current?.reset();
   }, [isOpen])
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // ✅ Captcha check
+    if (!captchaToken) {
+      toast.error("Please verify the captcha.");
+      return;
+    }
     setLoading(true)
     const payload = {
       sku: product?.sku ?? "",
@@ -69,7 +83,7 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
         console.error("Failed to submit bulk inquiry");
       }
     } catch (err) {
-      
+
     } finally {
       setLoading(false)
     }
@@ -159,7 +173,13 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
                 rows={4}
                 className="w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939] resize-none"
               />
-
+              {/* ✅ ReCAPTCHA */}
+              <ReCAPTCHA
+                ref={recaptchaRef}
+                sitekey={sitekey}
+                onChange={(token) => setCaptchaToken(token)}
+                onExpired={() => setCaptchaToken(null)}
+              />
               <Button
                 type="submit"
                 disabled={loading}
