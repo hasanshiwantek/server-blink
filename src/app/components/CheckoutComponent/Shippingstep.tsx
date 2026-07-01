@@ -239,9 +239,9 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
 
     // if (!saveDetail) return;
 
-    const shipping = saveDetail.shipping_form_data;
-    const billing = saveDetail.billing_form_data;
-    const billingSame = getValues("billingSame");
+    // const shipping = saveDetail.shipping_form_data;
+    // const billing = saveDetail.billing_form_data;
+    // const billingSame = getValues("billingSame");
 
     const checkoutData = {
 
