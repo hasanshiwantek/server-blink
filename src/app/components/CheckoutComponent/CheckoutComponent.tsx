@@ -1319,7 +1319,7 @@ const CheckoutForm = () => {
                 isCompleted={completedSteps.includes(3)}
                 onEdit={handleEditBilling}
                 onAddressSelect={handleBillingAddressSelect}
-                billingInfo={{
+                {/* billingInfo={{
                   firstName: watch("billingFirstName"),
                   lastName: watch("billingLastName"),
                   address: watch("billingAddress1"),
@@ -1335,7 +1335,19 @@ const CheckoutForm = () => {
 
                   // isSaveAddressForBilling: watch("isSaveAddressForBilling"), // ✅ add this
 
-                }}
+                }} */}
+              billingInfo={{
+  firstName: watch("billingFirstName") || saveDetail?.billing_form_data?.billingFirstName,
+  lastName: watch("billingLastName") || saveDetail?.billing_form_data?.billingLastName,
+  company: watch("billingCompany") || saveDetail?.billing_form_data?.billingCompany,
+  phone: watch("billingPhone") || saveDetail?.billing_form_data?.billingPhone,
+  address1: watch("billingAddress1") || saveDetail?.billing_form_data?.billingAddress1,
+  address2: watch("billingAddress2") || saveDetail?.billing_form_data?.billingAddress2,
+  city: watch("billingCity") || saveDetail?.billing_form_data?.billingCity,
+  state: watch("billingState") || saveDetail?.billing_form_data?.billingState,
+  country: watch("billingCountry") || saveDetail?.billing_form_data?.billingCountry,
+  zip: watch("billingZip") || saveDetail?.billing_form_data?.billingZip,
+}}
               />
             </div>
 
