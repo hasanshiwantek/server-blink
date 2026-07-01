@@ -98,6 +98,20 @@ export const deletecustomeraddress = createAsyncThunk(
   }
 );
 
+export const addCustomerAddress = createAsyncThunk(
+  "account/addCustomerAddress",
+  async ({ id, data }: { id: string | number; data: any }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(
+        `dashboard/customer-address/store`,
+        data
+      );
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
 
 
 const myAccountSlice = createSlice({
@@ -157,6 +171,20 @@ const myAccountSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+
+      // addCustomerAddress
+      .addCase(addCustomerAddress.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addCustomerAddress.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+      })
+      .addCase(addCustomerAddress.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      
       .addCase(postAccountDetails.pending, (state) => {
         state.loading = true;
         state.error = null;
