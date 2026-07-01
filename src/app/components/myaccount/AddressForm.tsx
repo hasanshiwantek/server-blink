@@ -75,17 +75,18 @@ const AddressForm = () => {
       console.error("Form submission error:", error);
     }
   };
-
+const roboto = "'Roboto', Arial, Helvetica, sans-serif";
+const robotoCondensed = "Roboto Condensed";
   const inputClass = "!w-full h-[42px] text-[#545454] !font-normal !max-w-full py-[10px] px-[14px] border border-[#cac9c9] rounded-none";
 
   return (
     <div className="max-w-full mx-auto p-8 rounded-lg">
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" style={{fontFamily:roboto}}>
         {/* Row 0: First Name & Last Name */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <Label className="text-[14px] text-[#545454] flex md:justify-between" htmlFor="firstName">First Name <span className="">*</span></Label>
+            <Label className="text-[14px] text-[#545454] !font-normal flex md:justify-between" htmlFor="firstName">First Name <span className="text-[11px]">*</span></Label>
             <Input
               id="firstName"
               {...register("firstName", { required: "First name is required" })}
@@ -94,7 +95,7 @@ const AddressForm = () => {
             {errors.firstName && <p className="text-sm text-red-500">{errors.firstName.message}</p>}
           </div>
           <div>
-            <Label className="text-[14px] text-[#545454] flex md:justify-between" htmlFor="lastName">Last Name <span className="">*</span></Label>
+            <Label className="text-[14px] text-[#545454] !font-normal flex md:justify-between" htmlFor="lastName">Last Name <span className="text-[11px]">*</span></Label>
             <Input
               id="lastName"
               {...register("lastName", { required: "Last name is required" })}
@@ -107,7 +108,7 @@ const AddressForm = () => {
         {/* Row 0.5: Company Name & Phone Number */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <Label className="text-[14px] text-[#545454] flex md:justify-between" htmlFor="companyName">Company Name</Label>
+            <Label className="text-[14px] text-[#545454] !font-normal  flex md:justify-between" htmlFor="companyName">Company Name</Label>
             <Input
               id="companyName"
               {...register("companyName")}
@@ -115,7 +116,7 @@ const AddressForm = () => {
             />
           </div>
           <div>
-            <Label className="text-[14px] text-[#545454] flex md:justify-between" htmlFor="phone">Phone Number <span className="">*</span></Label>
+            <Label className="text-[14px] text-[#545454]  !font-normal flex md:justify-between" htmlFor="phone">Phone Number </Label>
             <Input
               id="phone"
               {...register("phone", { required: "Phone number is required" })}
@@ -129,7 +130,7 @@ const AddressForm = () => {
         {/* Row 1: Address Line 1 & Address Line 2 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <Label className="text-[14px] text-[#545454] flex md:justify-between" htmlFor="address1">Address Line 1 <span className="">*</span></Label>
+            <Label className="text-[14px] text-[#545454] !font-normal flex md:justify-between" htmlFor="address1">Address Line 1 <span className="text-[11px]">*</span></Label>
             <Input
               id="address1"
               {...register("address1", { required: "Address Line 1 is required" })}
@@ -138,7 +139,7 @@ const AddressForm = () => {
             {errors.address1 && <p className="text-sm text-red-500">{errors.address1.message}</p>}
           </div>
           <div>
-            <Label className="text-[14px] text-[#545454] flex md:justify-between" htmlFor="address2">Address Line 2</Label>
+            <Label className="text-[14px] text-[#545454] !font-normal flex md:justify-between" htmlFor="address2">Address Line 2</Label>
             <Input
               id="address2"
               {...register("address2")}
@@ -150,7 +151,7 @@ const AddressForm = () => {
         {/* Row 2: Suburb/City & Country */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label className="text-[14px] text-[#545454] flex md:justify-between" htmlFor="suburb">Suburb / City <span className="">*</span></Label>
+            <Label className="text-[14px] text-[#545454] !font-normal flex md:justify-between" htmlFor="suburb">Suburb / City <span className="text-[11px]">*</span></Label>
             <Input
               id="suburb"
               {...register("suburb", { required: "Suburb/City is required" })}
@@ -159,9 +160,9 @@ const AddressForm = () => {
             {errors.suburb && <p className="text-sm text-red-500">{errors.suburb.message}</p>}
           </div>
           <div>
-            <Label className="text-[14px] flex md:justify-between" htmlFor="country">Country <span className="">*</span></Label>
+            <Label className="text-[14px] text-[#545454] !font-normal flex md:justify-between" htmlFor="country">Country <span className="text-[11px]">*</span></Label>
             <Select onValueChange={(value) => setValue("country", value)}>
-              <SelectTrigger className="!w-full !h-[42px] !max-w-full !border-none">
+              <SelectTrigger className={` ${inputClass} !h-[44px]`}>
                 <SelectValue placeholder="Choose a Country" />
               </SelectTrigger>
               <SelectContent>
@@ -182,7 +183,7 @@ const AddressForm = () => {
         {/* Row 3: State/Province & Zip/Postcode */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label className="text-[14px] text-[#545454] flex md:justify-between" htmlFor="state">State / Province <span className="">*</span></Label>
+            <Label className="text-[14px] text-[#545454] !font-normal flex md:justify-between" htmlFor="state">State / Province <span className="text-[11px]">*</span></Label>
             <Input
               id="state"
               {...register("state", { required: "State/Province is required" })}
@@ -191,7 +192,7 @@ const AddressForm = () => {
             {errors.state && <p className="text-sm text-red-500">{errors.state.message}</p>}
           </div>
           <div>
-            <Label className="text-[14px] text-[#545454] flex md:justify-between" htmlFor="postcode">Zip / Postcode <span className="">*</span></Label>
+            <Label className="text-[14px] text-[#545454] !font-normal  flex md:justify-between" htmlFor="postcode">Zip / Postcode <span className="text-[11px]">*</span></Label>
             <Input
               id="postcode"
               {...register("postcode", { required: "Zip/Postcode is required" })}
@@ -202,7 +203,7 @@ const AddressForm = () => {
         </div>
 
         {/* Buttons */}
-        <div className="flex flex-col md:flex-row gap-4 mt-4">
+        <div className="flex flex-col md:flex-row gap-4 mt-12" style={{fontFamily:robotoCondensed}}>
           <Button type="submit" className="w-full md:w-[16%] !p-7 text-2xl rounded-none border-b-2 border-black bg-[#D42020] text-white font-bold">
             {loading ? "Saving..." : "SAVE ADDRESS"}
           </Button>
@@ -211,7 +212,7 @@ const AddressForm = () => {
             type="button"
             className="w-full md:w-36 !p-7 text-2xl border-b-2 border-black rounded-none bg-[#D42020] font-bold text-white transition"
           >
-            Cancel
+            CANCEL
           </Button>
         </div>
       </form>
