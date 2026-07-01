@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { updatecustomer } from "@/redux/slices/myaccountSlice";
+import { addCustomerAddress, updatecustomer } from "@/redux/slices/myaccountSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import {
@@ -58,33 +58,29 @@ const AddressForm = () => {
     try {
       // Only addresses in payload
       const mergedData = {
-        addresses: [
-          {
-            firstName: data.firstName,
-            lastName: data.lastName,
-            companyName: data.companyName || "",
-            phoneNumber: data.phone,
-            addressLine1: data.address1 || "",
-            addressLine2: data.address2 || "",
-            city: data.suburb,
-            state: data.state,
-            zip: data.postcode,
-            country: data.country,
-          },
-        ],
-      };
+        firstName: data.firstName,
+        lastName: data.lastName,
+        companyName: data.companyName || "",
+        phoneNumber: data.phone,
+        addressLine1: data.address1 || "",
+        addressLine2: data.address2 || "",
+        city: data.suburb,
+        state: data.state,
+        zip: data.postcode,
+        country: data.country,
+      }
 
       const result = await dispatch(
-        updatecustomer({ id: auth?.user?.id, data: mergedData }),
+        addCustomerAddress({ id: auth?.user?.id, data: mergedData })
       );
 
-      if (updatecustomer.fulfilled.match(result)) {
+      if (addCustomerAddress.fulfilled.match(result)) {
         reset();
         router.push("/my-account/addresses");
       } else {
         const errorMessage =
-          result.error?.message || "Update address failed. Please try again.";
-        console.error("Update address failed:", errorMessage);
+          result.error?.message || "Add address failed. Please try again.";
+        console.error("Add address failed:", errorMessage);
       }
     } catch (error) {
       console.error("Form submission error:", error);

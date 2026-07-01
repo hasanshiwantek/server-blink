@@ -157,6 +157,10 @@ const BillingStep: React.FC<BillingStepProps> = ({
     }, 300);
   }
 
+
+  console.log(isCompleted, !isActive);
+
+
   if (isCompleted && !isActive &&
     billingInfo?.firstName &&
     billingInfo?.city &&
