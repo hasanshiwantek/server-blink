@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import {
   deletecustomeraddress,
+  fetchCustomerAddress,
   fetchAccountAddress,
   updatecustomer,
 } from "@/redux/slices/myaccountSlice";
@@ -19,7 +20,7 @@ import countries from "world-countries";
 const MyAddress = () => {
   const dispatch = useAppDispatch();
 
-  const { address, loading, error } = useAppSelector(
+  const { address, loading, error,customerAddresses } = useAppSelector(
     (state: RootState) => state.myaccount
   );
 
@@ -37,7 +38,11 @@ const MyAddress = () => {
 
   useEffect(() => {
     dispatch(fetchAccountAddress());
+    dispatch(fetchCustomerAddress());
   }, [dispatch]);
+  useEffect(()=>{
+    console.log(customerAddresses)
+  },[customerAddresses])
 
   const handleDelete = async (id: number | string) => {
     const confirmDelete = confirm(
@@ -238,18 +243,18 @@ const MyAddress = () => {
           {!loading && !error && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6" style={{ fontFamily: roboto }}>
               {/* Address List */}
-              {address?.addresses?.map((item: any) => (
+              {customerAddresses?.map((item: any) => (
                 <div
                   key={item.addressId}
                   className="bg-[#CAC9C9] rounded-none p-6 flex flex-col justify-between h-full"
                 >
                   <div className="flex flex-col gap-1 mb-4">
                     <p className="text-[15px] mb-6 text-[#545454]">
-                      {item.customerName || "N/A"}
+                      {item.first_name || "N/A"}
                     </p>
-                    <p className="text-[15px] text-[#545454]">{item.addressLine1}</p>
+                    <p className="text-[15px] text-[#545454]">{item.address_line_1}</p>
                     {item.addressLine2 && (
-                      <p className="text-[15px] text-[#545454]">{item.addressLine2}</p>
+                      <p className="text-[15px] text-[#545454]">{item.ddress_line_2}</p>
                     )}
                     <p className="text-[15px] text-[#545454]">
                       {item.city} {item.zip}
@@ -269,7 +274,7 @@ const MyAddress = () => {
 
                     {/* Delete Button */}
                     <button
-                      onClick={() => handleDelete(item.addressId)}
+                      onClick={() => handleDelete(item.id)}
                       className="w-50 px-4 py-3 rounded-none text-2xl font-bold bg-[#D42020] text-white border-b-2 border-black transition"
                     >
                       Delete
