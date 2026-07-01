@@ -137,9 +137,6 @@ const myAccountSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchCustomerAddress.fulfilled, (state, action: PayloadAction<any>) => {
-
-        console.log("action.payload", action.payload);
-
         state.loading = false;
         state.customerAddresses = action.payload?.data?.customer_addresses;
       })

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
@@ -10,14 +10,15 @@ import {
   SelectContent,
 } from "@/components/ui/select";
 import { UseFormRegister, FieldErrors, Control, Controller, UseFormSetValue } from "react-hook-form";
-import { useAppSelector } from "@/hooks/useReduxHooks";
+import { useAppSelector, useAppDispatch } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
-
+import { checkoutFormSave } from "@/redux/slices/shippingSlice";
 interface BillingStepProps {
   register: UseFormRegister<any>;
   errors: FieldErrors;
   control: any;
   setValue: UseFormSetValue<any>;
+  getValues: any;
   onContinue: () => void;
   countryList: Array<{ name: string; code: string }>;
   stateList: Array<{ name: string; code: string }>;
@@ -46,6 +47,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
   errors,
   control,
   setValue,
+  getValues,
   onContinue,
   countryList,
   stateList,
@@ -56,11 +58,15 @@ const BillingStep: React.FC<BillingStepProps> = ({
   billingInfo,
   onAddressSelect,
 }) => {
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isInitialLoad = useRef(true);
   const auth = useAppSelector((state: RootState) => state?.auth);
   const [isOpen, setIsOpen] = useState(false);
   const [addressMode, setAddressMode] = useState<"none" | "selected" | "new">("none");
   const [selectedLabel, setSelectedLabel] = useState<any>("ENTER A NEW ADDRESS");
   const { customerAddresses } = useAppSelector((state: RootState) => state.myaccount);
+  const dispatch = useAppDispatch();
+  const { saveDetail } = useAppSelector((state) => state.shippingZone);
 
   const userAddresses = customerAddresses?.map((item: any) => ({
     id: item.id,
@@ -87,6 +93,69 @@ const BillingStep: React.FC<BillingStepProps> = ({
       setAddressMode("new");
     }
   }, [auth?.isAuthenticated, userAddresses]);
+  function handleChange() {
+    if (isInitialLoad.current) {
+      isInitialLoad.current = false;
+      return;
+    }
+    if (!saveDetail) return;
+
+    const shipping = saveDetail.shipping_form_data;
+    const billing = saveDetail.billing_form_data;
+    const checkoutData = {
+      // billingFormData: {
+      //   billingFirstName: billing.billingFirstName,
+      //   billingLastName: billing.billingLastName,
+      //   billingCompany: billing.billingCompany,
+      //   billingPhone: billing.billingPhone,
+      //   billingAddress1: billing.billingAddress1,
+      //   billingAddress2: billing.billingAddress2,
+      //   billingCity: billing.billingCity,
+      //   billingCountry: billing.billingCountry,
+      //   billingState: billing.billingState,
+      //   billingZip: billing.billingZip,
+      // },
+      shippingFormData: {
+        email: getValues("email"),
+        firstName: getValues("firstName"),
+        lastName: getValues("lastName"),
+        company: getValues("company"),
+        phone: getValues("phone"),
+        address1: getValues("address1"),
+        address2: getValues("address2"),
+        city: getValues("city"),
+        country: getValues("country"),
+        state: getValues("state"),
+        zip: getValues("zip"),
+        newsletter: getValues("newsletter"),
+        shippingMethod: getValues("shippingMethod"),
+        billingSame: getValues("billingSame"),
+        "isSaveAddressForShipping": getValues("isSaveAddressForShipping"),
+      },
+      billingFormData: {
+        billingFirstName: getValues("billingFirstName"),
+        billingLastName: getValues("billingLastName"),
+        billingCompany: getValues("billingCompany"),
+        billingPhone: getValues("billingPhone"),
+        billingAddress1: getValues("billingAddress1"),
+        billingAddress2: getValues("billingAddress2"),
+        billingCity: getValues("billingCity"),
+        billingCountry: getValues("billingCountry"),
+        billingState: getValues("billingState"),
+        billingZip: getValues("billingZip"),
+        isSaveAddressForBilling: getValues("isSaveAddressForBilling"),
+      },
+
+    };
+
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    saveTimeoutRef.current = setTimeout(() => {
+      dispatch(checkoutFormSave({ data: checkoutData }));
+    }, 300);
+  }
 
   if (isCompleted && !isActive &&
     billingInfo?.firstName &&
@@ -201,6 +270,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
                     setAddressMode("selected");
                     setIsOpen(false);
                     onAddressSelect?.(item);
+                    handleChange()
                   }}
                 >
                   <p className="font-medium text-[13px] text-[#545454]">{item.firstName} {item.lastName}</p>
@@ -235,6 +305,10 @@ const BillingStep: React.FC<BillingStepProps> = ({
                 {...register("billingFirstName", {
                   required: "First name is required",
                 })}
+                onChange={(e) => {
+                  register("billingFirstName").onChange(e);
+                  handleChange();
+                }}
               />
               {errors.billingFirstName && (
                 <p className="text-sm text-red-500 mt-1">
@@ -261,6 +335,10 @@ const BillingStep: React.FC<BillingStepProps> = ({
                 {...register("billingLastName", {
                   required: "Last name is required",
                 })}
+                onChange={(e) => {
+                  register("billingLastName").onChange(e);
+                  handleChange();
+                }}
               />
               {errors.billingLastName && (
                 <p className="text-sm text-red-500 mt-1">
@@ -283,6 +361,11 @@ const BillingStep: React.FC<BillingStepProps> = ({
               type="text"
               className="w-full !max-w-full h-[40px]"
               {...register("billingCompany")}
+              onChange={(e) => {
+                register("billingCompany").onChange(e);
+                handleChange();
+
+              }}
             />
           </div>
 
@@ -299,6 +382,10 @@ const BillingStep: React.FC<BillingStepProps> = ({
               type="text"
               className="w-full !max-w-full h-[40px]"
               {...register("billingPhone")}
+              onChange={(e) => {
+                register("billingPhone").onChange(e);
+                handleChange();
+              }}
             />
           </div>
 
@@ -320,6 +407,10 @@ const BillingStep: React.FC<BillingStepProps> = ({
               {...register("billingAddress1", {
                 required: "Address is required",
               })}
+              onChange={(e) => {
+                register("billingAddress1").onChange(e);
+                handleChange();
+              }}
             />
             {errors.billingAddress1 && (
               <p className="text-sm text-red-500 mt-1">
@@ -341,6 +432,10 @@ const BillingStep: React.FC<BillingStepProps> = ({
               type="text"
               className="w-full !max-w-full h-[40px]"
               {...register("billingAddress2")}
+              onChange={(e) => {
+                register("billingAddress2").onChange(e);
+                handleChange();
+              }}
             />
           </div>
 
@@ -362,6 +457,10 @@ const BillingStep: React.FC<BillingStepProps> = ({
               {...register("billingCity", {
                 required: "City is required",
               })}
+              onChange={(e) => {
+                register("billingCity").onChange(e);
+                handleChange();
+              }}
             />
             {errors.billingCity && (
               <p className="text-sm text-red-500 mt-1">
@@ -388,6 +487,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
                 <Select onValueChange={(val) => {
                   field.onChange(val);
                   setValue("state", "");
+                  handleChange();
                 }} value={field.value}>
                   <SelectTrigger
                     className={`w-full !max-w-full h-[40px] ${errors.billingCountry ? "border-red-500" : ""
@@ -458,6 +558,10 @@ const BillingStep: React.FC<BillingStepProps> = ({
                 type="text"
                 className="w-full !max-w-full h-[40px]"
                 {...register("billingState")}
+                onChange={(e) => {
+                  register("billingState").onChange(e);
+                  handleChange();
+                }}
               />}
             </div>
 
@@ -479,6 +583,10 @@ const BillingStep: React.FC<BillingStepProps> = ({
                 {...register("billingZip", {
                   required: "Postal code is required",
                 })}
+                onChange={(e) => {
+                  register("billingZip").onChange(e);
+                  handleChange();
+                }}
               />
               {errors.billingZip && (
                 <p className="text-sm text-red-500 mt-1">
@@ -492,6 +600,11 @@ const BillingStep: React.FC<BillingStepProps> = ({
               type="checkbox"
               id="isSaveAddressForBilling"
               {...register("isSaveAddressForBilling")}
+              onChange={(e) => {
+                register("isSaveAddressForBilling").onChange(e);
+                handleChange();
+              }
+              }
               className="w-4 h-4"
             />
             <label
