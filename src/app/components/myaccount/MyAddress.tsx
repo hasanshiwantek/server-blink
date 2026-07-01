@@ -10,6 +10,7 @@ import {
   fetchCustomerAddress,
   fetchAccountAddress,
   updatecustomer,
+  updateCustomerAddress,
 } from "@/redux/slices/myaccountSlice";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import countries from "world-countries";
+import { Country, State } from "country-state-city";
+import { useMemo } from "react";
 
 const MyAddress = () => {
   const dispatch = useAppDispatch();
@@ -49,7 +52,7 @@ const MyAddress = () => {
     if (confirmDelete) {
       try {
         await dispatch(deletecustomeraddress({ id })).unwrap();
-        dispatch(fetchAccountAddress());
+        dispatch(fetchCustomerAddress());
       } catch (err) {
         console.error("Delete failed:", err);
       }
@@ -58,13 +61,17 @@ const MyAddress = () => {
 
   const openEditModal = (item: any) => {
     setEditData({
-      addressId: item.addressId,
-      addressLine1: item.addressLine1,
-      addressLine2: item.addressLine2,
+      addressId: item.id,
+      addressLine1: item.address_line_1,
+      addressLine2: item.address_line_2,
       city: item.city,
       state: item.state,
       zip: item.zip,
       country: item.country,
+      firstName: item.first_name,
+      lastName: item.last_name,
+      companyName: item.company_name,
+      phone: item.phone_number,
     });
 
     setShowModal(true);
@@ -72,33 +79,41 @@ const MyAddress = () => {
 
   const handleUpdate = async () => {
     const payload = {
-      addresses: [
-        {
-          id: editData.addressId,
-          addressLine1: editData.addressLine1,
-          addressLine2: editData.addressLine2,
-          city: editData.city,
-          state: editData.state,
-          zip: editData.zip,
-          country: editData.country,
-        },
-      ],
-    };
+      address_line_1: editData.addressLine1,
+      address_line_2: editData.addressLine2,
+      city: editData.city,
+      state: editData.state,
+      zip: editData.zip,
+      country: editData.country,
+      first_name: editData.firstName,
+      last_name: editData.lastName,
+      company_name: editData.companyName,
+      phone_number: editData.phone,
+    }
+
 
     try {
       await dispatch(
-        updatecustomer({
-          id: auth?.user?.id,
+        updateCustomerAddress({
+          id: editData.addressId,
           data: payload,
         }),
       ).unwrap();
 
       setShowModal(false);
-      dispatch(fetchAccountAddress());
+      dispatch(fetchCustomerAddress());
     } catch (err) {
       console.error("Update failed:", err);
     }
   };
+  const stateList = useMemo(() => {
+  if (!editData?.country) return [];
+
+  return State.getStatesOfCountry(editData.country).map((s) => ({
+    name: s.name,
+    code: s.isoCode,
+  }));
+}, [editData?.country]);
 
   useEffect(() => {
     dispatch(fetchCustomerAddress());
@@ -109,14 +124,56 @@ const MyAddress = () => {
       {/* -------------------- EDIT MODAL -------------------- */}
       {showModal ? (
         <div className="rounded-lg w-full max-w-full p-6 relative">
-          {/* Close Btn */}
-          {/* <button
-    onClick={() => setShowModal(false)}
-    className="absolute right-4 top-4 text-gray-600 hover:text-black"
-  >
-    <X size={22} />
-  </button> */}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* First Name */}
+            <div>
+              <Label className="text-[14px]">First Name</Label>
+              <Input
+                value={editData.firstName}
+                onChange={(e) =>
+                  setEditData({ ...editData, firstName: e.target.value })
+                }
+                className="!w-full !max-w-full !h-[42px]"
+              />
+            </div>
+
+            {/* Last Name */}
+            <div>
+              <Label className="text-[14px]">Last Name</Label>
+              <Input
+                value={editData.lastName}
+                onChange={(e) =>
+                  setEditData({ ...editData, lastName: e.target.value })
+                }
+                className="!w-full !max-w-full !h-[42px]"
+              />
+            </div>
+
+            {/* Company */}
+            <div>
+              <Label className="text-[14px]">Company</Label>
+              <Input
+                value={editData.companyName}
+                onChange={(e) =>
+                  setEditData({ ...editData, companyName: e.target.value })
+                }
+                className="!w-full !max-w-full !h-[42px]"
+              />
+            </div>
+
+            {/* Phone */}
+            <div>
+              <Label className="text-[14px]">Phone</Label>
+              <Input
+                value={editData.phone}
+                onChange={(e) =>
+                  setEditData({ ...editData, phone: e.target.value })
+                }
+                className="!w-full !max-w-full !h-[42px]"
+              />
+            </div>
+
             {/* Address Line 1 */}
             <div>
               <Label className="text-[14px]">Address Line 1</Label>
@@ -156,13 +213,47 @@ const MyAddress = () => {
             {/* State */}
             <div>
               <Label className="text-[14px]">State</Label>
-              <Input
+              {/* <Input
                 value={editData.state}
                 onChange={(e) =>
                   setEditData({ ...editData, state: e.target.value })
                 }
                 className="!w-full !max-w-full !h-[42px]"
-              />
+              /> */}
+              {stateList.length > 0 ? (
+  <Select
+    value={editData.state}
+    onValueChange={(value) =>
+      setEditData({
+        ...editData,
+        state: value,
+      })
+    }
+  >
+    <SelectTrigger className="!w-full !max-w-full !h-[42px]">
+      <SelectValue placeholder="Choose a State" />
+    </SelectTrigger>
+
+    <SelectContent>
+      {stateList.map((state) => (
+        <SelectItem key={state.code} value={state.code}>
+          {state.name}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+) : (
+  <Input
+    value={editData.state}
+    onChange={(e) =>
+      setEditData({
+        ...editData,
+        state: e.target.value,
+      })
+    }
+    className="!w-full !max-w-full !h-[42px]"
+  />
+)}
             </div>
 
             {/* Zip */}
@@ -184,7 +275,7 @@ const MyAddress = () => {
               <Select
                 value={editData.country}
                 onValueChange={(value) =>
-                  setEditData({ ...editData, country: value })
+                  setEditData({ ...editData, country: value,state:"" })
                 }
               >
                 <SelectTrigger className="!w-full !max-w-full !h-[42px]">
@@ -192,7 +283,7 @@ const MyAddress = () => {
                 </SelectTrigger>
                 <SelectContent>
                   {countryList.map((country) => (
-                    <SelectItem key={country.code} value={country.name}>
+                    <SelectItem key={country.code} value={country.code}>
                       {country.name}
                     </SelectItem>
                   ))}
@@ -204,9 +295,10 @@ const MyAddress = () => {
           <div className="flex flex-col md:flex-row gap-4 mt-10">
             <Button
               onClick={handleUpdate}
+              disabled={loading}
               className="w-full md:w-[16%] !p-7 text-2xl border-b-2 border-black bg-[#D42020] text-white font-bold"
             >
-              SAVE ADDRESS
+              {loading ? "UPDATING..." : "UPDATING ADDRESS"}
             </Button>
             <Button
               onClick={() => setShowModal(false)}
@@ -252,14 +344,14 @@ const MyAddress = () => {
                 >
                   <div className="flex flex-col gap-1 mb-4">
                     <p className="text-[15px] mb-6 text-[#545454]">
-                      {item.first_name || "N/A"}
+                      {item.first_name || "N/A"}   {item.last_name}
                     </p>
                     <p className="text-[15px] text-[#545454]">
                       {item.address_line_1}
                     </p>
-                    {item.addressLine2 && (
+                    {item.address_line_2 && (
                       <p className="text-[15px] text-[#545454]">
-                        {item.ddress_line_2}
+                        {item.address_line_2}
                       </p>
                     )}
                     <p className="text-[15px] text-[#545454]">
@@ -290,7 +382,7 @@ const MyAddress = () => {
               ))}
 
               {/* New Address Button */}
-              <div className="border border-gray-400 rounded-lg p-6 flex flex-col items-center justify-center h-[206px] hover:bg-gray-50 cursor-pointer">
+              <div className="border border-gray-400 rounded-lg p-6 flex flex-col items-center justify-center h-[235px] hover:bg-gray-50 cursor-pointer">
                 <Link
                   href="/my-account/addresses/new-address"
                   className="flex flex-col items-center justify-center gap-2"

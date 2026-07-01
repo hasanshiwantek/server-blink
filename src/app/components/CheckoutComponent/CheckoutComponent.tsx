@@ -159,6 +159,7 @@ const CheckoutForm = () => {
   const parsedAuth = auth ? JSON.parse(user) : null;
   const token = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
   const { shippingDetail } = useAppSelector((state: any) => state.shippingZone);
+  const { shippingRates, saveDetail } = useAppSelector((state) => state.shippingZone);
 
   useEffect(() => {
     if (!loading) {
@@ -170,7 +171,7 @@ const CheckoutForm = () => {
         if (!emptyCartWarningShownRef.current) {
           emptyCartWarningShownRef.current = true;
           toast.error("Please add something");
-          router.push("/cart");
+          // router.push("/cart");
         }
       } else {
         emptyCartWarningShownRef.current = false;
@@ -190,7 +191,7 @@ const CheckoutForm = () => {
   } = useForm<CheckoutFormValues>({
     defaultValues: {
       paymentMethod: "credit_card",
-      billingSame: isMultiAddress ? false : true,
+      billingSame: isMultiAddress  ? false : true,
       email: auth?.user?.email || "",
       firstName: auth?.user?.firstName || "",
       lastName: auth?.user?.lastName || "",
@@ -209,7 +210,6 @@ const CheckoutForm = () => {
   const watchedBillingSame = watch("billingSame");
   const stripeCardMethods = ["credit_card"];
   const walletMethods = ["google_pay", "apple_pay"];
-  const { shippingRates, saveDetail } = useAppSelector((state) => state.shippingZone);
   const stateList = useMemo(() => {
     if (!watchedCountry) return [];
     return State.getStatesOfCountry(watchedCountry).map((s) => ({
@@ -1151,37 +1151,37 @@ const CheckoutForm = () => {
     // setCompletedSteps(saveDetail._completedSteps || []);
 
     // Shipping
-    setValue("email", shipping.email);
-    setValue("firstName", shipping.firstName);
-    setValue("lastName", shipping.lastName);
-    setValue("company", shipping.company);
-    setValue("phone", shipping.phone);
-    setValue("address1", shipping.address1);
-    setValue("address2", shipping.address2);
-    setValue("city", shipping.city);
-    setValue("state", shipping.state);
-    setValue("country", shipping.country);
-    setValue("zip", shipping.zip);
-    setValue("shippingMethod", shipping.shippingMethod);
-    setValue("isSaveAddressForShipping", shipping.isSaveAddressForShipping);
-    setValue("billingSame", shipping.billingSame);
+    setValue("email", shipping?.email);
+    setValue("firstName", shipping?.firstName);
+    setValue("lastName", shipping?.lastName);
+    setValue("company", shipping?.company);
+    setValue("phone", shipping?.phone);
+    setValue("address1", shipping?.address1);
+    setValue("address2", shipping?.address2);
+    setValue("city", shipping?.city);
+    setValue("state", shipping?.state);
+    setValue("country", shipping?.country);
+    setValue("zip", shipping?.zip);
+    setValue("shippingMethod", shipping?.shippingMethod);
+    setValue("isSaveAddressForShipping", shipping?.isSaveAddressForShipping);
+    setValue("billingSame", shipping?.billingSame);
 
 
     if (!auth?.isAuthenticated) {
-      setValue("newsletter", shipping.newsletter);
+      setValue("newsletter", shipping?.newsletter);
     }
     // Billing
-    setValue("billingFirstName", billing.billingFirstName);
-    setValue("billingLastName", billing.billingLastName);
-    setValue("billingCompany", billing.billingCompany);
-    setValue("billingPhone", billing.billingPhone);
-    setValue("billingAddress1", billing.billingAddress1);
-    setValue("billingAddress2", billing.billingAddress2);
-    setValue("billingCity", billing.billingCity);
-    setValue("billingState", billing.billingState);
-    setValue("billingCountry", billing.billingCountry);
-    setValue("billingZip", billing.billingZip);
-    setValue("isSaveAddressForBilling", billing.isSaveAddressForBilling);
+    setValue("billingFirstName", billing?.billingFirstName);
+    setValue("billingLastName", billing?.billingLastName);
+    setValue("billingCompany", billing?.billingCompany);
+    setValue("billingPhone", billing?.billingPhone);
+    setValue("billingAddress1", billing?.billingAddress1);
+    setValue("billingAddress2", billing?.billingAddress2);
+    setValue("billingCity", billing?.billingCity);
+    setValue("billingState", billing?.billingState);
+    setValue("billingCountry", billing?.billingCountry);
+    setValue("billingZip", billing?.billingZip);
+    setValue("isSaveAddressForBilling", billing?.isSaveAddressForBilling);
 
   }, [saveDetail]);
 
@@ -1319,20 +1319,20 @@ const CheckoutForm = () => {
                 isCompleted={completedSteps.includes(3)}
                 onEdit={handleEditBilling}
                 onAddressSelect={handleBillingAddressSelect}
-          
-              billingInfo={{
-  firstName: watch("billingFirstName") || saveDetail?.billing_form_data?.billingFirstName,
-  lastName: watch("billingLastName") || saveDetail?.billing_form_data?.billingLastName,
-  company: watch("billingCompany") || saveDetail?.billing_form_data?.billingCompany,
-  phone: watch("billingPhone") || saveDetail?.billing_form_data?.billingPhone,
-        address: watch("billingAddress1") ||  saveDetail?.billing_form_data?.billingAddress1,
-  address1: watch("billingAddress1") || saveDetail?.billing_form_data?.billingAddress1,
-  address2: watch("billingAddress2") || saveDetail?.billing_form_data?.billingAddress2,
-  city: watch("billingCity") || saveDetail?.billing_form_data?.billingCity,
-  state: watch("billingState") || saveDetail?.billing_form_data?.billingState,
-  country: watch("billingCountry") || saveDetail?.billing_form_data?.billingCountry,
-  zip: watch("billingZip") || saveDetail?.billing_form_data?.billingZip,
-}}
+
+                billingInfo={{
+                  firstName: watch("billingFirstName") || saveDetail?.billing_form_data?.billingFirstName,
+                  lastName: watch("billingLastName") || saveDetail?.billing_form_data?.billingLastName,
+                  company: watch("billingCompany") || saveDetail?.billing_form_data?.billingCompany,
+                  phone: watch("billingPhone") || saveDetail?.billing_form_data?.billingPhone,
+                  address: watch("billingAddress1") || saveDetail?.billing_form_data?.billingAddress1,
+                  address1: watch("billingAddress1") || saveDetail?.billing_form_data?.billingAddress1,
+                  address2: watch("billingAddress2") || saveDetail?.billing_form_data?.billingAddress2,
+                  city: watch("billingCity") || saveDetail?.billing_form_data?.billingCity,
+                  state: watch("billingState") || saveDetail?.billing_form_data?.billingState,
+                  country: watch("billingCountry") || saveDetail?.billing_form_data?.billingCountry,
+                  zip: watch("billingZip") || saveDetail?.billing_form_data?.billingZip,
+                }}
               />
             </div>
 

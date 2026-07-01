@@ -309,12 +309,7 @@ const OrderSummary = () => {
                     }
                   />
                 )}
-                {/* <Input
-                  className="w-full md:w-2/3"
-                  onChange={(e) =>
-                    setShippingData({ ...shippingData, state: e.target.value })
-                  }
-                /> */}
+           
               </div>
 
               {/* City */}
