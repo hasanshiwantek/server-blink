@@ -23,6 +23,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import countries from "world-countries";
+import { Country, State } from "country-state-city";
+import { useMemo } from "react";
 
 const MyAddress = () => {
   const dispatch = useAppDispatch();
@@ -104,6 +106,14 @@ const MyAddress = () => {
       console.error("Update failed:", err);
     }
   };
+  const stateList = useMemo(() => {
+  if (!editData?.country) return [];
+
+  return State.getStatesOfCountry(editData.country).map((s) => ({
+    name: s.name,
+    code: s.isoCode,
+  }));
+}, [editData?.country]);
 
   useEffect(() => {
     dispatch(fetchCustomerAddress());
@@ -203,13 +213,47 @@ const MyAddress = () => {
             {/* State */}
             <div>
               <Label className="text-[14px]">State</Label>
-              <Input
+              {/* <Input
                 value={editData.state}
                 onChange={(e) =>
                   setEditData({ ...editData, state: e.target.value })
                 }
                 className="!w-full !max-w-full !h-[42px]"
-              />
+              /> */}
+              {stateList.length > 0 ? (
+  <Select
+    value={editData.state}
+    onValueChange={(value) =>
+      setEditData({
+        ...editData,
+        state: value,
+      })
+    }
+  >
+    <SelectTrigger className="!w-full !max-w-full !h-[42px]">
+      <SelectValue placeholder="Choose a State" />
+    </SelectTrigger>
+
+    <SelectContent>
+      {stateList.map((state) => (
+        <SelectItem key={state.code} value={state.code}>
+          {state.name}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+) : (
+  <Input
+    value={editData.state}
+    onChange={(e) =>
+      setEditData({
+        ...editData,
+        state: e.target.value,
+      })
+    }
+    className="!w-full !max-w-full !h-[42px]"
+  />
+)}
             </div>
 
             {/* Zip */}
@@ -223,6 +267,7 @@ const MyAddress = () => {
                 className="!w-full !max-w-full !h-[42px]"
               />
             </div>
+            
 
             {/* Country */}
             <div>
@@ -230,7 +275,7 @@ const MyAddress = () => {
               <Select
                 value={editData.country}
                 onValueChange={(value) =>
-                  setEditData({ ...editData, country: value })
+                  setEditData({ ...editData, country: value,state:"" })
                 }
               >
                 <SelectTrigger className="!w-full !max-w-full !h-[42px]">
@@ -238,7 +283,7 @@ const MyAddress = () => {
                 </SelectTrigger>
                 <SelectContent>
                   {countryList.map((country) => (
-                    <SelectItem key={country.code} value={country.name}>
+                    <SelectItem key={country.code} value={country.code}>
                       {country.name}
                     </SelectItem>
                   ))}

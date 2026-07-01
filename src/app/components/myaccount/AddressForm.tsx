@@ -41,7 +41,9 @@ const AddressForm = () => {
     watch,
     formState: { errors },
     reset,
-  } = useForm<AddressFormValues>();
+  } = useForm<AddressFormValues>({
+      shouldUnregister: true,
+  });
   const { loading, error } = useAppSelector(
     (state: RootState) => state.myaccount,
   );
@@ -64,6 +66,7 @@ const AddressForm = () => {
   }, [selectedCountry]);
 
   const onSubmit = async (data: AddressFormValues) => {
+      
     try {
       // Only addresses in payload
       const mergedData = {
@@ -240,6 +243,7 @@ const AddressForm = () => {
               name="country"
               control={control}
               rules={{ required: "Country is required" }}
+             
               render={({ field }) => (
                 <Select
                   value={field.value}
@@ -283,7 +287,9 @@ const AddressForm = () => {
                 name="state"
                 control={control}
                 rules={{ required: "State/Province is required" }}
+          
                 render={({ field }) => (
+                  
                   <Select
                     value={field.value}
                     onValueChange={field.onChange}
