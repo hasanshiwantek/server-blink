@@ -1299,21 +1299,38 @@ const CheckoutForm = () => {
     // }, 0);
     // // Restore completed steps directly
     // Restore completed steps directly
+    // setCompletedSteps([
+    //   ...(customerComplete ? [1] : []),
+    //   ...(shippingComplete ? [2] : []),
+    //   ...((shipping.billingSame || billingComplete) ? [3] : []),
+    // ]);
+
+    // // Restore current step directly
+    // setCurrentStep(
+    //   shipping.billingSame || billingComplete
+    //     ? 4
+    //     : shippingComplete
+    //       ? 3
+    //       : customerComplete
+    //         ? 2
+    //         : 1
+    // );
     setCompletedSteps([
       ...(customerComplete ? [1] : []),
       ...(shippingComplete ? [2] : []),
-      ...((shipping.billingSame || billingComplete) ? [3] : []),
+      ...(shippingComplete && (shipping.billingSame || billingComplete)
+        ? [3]
+        : []),
     ]);
 
-    // Restore current step directly
     setCurrentStep(
-      shipping.billingSame || billingComplete
-        ? 4
-        : shippingComplete
-          ? 3
-          : customerComplete
-            ? 2
-            : 1
+      shippingComplete
+        ? shipping.billingSame || billingComplete
+          ? 4
+          : 3
+        : customerComplete
+          ? 2
+          : 1
     );
   }, [saveDetail]);
 
