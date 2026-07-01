@@ -126,7 +126,7 @@ const CheckoutForm = () => {
   );
 
   const [promoCode, setPromoCode] = useState("");
-
+  const isRestoringRef = useRef(true);
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [itemToDelete, setItemToDelete] = useState<any | null>(null);
@@ -191,7 +191,7 @@ const CheckoutForm = () => {
   } = useForm<CheckoutFormValues>({
     defaultValues: {
       paymentMethod: "credit_card",
-      billingSame: isMultiAddress  ? false : true,
+      billingSame: isMultiAddress ? false : true,
       email: auth?.user?.email || "",
       firstName: auth?.user?.firstName || "",
       lastName: auth?.user?.lastName || "",
@@ -799,6 +799,24 @@ const CheckoutForm = () => {
     }
   };
 
+  // const handleContinueToPayment = async () => {
+  //   if (!watchedBillingSame) {
+  //     const isValid = await trigger([
+  //       "billingFirstName",
+  //       "billingLastName",
+  //       "billingAddress1",
+  //       "billingCity",
+  //       "billingCountry",
+  //       "billingZip",
+  //     ]);
+  //     if (isValid) {
+  //       setCompletedSteps((prev) => [...new Set([...prev, 3])]);
+  //       setCurrentStep(4);
+  //     }
+  //   } else {
+  //     setCurrentStep(4);
+  //   }
+  // };
   const handleContinueToPayment = async () => {
     if (!watchedBillingSame) {
       const isValid = await trigger([
@@ -809,13 +827,12 @@ const CheckoutForm = () => {
         "billingCountry",
         "billingZip",
       ]);
-      if (isValid) {
-        setCompletedSteps((prev) => [...new Set([...prev, 3])]);
-        setCurrentStep(4);
-      }
-    } else {
-      setCurrentStep(4);
+
+      if (!isValid) return;
     }
+
+    setCompletedSteps((prev) => [...new Set([...prev, 3])]);
+    setCurrentStep(4);
   };
 
   // Edit handlers
@@ -999,7 +1016,36 @@ const CheckoutForm = () => {
   };
 
   // watchedBillingSame ke saath useEffect add karo
+  // useEffect(() => {
+  //   if (watchedBillingSame && !isMultiAddress) {
+  //     setValue("billingFirstName", watchedFirstName);
+  //     setValue("billingLastName", watchedLastName);
+  //     setValue("billingCompany", watchedCompany);
+  //     setValue("billingPhone", watchedPhone);
+  //     setValue("billingAddress1", watchedAddress1);
+  //     setValue("billingAddress2", watchedAddress2);
+  //     setValue("billingCity", watchedCity);
+  //     setValue("billingState", watchedState);
+  //     setValue("billingCountry", watchedCountry);
+  //     setValue("billingZip", watchedZip);
+  //     setCompletedSteps((prev) => [...new Set([...prev, 3])]);
+  //   } else if (!watchedBillingSame) {
+  //     setValue("billingFirstName", "");
+  //     setValue("billingLastName", "");
+  //     setValue("billingCompany", "");
+  //     setValue("billingPhone", "");
+  //     setValue("billingAddress1", "");
+  //     setValue("billingAddress2", "");
+  //     setValue("billingCity", "");
+  //     setValue("billingZip", "");
+  //     setCompletedSteps((prev) => prev.filter((s) => s !== 3));
+  //   }
+  // }, [watchedBillingSame, watchedState, watchedCountry, watchedFirstName, watchedLastName, watchedZip, watchedAddress2, watchedAddress1, watchedCompany, watchedPhone, watchedCity]);
+
   useEffect(() => {
+    if (isRestoringRef.current) return;
+
+
     if (watchedBillingSame && !isMultiAddress) {
       setValue("billingFirstName", watchedFirstName);
       setValue("billingLastName", watchedLastName);
@@ -1011,8 +1057,11 @@ const CheckoutForm = () => {
       setValue("billingState", watchedState);
       setValue("billingCountry", watchedCountry);
       setValue("billingZip", watchedZip);
+
       setCompletedSteps((prev) => [...new Set([...prev, 3])]);
     } else if (!watchedBillingSame) {
+      // Only clear when the USER actually unchecks the checkbox,
+      // not during initial restore.
       setValue("billingFirstName", "");
       setValue("billingLastName", "");
       setValue("billingCompany", "");
@@ -1020,12 +1069,26 @@ const CheckoutForm = () => {
       setValue("billingAddress1", "");
       setValue("billingAddress2", "");
       setValue("billingCity", "");
+      setValue("billingState", "");
+      setValue("billingCountry", "");
       setValue("billingZip", "");
+
       setCompletedSteps((prev) => prev.filter((s) => s !== 3));
     }
-  }, [watchedBillingSame, watchedState, watchedCountry, watchedFirstName, watchedLastName, watchedZip, watchedAddress2, watchedAddress1, watchedCompany, watchedPhone, watchedCity]);
-
-
+  }, [
+    watchedBillingSame,
+    watchedFirstName,
+    watchedLastName,
+    watchedCompany,
+    watchedPhone,
+    watchedAddress1,
+    watchedAddress2,
+    watchedCity,
+    watchedState,
+    watchedCountry,
+    watchedZip,
+    isMultiAddress,
+  ]);
   // ✅ Save to localStorage on form changes (debounced)
   const watchedValues = watch();
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -1187,7 +1250,10 @@ const CheckoutForm = () => {
 
 
   useEffect(() => {
+    // if (hasRestoredRef.current) return;
     if (!saveDetail) return;
+
+    // hasRestoredRef.current = true;
 
     const shipping = saveDetail.shipping_form_data;
     const billing = saveDetail.billing_form_data;
@@ -1211,20 +1277,46 @@ const CheckoutForm = () => {
       !!billing.billingCountry &&
       !!billing.billingZip;
 
-    setTimeout(async () => {
-      if (customerComplete) {
-        await handleContinueToShipping();
+    // setTimeout(async () => {
+    //   // if (customerComplete) {
+    //   //   await handleContinueToShipping();
 
-        if (shippingComplete) {
-          await handleContinueToBilling();
+    //   //   if (shippingComplete) {
+    //   //     await handleContinueToBilling();
 
-          if (billingComplete) {
-            await handleContinueToPayment();
-          }
-        }
-      }
-    }, 0);
+    //   //     if (billingComplete) {
+    //   //       await handleContinueToPayment();
+    //   //     }
+    //   //   }
+    //   // }
+    //   if (shippingComplete) {
+    //     await handleContinueToBilling();
+
+    //     if (shipping.billingSame || billingComplete) {
+    //       await handleContinueToPayment();
+    //     }
+    //   }
+    // }, 0);
+    // // Restore completed steps directly
+    // Restore completed steps directly
+    setCompletedSteps([
+      ...(customerComplete ? [1] : []),
+      ...(shippingComplete ? [2] : []),
+      ...((shipping.billingSame || billingComplete) ? [3] : []),
+    ]);
+
+    // Restore current step directly
+    setCurrentStep(
+      shipping.billingSame || billingComplete
+        ? 4
+        : shippingComplete
+          ? 3
+          : customerComplete
+            ? 2
+            : 1
+    );
   }, [saveDetail]);
+
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
       {paymentRequest && (
@@ -1320,6 +1412,19 @@ const CheckoutForm = () => {
                 onEdit={handleEditBilling}
                 onAddressSelect={handleBillingAddressSelect}
 
+                // billingInfo={{
+                //   firstName: watch("billingFirstName"),
+                //   lastName: watch("billingLastName"),
+                //   company: watch("billingCompany"),
+                //   phone: watch("billingPhone"),
+                //   address: watch("billingAddress1"),
+                //   address1: watch("billingAddress1"),
+                //   address2: watch("billingAddress2"),
+                //   city: watch("billingCity"),
+                //   state: watch("billingState"),
+                //   country: watch("billingCountry"),
+                //   zip: watch("billingZip"),
+                // }}
                 billingInfo={{
                   firstName: watch("billingFirstName") || saveDetail?.billing_form_data?.billingFirstName,
                   lastName: watch("billingLastName") || saveDetail?.billing_form_data?.billingLastName,
