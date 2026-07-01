@@ -45,10 +45,10 @@ const AddressForm = () => {
   const { loading, error } = useAppSelector(
     (state: RootState) => state.myaccount,
   );
+  const selectedCountry = watch("country");
   const auth = useAppSelector((state: RootState) => state.auth);
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const [selectedCountry, setSelectedCountry] = useState("");
 
   const countryList = Country.getAllCountries().map((c) => ({
     name: c.name,
@@ -245,7 +245,6 @@ const AddressForm = () => {
                   value={field.value}
                   onValueChange={(value) => {
                     field.onChange(value);
-                    setSelectedCountry(value);
                     setValue("state", "");
                   }}
                 >
