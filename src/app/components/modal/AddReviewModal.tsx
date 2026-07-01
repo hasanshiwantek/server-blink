@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { X } from "lucide-react";
 import {
@@ -14,6 +15,9 @@ import { useAppDispatch } from "@/hooks/useReduxHooks";
 import { addReview, } from "@/redux/slices/homeSlice";
 import { Label } from "@/components/ui/label";
 import { toast } from "react-toastify";
+import { sitekey } from "@/lib/axiosInstance";
+
+
 interface AddReviewModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -37,6 +41,8 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
         comment: "",
         rating: 0,
     });
+    const [captchaToken, setCaptchaToken] = useState<string | null>(null); // ✅
+    const recaptchaRef = useRef<ReCAPTCHA>(null);
     const [loading, setLoading] = useState(false);
     const dispatch = useAppDispatch();
     const handleChange = (
@@ -50,6 +56,12 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        // ✅ Captcha check
+        if (!captchaToken) {
+            toast.error("Please verify the captcha.");
+            return;
+        }
+
         setLoading(true);
 
         const payload = {
@@ -64,10 +76,10 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
                 onClose();
                 toast.success("Review submitted successfully!");
             } else {
-               
+
             }
         } catch (err) {
-           
+
         } finally {
             setLoading(false);
         }
@@ -81,6 +93,8 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
             comment: "",
             rating: 0,
         })
+        setCaptchaToken(null);          // ✅ reset
+        recaptchaRef.current?.reset();
     }, [isOpen])
 
     return (
@@ -97,7 +111,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
                         onClick={onClose}
                         className="text-[#333333] hover:text-black transition-colors"
                     >
-                       <X className="w-8 h-8 text-[#CAC9C9]" />
+                        <X className="w-8 h-8 text-[#CAC9C9]" />
                     </button>
                 </div>
                 <div className="flex flex-col md:flex-row bg-[#eaeaea]">
@@ -228,6 +242,14 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
                                     className="w-full h-[100px] px-4 py-3 border border-gray-300 bg-white rounded-none focus:outline-none focus:ring-2 focus:ring-[#F15939] "
                                 />
                             </div>
+                            {/* ✅ ReCAPTCHA */}
+                            <ReCAPTCHA
+                                ref={recaptchaRef}
+                                sitekey={sitekey}
+                                onChange={(token) => setCaptchaToken(token)}
+                                onExpired={() => setCaptchaToken(null)}
+                            />
+
                             <div className="pt-2">
                                 <button type="submit" className="btn-primary">
                                     {loading ? "Submitting..." : "Submit Review"}
