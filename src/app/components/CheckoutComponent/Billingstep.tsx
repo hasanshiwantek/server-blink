@@ -94,10 +94,14 @@ const BillingStep: React.FC<BillingStepProps> = ({
     }
   }, [auth?.isAuthenticated, userAddresses]);
   function handleChange() {
+    console.log("ihhh s");
+
     if (isInitialLoad.current) {
       isInitialLoad.current = false;
       return;
     }
+    console.log("ihhh");
+
     // if (!saveDetail) return;
 
     // const shipping = saveDetail.shipping_form_data;
@@ -156,9 +160,6 @@ const BillingStep: React.FC<BillingStepProps> = ({
       dispatch(checkoutFormSave({ data: checkoutData }));
     }, 300);
   }
-
-
-  console.log(isCompleted, !isActive);
 
 
   if (isCompleted && !isActive &&
@@ -622,7 +623,10 @@ const BillingStep: React.FC<BillingStepProps> = ({
       )}
       <button
         type="button"
-        onClick={onContinue}
+        onClick={() => {
+          onContinue()
+          handleChange()
+        }}
         className="btn-primary"
       >
         CONTINUE
