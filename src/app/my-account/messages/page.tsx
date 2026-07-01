@@ -6,7 +6,7 @@ import MessageList from '@/app/components/myaccount/MessageList'
 import { useAppDispatch, useAppSelector } from '@/hooks/useReduxHooks'
 import { fetchUserOrders } from '@/redux/slices/OrderMessage'
 
-const page = () => {
+const Page = () => {
     const dispatch = useAppDispatch();
     const orders = useAppSelector(
         (state: RootState) => state.customerMessage.orders,
@@ -31,4 +31,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page
