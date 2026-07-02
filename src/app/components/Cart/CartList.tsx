@@ -69,7 +69,7 @@ const CartList = () => {
   useEffect(() => {
     const updatedQuantities: { [key: string]: number } = {};
     cart?.forEach((item) => {
-      updatedQuantities[item.id] = item.quantity;
+      updatedQuantities[item.cartItemId] = item.quantity;
     });
     setQuantities(updatedQuantities);
   }, [cart]);
@@ -216,9 +216,9 @@ const CartList = () => {
                       type="number"
                       disabled={disable}
                       value={
-                        quantities[item.id] === undefined
+                        quantities[item.cartItemId] === undefined
                           ? item.quantity
-                          : quantities[item.id]
+                          : quantities[item.cartItemId]
                       }
                       onChange={(e) => handleChange(item?.cartItemId, e.target.value, maxQty)}
                       onBlur={(e) => {
