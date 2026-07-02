@@ -1028,6 +1028,7 @@ const CheckoutForm = () => {
           return;
         }
 
+        
         if (paymentMethod) {
           paymentIntentId = await handleStripeCharge(paymentMethod.id);
 
