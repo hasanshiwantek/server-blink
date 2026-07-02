@@ -265,7 +265,7 @@ const CheckoutForm = () => {
       try {
         const res = await fetch("/api/detect-country"); // apna Next.js route
         const data = await res.json();
-        if (data.country_code) {
+        if (data.country_code && !hasRestoredRef.current) {
           if (!hasRestoredRef.current) {
 
             dispatch(fetchShippingRate({}))
@@ -277,8 +277,10 @@ const CheckoutForm = () => {
           }
         }
       } catch {
-        setValue("country", "US");
-        setValue("billingCountry", "US");
+        if (!hasRestoredRef.current) {
+          setValue("country", "US");
+          setValue("billingCountry", "US");
+        }
       }
     };
 
@@ -1028,7 +1030,7 @@ const CheckoutForm = () => {
           return;
         }
 
-        
+
         if (paymentMethod) {
           paymentIntentId = await handleStripeCharge(paymentMethod.id);
 
@@ -1302,7 +1304,16 @@ const CheckoutForm = () => {
         billingState: watchedValues.billingState || "",
         billingZip: watchedValues.billingZip || "",
       };
+      const hasShippingData = !!(
+        watchedValues.firstName &&
+        watchedValues.email &&
+        watchedValues.address1
+      );
 
+      if (!hasShippingData) {
+        console.log("Skipping save — no meaningful data");
+        return;
+      }
       dispatch(checkoutFormSave({ data: { shippingFormData, billingFormData } }));
 
       // localStorage — multi-address + steps
