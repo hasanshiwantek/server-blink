@@ -223,16 +223,18 @@ const CartList = () => {
                       onChange={(e) => handleChange(item?.cartItemId, e.target.value, maxQty)}
                       onBlur={(e) => {
                         const parsed = Number(quantities[item.cartItemId]);
+                        console.log("parsed", parsed);
+
                         if (!parsed || parsed <= 0) {
                           dispatch(updateCart({
                             id: item?.cartItemId,
                             data: {
-                              quantity: 1
+                              quantity: parsed
                             }
                           })).unwrap()
                             .then(() => {
                               dispatch(fetchCartList());
-                              removeLocalShipping()
+                              // removeLocalShipping()
                             })
                           // dispatch(updateQty({ id: item.id, quantity: 1 }));
                           setQuantities((prev) => ({ ...prev, [item.cartItemId]: 1 }));
@@ -240,12 +242,12 @@ const CartList = () => {
                           dispatch(updateCart({
                             id: item?.cartItemId,
                             data: {
-                              quantity: maxQty
+                              quantity: parsed
                             }
                           })).unwrap()
                             .then(() => {
                               dispatch(fetchCartList());
-                              removeLocalShipping()
+                              // removeLocalShipping()
                             })
                           // dispatch(updateQty({ id: item.id, quantity: maxQty }));
                           setQuantities((prev) => ({ ...prev, [item.cartItemId]: maxQty }));
