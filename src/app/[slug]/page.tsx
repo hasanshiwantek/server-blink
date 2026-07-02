@@ -79,8 +79,7 @@ export async function generateMetadata({
       absolute: product.pageTitle || product.name,  // ← changed
     },
     description:
-      product.metaDescription?.substring(0, 160) ||
-      product.description?.substring(0, 160),
+      product.metaDescription?.substring(0, 160),
     keywords:
       product.searchKeywords ||
       `${product.name}, ${product.brand?.name}, Server Blink`,
@@ -89,7 +88,7 @@ export async function generateMetadata({
     },
     openGraph: {
       title: product.pageTitle || product.name,
-      description: product.metaDescription || product.description,
+      description: product.metaDescription,
       url,
       siteName: "",
       images: [
@@ -105,7 +104,7 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title: product.pageTitle || product.name,
-      description: product.metaDescription || product.description,
+      description: product.metaDescription,
       images: [product.image?.[0]?.path || "/default-product-image.svg"],
     },
     robots: {
@@ -149,7 +148,7 @@ export default async function ProductPage({
         {/* Structured Data (SEO safe) */}
         {backendSchema && (
           <Script
-       id="product-jsonld"
+            id="product-jsonld"
             type="application/ld+json"
             dangerouslySetInnerHTML={{
               __html: JSON.stringify(backendSchema),
