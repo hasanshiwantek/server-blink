@@ -49,19 +49,26 @@ const Cart = () => {
         </div>
 
 
+{cartItemCount > 0 && (
+  <div className="relative">
+    {cartLoad && (
+      <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-[2px]">
+        <div className="h-10 w-10 rounded-full border-[3px] border-gray-300 border-t-red-500 animate-spin" />
+      </div>
+    )}
 
-        {/* Cart List */}
-        {cartItemCount > 0 && <div className="w-full">
+    {/* Cart */}
+    <div className="w-full">
+      <CartList />
+    </div>
 
-          {cartLoad ? <div className="w-full">
-            <CartTableSkeleton />
-          </div> : <CartList />}
-        </div>}
-
-        {/* Order Summary */}
-        {cartItemCount > 0 && <div className="w-full md:w-[45%] xl:self-end">
-          <OrderSummary />
-        </div>}
+    {/* Order Summary */}
+    <div className="w-full md:w-[45%] xl:ml-auto mt-6">
+      <OrderSummary />
+    </div>
+  </div>
+)}
+       
       </div>
     </main>
 
