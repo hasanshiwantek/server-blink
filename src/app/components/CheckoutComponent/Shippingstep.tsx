@@ -35,7 +35,6 @@ interface ShippingStepProps {
   errors: FieldErrors;
   control: any;
   setValue: UseFormSetValue<any>;
-  getValues: any
   onContinue: () => void;
   countryList: Array<{ name: string; code: string }>;
   stateList: Array<{ name: string; code: string }>;
@@ -121,7 +120,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   errors,
   control,
   setValue,
-  getValues,
   onContinue,
   countryList,
   stateList,
@@ -223,95 +221,24 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
       return () => clearTimeout(timer);
     }
   }, [city, country, zip, state]);
+  // useEffect(() => {
+  //   if (!auth?.isAuthenticated || !userAddresses?.length) {
+  //     setAddressMode("new");
+  //   }
+  // }, [auth?.isAuthenticated, userAddresses]);
+
   useEffect(() => {
     if (!auth?.isAuthenticated || !userAddresses?.length) {
       setAddressMode("new");
-    }
-  }, [auth?.isAuthenticated, userAddresses]);
-
-
-  function handleChange() {
-    if (isInitialLoad.current) {
-      isInitialLoad.current = false;
       return;
     }
-    console.log("im here");
-
-    // if (!saveDetail) return;
-
-    // const shipping = saveDetail.shipping_form_data;
-    // const billing = saveDetail.billing_form_data;
-    // const billingSame = getValues("billingSame");
-
-    const checkoutData = {
-
-      billingFormData: {
-        billingFirstName: getValues("billingFirstName"),
-        billingLastName: getValues("billingLastName"),
-        billingCompany: getValues("billingCompany"),
-        billingPhone: getValues("billingPhone"),
-        billingAddress1: getValues("billingAddress1"),
-        billingAddress2: getValues("billingAddress2"),
-        billingCity: getValues("billingCity"),
-        billingCountry: getValues("billingCountry"),
-        billingState: getValues("billingState"),
-        billingZip: getValues("billingZip"),
-        isSaveAddressForBilling: getValues("isSaveAddressForBilling"),
-      },
-      // billingFormData: billingSame
-      //   ? {
-      //     billingFirstName: getValues("firstName"),
-      //     billingLastName: getValues("lastName"),
-      //     billingCompany: getValues("company"),
-      //     billingPhone: getValues("phone"),
-      //     billingAddress1: getValues("address1"),
-      //     billingAddress2: getValues("address2"),
-      //     billingCity: getValues("city"),
-      //     billingCountry: getValues("country"),
-      //     billingState: getValues("state"),
-      //     billingZip: getValues("zip"),
-      //     isSaveAddressForBilling: getValues("isSaveAddressForBilling"),
-      //   }
-      //   : {
-      //     billingFirstName: getValues("billingFirstName"),
-      //     billingLastName: getValues("billingLastName"),
-      //     billingCompany: getValues("billingCompany"),
-      //     billingPhone: getValues("billingPhone"),
-      //     billingAddress1: getValues("billingAddress1"),
-      //     billingAddress2: getValues("billingAddress2"),
-      //     billingCity: getValues("billingCity"),
-      //     billingCountry: getValues("billingCountry"),
-      //     billingState: getValues("billingState"),
-      //     billingZip: getValues("billingZip"),
-      //     isSaveAddressForBilling: getValues("isSaveAddressForBilling"),
-      //   },
-      shippingFormData: {
-        email: getValues("email"),
-        firstName: getValues("firstName"),
-        lastName: getValues("lastName"),
-        company: getValues("company"),
-        phone: getValues("phone"),
-        address1: getValues("address1"),
-        address2: getValues("address2"),
-        city: getValues("city"),
-        country: getValues("country"),
-        state: getValues("state"),
-        zip: getValues("zip"),
-        newsletter: getValues("newsletter"),
-        shippingMethod: getValues("shippingMethod"),
-        billingSame: getValues("billingSame"),
-        "isSaveAddressForShipping": getValues("isSaveAddressForShipping"),
-      },
-    };
-
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
+    // ✅ Agar saved data hai toh "new" mode mein raho
+    if (saveDetail?.shipping_form_data?.firstName) {
+      setAddressMode("new");
     }
+  }, [auth?.isAuthenticated, userAddresses, saveDetail]);
 
-    saveTimeoutRef.current = setTimeout(() => {
-      dispatch(checkoutFormSave({ data: checkoutData }));
-    }, 300);
-  }
+
 
 
   if (isCompleted && !isActive) {
@@ -528,7 +455,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                       setAddressMode("selected");
                       setIsOpen(false);
                       onAddressSelect?.(item);
-                      handleChange(); // ✅ form fields update karo
+                      // ✅ form fields update karo
 
 
                       if (!item?.city?.trim() && !item?.country?.trim() && !item?.zip?.trim() && !item?.state?.trim())
@@ -596,10 +523,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                       {...register("firstName", {
                         required: "First name is required",
                       })}
-                      onChange={(e) => {
-                        register("firstName").onChange(e);
-                        handleChange();
-                      }}
+
                     />
                     {errors.firstName && (
                       <p className="text-sm text-red-500 mt-1">
@@ -626,10 +550,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                       {...register("lastName", {
                         required: "Last name is required",
                       })}
-                      onChange={(e) => {
-                        register("lastName").onChange(e);
-                        handleChange();
-                      }}
+
                     />
                     {errors.lastName && (
                       <p className="text-sm text-red-500 mt-1">
@@ -652,10 +573,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     type="text"
                     className="w-full !max-w-full h-[44px]  border border-[#cac9c9] rounded-none"
                     {...register("company")}
-                    onChange={(e) => {
-                      register("company").onChange(e);
-                      handleChange();
-                    }}
+
                   />
                 </div>
 
@@ -672,10 +590,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     type="text"
                     className="w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none"
                     {...register("phone")}
-                    onChange={(e) => {
-                      register("phone").onChange(e);
-                      handleChange();
-                    }}
+
                   />
                 </div>
 
@@ -697,10 +612,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     {...register("address1", {
                       required: "Address is required",
                     })}
-                    onChange={(e) => {
-                      register("address1").onChange(e);
-                      handleChange();
-                    }}
+
                   />
                   {errors.address1 && (
                     <p className="text-sm text-red-500 mt-1">
@@ -722,10 +634,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     type="text"
                     className="w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none"
                     {...register("address2")}
-                    onChange={(e) => {
-                      register("address2").onChange(e);
-                      handleChange();
-                    }}
+
                   />
                 </div>
                 <div className="flex flex-col mt-4">
@@ -742,10 +651,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     type="text"
                     className="w-full !max-w-full  h-[44px] border border-[#cac9c9] rounded-none"
                     {...register("city", { required: "City is required" })}
-                    onChange={(e) => {
-                      register("city").onChange(e);
-                      handleChange();
-                    }}
+
                   />
                   {errors.city && (
                     <p className="text-sm text-red-500 mt-1">
@@ -774,7 +680,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                           field.onChange(val);
                           setValue("state", ""); //
 
-                          handleChange();
+
 
                         }}
                         value={field.value}
@@ -827,7 +733,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                             onValueChange={(val: any) => {
                               field.onChange(val);
                               register("state").onChange(val);
-                              // handleChange();
+                              //   
                             }}
                             value={field.value}
                           >
@@ -855,10 +761,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                           }`}
                         {...register("state")}
 
-                        onChange={(e) => {
-                          register("state").onChange(e);
-                          handleChange();
-                        }}
+
                       />
                     )}
                     {errors.state && (
@@ -881,10 +784,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                       className={`w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none ${errors.zip ? "border-red-500" : ""
                         }`}
                       {...register("zip", { required: "Postal code is required" })}
-                      onChange={(e) => {
-                        register("zip").onChange(e);
-                        handleChange();
-                      }}
+
                     />
                     {errors.zip && (
                       <p className="text-sm text-red-500 mt-1">
@@ -900,10 +800,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     id="isSaveAddressForShipping"
                     {...register("isSaveAddressForShipping")}
                     className="w-4 h-4"
-                    onChange={(e) => {
-                      register("isSaveAddressForShipping").onChange(e);
-                      handleChange();
-                    }}
+
                   />
                   <label
                     htmlFor="isSaveAddressForShipping"
@@ -921,12 +818,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                 id="billingSame"
                 {...register("billingSame")}
                 className="w-4 h-4"
-                onChange={(e) => {
-                  register("billingSame").onChange(e);
-                  console.log("billingSame");
-
-                  handleChange();
-                }}
 
               />
               <label
@@ -1005,7 +896,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                           })}
                           onChange={async (e) => {
                             register("shippingMethod").onChange(e); // keep react-hook-form in sync
-                            handleChange()
                             const selectedRate = shippingRates?.find(
                               (r: any) => r.service_type === e.target.value,
                             );
@@ -1079,11 +969,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
               className="w-full border-[1px] border-gray-400 rounded-md p-3 text-sm"
               {...register("orderComment")}
               placeholder="Add any special instructions..."
-              onChange={(e) => {
-                register("orderComment").onChange(e);
-                handleChange();
-              }
-              }
             />
           </div>
 
@@ -1091,7 +976,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             disabled={ratesLoader || shippingCostLoading}
             type="button"
             onClick={() => {
-              handleChange()
               onContinue()
             }}
             className="btn-primary"

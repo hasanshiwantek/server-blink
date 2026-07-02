@@ -42,7 +42,7 @@ import {
 import { useRouter } from "next/navigation";
 import { setLastOrder } from "@/redux/slices/orderslice";
 import { resetMultiAddress, restoreMultiAddress, setIsMultiAddress } from "@/redux/slices/multiAddressSlice";
-import { fetchShippingRate, getCheckoutForm, resetShippingRates } from "@/redux/slices/shippingSlice";
+import { checkoutFormSave, fetchShippingRate, fetchShippingRates, getCheckoutForm, resetShippingRates } from "@/redux/slices/shippingSlice";
 // Import step components
 import CustomerStep from "./CustomerStep";
 import ShippingStep from "./Shippingstep";
@@ -118,15 +118,16 @@ const CheckoutForm = () => {
   const cart = useAppSelector((state: RootState) => state?.carts?.items);
   const { loading } = useAppSelector((state: RootState) => state?.carts);
   const auth = useAppSelector((state: RootState) => state?.auth);
-  const hasRestoredRef = useRef(false);
-  const hasFetchedCheckoutRef = useRef(false);
+
   // ADD COUPON STATE FROM REDUX
   const { appliedCoupon, discountAmount } = useAppSelector(
     (state: RootState) => state.coupon
   );
+  const hasRestoredRef = useRef(false); // ✅ Sirf ek baar restore
+  const isRestoringRef = useRef(true); // ✅ Initially true — restore chal raha hai
 
   const [promoCode, setPromoCode] = useState("");
-  const isRestoringRef = useRef(true);
+
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [itemToDelete, setItemToDelete] = useState<any | null>(null);
@@ -158,8 +159,7 @@ const CheckoutForm = () => {
   const user: any = localStorage.getItem("persist:auth");
   const parsedAuth = auth ? JSON.parse(user) : null;
   const token = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
-  const { shippingDetail } = useAppSelector((state: any) => state.shippingZone);
-  const { shippingRates, saveDetail } = useAppSelector((state) => state.shippingZone);
+  const { shippingDetail, saveDetail } = useAppSelector((state: any) => state.shippingZone);
 
   useEffect(() => {
     if (!loading) {
@@ -210,6 +210,7 @@ const CheckoutForm = () => {
   const watchedBillingSame = watch("billingSame");
   const stripeCardMethods = ["credit_card"];
   const walletMethods = ["google_pay", "apple_pay"];
+  const { shippingRates } = useAppSelector((state) => state.shippingZone);
   const stateList = useMemo(() => {
     if (!watchedCountry) return [];
     return State.getStatesOfCountry(watchedCountry).map((s) => ({
@@ -265,12 +266,15 @@ const CheckoutForm = () => {
         const res = await fetch("/api/detect-country"); // apna Next.js route
         const data = await res.json();
         if (data.country_code) {
-          dispatch(fetchShippingRate({}))
-          setValue("country", data.country_code);
-          setValue("state", data.state);
+          if (!hasRestoredRef.current) {
 
-          setValue("billingCountry", data.country_code);
-          setValue("billingState", data.state);
+            dispatch(fetchShippingRate({}))
+            setValue("country", data.country_code);
+            setValue("state", data.state);
+
+            setValue("billingCountry", data.country_code);
+            setValue("billingState", data.state);
+          }
         }
       } catch {
         setValue("country", "US");
@@ -282,7 +286,7 @@ const CheckoutForm = () => {
   }, [setValue]);
 
   useEffect(() => {
-    if (shippingDetail?.country) {
+    if (shippingDetail?.country && !hasRestoredRef.current) {
       setValue("country", shippingDetail.country);
       setValue("state", shippingDetail.state);
       setValue("city", shippingDetail.city);
@@ -558,6 +562,35 @@ const CheckoutForm = () => {
   };
 
 
+  // const buildOrderPayload = useCallback(
+  //   (data: CheckoutFormValues & { paymentIntentId?: string | null }) => ({
+  //     userType: token ? null : "guest",
+  //     deviceType: getDeviceType(),
+  //     firstName: data.firstName,
+  //     lastName: data.lastName,
+  //     companyName: data.company || "",
+  //     email: data.email,
+  //     phone: data.phone || "",
+  //     addressLine1: data.address1,
+  //     addressLine2: data.address2 || "",
+  //     city: data.city,
+  //     state: data.state || "",
+  //     zip: data.zip,
+  //     country: data.country,
+  //     paymentMethod: data.paymentMethod,
+  //     shippingMethod: data.shippingMethod,
+  //     discountAmount: discountAmount ? finalTotal : 0,
+  //     shippingCost: shipping,
+  //     comments: data.orderComment || "",
+  //     paymentIntentId: data.paymentIntentId ?? "",
+  //     products: cart.map((item) => ({
+  //       product_id: item.id,
+  //       quantity: item.quantity || 1,
+  //     })),
+  //   }),
+  //   [cart, shipping]
+  // );
+
   const buildOrderPayload = useCallback(
     (data: CheckoutFormValues & { paymentIntentId?: string | null }) => {
       // ✅ Multi address mode
@@ -773,9 +806,20 @@ const CheckoutForm = () => {
       const email = getValues("email");
       const newsletter = getValues("newsletter");
 
-
+      // API call - apni endpoint laga lo
+      // try {
+      //   await fetch("/api/checkout/customer", {
+      //     method: "POST",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify({ email, newsletter: !!newsletter }),
+      //   });
+      // } catch (error) {
+      //   console.error("Customer API error:", error);
+      // }
       setCompletedSteps((prev) => [...new Set([...prev, 1])]);
       setCurrentStep(2);
+
+
     }
   };
 
@@ -799,24 +843,6 @@ const CheckoutForm = () => {
     }
   };
 
-  // const handleContinueToPayment = async () => {
-  //   if (!watchedBillingSame) {
-  //     const isValid = await trigger([
-  //       "billingFirstName",
-  //       "billingLastName",
-  //       "billingAddress1",
-  //       "billingCity",
-  //       "billingCountry",
-  //       "billingZip",
-  //     ]);
-  //     if (isValid) {
-  //       setCompletedSteps((prev) => [...new Set([...prev, 3])]);
-  //       setCurrentStep(4);
-  //     }
-  //   } else {
-  //     setCurrentStep(4);
-  //   }
-  // };
   const handleContinueToPayment = async () => {
     if (!watchedBillingSame) {
       const isValid = await trigger([
@@ -827,12 +853,13 @@ const CheckoutForm = () => {
         "billingCountry",
         "billingZip",
       ]);
-
-      if (!isValid) return;
+      if (isValid) {
+        setCompletedSteps((prev) => [...new Set([...prev, 3])]);
+        setCurrentStep(4);
+      }
+    } else {
+      setCurrentStep(4);
     }
-
-    setCompletedSteps((prev) => [...new Set([...prev, 3])]);
-    setCurrentStep(4);
   };
 
   // Edit handlers
@@ -1016,36 +1043,8 @@ const CheckoutForm = () => {
   };
 
   // watchedBillingSame ke saath useEffect add karo
-  // useEffect(() => {
-  //   if (watchedBillingSame && !isMultiAddress) {
-  //     setValue("billingFirstName", watchedFirstName);
-  //     setValue("billingLastName", watchedLastName);
-  //     setValue("billingCompany", watchedCompany);
-  //     setValue("billingPhone", watchedPhone);
-  //     setValue("billingAddress1", watchedAddress1);
-  //     setValue("billingAddress2", watchedAddress2);
-  //     setValue("billingCity", watchedCity);
-  //     setValue("billingState", watchedState);
-  //     setValue("billingCountry", watchedCountry);
-  //     setValue("billingZip", watchedZip);
-  //     setCompletedSteps((prev) => [...new Set([...prev, 3])]);
-  //   } else if (!watchedBillingSame) {
-  //     setValue("billingFirstName", "");
-  //     setValue("billingLastName", "");
-  //     setValue("billingCompany", "");
-  //     setValue("billingPhone", "");
-  //     setValue("billingAddress1", "");
-  //     setValue("billingAddress2", "");
-  //     setValue("billingCity", "");
-  //     setValue("billingZip", "");
-  //     setCompletedSteps((prev) => prev.filter((s) => s !== 3));
-  //   }
-  // }, [watchedBillingSame, watchedState, watchedCountry, watchedFirstName, watchedLastName, watchedZip, watchedAddress2, watchedAddress1, watchedCompany, watchedPhone, watchedCity]);
-
   useEffect(() => {
     if (isRestoringRef.current) return;
-
-
     if (watchedBillingSame && !isMultiAddress) {
       setValue("billingFirstName", watchedFirstName);
       setValue("billingLastName", watchedLastName);
@@ -1057,11 +1056,8 @@ const CheckoutForm = () => {
       setValue("billingState", watchedState);
       setValue("billingCountry", watchedCountry);
       setValue("billingZip", watchedZip);
-
       setCompletedSteps((prev) => [...new Set([...prev, 3])]);
     } else if (!watchedBillingSame) {
-      // Only clear when the USER actually unchecks the checkbox,
-      // not during initial restore.
       setValue("billingFirstName", "");
       setValue("billingLastName", "");
       setValue("billingCompany", "");
@@ -1069,91 +1065,258 @@ const CheckoutForm = () => {
       setValue("billingAddress1", "");
       setValue("billingAddress2", "");
       setValue("billingCity", "");
-      setValue("billingState", "");
-      setValue("billingCountry", "");
       setValue("billingZip", "");
-
-      setCompletedSteps((prev) => prev.filter((s) => s !== 3));
+      // setCompletedSteps((prev) => prev.filter((s) => s !== 3));
     }
-  }, [
-    watchedBillingSame,
-    watchedFirstName,
-    watchedLastName,
-    watchedCompany,
-    watchedPhone,
-    watchedAddress1,
-    watchedAddress2,
-    watchedCity,
-    watchedState,
-    watchedCountry,
-    watchedZip,
-    isMultiAddress,
-  ]);
+  }, [watchedBillingSame, watchedState, watchedCountry, watchedFirstName, watchedLastName, watchedZip, watchedAddress2, watchedAddress1, watchedCompany, watchedPhone, watchedCity]);
+
+
+  const isInitialLoad = useRef(true);
+  const isRestored = useRef(false); // ✅ NEW
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Restore useEffect
+  // useEffect(() => {
+  //   const restoreData = async () => {
+  //     try {
+  //       const result = await dispatch(getCheckoutForm()).unwrap();
+  //       const apiData = result?.data;
+
+  //       if (apiData?.shipping_form_data) {
+  //         const shipping = apiData.shipping_form_data;
+  //         const billing = apiData.billing_form_data;
+
+  //         const shippingFields: (keyof CheckoutFormValues)[] = [
+  //           "email", "firstName", "lastName", "company", "phone",
+  //           "address1", "address2", "city", "country", "state", "zip",
+  //           "newsletter", "shippingMethod", "billingSame", "orderComment",
+  //         ];
+
+  //         shippingFields.forEach((field) => {
+  //           const val = (shipping as any)[field];
+  //           if (val !== undefined && val !== "") {
+  //             setValue(field, val);
+  //           }
+  //         });
+  //         setValue("isSaveAddressForShipping", false);
+
+  //         if (billing) {
+  //           const billingFields: (keyof CheckoutFormValues)[] = [
+  //             "billingFirstName", "billingLastName", "billingCompany",
+  //             "billingPhone", "billingAddress1", "billingAddress2",
+  //             "billingCity", "billingCountry", "billingState", "billingZip",
+  //           ];
+  //           billingFields.forEach((field) => {
+  //             const val = (billing as any)[field];
+  //             if (val !== undefined && val !== "") {
+  //               setValue(field, val);
+  //             }
+  //           });
+  //         }
+  //       }
+
+  //       // localStorage restore
+  //       // const saved = localStorage.getItem(CHECKOUT_STORAGE_KEY);
+  //       // if (saved) {
+  //       //   const parsed = JSON.parse(saved);
+  //       //   if (parsed._isMultiAddress && parsed._destinations?.length) {
+  //       //     // dispatch(restoreMultiAddress({ ...parsed }));
+  //       //   }
+  //       //   if (parsed._completedSteps) setCompletedSteps(parsed._completedSteps);
+  //       //   if (parsed._currentStep) setCurrentStep(parsed._currentStep);
+  //       //   if (parsed._cartItems?.length) dispatch(restoreCart(parsed._cartItems));
+  //       // }
+
+  //     } catch (e) {
+  //       console.error("Failed to restore:", e);
+  //     } finally {
+  //       // ✅ Restore complete — ab save enable karo
+  //       isRestored.current = true;
+  //     }
+  //   };
+
+  //   restoreData();
+  // }, [dispatch, setValue]);
+
+  useEffect(() => {
+    const restoreData = async () => {
+      try {
+        const result = await dispatch(getCheckoutForm()).unwrap();
+        const apiData = result?.data;
+
+
+        if (apiData?.shipping_form_data) {
+          const shipping = apiData.shipping_form_data;
+          const billing = apiData.billing_form_data;
+          if (shipping.city && shipping.country && shipping.zip && shipping.state && cart?.length) {
+            dispatch(fetchShippingRates({
+              data: {
+                destination: {
+                  country_code: shipping.country,
+                  state: shipping.state,
+                  postal_code: shipping.zip,
+                  city: shipping.city,
+                },
+                package: calculatePackage(cart),
+              },
+            }));
+          }
+          // ✅ Shipping fields restore
+          const shippingFields: (keyof CheckoutFormValues)[] = [
+            "email", "firstName", "lastName", "company", "phone",
+            "address1", "address2", "city", "country", "state", "zip",
+            "newsletter", "shippingMethod", "billingSame", "orderComment",
+          ];
+          shippingFields.forEach((field) => {
+            const val = (shipping as any)[field];
+            if (val !== undefined && val !== "") {
+              setValue(field, val);
+            }
+          });
+          setValue("isSaveAddressForShipping", false);
+
+          // ✅ Billing fields restore
+          if (billing) {
+            const billingFields: (keyof CheckoutFormValues)[] = [
+              "billingFirstName", "billingLastName", "billingCompany",
+              "billingPhone", "billingAddress1", "billingAddress2",
+              "billingCity", "billingCountry", "billingState", "billingZip",
+            ];
+            billingFields.forEach((field) => {
+              const val = (billing as any)[field];
+              if (val !== undefined && val !== "") {
+                setValue(field, val);
+              }
+            });
+          }
+
+          // ✅ Steps restore — same place mein, data available hai
+          if (!hasRestoredRef.current) {
+            hasRestoredRef.current = true;
+
+            const customerComplete = !!shipping.email;
+            const shippingComplete =
+              !!shipping.firstName &&
+              !!shipping.lastName &&
+              !!shipping.address1 &&
+              !!shipping.city &&
+              !!shipping.country &&
+              !!shipping.zip &&
+              !!shipping.shippingMethod;
+
+            const billingComplete =
+              !!billing?.billingFirstName &&
+              !!billing?.billingLastName &&
+              !!billing?.billingAddress1 &&
+              !!billing?.billingCity &&
+              !!billing?.billingCountry &&
+              !!billing?.billingZip;
+
+            // const billingDone =
+            //   shipping.billingSame === true ||
+            //   shipping.billingSame === "true" ||  // ← string check
+            //   billingComplete;
+
+            const billingDone = Boolean(shipping?.billingSame) || billingComplete;
+
+
+            setCompletedSteps([
+              ...(customerComplete ? [1] : []),
+              ...(shippingComplete ? [2] : []),
+              ...(shippingComplete && billingDone ? [3] : []),
+            ]);
+
+            setCurrentStep(
+              shippingComplete
+                ? billingDone ? 4 : 3
+                : customerComplete ? 2 : 1
+            );
+          }
+        }
+      } catch (e) {
+        console.error("Failed to restore:", e);
+      } finally {
+        isRestored.current = true;
+        isRestoringRef.current = false;
+      }
+    };
+
+    restoreData();
+  }, [dispatch, setValue]);
   // ✅ Save to localStorage on form changes (debounced)
   const watchedValues = watch();
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  // useEffect(() => {
-  //   if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+  useEffect(() => {
+    // ✅ Restore complete hone tak save mat karo
+    if (!isRestored.current) return;
 
-  //   saveTimeoutRef.current = setTimeout(() => {
-  //     const dataToSave = {
-  //       email: watchedValues.email,
-  //       firstName: watchedValues.firstName,
-  //       lastName: watchedValues.lastName,
-  //       company: watchedValues.company,
-  //       phone: watchedValues.phone,
-  //       address1: watchedValues.address1,
-  //       address2: watchedValues.address2,
-  //       city: watchedValues.city,
-  //       country: watchedValues.country,
-  //       state: watchedValues.state,
-  //       zip: watchedValues.zip,
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
 
-  //       billingFirstName: watchedValues.billingFirstName,
-  //       billingLastName: watchedValues.billingLastName,
-  //       billingCompany: watchedValues.billingCompany,
-  //       billingPhone: watchedValues.billingPhone,
-  //       billingAddress1: watchedValues.billingAddress1,
-  //       billingAddress2: watchedValues.billingAddress2,
-  //       billingCity: watchedValues.billingCity,
-  //       billingCountry: watchedValues.billingCountry,
-  //       billingState: watchedValues.billingState,
-  //       billingZip: watchedValues.billingZip,
-  //       billingSame: watchedValues.billingSame,
-  //       orderComment: watchedValues.orderComment,
-  //       newsletter: watchedValues.newsletter,
-  //       shippingMethod: watchedValues.shippingMethod,
-  //       _completedSteps: completedSteps,
-  //       _currentStep: currentStep,
+    saveTimeoutRef.current = setTimeout(() => {
+      const shippingFormData = {
+        email: watchedValues.email || "",
+        firstName: watchedValues.firstName || "",
+        lastName: watchedValues.lastName || "",
+        company: watchedValues.company || "",
+        phone: watchedValues.phone || "",
+        address1: watchedValues.address1 || "",
+        address2: watchedValues.address2 || "",
+        city: watchedValues.city || "",
+        country: watchedValues.country || "",
+        state: watchedValues.state || "",
+        zip: watchedValues.zip || "",
+        newsletter: watchedValues.newsletter || false,
+        shippingMethod: watchedValues.shippingMethod || "",
+        billingSame: watchedValues.billingSame || false,
+        orderComment: watchedValues.orderComment || "",
+      };
 
-  //       // ✅ Multi-address data
-  //       _isMultiAddress: isMultiAddress,                     // ✅ ADD
-  //       _destinations: destinations,                         // ✅ ADD
-  //       _completedDestinations: completedDestinations,       // ✅ ADD
-  //       _destShippingRates: destShippingRates,               // ✅ ADD
-  //       _orderComment: watchedValues.orderComment || "",     // ✅ ADD
-  //       // ✅ NEW: Save current cart state
-  //       _cartItems: cart.map(item => ({
-  //         id: item.id,
-  //         name: item.name,
-  //         quantity: item.quantity,
-  //         price: item.price,
-  //       })),
-  //     };
-  //     localStorage.setItem(CHECKOUT_STORAGE_KEY, JSON.stringify(dataToSave));
-  //   }, 500);
+      const billingFormData = {
+        billingFirstName: watchedValues.billingFirstName || "",
+        billingLastName: watchedValues.billingLastName || "",
+        billingCompany: watchedValues.billingCompany || "",
+        billingPhone: watchedValues.billingPhone || "",
+        billingAddress1: watchedValues.billingAddress1 || "",
+        billingAddress2: watchedValues.billingAddress2 || "",
+        billingCity: watchedValues.billingCity || "",
+        billingCountry: watchedValues.billingCountry || "",
+        billingState: watchedValues.billingState || "",
+        billingZip: watchedValues.billingZip || "",
+      };
 
-  //   return () => {
-  //     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-  //   };
-  // }, [watchedValues,           // This already covers most form fields
-  //   completedSteps,
-  //   currentStep,
-  //   isMultiAddress,
-  //   destinations,            // ← Important: Add this
-  //   completedDestinations,   // ← Important
-  //   destShippingRates, cart]);
+      dispatch(checkoutFormSave({ data: { shippingFormData, billingFormData } }));
 
+      // localStorage — multi-address + steps
+      const localData = {
+        _completedSteps: completedSteps,
+        _currentStep: currentStep,
+        _isMultiAddress: isMultiAddress,
+        _destinations: destinations,
+        _completedDestinations: completedDestinations,
+        _destShippingRates: destShippingRates,
+        _cartItems: cart.map(item => ({
+          id: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+      };
+      // localStorage.setItem(CHECKOUT_STORAGE_KEY, JSON.stringify(localData));
+
+    }, 800);
+
+    return () => {
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    };
+  }, [
+    watchedValues,
+    completedSteps,
+    currentStep,
+    isMultiAddress,
+    destinations,
+    completedDestinations,
+    destShippingRates,
+    cart,
+  ]);
   const handleShippingAddressSelect = useCallback((selected: any) => {
     setValue("firstName", selected.firstName || "");
     setValue("lastName", selected.lastName || "");
@@ -1178,6 +1341,56 @@ const CheckoutForm = () => {
     setValue("billingState", selected.state || "");
     setValue("billingZip", selected.zip || "");
   }, [setValue]);
+  const billingInfoMemo = useMemo(() => ({
+    firstName: watch("billingFirstName"),
+    lastName: watch("billingLastName"),
+    address: watch("billingAddress1"),
+    city: watch("billingCity"),
+    state: watch("billingState"),
+    country: watch("billingCountry"),
+    zip: watch("billingZip"),
+    company: watch("billingCompany"),
+    address1: watch("billingAddress1"),
+    address2: watch("billingAddress2"),
+    phone: watch("billingPhone"),
+  }), [
+    watchedValues.billingFirstName,
+    watchedValues.billingLastName,
+    watchedValues.billingAddress1,
+    watchedValues.billingCity,
+    watchedValues.billingState,
+    watchedValues.billingCountry,
+    watchedValues.billingZip,
+    watchedValues.billingCompany,
+    watchedValues.billingAddress2,
+    watchedValues.billingPhone,
+  ]);
+  const shippingInfoMemo = useMemo(() => ({
+    firstName: watchedValues.firstName,
+    lastName: watchedValues.lastName,
+    address: watchedValues.address1,
+    address1: watchedValues.address1,
+    address2: watchedValues.address2,
+    city: watchedValues.city,
+    state: watchedValues.state,
+    country: watchedValues.country,
+    zip: watchedValues.zip,
+    company: watchedValues.company,
+    phone: watchedValues.phone,
+  }), [
+    watchedValues.firstName,
+    watchedValues.lastName,
+    watchedValues.address1,
+    watchedValues.address2,
+    watchedValues.city,
+    watchedValues.state,
+    watchedValues.country,
+    watchedValues.zip,
+    watchedValues.company,
+    watchedValues.phone,
+  ]);
+
+  // Pass karo
 
   useEffect(() => {
     fetch('/api/get-ip')
@@ -1191,148 +1404,6 @@ const CheckoutForm = () => {
     }
   }, [auth?.isAuthenticated]);
 
-  useEffect(() => {
-    if (hasFetchedCheckoutRef.current) return;
-    if (saveDetail) return;
-
-    hasFetchedCheckoutRef.current = true;
-    dispatch(getCheckoutForm());
-  }, []);
-  useEffect(() => {
-    if (hasRestoredRef.current) return;
-    if (!saveDetail) return;
-
-    hasRestoredRef.current = true;
-
-    const shipping = saveDetail.shipping_form_data;
-    const billing = saveDetail.billing_form_data;
-
-    // const continueToStepForCuromter = shipping.email
-    // const continueToStepForShipping = shipping.firstName && shipping.lastName && shipping.address1 && shipping.city && shipping.country && shipping.zip && shipping?.shippingMethod
-    // const continueToStepForBilling = billing.firstName && billing.lastName && billing.address1 && billing.city && billing.country && billing.zip
-    // setCurrentStep(continueToStep);
-    // setCompletedSteps(saveDetail._completedSteps || []);
-
-    // Shipping
-    setValue("email", shipping?.email);
-    setValue("firstName", shipping?.firstName);
-    setValue("lastName", shipping?.lastName);
-    setValue("company", shipping?.company);
-    setValue("phone", shipping?.phone);
-    setValue("address1", shipping?.address1);
-    setValue("address2", shipping?.address2);
-    setValue("city", shipping?.city);
-    setValue("state", shipping?.state);
-    setValue("country", shipping?.country);
-    setValue("zip", shipping?.zip);
-    setValue("shippingMethod", shipping?.shippingMethod);
-    setValue("isSaveAddressForShipping", shipping?.isSaveAddressForShipping);
-    setValue("billingSame", shipping?.billingSame);
-
-
-    if (!auth?.isAuthenticated) {
-      setValue("newsletter", shipping?.newsletter);
-    }
-    // Billing
-    setValue("billingFirstName", billing?.billingFirstName);
-    setValue("billingLastName", billing?.billingLastName);
-    setValue("billingCompany", billing?.billingCompany);
-    setValue("billingPhone", billing?.billingPhone);
-    setValue("billingAddress1", billing?.billingAddress1);
-    setValue("billingAddress2", billing?.billingAddress2);
-    setValue("billingCity", billing?.billingCity);
-    setValue("billingState", billing?.billingState);
-    setValue("billingCountry", billing?.billingCountry);
-    setValue("billingZip", billing?.billingZip);
-    setValue("isSaveAddressForBilling", billing?.isSaveAddressForBilling);
-
-  }, [saveDetail]);
-
-
-  useEffect(() => {
-    // if (hasRestoredRef.current) return;
-    if (!saveDetail) return;
-
-    // hasRestoredRef.current = true;
-
-    const shipping = saveDetail.shipping_form_data;
-    const billing = saveDetail.billing_form_data;
-
-    const customerComplete = !!shipping.email;
-
-    const shippingComplete =
-      !!shipping.firstName &&
-      !!shipping.lastName &&
-      !!shipping.address1 &&
-      !!shipping.city &&
-      !!shipping.country &&
-      !!shipping.zip &&
-      !!shipping.shippingMethod;
-
-    const billingComplete =
-      !!billing.billingFirstName &&
-      !!billing.billingLastName &&
-      !!billing.billingAddress1 &&
-      !!billing.billingCity &&
-      !!billing.billingCountry &&
-      !!billing.billingZip;
-
-    // setTimeout(async () => {
-    //   // if (customerComplete) {
-    //   //   await handleContinueToShipping();
-
-    //   //   if (shippingComplete) {
-    //   //     await handleContinueToBilling();
-
-    //   //     if (billingComplete) {
-    //   //       await handleContinueToPayment();
-    //   //     }
-    //   //   }
-    //   // }
-    //   if (shippingComplete) {
-    //     await handleContinueToBilling();
-
-    //     if (shipping.billingSame || billingComplete) {
-    //       await handleContinueToPayment();
-    //     }
-    //   }
-    // }, 0);
-    // // Restore completed steps directly
-    // Restore completed steps directly
-    // setCompletedSteps([
-    //   ...(customerComplete ? [1] : []),
-    //   ...(shippingComplete ? [2] : []),
-    //   ...((shipping.billingSame || billingComplete) ? [3] : []),
-    // ]);
-
-    // // Restore current step directly
-    // setCurrentStep(
-    //   shipping.billingSame || billingComplete
-    //     ? 4
-    //     : shippingComplete
-    //       ? 3
-    //       : customerComplete
-    //         ? 2
-    //         : 1
-    // );
-    setCompletedSteps([
-      ...(customerComplete ? [1] : []),
-      ...(shippingComplete ? [2] : []),
-      ...(shippingComplete && (shipping.billingSame || billingComplete)
-        ? [3]
-        : []),
-    ]);
-
-    setCurrentStep(
-      shippingComplete
-        ? shipping.billingSame || billingComplete
-          ? 4
-          : 3
-        : customerComplete
-          ? 2
-          : 1
-    );
-  }, [saveDetail]);
 
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
@@ -1382,7 +1453,6 @@ const CheckoutForm = () => {
                 errors={errors}
                 control={control}
                 setValue={setValue}
-                getValues={getValues}
                 onContinue={handleContinueToBilling}
                 countryList={countryList}
                 stateList={stateList}
@@ -1391,20 +1461,21 @@ const CheckoutForm = () => {
                 isCompleted={completedSteps.includes(2)}
                 onEdit={handleEditShipping}
                 onAddressSelect={handleShippingAddressSelect}
-                shippingInfo={{
-                  firstName: watch("firstName"),
-                  lastName: watch("lastName"),
-                  address: watch("address1"),
-                  city: watch("city"),
-                  state: watch("state"),
-                  country: watch("country"),
-                  zip: watch("zip"),
+                // shippingInfo={{
+                //   firstName: watch("firstName"),
+                //   lastName: watch("lastName"),
+                //   address: watch("address1"),
+                //   city: watch("city"),
+                //   state: watch("state"),
+                //   country: watch("country"),
+                //   zip: watch("zip"),
 
-                  company: watch("company"),
-                  address1: watch("address1"),
-                  address2: watch("address2"),
-                  phone: watch("phone"),
-                }}
+                //   company: watch("company"),
+                //   address1: watch("address1"),
+                //   address2: watch("address2"),
+                //   phone: watch("phone"),
+                // }}
+                shippingInfo={shippingInfoMemo}
                 watchedShippingMethod={watchedShippingMethod}
               />
             </div>
@@ -1419,7 +1490,6 @@ const CheckoutForm = () => {
                 errors={errors}
                 control={control}
                 setValue={setValue}
-                getValues={getValues}
                 onContinue={handleContinueToPayment}
                 countryList={countryList}
                 stateList={billingStateList}
@@ -1428,33 +1498,21 @@ const CheckoutForm = () => {
                 isCompleted={completedSteps.includes(3)}
                 onEdit={handleEditBilling}
                 onAddressSelect={handleBillingAddressSelect}
+                billingInfo={billingInfoMemo}
+              // billingInfo={{
+              //   firstName: watch("billingFirstName"),
+              //   lastName: watch("billingLastName"),
+              //   address: watch("billingAddress1"),
+              //   city: watch("billingCity"),
+              //   state: watch("billingState"),
+              //   country: watch("billingCountry"),
+              //   zip: watch("billingZip"),
 
-                // billingInfo={{
-                //   firstName: watch("billingFirstName"),
-                //   lastName: watch("billingLastName"),
-                //   company: watch("billingCompany"),
-                //   phone: watch("billingPhone"),
-                //   address: watch("billingAddress1"),
-                //   address1: watch("billingAddress1"),
-                //   address2: watch("billingAddress2"),
-                //   city: watch("billingCity"),
-                //   state: watch("billingState"),
-                //   country: watch("billingCountry"),
-                //   zip: watch("billingZip"),
-                // }}
-                billingInfo={{
-                  firstName: watch("billingFirstName") || saveDetail?.billing_form_data?.billingFirstName,
-                  lastName: watch("billingLastName") || saveDetail?.billing_form_data?.billingLastName,
-                  company: watch("billingCompany") || saveDetail?.billing_form_data?.billingCompany,
-                  phone: watch("billingPhone") || saveDetail?.billing_form_data?.billingPhone,
-                  address: watch("billingAddress1") || saveDetail?.billing_form_data?.billingAddress1,
-                  address1: watch("billingAddress1") || saveDetail?.billing_form_data?.billingAddress1,
-                  address2: watch("billingAddress2") || saveDetail?.billing_form_data?.billingAddress2,
-                  city: watch("billingCity") || saveDetail?.billing_form_data?.billingCity,
-                  state: watch("billingState") || saveDetail?.billing_form_data?.billingState,
-                  country: watch("billingCountry") || saveDetail?.billing_form_data?.billingCountry,
-                  zip: watch("billingZip") || saveDetail?.billing_form_data?.billingZip,
-                }}
+              //   company: watch("billingCompany"),
+              //   address1: watch("billingAddress1"),
+              //   address2: watch("billingAddress2"),
+              //   phone: watch("billingPhone"),
+              // }}
               />
             </div>
 
