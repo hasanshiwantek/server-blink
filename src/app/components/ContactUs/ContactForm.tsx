@@ -1,6 +1,6 @@
 "use client";
-
-import React from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,6 +8,8 @@ import Link from "next/link";
 import { X } from "lucide-react";
 import { contactRequests } from "@/redux/slices/contactSlice";
 import { useAppDispatch,useAppSelector } from "@/hooks/useReduxHooks";
+import {sitekey } from "@/lib/axiosInstance";
+import { toast } from "react-toastify";
 type ContactFormData = {
   full_name: string;
   phone_number: string;
@@ -28,8 +30,13 @@ const ContactForm = () => {
   } = useForm<ContactFormData>();
   const dispatch = useAppDispatch()
   const { loading } = useAppSelector((state: any) => state.contact);
+   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const onSubmit = (data: ContactFormData) => {
+     if (!captchaToken) {
+      toast("Please verify the captcha.");
+      return;
+    }
     // You can also log it in a more formatted way
     dispatch(contactRequests(data)).unwrap().then(() => {
       reset();
@@ -240,6 +247,14 @@ const ContactForm = () => {
             </div>
           )}
         </div>
+         <div className="mt-6">
+                    <ReCAPTCHA
+                      sitekey={sitekey}
+                      onChange={(token: any) => {
+                        setCaptchaToken(token);
+                      }}
+                    />
+                  </div>
 
         {/* Submit Button */}
         <div className="pt-2">
