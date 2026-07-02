@@ -1068,6 +1068,8 @@ const CheckoutForm = () => {
   useEffect(() => {
     if (isRestoringRef.current) return;
     if (watchedBillingSame && !isMultiAddress) {
+      if (!watchedFirstName && !watchedAddress1) return; // Guard
+
       setValue("billingFirstName", watchedFirstName);
       setValue("billingLastName", watchedLastName);
       setValue("billingCompany", watchedCompany);
@@ -1080,6 +1082,7 @@ const CheckoutForm = () => {
       setValue("billingZip", watchedZip);
       setCompletedSteps((prev) => [...new Set([...prev, 3])]);
     } else if (!watchedBillingSame) {
+      if (isRestoringRef.current) return;
       setValue("billingFirstName", "");
       setValue("billingLastName", "");
       setValue("billingCompany", "");
@@ -1259,7 +1262,9 @@ const CheckoutForm = () => {
         console.error("Failed to restore:", e);
       } finally {
         isRestored.current = true;
-        isRestoringRef.current = false;
+        setTimeout(() => {
+          isRestoringRef.current = false;
+        }, 500);
       }
     };
 
@@ -1273,6 +1278,73 @@ const CheckoutForm = () => {
 
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
 
+    // saveTimeoutRef.current = setTimeout(() => {
+    //   const shippingFormData = {
+    //     email: watchedValues.email || "",
+    //     firstName: watchedValues.firstName || "",
+    //     lastName: watchedValues.lastName || "",
+    //     company: watchedValues.company || "",
+    //     phone: watchedValues.phone || "",
+    //     address1: watchedValues.address1 || "",
+    //     address2: watchedValues.address2 || "",
+    //     city: watchedValues.city || "",
+    //     country: watchedValues.country || "",
+    //     state: watchedValues.state || "",
+    //     zip: watchedValues.zip || "",
+    //     newsletter: watchedValues.newsletter || false,
+    //     shippingMethod: watchedValues.shippingMethod || "",
+    //     billingSame: watchedValues.billingSame || false,
+    //     orderComment: watchedValues.orderComment || "",
+    //   };
+    //   const hasBillingData = !!(
+    //     watchedValues.billingFirstName &&
+    //     watchedValues.billingAddress1
+    //   );
+    //   if (!hasBillingData) return;
+
+    //   const billingFormData = {
+    //     billingFirstName: watchedValues.billingFirstName || "",
+    //     billingLastName: watchedValues.billingLastName || "",
+    //     billingCompany: watchedValues.billingCompany || "",
+    //     billingPhone: watchedValues.billingPhone || "",
+    //     billingAddress1: watchedValues.billingAddress1 || "",
+    //     billingAddress2: watchedValues.billingAddress2 || "",
+    //     billingCity: watchedValues.billingCity || "",
+    //     billingCountry: watchedValues.billingCountry || "",
+    //     billingState: watchedValues.billingState || "",
+    //     billingZip: watchedValues.billingZip || "",
+    //   };
+
+    //   const hasShippingData = !!(
+    //     watchedValues.firstName &&
+    //     watchedValues.email &&
+    //     watchedValues.address1
+    //   );
+
+    //   if (!hasShippingData) {
+    //     console.log("Skipping save — no meaningful data");
+    //     return;
+    //   }
+    //   dispatch(checkoutFormSave({ data: { shippingFormData, billingFormData } }));
+
+    //   // localStorage — multi-address + steps
+    //   const localData = {
+    //     _completedSteps: completedSteps,
+    //     _currentStep: currentStep,
+    //     _isMultiAddress: isMultiAddress,
+    //     _destinations: destinations,
+    //     _completedDestinations: completedDestinations,
+    //     _destShippingRates: destShippingRates,
+    //     _cartItems: cart.map(item => ({
+    //       id: item.id,
+    //       name: item.name,
+    //       quantity: item.quantity,
+    //       price: item.price,
+    //     })),
+    //   };
+    //   // localStorage.setItem(CHECKOUT_STORAGE_KEY, JSON.stringify(localData));
+
+    // }, 800);
     saveTimeoutRef.current = setTimeout(() => {
       const shippingFormData = {
         email: watchedValues.email || "",
@@ -1292,18 +1364,7 @@ const CheckoutForm = () => {
         orderComment: watchedValues.orderComment || "",
       };
 
-      const billingFormData = {
-        billingFirstName: watchedValues.billingFirstName || "",
-        billingLastName: watchedValues.billingLastName || "",
-        billingCompany: watchedValues.billingCompany || "",
-        billingPhone: watchedValues.billingPhone || "",
-        billingAddress1: watchedValues.billingAddress1 || "",
-        billingAddress2: watchedValues.billingAddress2 || "",
-        billingCity: watchedValues.billingCity || "",
-        billingCountry: watchedValues.billingCountry || "",
-        billingState: watchedValues.billingState || "",
-        billingZip: watchedValues.billingZip || "",
-      };
+      // ✅ Shipping guard — pehle check karo
       const hasShippingData = !!(
         watchedValues.firstName &&
         watchedValues.email &&
@@ -1311,30 +1372,41 @@ const CheckoutForm = () => {
       );
 
       if (!hasShippingData) {
-        console.log("Skipping save — no meaningful data");
+        console.log("Skipping save — no meaningful shipping data");
         return;
       }
+
+      // ✅ billingSame true → shipping se copy karo
+      // billingSame false → actual billing values use karo (sirf agar filled hain)
+      const billingFormData = watchedValues.billingSame
+        ? {
+          billingFirstName: watchedValues.firstName || "",
+          billingLastName: watchedValues.lastName || "",
+          billingCompany: watchedValues.company || "",
+          billingPhone: watchedValues.phone || "",
+          billingAddress1: watchedValues.address1 || "",
+          billingAddress2: watchedValues.address2 || "",
+          billingCity: watchedValues.city || "",
+          billingCountry: watchedValues.country || "",
+          billingState: watchedValues.state || "",
+          billingZip: watchedValues.zip || "",
+        }
+        : {
+          billingFirstName: watchedValues.billingFirstName || "",
+          billingLastName: watchedValues.billingLastName || "",
+          billingCompany: watchedValues.billingCompany || "",
+          billingPhone: watchedValues.billingPhone || "",
+          billingAddress1: watchedValues.billingAddress1 || "",
+          billingAddress2: watchedValues.billingAddress2 || "",
+          billingCity: watchedValues.billingCity || "",
+          billingCountry: watchedValues.billingCountry || "",
+          billingState: watchedValues.billingState || "",
+          billingZip: watchedValues.billingZip || "",
+        };
+
       dispatch(checkoutFormSave({ data: { shippingFormData, billingFormData } }));
 
-      // localStorage — multi-address + steps
-      const localData = {
-        _completedSteps: completedSteps,
-        _currentStep: currentStep,
-        _isMultiAddress: isMultiAddress,
-        _destinations: destinations,
-        _completedDestinations: completedDestinations,
-        _destShippingRates: destShippingRates,
-        _cartItems: cart.map(item => ({
-          id: item.id,
-          name: item.name,
-          quantity: item.quantity,
-          price: item.price,
-        })),
-      };
-      // localStorage.setItem(CHECKOUT_STORAGE_KEY, JSON.stringify(localData));
-
     }, 800);
-
     return () => {
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     };
