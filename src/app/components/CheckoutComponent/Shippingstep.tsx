@@ -335,8 +335,8 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             {shippingInfo?.firstName} {shippingInfo?.lastName}
           </p>
           <p className=" text-[#545454] text-[13px]">{shippingInfo?.company} {shippingInfo?.phone}</p>
-          <p className=" text-[#545454] text-[13px]">{shippingInfo?.address1} / {shippingInfo?.address2}</p>
-          <p className="text-[13px] text-[#545454]">{shippingInfo?.city}, {shippingInfo?.state} {shippingInfo?.zip} / {shippingInfo?.country}</p>
+          <p className=" text-[#545454] text-[13px]">{shippingInfo?.address1}  {shippingInfo?.address2 ? ` / ${shippingInfo.address2}` : ""}</p>
+          <p className="text-[13px] text-[#545454]">{shippingInfo?.city}, {shippingInfo?.state} {shippingInfo?.zip} {shippingInfo?.country ? ` / ${shippingInfo.country}` : ""} </p>
         </div>
         <button type="button" onClick={onEdit} className="btn-primary">
           EDIT

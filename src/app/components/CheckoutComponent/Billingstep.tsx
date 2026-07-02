@@ -92,8 +92,6 @@ const BillingStep: React.FC<BillingStepProps> = ({
     }
   }, [auth?.isAuthenticated, userAddresses]);
 
-  console.log(isCompleted, !isActive, billingInfo);
-
   if (isCompleted && !isActive &&
     billingInfo?.firstName &&
     billingInfo?.city &&
@@ -107,8 +105,8 @@ const BillingStep: React.FC<BillingStepProps> = ({
             {billingInfo?.firstName} {billingInfo?.lastName}
           </p>
           <p className=" text-[#545454] text-[13px]">{billingInfo?.company} {billingInfo?.phone}</p>
-          <p className=" text-[#545454] text-[13px]">{billingInfo?.address1} / {billingInfo?.address2}</p>
-          <p className="text-[13px] text-[#545454]">{billingInfo?.city}, {billingInfo?.state} {billingInfo?.zip} / {billingInfo?.country}</p>
+          <p className=" text-[#545454] text-[13px]">{billingInfo?.address1} {billingInfo?.address2 ? ` / ${billingInfo.address2}` : ""}</p>
+          <p className="text-[13px] text-[#545454]">{billingInfo?.city}, {billingInfo?.state} {billingInfo?.zip} {billingInfo?.country ? ` / ${billingInfo.country}` : ""} </p>
         </div>
         <button
           type="button"

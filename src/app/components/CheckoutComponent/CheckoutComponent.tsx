@@ -869,6 +869,25 @@ const CheckoutForm = () => {
 
   const handleEditShipping = () => {
     setCurrentStep(2);
+    // ✅ Rates re-fetch karo current form values se
+    const currentCity = getValues("city");
+    const currentCountry = getValues("country");
+    const currentState = getValues("state");
+    const currentZip = getValues("zip");
+
+    if (currentCountry && currentState && currentZip && cart?.length) {
+      dispatch(fetchShippingRates({
+        data: {
+          destination: {
+            country_code: currentCountry,
+            state: currentState,
+            postal_code: currentZip,
+            ...(currentCity?.trim() && { city: currentCity.trim() }),
+          },
+          package: calculatePackage(cart),
+        },
+      }));
+    }
   };
 
   const handleEditBilling = () => {
