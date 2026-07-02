@@ -29,34 +29,7 @@ const ProductOverview = ({ product }: { product: any }) => {
           </p> */}
 
           {/* Key Features */}
-          {/* <section className="" aria-labelledby="key-features-heading">
-            <h3 className="h5-regular !mb-2">Key Features:</h3>
-            <ul className="!list-disc !list-inside !space-y-3">
-              <li className="h5-regular">
-                <span className="">SKU:</span> {product?.sku || "N/A"}
-              </li>
-              <li className="h5-regular">
-                <span className="">MPN:</span> {product?.mpn || "N/A"}
-              </li>
-              <li className="h5-regular">
-                <span className="">Brand:</span> {product?.brand?.name || "N/A"}
-              </li>
-              <li className="h5-regular">
-                <span className="">Category:</span>{" "}
-                {product?.categories?.[0]?.name || "N/A"}
-              </li>
-              <li className="h5-regular">
-                <span className="">Availability:</span>{" "}
-                {product?.availabilityText || "N/A"}
-              </li>
-              <li className="h5-regular">
-                <span className="">Weight:</span>{" "}
-                {product?.dimensions?.weight
-                  ? `${product.dimensions.weight} lbs`
-                  : "N/A"}
-              </li>
-            </ul>
-          </section> */}
+      
 
           {/* Closing Paragraph */}
           {/* <p
@@ -72,13 +45,10 @@ const ProductOverview = ({ product }: { product: any }) => {
 
         {/* Product Details Section */}
         <section className="border" aria-labelledby="product-details-heading">
-          {/* <div className="p-4">
-          </div> */}
-          {/* <h2 className="!p-4 bg-[#F2F2F2] text-[14px] text-[#545454]">{product?.description || "N/A"}</h2> */}
           <div
-  className="!p-4 bg-[#F2F2F2] text-[14px] text-[#545454] prose max-w-none"
-  dangerouslySetInnerHTML={{ __html: product?.description || "N/A" }}
-/>
+            className="!p-4 bg-[#F2F2F2] text-[14px] text-[#545454] prose max-w-none"
+            dangerouslySetInnerHTML={{ __html: product?.description || "No description available for this product." }}
+          />
           {product?.customFields?.length > 0 && <>
             <h3 className="text-[20px] bg-[#F2F2F2] px-5 text-[#545454] py-2 font-bold">PRODUCT DETAILS</h3>
             <div className="w-[97%] mx-auto h-[1px] bg-[#545454]"></div>

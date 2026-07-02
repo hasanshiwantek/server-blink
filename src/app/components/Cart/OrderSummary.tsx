@@ -15,7 +15,7 @@ import {
 import countries from "world-countries";
 import { applyCoupon, removeCoupon } from "@/redux/slices/couponSlice";
 import { Country, State, City } from "country-state-city";
-import { fetchShippingRate, fetchShippingRates } from "@/redux/slices/shippingSlice";
+import { checkoutFormSave, fetchShippingRate, fetchShippingRates, getCheckoutForm } from "@/redux/slices/shippingSlice";
 import { calculatePackage } from "../CheckoutComponent/Shippingstep";
 import Image from "next/image";
 import { addShippingCost } from "@/redux/slices/shippingSlice";
@@ -40,16 +40,14 @@ const OrderSummary = () => {
   const [fedexShow, setFedexShow] = useState(false);
   const [selectedShippingMethod, setSelectedShippingMethod] = useState("");
   const shippingCostLoading = useAppSelector((state: RootState) => state.shippingZone?.loading);
-  const { shippingDetail } = useAppSelector((state: any) => state.shippingZone);
+  const { shippingDetail, saveDetail } = useAppSelector((state: any) => state.shippingZone);
   const cartItems = useAppSelector((state: RootState) => state?.carts?.items);
-
   const [shippingData, setShippingData] = useState({
     country: "",
     state: "",
     city: "",
     zip: "",
   });
-
   const countryList = Country.getAllCountries().map((c) => ({
     name: c.name,
     code: c.isoCode,
@@ -191,6 +189,10 @@ const OrderSummary = () => {
     }
   }, [shippingDetail]);
 
+  useEffect(() => {
+    dispatch(getCheckoutForm())
+  }, [])
+
   return (
     <div className="border rounded-lg 2xl:w-full">
       {/* Header */}
@@ -216,11 +218,11 @@ const OrderSummary = () => {
             {shippingCostLoading || loadingDetectCountry ? <span
               className={
                 showShipping
-                  ? " text-[14px]   border-gray-500 inline-block cursor-pointer italic "
-                  : " text-[14px] border-b border-gray-500 inline-block "
+                  ? " text-[14px] inline-block cursor-pointer italic "
+                  : " text-[14px]   inline-block "
               }
             >
-              Loading..
+              <div className="h-6 w-6 rounded-full border-[3px] border-gray-300 border-t-red-500 animate-spin" />
             </span> : shippingCost ? (
               <span
                 className={
@@ -309,7 +311,7 @@ const OrderSummary = () => {
                     }
                   />
                 )}
-           
+
               </div>
 
               {/* City */}
@@ -440,28 +442,27 @@ const OrderSummary = () => {
                         }
 
                         await dispatch(addShippingCost(shippingPayload)).unwrap().then(() => {
-                          window.location.reload();
-                        })
-                        const checkoutFormData = JSON.parse(
-                          localStorage.getItem("checkoutFormData") || "{}",
-                        );
-
-                        if (shippingData) {
-                          if (checkoutFormData) {
-                            const updatedCheckoutFormData = {
-                              ...checkoutFormData,
+                          if (shippingData && saveDetail) {
+                            const updatedShippingFormData = {
+                              ...saveDetail.shipping_form_data,  // ← existing preserve
                               country: shippingData.country,
                               city: shippingData.city,
-                              state: shippingData.state,
+                              state: shippingData.state || null,
                               zip: shippingData.zip,
                               shippingMethod: selectedShippingMethod,
                             };
-                            // localStorage.setItem(
-                            //   "checkoutFormData",
-                            //   JSON.stringify(updatedCheckoutFormData),
-                            // );
+
+                            dispatch(checkoutFormSave({
+                              data: {
+                                shippingFormData: updatedShippingFormData,
+                                billingFormData: saveDetail.billing_form_data || {},
+                              }
+                            }));
                           }
-                        }
+                          window.location.reload();
+                        })
+
+
                         /// Refresh to update totals with new shipping cost
                       }}
                       disabled={shippingCostLoading}
