@@ -33,11 +33,6 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
     dispatch(fetchStats());
   }, []);
 
-  const openBulkModal = useCallback(() => setIsModalOpen(true), []);
-  const closeBulkModal = useCallback(() => setIsModalOpen(false), []);
-  const openReviewModal = useCallback(() => setIsReviewModalOpen(true), []);
-  const closeReviewModal = useCallback(() => setIsReviewModalOpen(false), []);
-
 
   const bulkProduct = product ? {
     name: product.name,
@@ -238,7 +233,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
             Looking for a large quantity?{" "}
             <span
               className="text-[var(--primary-color)] hover:underline font-normal cursor-pointer"
-              onClick={openBulkModal}
+              onClick={() => setIsModalOpen(true)}
             >
               Request A Bulk Quote
             </span>
@@ -248,7 +243,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
         {/* Write a Review */}
         <div className="mb-3 pb-3 border-b border-[#e5e5e5]">
           <button
-            onClick={openReviewModal}
+            onClick={() => setIsReviewModalOpen(true)}
             className="text-[#393939] font-bold text-[13px] sm:text-[20px] hover:text-[#d40511] underline transition inline-block"
           >
             Write a Review
@@ -308,7 +303,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
       {isModalOpen && (
         <BulkInquiryModal
           isOpen={isModalOpen}
-          onClose={closeBulkModal}
+          onClose={() => setIsModalOpen(false)}
           product={bulkProduct}
         />
       )}
@@ -316,7 +311,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
       {isReviewModalOpen && (
         <AddReviewModal
           isOpen={isReviewModalOpen}
-          onClose={closeReviewModal}
+          onClose={() => setIsReviewModalOpen(false)}
           product={reviewProduct}
         />
       )}
