@@ -5,12 +5,6 @@ import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { fetchProductBySlugAndUrl, fetchWebPages } from "@/lib/api/products";
-// import ProductCard from "@/app/components/Product/ProductCard";
-// import ProductOverview from "@/app/components/Product/ProductOverview";
-// import ProductExtras from "@/app/components/Product/ProductExtras";
-// import CategoriesSidebar from "../components/Home/CategoriesSidebar";
-// import BrandsSidebar from "../components/Home/BrandsSidebar";
-// import DynamicWebPage from "../components/Product/DynamicWebPage";
 const CategoriesSidebar = dynamic(
   () => import("../components/Home/CategoriesSidebar")
 );
@@ -130,7 +124,6 @@ export default async function ProductPage({
 }) {
   const headersList = await headers();
   //  Most reliable - Next.js sets this automatically
-  const fullUrl = headersList.get("x-full-url");
   const pathname: any = headersList.get("x-pathname");
 
   //  Parallel data fetching

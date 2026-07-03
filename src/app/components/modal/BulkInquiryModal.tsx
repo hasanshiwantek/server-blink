@@ -91,7 +91,7 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="!max-w-[65rem] w-full max-h-[100vh] overflow-y-auto p-0 rounded-lg shadow-sm">
+      <DialogContent className="!max-w-[65rem] w-full max-h-[100vh] overflow-y-auto p-0 rounded-lg shadow-sm !z-[9999]">
         {/* Header with Close */}
 
         <div className="flex flex-col md:flex-row">
@@ -174,12 +174,14 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
                 className="w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939] resize-none"
               />
               {/* ✅ ReCAPTCHA */}
-              <ReCAPTCHA
-                ref={recaptchaRef}
-                sitekey={sitekey}
-                onChange={(token) => setCaptchaToken(token)}
-                onExpired={() => setCaptchaToken(null)}
-              />
+              <div className="relative z-[99999]">
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey={sitekey}
+                  onChange={(token) => setCaptchaToken(token)}
+                  onExpired={() => setCaptchaToken(null)}
+                />
+              </div>
               <Button
                 type="submit"
                 disabled={loading}
@@ -189,7 +191,6 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
               </Button>
             </form>
           </div>
-
         </div>
       </DialogContent>
     </Dialog>

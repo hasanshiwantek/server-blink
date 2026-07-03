@@ -1,42 +1,57 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
+import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import ProductPrice from "../productprice/ProductPrice";
 import { fetchReviews, fetchStats } from "@/redux/slices/homeSlice";
-import Link from "next/link";
 import { RootState } from "@/redux/store";
-import BulkInquiryModal from "../modal/BulkInquiryModal";
-import AddReviewModal from "../modal/AddReviewModal";
 import { addCart, fetchCartList } from "@/redux/slices/cartsSlice";
+const BulkInquiryModal = dynamic(() => import("../modal/BulkInquiryModal"));
+const AddReviewModal = dynamic(() => import("../modal/AddReviewModal"));
+
+
+const ROBOTO_CONDENSED = "'Roboto Condensed'";
 
 const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }: any) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
+
   const minQty = product?.minPurchaseQuantity || 1;
   const maxQty = product?.maxPurchaseQuantity;
-  const robotoCondensed = "'Roboto Condensed'";
+
   const cart = useAppSelector((state: RootState) => state.carts?.items);
   const availableForSale = product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
-
-
 
   useEffect(() => {
     dispatch(fetchReviews());
     dispatch(fetchStats());
-  }, [dispatch]);
+  }, []);
 
 
+  const bulkProduct = product ? {
+    name: product.name,
+    image: product.image?.[1]?.path || product.image?.[0]?.path || "/default-product-image.svg",
+    sku: product.sku ?? "",
+  } : undefined;
+
+  const reviewProduct = product ? {
+    name: product.name ?? "",
+    image: product?.image?.[0]?.path || "/default-product-image.svg",
+    sku: product.sku ?? "",
+    id: product.id,
+  } : undefined;
   return (
     <>
       <section className="product-middle flex flex-col h-full w-full max-w-full  xl:max-w-[50%] 2xl:max-w-[50%] ">
         {/* Title Section */}
         <div className="flex flex-col gap-2 mb-4">
-          <h1 className="font-bold text-[18px] sm:text-[18px] md:text-[18px] lg:text-[20px] xl:text-[20px] 2xl:text-[20px] leading-tight text-[#545454] border-b-1 border-[#8b8b8b] pb-3" style={{ fontFamily: robotoCondensed }}>
+          <h1 className="font-bold text-[18px] sm:text-[18px] md:text-[18px] lg:text-[20px] xl:text-[20px] 2xl:text-[20px] leading-tight text-[#545454] border-b-1 border-[#8b8b8b] pb-3" style={{ fontFamily: ROBOTO_CONDENSED }}>
             {product?.name || "N/A"}
           </h1>
 
@@ -285,35 +300,21 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
         </div>
       </section>
       {/* Bulk Inquiry Modal */}
-      <BulkInquiryModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        product={
-          product
-            ? {
-              name: product.name,
-              image: product.image?.[1]?.path ||
-                product.image?.[0]?.path ||
-                "/default-product-image.svg",
-              sku: product.sku ?? "",
-            }
-            : undefined
-        }
-      />
-      {isReviewModalOpen && <AddReviewModal
-        isOpen={isReviewModalOpen}
-        onClose={() => setIsReviewModalOpen(false)}
-        product={
-          product
-            ? {
-              name: product.name ?? "",
-              image: product?.image?.[0]?.path || "/default-product-image.svg",
-              sku: product.sku ?? "",
-              id: product.id,
-            }
-            : undefined
-        }
-      />}
+      {isModalOpen && (
+        <BulkInquiryModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          product={bulkProduct}
+        />
+      )}
+      {/* Review Modal */}
+      {isReviewModalOpen && (
+        <AddReviewModal
+          isOpen={isReviewModalOpen}
+          onClose={() => setIsReviewModalOpen(false)}
+          product={reviewProduct}
+        />
+      )}
     </>
   );
 };

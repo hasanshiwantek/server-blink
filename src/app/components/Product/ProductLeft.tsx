@@ -22,7 +22,33 @@ type ProductLeftProps = {
   selectedImage: string;
   setSelectedImage: (url: string) => void;
 };
-
+const TRUST_BADGES = [
+  {
+    src: img1,
+    alt: "Trustpilot — verified reviews platform",
+    tooltip: "A well-known review website is Trustpilot. It is used by companies of all sizes, from small local businesses to large international corporations.",
+    border: true,
+  },
+  {
+    src: img2,
+    alt: "Easy Returns — hassle free returns",
+    tooltip: "Express shipping is available. Get your product delivered in as fast as one day",
+    border: true,
+  },
+  {
+    src: img3,
+    alt: "Fast Shipping — express delivery",
+    tooltip: "Have peace of mind knowing that *replacements/refunds are done promptly",
+    border: true,
+  },
+  {
+    src: img4,
+    alt: "Secure Payment — protected transactions",
+    tooltip: null, // custom render
+    border: false,
+  },
+];
+const ROBOTO = "'Roboto', Arial, Helvetica, sans-serif";
 const ProductLeft = ({
   images,
   selectedImage,
@@ -73,7 +99,7 @@ const ProductLeft = ({
   }, [lightboxOpen, goPrev, goNext]);
 
   const modalSrc = imageList[modalIndex] ?? "/default-product-image.svg";
-  const roboto = "'Roboto', Arial, Helvetica, sans-serif";
+
 
   useEffect(() => {
     if (!lightboxOpen) return;
@@ -81,14 +107,13 @@ const ProductLeft = ({
     if (src) setSelectedImage(src);
   }, [lightboxOpen, modalIndex, imageList, setSelectedImage]);
 
-  const handleOpenChange = (open: boolean) => {
+  const handleOpenChange = useCallback((open: boolean) => {
     setLightboxOpen(open);
     if (!open) {
       setZoomed(false);
       setExpanded(false);
     }
-  };
-
+  }, []);
   return (
     <div className="product-left flex w-full md:w-[70%] flex-col px-10 md:px-0  lg:w-[50%]">
       <div className="flex flex-col items-center gap-8">
@@ -110,10 +135,11 @@ const ProductLeft = ({
               className="h-full w-full object-contain"
               width={500}
               height={500}
-              priority
+              priority={true}
               fetchPriority="high"
+              decoding="sync"
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 35vw"
-              quality={90}
+              quality={80}
             />
           </button>
         </div>
@@ -200,9 +226,11 @@ const ProductLeft = ({
                   >
                     <Image
                       src={modalSrc}
-                      alt="procduct-img"
+                      alt={`Product image ${modalIndex + 1} of ${imageList.length}`}
+
                       width={1200}
                       height={1200}
+                      loading="lazy"
                       onClick={() => setExpanded((e) => !e)}
                       className={cn(
                         "object-contain transition-all duration-300",
@@ -214,7 +242,7 @@ const ProductLeft = ({
                           )
                       )}
                       sizes="90vw"
-                      quality={95}
+                      quality={90}
                     />
                   </div>
                 </div>
@@ -222,128 +250,57 @@ const ProductLeft = ({
             </DialogPrimitive.Content>
           </DialogPortal>
         </Dialog>
-
+        {/* TRUST_BADGES */}
         <TooltipProvider>
-          {/* Trust Badges */}
-          <div className="mx-auto mt-2 flex w-fit items-center gap-0 overflow-x-auto border-2 border-[#545454] hidden sm:flex">
-            {/* Trustpilot Badge */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex flex-col items-center border-r-2 border-[#545454]">
-                  <div className="flex h-[60px] w-[60px] flex-shrink-0 items-center justify-center sm:h-[75px] sm:w-[75px] md:h-[90px] md:w-[90px]">
-                    <Image
-                      src={img1}
-                      alt="Trustpilot"
-                      width={90}
-                      height={90}
-                      className="h-full w-full object-contain"
-                    />
+          <div
+            className="mx-auto mt-2 flex w-fit items-center gap-0 overflow-x-auto border-2 border-[#545454] hidden sm:flex"
+            // className="mx-auto mt-2 hidden sm:flex w-fit items-center gap-0 overflow-x-auto border-2 border-[#545454]"  
+            aria-label="Trust and security badges"
+          >
+            {TRUST_BADGES.map((badge, i) => (
+              <Tooltip key={i}>
+                <TooltipTrigger asChild>
+                  <div
+                    className={cn(
+                      "flex flex-col items-center",
+                      badge.border && "border-r-2 border-[#545454]"
+                    )}
+                  >
+                    <div className="flex h-[60px] w-[60px] flex-shrink-0 items-center justify-center sm:h-[75px] sm:w-[75px] md:h-[90px] md:w-[90px]">
+                      <Image
+                        src={badge.src}
+                        alt={badge.alt}
+                        width={90}
+                        height={90}
+                        loading="lazy"   // ✅ below fold — lazy
+                        className="h-full w-full object-contain"
+                      />
+                    </div>
                   </div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent
-                side="top"
-                className="max-w-[280px] rounded-md bg-[#3d3d3d] px-4 py-2 text-base text-white"
-              >
-                <p style={{ fontFamily: roboto }} className="text-[16px]">
-                  A well-known review website is Trustpilot. It is used by
-                  companies of all sizes, from small local businesses to large
-                  international corporations.
-                </p>
-              </TooltipContent>
-            </Tooltip>
-
-            {/* Fast Shipping Badge */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex flex-col items-center border-r-2 border-[#545454]">
-                  <div className="flex h-[60px] w-[60px] flex-shrink-0 items-center justify-center sm:h-[75px] sm:w-[75px] md:h-[90px] md:w-[90px]">
-                    <Image
-                      src={img2}
-                      alt="Fast Shipping"
-                      width={90}
-                      height={90}
-                      className="h-full w-full object-contain"
-                    />
-                  </div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent
-                side="top"
-                className="max-w-[280px] rounded-md bg-[#3d3d3d] px-4 py-2 text-base text-white"
-              >
-                <p style={{ fontFamily: roboto }} className="text-[16px]">
-                  Express shipping is available. Get your product delivered in
-                  as fast as one day
-                </p>
-              </TooltipContent>
-            </Tooltip>
-
-            {/* Easy Return Badge */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex flex-col items-center border-r-2 border-[#545454]">
-                  <div className="flex h-[60px] w-[60px] flex-shrink-0 items-center justify-center sm:h-[75px] sm:w-[75px] md:h-[90px] md:w-[90px]">
-                    <Image
-                      src={img3}
-                      alt="Easy Return"
-                      width={90}
-                      height={90}
-                      className="h-full w-full object-contain"
-                    />
-                  </div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent
-                side="top"
-                className="max-w-[280px] rounded-md bg-[#3d3d3d] px-4 py-2 text-base text-white"
-              >
-                <p style={{ fontFamily: roboto }} className="text-[16px]">
-                  Have peace of mind knowing that *replacements/refunds are done
-                  promptly
-                </p>
-              </TooltipContent>
-            </Tooltip>
-
-            {/* Secure Payment Badge */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex flex-col items-center">
-                  <div className="flex h-[60px] w-[60px] flex-shrink-0 items-center justify-center sm:h-[75px] sm:w-[75px] md:h-[90px] md:w-[90px]">
-                    <Image
-                      src={img4}
-                      alt="Secure Payment"
-                      width={90}
-                      height={90}
-                      className="h-full w-full object-contain"
-                    />
-                  </div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent
-                side="top"
-                className="max-w-[280px] rounded-md bg-[#3d3d3d] px-4 py-2 text-base text-white"
-              >
-                <p style={{ fontFamily: roboto }} className="text-[16px] mb-2">
-                  Protects both users and merchants from the threats posed by
-                  fraudulent payments. Accepted Payment Cards:
-                </p>
-                <ul className="list-none space-y-1">
-                  <li style={{ fontFamily: roboto }} className="text-[16px]">
-                    Visa
-                  </li>
-                  <li style={{ fontFamily: roboto }} className="text-[16px]">
-                    Mastercard
-                  </li>
-                  <li style={{ fontFamily: roboto }} className="text-[16px]">
-                    American Express
-                  </li>
-                  <li style={{ fontFamily: roboto }} className="text-[16px]">
-                    Discover
-                  </li>
-                </ul>
-              </TooltipContent>
-            </Tooltip>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="top"
+                  className="max-w-[280px] rounded-md bg-[#3d3d3d] px-4 py-2 text-base text-white"
+                >
+                  {badge.tooltip ? (
+                    <p className="text-[16px]" style={{ fontFamily: ROBOTO }} >{badge.tooltip}</p>
+                  ) : (
+                    // Secure Payment custom content
+                    <>
+                      <p className="text-[16px] mb-2" style={{ fontFamily: ROBOTO }}>
+                        Protects both users and merchants from the threats posed by fraudulent payments. Accepted Payment Cards:
+                      </p>
+                      <ul className="list-none space-y-1 text-[16px]" style={{ fontFamily: ROBOTO }}>
+                        <li>Visa</li>
+                        <li>Mastercard</li>
+                        <li>American Express</li>
+                        <li>Discover</li>
+                      </ul>
+                    </>
+                  )}
+                </TooltipContent>
+              </Tooltip>
+            ))}
           </div>
         </TooltipProvider>
       </div>
