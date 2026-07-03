@@ -107,7 +107,7 @@ const ReturnOrder = () => {
                 }
                 alt={order?.product?.[0]?.name || "Product Image"}
                 fill
-                className="object-contain border rounded-md"
+                className="object-contain border rounded-md"fetchPriority="high"
               />
             </div>
 

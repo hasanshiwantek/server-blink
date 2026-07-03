@@ -40,6 +40,7 @@ const ProductServicesSection = () => {
                 className="object-cover w-full h-full select-none"
                 sizes="(max-width: 1280px) 100vw, 1100px"
                 priority
+                fetchPriority="high"
               />
             </div>
             <div
@@ -67,6 +68,7 @@ const ProductServicesSection = () => {
                 fill
                 className="object-cover w-full h-full select-none"
                 sizes="(max-width: 1280px) 100vw, 600px"
+                fetchPriority="high"
               />
             </div>
             <div
@@ -78,6 +80,7 @@ const ProductServicesSection = () => {
                 fill
                 className="object-cover w-full h-full select-none"
                 sizes="(max-width: 1280px) 100vw, 1100px"
+                fetchPriority="high"
               />
             </div>
           </div>

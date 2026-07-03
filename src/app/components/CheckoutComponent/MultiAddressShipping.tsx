@@ -453,6 +453,7 @@ const AllocateModal: React.FC<{
                       height={64}
                       alt={item.name}
                       className="w-12 h-12 object-contain border rounded flex-shrink-0"
+                      fetchPriority="high"
                     />
                   ) : (
                     <div className="w-12 h-12 bg-gray-100 rounded flex-shrink-0" />

@@ -36,7 +36,7 @@ const ProductRight: React.FC<ProductRightProps> = ({ product }) => {
                 height={96} // 2xl maximum
                 sizes="(max-width: 768px) 64px, (max-width: 1200px) 80px, 96px"
                 loading="lazy"
-                decoding="async"
+                decoding="async"fetchPriority="high"
               />
             </div>
             <div className="border-2 border-[#121e4d] 2xl:w-[6rem] 2xl:h-[6rem] xl:w-[5rem] xl:h-[5rem] lg:w-[3.7rem] lg:h-[3.7rem] h-[5rem] w-[5rem] rounded-full -ml-3 overflow-hidden">
@@ -60,7 +60,7 @@ const ProductRight: React.FC<ProductRightProps> = ({ product }) => {
                 width={96} // 2xl maximum
                 height={96} // 2xl maximum
                 loading="lazy"
-                decoding="async"
+                decoding="async"fetchPriority="high"
               />
             </div>
             <div className="border-2 border-[#121e4d] 2xl:w-[6rem] 2xl:h-[6rem] xl:w-[5rem] xl:h-[5rem] lg:w-[3.7rem] lg:h-[3.7rem] h-[5rem] w-[5rem] rounded-full -ml-3 overflow-hidden">
@@ -70,7 +70,7 @@ const ProductRight: React.FC<ProductRightProps> = ({ product }) => {
                 className="w-full h-full object-cover"
                 width={96} // 2xl maximum
                 height={96} // 2xl maximum
-                loading="lazy"
+                loading="lazy"fetchPriority="high"
                 decoding="async"
               />
             </div>
@@ -129,7 +129,7 @@ const ProductRight: React.FC<ProductRightProps> = ({ product }) => {
                 src={whatsappIcon}
                 alt="Chat on WhatsApp"
                 className="w-10 h-8 object-contain"
-                width={40}
+                width={40}fetchPriority="high"
                 height={40}
               />
             </Link>

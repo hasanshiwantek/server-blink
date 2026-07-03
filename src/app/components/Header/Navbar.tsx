@@ -55,7 +55,7 @@ const Navbar: React.FC = () => {
                   alt="Contact support"
                   fill
                   className="object-contain"
-                  sizes="48px"
+                  sizes="48px"fetchPriority="high"
                 />
               </div>
               <div className="flex flex-col text-gray-800" style={{ fontFamily: "Roboto, Arial, Helvetica, sans-serif" }}>

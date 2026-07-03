@@ -88,6 +88,7 @@ const BlogCategories = ({
           transition-transform duration-500 ease-out
           group-hover:scale-110
         "
+        fetchPriority="high"
       />
       {/* Dark overlay */}
       <div className="

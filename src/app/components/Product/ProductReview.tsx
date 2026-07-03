@@ -178,7 +178,7 @@ const ProductReview = () => {
                         src={review.stars}
                         alt="Rating"
                         width={100}
-                        height={24}
+                        height={24}fetchPriority="high"
                         className="h-6 w-auto object-contain"
                         unoptimized
                       />

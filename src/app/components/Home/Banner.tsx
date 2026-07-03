@@ -20,7 +20,7 @@ import bannerImg4 from "@/assets/banner/banner-img4.jpg";
 import { fetchCarousels } from "@/redux/slices/homeSlice";
 
 const robotoCondensedStyle = { fontFamily: '"Roboto Condensed"' };
- const roboto = "'Roboto Condensed', Arial, Helvetica, sans-serif";
+const roboto = "'Roboto Condensed', Arial, Helvetica, sans-serif";
 
 const Banner = () => {
   const router = useRouter();
@@ -80,6 +80,7 @@ const Banner = () => {
                     className="object-cover"
                     priority={index === 0}
                     quality={90}
+                    fetchPriority="high"
                   />
                 </div>
 
@@ -163,12 +164,12 @@ const Banner = () => {
       <div className="bg-white text-center py-3 mt-6 rounded-xs border-b-3 border-[#8b8b8b]">
         <p
           className="text-base md:text-[18px] text-[#545454] font-medium"
-          style={{fontFamily: roboto}}
+          style={{ fontFamily: roboto }}
         >
           $10 off on First Order: Code:{" "}
           <span
             className="text-base md:text-[18px] text-[#545454] font-medium"
-            style={{fontFamily: roboto}}
+            style={{ fontFamily: roboto }}
           >
             FIRSTORDER
           </span>

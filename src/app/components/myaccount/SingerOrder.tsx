@@ -199,7 +199,7 @@ const SingleOrder = () => {
                         src={primaryImage?.path || "/default-product-image.svg"}
                         alt={primaryImage?.altText || item.name}
                         fill
-                        className="object-contain bg-white p-2"
+                        className="object-contain bg-white p-2"fetchPriority="high"
                       />
                     </div>
                     <div>

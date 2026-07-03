@@ -277,7 +277,7 @@ const TopHeader = () => {
                             <Image
                               src={item?.image?.[0]?.path || "/default-product-image.svg"}
                               alt={item?.name || "product"}
-                              width={145}
+                              width={145}fetchPriority="high"
                               height={125}
                               onMouseDown={(e) => {
                                 e.preventDefault();
@@ -456,7 +456,7 @@ const TopHeader = () => {
                                   <Image
                                     src={item?.image?.[0]?.path || "/default-product-image.svg"}
                                     alt={item?.name}
-                                    width={64}
+                                    width={64}fetchPriority="high"
                                     height={64}
                                     className="w-full h-full object-contain"
                                   />

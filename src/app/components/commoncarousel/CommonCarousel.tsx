@@ -118,7 +118,7 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
                     <Image
                       src={item.logo ?? "/default-product-image.svg"}
                       alt={item.name}
-                      width={250}
+                      width={250}fetchPriority="high"
                       height={250}
                       className="object-contain transition-all duration-700 ease-in-out hover:scale-105 cursor-pointer w-full h-full select-none"
                       loading="lazy"

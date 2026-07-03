@@ -82,6 +82,7 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
                 width={80}
                 height={80}
                 className="object-cover rounded"
+                fetchPriority="high"
               />
               {/* <span className="absolute -top-2 -right-2 bg-gray-700 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 {item.quantity}

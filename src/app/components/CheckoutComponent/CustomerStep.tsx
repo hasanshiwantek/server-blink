@@ -172,6 +172,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
               className=""
               width={30}
               height={30}
+              fetchPriority="high"
             />
           </button>
 
@@ -186,6 +187,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
               alt="Google Pay"
               width={80}
               height={30}
+              fetchPriority="high"
             />
           </button>
         </div>

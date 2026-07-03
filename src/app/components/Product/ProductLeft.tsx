@@ -229,7 +229,7 @@ const ProductLeft = ({
                       alt={`Product image ${modalIndex + 1} of ${imageList.length}`}
 
                       width={1200}
-                      height={1200}
+                      height={1200}fetchPriority="high"
                       loading="lazy"
                       onClick={() => setExpanded((e) => !e)}
                       className={cn(
@@ -271,7 +271,7 @@ const ProductLeft = ({
                         src={badge.src}
                         alt={badge.alt}
                         width={90}
-                        height={90}
+                        height={90}fetchPriority="high"
                         loading="lazy"   // ✅ below fold — lazy
                         className="h-full w-full object-contain"
                       />

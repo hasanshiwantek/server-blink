@@ -56,7 +56,7 @@ const FAQSection = () => {
             <Image
               src="/faq-image.png"
               alt="FAQ Support"
-              width={600}
+              width={600}fetchPriority="high"
               height={400}
               className="object-center w-full h-[250px] md:h-[400px] lg:h-[450px] xl:h-[550px] 2xl:h-[650px] select-none"
               priority

@@ -66,6 +66,7 @@ const AboutBrandSection = () => {
                     width={200}
                     height={150}
                     className="2xl:h-[150px]  2xl:w-[200px]  xl:h-[100px]  xl:w-[100px]  h-10  w-auto   object-contain"
+                    fetchPriority="high"
                   />
                 </div>
               ))
@@ -86,6 +87,7 @@ const AboutBrandSection = () => {
                     src={brand.logo}
                     alt={brand.name}
                     className="2xl:h-[150px]  2xl:w-[200px]  xl:h-[100px]  xl:w-[100px]  h-10  w-auto   object-contain"
+                    fetchPriority="high"
                   />
                 </div>
               ))

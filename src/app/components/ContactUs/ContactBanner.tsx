@@ -10,7 +10,7 @@ const ContactBanner = () => {
         src="/contactus.png"
         alt="Contact Us Banner"
         fill
-        className="object-cover"
+        className="object-cover"fetchPriority="high"
         priority
       />
       <div className="absolute inset-0 bg-black/10" />
