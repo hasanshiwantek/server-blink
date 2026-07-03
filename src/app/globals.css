@@ -349,6 +349,18 @@ img {
   }
 }
 
+/* ReCAPTCHA iframe fix — modal ke andar */
+.grecaptcha-badge,
+iframe[src*="recaptcha"] {
+  z-index: 99999 !important;
+  position: relative !important;
+}
+
+/* ReCAPTCHA popup/challenge fix */
+[title="recaptcha challenge expires in two minutes"] {
+  z-index: 99999 !important;
+}
+
 /* Only show scrollbar when scrolling */
 .custom-scroll {
   scrollbar-width: thin;

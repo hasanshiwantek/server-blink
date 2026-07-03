@@ -99,7 +99,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="!max-w-[70rem]  w-full max-h-[90vh] overflow-y-auto p-0 rounded-none shadow-sm bg-[#eaeaea]">
+            <DialogContent className="!max-w-[70rem]  w-full max-h-[90vh] overflow-y-auto p-0 rounded-none shadow-sm bg-[#eaeaea] !z-[9999]">
                 {/* ✅ Sticky Header */}
                 <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-[#ddd] bg-[#eaeaea]">
                     <DialogTitle className="text-[18px] font-light text-[#545454]  w-full flex justify-center">
@@ -243,13 +243,14 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
                                 />
                             </div>
                             {/* ✅ ReCAPTCHA */}
-                            <ReCAPTCHA
-                                ref={recaptchaRef}
-                                sitekey={sitekey}
-                                onChange={(token) => setCaptchaToken(token)}
-                                onExpired={() => setCaptchaToken(null)}
-                            />
-
+                            <div className="relative z-[99999]">
+                                <ReCAPTCHA
+                                    ref={recaptchaRef}
+                                    sitekey={sitekey}
+                                    onChange={(token) => setCaptchaToken(token)}
+                                    onExpired={() => setCaptchaToken(null)}
+                                />
+                            </div>
                             <div className="pt-2">
                                 <button type="submit" className="btn-primary">
                                     {loading ? "Submitting..." : "Submit Review"}
