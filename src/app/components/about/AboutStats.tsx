@@ -50,6 +50,7 @@ const AboutStats = () => {
                 fill
                 className="object-cover"
                 priority
+                fetchPriority="high"
               />
 
               {/* Dark Overlay */}
@@ -114,7 +115,7 @@ const AboutStats = () => {
         </div>
 
         <JourneyTimeline />
-        
+
         <WorkLifeSlider />
       </div>
     </>

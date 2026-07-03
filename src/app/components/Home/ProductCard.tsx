@@ -73,7 +73,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <Link href={`${product?.productUrl}`}>
         <div className="relative w-full h-72 mb-2 bg-white">
           <Image
-            src={imageSrc}
+            src={imageSrc}fetchPriority="high"
             alt={productName}
             fill
             className="object-contain"

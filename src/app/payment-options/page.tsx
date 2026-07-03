@@ -23,7 +23,7 @@ const Page = () => {
           src={banner}
           alt="Privacy Policy Banner"
           fill
-          className="object-cover"
+          className="object-cover"fetchPriority="high"
           priority
         />
         <div className="absolute inset-0 bg-black/10" />

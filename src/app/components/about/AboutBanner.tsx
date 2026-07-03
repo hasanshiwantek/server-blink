@@ -23,6 +23,7 @@ const AboutBanner = () => {
           className="object-cover -rotate-y-180 "
           priority
           quality={90}
+          fetchPriority="high"
         />
         {/* Overlay for better text readability */}
         {/* <div className="absolute inset-0 bg-gradient-to-r from-[#0a1a3a]/80 via-[#0a1a3a]/60 to-transparent"></div> */}
@@ -32,9 +33,8 @@ const AboutBanner = () => {
       <div className="relative z-10 flex flex-col justify-center w-full h-full max-w-[1720px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-0 bg-[#040B2240]">
         {/* Text Content */}
         <div
-          className={`flex flex-col justify-center text-white space-y-2 sm:space-y-3 md:space-y-4 transition-all duration-1000  ${
-            isLoaded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
-          }`}
+          className={`flex flex-col justify-center text-white space-y-2 sm:space-y-3 md:space-y-4 transition-all duration-1000  ${isLoaded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
+            }`}
           style={{
             marginLeft: "clamp(1rem, 8vw, 6rem)",
             marginTop: "clamp(1rem, 0vh, 12rem)",

@@ -198,7 +198,7 @@ const GlobalSearchBar: React.FC = () => {
                       src={item?.image?.[0]?.path || "/default-product-image.svg"}
                       alt={item?.name || "product"}
                       width={145}
-                      height={125}
+                      height={125}fetchPriority="high"
                       onMouseDown={(e) => {
                         e.preventDefault();
                         e.stopPropagation();

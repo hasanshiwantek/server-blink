@@ -76,7 +76,7 @@ const AllBrandsClient = ({ brands }: AllBrandsClientProps) => {
                         src={brand.logo || "/default-product-image.svg"}
                         alt={brand.name}
                         width={190}
-                        height={190}
+                        height={190}fetchPriority="high"
                         className="h-auto w-auto max-h-[90%] max-w-[90%] object-contain md:h-[190px] md:w-[190px] md:max-h-none md:max-w-none"
                         unoptimized
                       />

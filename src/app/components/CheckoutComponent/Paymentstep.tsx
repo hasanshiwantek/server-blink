@@ -99,6 +99,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
               src="/checkouticon/card.png"
               alt="Cards"
               width={120}
+              fetchPriority="high"
               height={30}
             />
           </div>
@@ -225,12 +226,13 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
             alt="Apple Pay"
             width={30}
             height={30}
+            fetchPriority="high"
           />
         </div>
         <Image
           src="/checkouticon/card.png"
           alt="Cards"
-          width={100}
+          width={100}fetchPriority="high"
           height={30}
         />
       </label>
@@ -252,13 +254,13 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
             src="/checkouticon/googlepay.png"
             alt="Google Pay"
             width={60}
-            height={30}
+            height={30}fetchPriority="high"
           />
         </div>
         <Image
           src="/checkouticon/card.png"
           alt="Cards"
-          width={100}
+          width={100}fetchPriority="high"
           height={30}
         />
       </label>

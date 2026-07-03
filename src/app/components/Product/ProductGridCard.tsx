@@ -59,7 +59,7 @@ export default function ProductGridCard({ product }: { product: Product }) {
       src={imageUrl || "/default-product-image.svg"}
       alt={product?.name}
       width={400}
-      height={280}
+      height={280}fetchPriority="high"
       className="object-contain w-full h-full p-[3%]"
       priority
     />

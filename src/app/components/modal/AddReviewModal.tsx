@@ -121,7 +121,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
                             <Image
                                 src={product.image}
                                 alt={product.name || "Product"}
-                                width={300}
+                                width={300}fetchPriority="high"
                                 height={300}
                                 className="object-contain"
                             />

@@ -92,7 +92,7 @@ const OrderProduct = () => {
                   }
                   alt={item?.products?.[0]?.name || item?.products?.[1]?.name || "Product Image"}
                   fill
-                  className="object-contain border rounded-md"
+                  className="object-contain border rounded-md"fetchPriority="high"
                 />
               </div>
 

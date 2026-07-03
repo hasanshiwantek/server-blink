@@ -149,7 +149,7 @@ const Testimonials = () => {
           src={review?.stars || "/default-product-image.svg"}
           alt="Rating"
           width={80}
-          height={32}
+          height={32}fetchPriority="high"
           className="h-8 w-36 shrink-0"
           unoptimized
         />
@@ -199,7 +199,7 @@ const Testimonials = () => {
               "https://cdn.trustpilot.net/brand-assets/4.1.0/stars/stars-4.5.svg"
             }
             alt="Reviews"
-            width={200}
+            width={200}fetchPriority="high"
             height={200}
             className="max-w-44"
           />

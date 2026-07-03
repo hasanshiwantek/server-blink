@@ -201,6 +201,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                                             width={80}
                                             height={80}
                                             className="object-cover rounded"
+                                            fetchPriority="high"
                                         />
                                     </div>
                                     <div className="flex-1 min-w-0">

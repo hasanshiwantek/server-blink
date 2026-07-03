@@ -141,6 +141,7 @@ const CartList = () => {
                     src={item.image?.[0]?.path || "/checkouticon/orderimg.png"}
                     alt={item.name}
                     className="w-full h-[8.1rem] object-contain border m-auto"
+                    fetchPriority="high"
                   />
                 </div>
                 <div className="w-[60%] pl-3 text-[15px] text-[#545454] xl:w-[63.1%] 2xl:w-[71%] mx-4">

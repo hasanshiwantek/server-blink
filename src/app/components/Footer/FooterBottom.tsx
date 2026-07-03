@@ -319,20 +319,20 @@ const FooterBottom = () => {
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
             <Image
               src="/american-express.svg"
-              alt="American Express"
+              alt="American Express"fetchPriority="high"
               width={60}
               height={40}
               className="object-contain"
             />
             <Image
               src="/discover.svg"
-              alt="Discover"
+              alt="Discover"fetchPriority="high"
               width={60}
               height={40}
               className="object-contain "
             />
             <Image
-              src="/master.svg"
+              src="/master.svg"fetchPriority="high"
               alt="Mastercard"
               width={60}
               height={40}
@@ -340,7 +340,7 @@ const FooterBottom = () => {
             />
             <Image
               src="/visa.svg"
-              alt="Visa"
+              alt="Visa"fetchPriority="high"
               width={60}
               height={40}
               className="object-contain"

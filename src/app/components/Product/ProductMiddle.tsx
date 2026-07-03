@@ -10,8 +10,8 @@ import ProductPrice from "../productprice/ProductPrice";
 import { fetchReviews, fetchStats } from "@/redux/slices/homeSlice";
 import { RootState } from "@/redux/store";
 import { addCart, fetchCartList } from "@/redux/slices/cartsSlice";
-const BulkInquiryModal = dynamic(() => import("../modal/BulkInquiryModal"));
-const AddReviewModal = dynamic(() => import("../modal/AddReviewModal"));
+import BulkInquiryModal from "../modal/BulkInquiryModal";
+import AddReviewModal from "../modal/AddReviewModal";
 
 
 const ROBOTO_CONDENSED = "'Roboto Condensed'";
@@ -32,6 +32,11 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
     dispatch(fetchReviews());
     dispatch(fetchStats());
   }, []);
+
+  const openBulkModal = useCallback(() => setIsModalOpen(true), []);
+  const closeBulkModal = useCallback(() => setIsModalOpen(false), []);
+  const openReviewModal = useCallback(() => setIsReviewModalOpen(true), []);
+  const closeReviewModal = useCallback(() => setIsReviewModalOpen(false), []);
 
 
   const bulkProduct = product ? {

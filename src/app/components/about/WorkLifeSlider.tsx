@@ -99,6 +99,7 @@ const WorkLifeSlider = () => {
                       width={1300}
                       height={650}
                       className="object-contain w-full h-full"
+                      fetchPriority="high"
                     />
                   </div>
                 </div>
@@ -119,6 +120,7 @@ const WorkLifeSlider = () => {
                       height={650}
                       alt="Work-Life Harmony, Happiness & Customer Commitment - Middle"
                       className="object-contain w-full h-full"
+                      fetchPriority="high"
                     />
                   </div>
                 </div>
@@ -139,6 +141,7 @@ const WorkLifeSlider = () => {
                       height={650}
                       alt="Work-Life Harmony, Happiness & Customer Commitment - Right"
                       className="object-contain w-full h-full"
+                      fetchPriority="high"
                     />
                   </div>
                 </div>

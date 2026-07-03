@@ -61,7 +61,7 @@ export default function ProductCategoryCard({ product }: { product: Product }) {
           src={imageUrl}
           alt={product?.name}
           width={171}
-          height={171}
+          height={171}fetchPriority="high"
           className="object-contain md:w-[171px] md:h-[171px] w-[150px] h-[150px]"
         />
       </div>

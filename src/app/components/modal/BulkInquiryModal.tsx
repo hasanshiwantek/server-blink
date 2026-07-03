@@ -101,7 +101,7 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
                 src={product.image}
                 alt={product.name || "Product"}
                 width={300}
-                height={300}
+                height={300}fetchPriority="high"
                 className="object-contain"
               />
             ) : (

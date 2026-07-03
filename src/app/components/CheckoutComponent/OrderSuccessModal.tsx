@@ -105,7 +105,7 @@ export default function OrderSuccessPage() {
                 {orderData.items.map((item: any) => (
                   <div key={item.id} className="flex gap-4">
                     <div className="w-20 h-20 bg-gradient-to-br from-pink-200 to-purple-300 rounded-lg flex items-center justify-center text-3xl flex-shrink-0">
-                      {item.image ? <Image  width={80}
+                      {item.image ? <Image fetchPriority="high"  width={80}
   height={80} src={item.image} alt={item.name} className="w-full h-full object-cover rounded-lg" /> : "📦"}
                     </div>
                     <div className="flex-1">

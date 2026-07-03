@@ -12,7 +12,7 @@ const BlogHeader = ({ blogPost }: { blogPost: any }) => {
           src={blogPost?.thumbnail || "/default-product-image.svg"}
           alt={blogPost?.title}
           fill
-          className="object-fit"
+          className="object-fit"fetchPriority="high"
           priority
           sizes="100vw"
           quality={85}

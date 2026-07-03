@@ -50,7 +50,7 @@ const CategoryTile = ({
       <div className="absolute inset-0">
         <Image
           src={categoryImage}
-          alt={category.name}
+          alt={category.name}fetchPriority="high"
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"

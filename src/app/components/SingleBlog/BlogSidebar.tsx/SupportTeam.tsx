@@ -18,18 +18,18 @@ const SupportTeam = () => {
           </div>
           <div className="flex justify-center my-2">
             <Image
-              src={supportIcon1}
+              src={supportIcon1}fetchPriority="high"
               alt="Support 1"
               className="2xl:w-[5rem] 2xl:h-[5rem] xl:w-[4rem] xl:h-[4rem] w-[4rem] h-[4rem] rounded-full"
             />
             <Image
-              src={supportIcon2}
+              src={supportIcon2}fetchPriority="high"
               alt="Support 2"
               className="2xl:w-[5rem] 2xl:h-[5rem] xl:w-[4rem] xl:h-[4rem] w-[4rem] h-[4rem] rounded-full -ml-2"
             />
             <Image
               src={supportIcon3}
-              alt="Support 3"
+              alt="Support 3"fetchPriority="high"
               className="2xl:w-[5rem] 2xl:h-[5rem] xl:w-[4rem] xl:h-[4rem] w-[4rem] h-[4rem]  rounded-full -ml-2"
             />
           </div>
@@ -73,7 +73,7 @@ const SupportTeam = () => {
               src="/dun-icon.png"
               alt="Rating"
               width={25}
-              height={24}
+              height={24}fetchPriority="high"
               className="2xl:w-[2rem] 2xl:h-[2rem] xl:w-[2rem] xl:h-[2rem] w-[2rem] h-[2rem] object-contain "
             />
             <p className="h6-regular !text-[#4A4A4A]">
@@ -87,7 +87,7 @@ const SupportTeam = () => {
             <Image
               src="/sam-icon.png"
               alt="Authorize Supplier"
-              width={32.960344314575195}
+              width={32.960344314575195}fetchPriority="high"
               height={24}
               className="2xl:w-[2rem] 2xl:h-[2rem] xl:w-[2rem] xl:h-[2rem] w-[2rem] h-[2rem] object-contain"
             />

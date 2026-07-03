@@ -61,6 +61,7 @@ const SocialResponsibilitySection = () => {
                   width={500}
                   height={500}
                   className="object-cover w-full h-full sm:h-[300px] lg:h-[200px]   xl:h-[300px]  2xl:h-[400px] rounded-xl "
+                  fetchPriority="high"
                 />
               </div>
               <div className="p-6 flex flex-col  flex-grow ">
