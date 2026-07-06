@@ -19,7 +19,7 @@ import {
   UseFormSetValue,
 } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { addShippingCost, checkoutFormSave, fetchShippingRate, fetchShippingRates, resetShippingRates } from "@/redux/slices/shippingSlice";
+import { addShippingCost, checkoutFormSave, fetchShippingRate, fetchShippingRates, removeShippingRate, resetShippingRates } from "@/redux/slices/shippingSlice";
 import { RootState } from "@/redux/store";
 import MultiAddressShipping from "./MultiAddressShipping";
 import {
@@ -373,8 +373,12 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                   localStorage.removeItem(CHECKOUT_STORAGE_KEY);
                   dispatch(setIsMultiAddress(true));
                 }
-                localStorage.removeItem("shippingCost");
-                localStorage.removeItem("shippingData");
+                dispatch(
+                  removeShippingRate()
+                ).finally(() => {
+                  dispatch(fetchShippingRate({}));
+                  dispatch(resetShippingRates());
+                })
               }}
               className="text-[13px] text-red-600 hover:underline font-medium"
             >
