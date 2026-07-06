@@ -52,6 +52,7 @@ import CheckoutOrderSummary from "./CheckoutOrderSummary";
 import CheckoutMultipleOrderSummary from "./CheckoutMultipleOrderSummary";
 import { calculatePackage } from "./Shippingstep";
 import { fetchAccountAddress, fetchCustomerAddress } from "@/redux/slices/myaccountSlice";
+import { fetchCartList } from "@/redux/slices/cartsSlice";
 
 export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
 
@@ -267,8 +268,6 @@ const CheckoutForm = () => {
         const data = await res.json();
         if (data.country_code && !hasRestoredRef.current) {
           if (!hasRestoredRef.current) {
-
-            dispatch(fetchShippingRate({}))
             setValue("country", data.country_code);
             setValue("state", data.state);
 
@@ -283,8 +282,15 @@ const CheckoutForm = () => {
         }
       }
     };
-
-    detectCountry();
+    const getShippingRates = async () => {
+      try {
+        await dispatch(fetchShippingRate({})).unwrap();
+      } catch (err) {
+        console.log("Failed to fetch shipping rates:", err);
+        detectCountry();
+      }
+    };
+    getShippingRates();
   }, [setValue]);
 
   useEffect(() => {
@@ -758,6 +764,7 @@ const CheckoutForm = () => {
         dispatch(resetMultiAddress());       // ✅ ADD
         dispatch(resetShippingRates());      // ✅ ADD
         dispatch(setIsMultiAddress(false));
+        dispatch(fetchCartList());
         localStorage.removeItem(CHECKOUT_STORAGE_KEY);
         router.push("/checkout/order-information");
       } catch (err: any) {
