@@ -52,6 +52,7 @@ import CheckoutOrderSummary from "./CheckoutOrderSummary";
 import CheckoutMultipleOrderSummary from "./CheckoutMultipleOrderSummary";
 import { calculatePackage } from "./Shippingstep";
 import { fetchAccountAddress, fetchCustomerAddress } from "@/redux/slices/myaccountSlice";
+import { fetchCartList } from "@/redux/slices/cartsSlice";
 
 export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
 
@@ -763,6 +764,7 @@ const CheckoutForm = () => {
         dispatch(resetMultiAddress());       // ✅ ADD
         dispatch(resetShippingRates());      // ✅ ADD
         dispatch(setIsMultiAddress(false));
+        dispatch(fetchCartList());
         localStorage.removeItem(CHECKOUT_STORAGE_KEY);
         router.push("/checkout/order-information");
       } catch (err: any) {
