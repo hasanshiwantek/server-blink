@@ -162,7 +162,7 @@ const OrderSummary = () => {
         const data = await res.json();
         if (data.country_code) {
           setShowShipping(false)
-          dispatch(fetchShippingRate({}))
+          // dispatch(fetchShippingRate({}))
           setShippingData((prev) => ({
             ...prev,
             country: data.country_code,
@@ -174,8 +174,15 @@ const OrderSummary = () => {
         setLoadingDetectCountry(false)
       }
     };
-
-    detectCountry();
+    const getShippingRates = async () => {
+      try {
+        await dispatch(fetchShippingRate({})).unwrap();
+      } catch (err) {
+        console.log("Failed to fetch shipping rates:", err);
+        detectCountry();
+      }
+    };
+    getShippingRates();
   }, [cart]);
 
   useEffect(() => {

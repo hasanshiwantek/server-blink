@@ -267,8 +267,6 @@ const CheckoutForm = () => {
         const data = await res.json();
         if (data.country_code && !hasRestoredRef.current) {
           if (!hasRestoredRef.current) {
-
-            dispatch(fetchShippingRate({}))
             setValue("country", data.country_code);
             setValue("state", data.state);
 
@@ -283,8 +281,15 @@ const CheckoutForm = () => {
         }
       }
     };
-
-    detectCountry();
+    const getShippingRates = async () => {
+      try {
+        await dispatch(fetchShippingRate({})).unwrap();
+      } catch (err) {
+        console.log("Failed to fetch shipping rates:", err);
+        detectCountry();
+      }
+    };
+    getShippingRates();
   }, [setValue]);
 
   useEffect(() => {
