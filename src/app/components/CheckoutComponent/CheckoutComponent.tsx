@@ -1064,7 +1064,6 @@ const CheckoutForm = () => {
       const orderNumber = orderData?.[0]?.orderNumber;
       skipEmptyCartCheckRef.current = true;
       const productIds = cart.map(item => item.id);
-      console.log("orderData", orderData);
       dispatch(
         removeProducts({
           product_ids: productIds,
