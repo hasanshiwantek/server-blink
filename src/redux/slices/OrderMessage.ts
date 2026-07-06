@@ -59,8 +59,22 @@ export const fetchCustomerMessages = createAsyncThunk(
     }
 );
 
-// ── Initial State ─────────────────────────────────────────────────────────────
+export const orderDetailById = createAsyncThunk(
+    "orders/orderDetailById",
+    async ({ orderId }: { orderId: any }, thunkAPI) => {
+        try {
+            const response = await axiosInstance.get(
+                `web/orders/order-detail?orderId=${orderId}`,
+            );
 
+            return response.data; // This will be a Blob
+        } catch (err: any) {
+            return thunkAPI.rejectWithValue(
+                err.response?.data?.message || "Failed to fetch order detail",
+            );
+        }
+    }
+)
 const initialState = {
     // orders dropdown
     orders: [] as any[],
@@ -76,6 +90,9 @@ const initialState = {
     sendSuccess: false,
 
     error: null as string | null,
+
+
+    orderDetail: null as any,
 };
 
 // ── Slice ─────────────────────────────────────────────────────────────────────
@@ -134,7 +151,21 @@ const customerMessageSlice = createSlice({
             .addCase(fetchCustomerMessages.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
-            });
+            })
+
+            // fetchUserOrders
+            .addCase(orderDetailById.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(orderDetailById.fulfilled, (state, action) => {
+                state.loading = false;
+                state.orderDetail = action.payload?.data ?? [];
+            })
+            .addCase(orderDetailById.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
     },
 });
 
