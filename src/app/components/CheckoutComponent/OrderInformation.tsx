@@ -87,11 +87,8 @@ const CheckoutForm = () => {
 
   const [promoCode, setPromoCode] = useState("");
 
-  const [currentStep, setCurrentStep] = useState(1);
-  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [itemToDelete, setItemToDelete] = useState<any | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
   const [cardCompletion, setCardCompletion] = useState({
     number: false,
     expiry: false,
@@ -140,11 +137,6 @@ const CheckoutForm = () => {
   });
   const watchedCountry = watch("country");
   const watchedState = watch("state");
-
-  const watchedPaymentMethod = watch("paymentMethod") || "credit_card";
-  const watchedBillingSame = watch("billingSame");
-  const stripeCardMethods = ["credit_card"];
-  const walletMethods = ["google_pay", "apple_pay"];
   const { shippingRates } = useAppSelector((state) => state.shippingZone);
   const stateList = useMemo(() => {
     if (!watchedCountry) return [];
@@ -163,21 +155,6 @@ const CheckoutForm = () => {
 
   const watchedBillingCountry = watch("billingCountry");
   const watchedBillingState = watch("billingState");
-  const watchedFirstName = watch("firstName");
-  const watchedLastName = watch("lastName");
-  const watchedCompany = watch("company");
-  const watchedPhone = watch("phone");
-  const watchedAddress1 = watch("address1");
-  const watchedAddress2 = watch("address2");
-  const watchedCity = watch("city");
-  const watchedZip = watch("zip");
-  const billingStateList = useMemo(() => {
-    if (!watchedBillingCountry) return [];
-    return State.getStatesOfCountry(watchedBillingCountry).map((s) => ({
-      name: s.name,
-      code: s.isoCode,
-    }));
-  }, [watchedBillingCountry]);
 
   const billingCityList = useMemo(() => {
     if (!watchedBillingCountry || !watchedBillingState) return [];
@@ -194,32 +171,6 @@ const CheckoutForm = () => {
       0
     );
   }, [cart]);
-
-  useEffect(() => {
-    const detectCountry = async () => {
-      try {
-        const res = await fetch("/api/detect-country"); // apna Next.js route
-        const data = await res.json();
-        if (data.country_code) {
-          const checkoutFormData = JSON.parse(localStorage.getItem("checkoutFormData") || "");
-          if (checkoutFormData?.country && checkoutFormData?.state && checkoutFormData?.city) {
-            // Agar localStorage mein data hai, toh usko update karo detected country se
-          } else {
-            setValue("country", data.country_code);
-            setValue("state", data.state);
-
-            setValue("billingCountry", data.country_code);
-            setValue("billingState", data.state);
-          }
-        }
-      } catch {
-        setValue("country", "US");
-        setValue("billingCountry", "US");
-      }
-    };
-
-    detectCountry();
-  }, [setValue]);
 
   const shipping = useMemo(() => {
     if (isMultiAddress) {
@@ -354,35 +305,6 @@ const CheckoutForm = () => {
   const parsedAuth = auth ? JSON.parse(user) : null;
   const token = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
 
-  // const buildOrderPayload = useCallback(
-  //   (data: CheckoutFormValues & { paymentIntentId?: string | null }) => ({
-  //     userType: token ? null : "guest",
-  //     deviceType: getDeviceType(),
-  //     firstName: data.firstName,
-  //     lastName: data.lastName,
-  //     companyName: data.company || "",
-  //     email: data.email,
-  //     phone: data.phone || "",
-  //     addressLine1: data.address1,
-  //     addressLine2: data.address2 || "",
-  //     city: data.city,
-  //     state: data.state || "",
-  //     zip: data.zip,
-  //     country: data.country,
-  //     paymentMethod: data.paymentMethod,
-  //     shippingMethod: data.shippingMethod,
-  //     discountAmount: discountAmount ? finalTotal : 0,
-  //     shippingCost: shipping,
-  //     comments: data.orderComment || "",
-  //     paymentIntentId: data.paymentIntentId ?? "",
-  //     products: cart.map((item) => ({
-  //       product_id: item.id,
-  //       quantity: item.quantity || 1,
-  //     })),
-  //   }),
-  //   [cart, shipping]
-  // );
-
   const buildOrderPayload = useCallback(
     (data: CheckoutFormValues & { paymentIntentId?: string | null }) => {
       // ✅ Multi address mode
@@ -469,73 +391,8 @@ const CheckoutForm = () => {
     [cart, shipping, isMultiAddress, destinations, destShippingRates,
       shippingRates, discountAmount, finalTotal, token]
   );
-  const placeOrder = useCallback(
-    async (data: CheckoutFormValues) => {
-      const orderPayload = buildOrderPayload(data);
-      const orderResponse = await axiosInstance.post(
-        "web/orders/place-order",
-        orderPayload
-      );
-      const orderData = orderResponse.data?.data || orderResponse.data;
-      localStorage.removeItem("shippingCost"); // ✅ Clear saved shipping cost after order is placed
-      return orderData || null;
-    },
-    [buildOrderPayload]
-  );
 
-  const handleStripeCharge = useCallback(
-    async (paymentMethodId: string) => {
-      const stripePayload = {
-        payment_method_id: paymentMethodId,
-        amount: Math.round(finalTotal * 100), // USE finalTotal for Stripe
-        products: cart.map((item) => ({
-          product_id: item.id,
-          quantity: item.quantity || 1,
-        })),
-      };
-
-      const response = await axiosInstance.post(
-        "web/stripe/pay",
-        stripePayload
-      );
-      return response.data?.payment_intent_id || null;
-    },
-    [cart, finalTotal] // ADD finalTotal as dependency
-  );
-
-
-
-  // Step navigation handlers
-  // const handleContinueToShipping = async () => {
-  //   const isValid = await trigger(["email", "newsletter"]);
-  //   if (isValid) {
-  //     setCompletedSteps((prev) => [...new Set([...prev, 1])]);
-  //     setCurrentStep(2);
-  //   }
-  // };
-  const handleContinueToShipping = async () => {
-    const isValid = await trigger(["email", "newsletter"]);
-    if (isValid) {
-      const email = getValues("email");
-      const newsletter = getValues("newsletter");
-
-      // API call - apni endpoint laga lo
-      // try {
-      //   await fetch("/api/checkout/customer", {
-      //     method: "POST",
-      //     headers: { "Content-Type": "application/json" },
-      //     body: JSON.stringify({ email, newsletter: !!newsletter }),
-      //   });
-      // } catch (error) {
-      //   console.error("Customer API error:", error);
-      // }
-      setCompletedSteps((prev) => [...new Set([...prev, 1])]);
-      setCurrentStep(2);
-
-
-    }
-  };
-
+  console.log("vlocalOrders", { orderCustomer, cart, shipping, appliedCoupon, discountAmount });
 
 
   return (
@@ -623,7 +480,7 @@ const CheckoutForm = () => {
         </div>
       </form>
 
-    
+
     </div>
   );
 };

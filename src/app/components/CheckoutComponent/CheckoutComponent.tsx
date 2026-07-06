@@ -42,7 +42,7 @@ import {
 import { useRouter } from "next/navigation";
 import { setLastOrder } from "@/redux/slices/orderslice";
 import { resetMultiAddress, restoreMultiAddress, setIsMultiAddress } from "@/redux/slices/multiAddressSlice";
-import { checkoutFormSave, fetchShippingRate, fetchShippingRates, getCheckoutForm, resetShippingRates } from "@/redux/slices/shippingSlice";
+import { checkoutFormSave, fetchShippingRate, fetchShippingRates, getCheckoutForm, removeShippingRate, resetShippingRates } from "@/redux/slices/shippingSlice";
 // Import step components
 import CustomerStep from "./CustomerStep";
 import ShippingStep from "./Shippingstep";
@@ -52,7 +52,7 @@ import CheckoutOrderSummary from "./CheckoutOrderSummary";
 import CheckoutMultipleOrderSummary from "./CheckoutMultipleOrderSummary";
 import { calculatePackage } from "./Shippingstep";
 import { fetchAccountAddress, fetchCustomerAddress } from "@/redux/slices/myaccountSlice";
-import { fetchCartList } from "@/redux/slices/cartsSlice";
+import { fetchCartList, removeProducts } from "@/redux/slices/cartsSlice";
 
 export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
 
@@ -758,6 +758,17 @@ const CheckoutForm = () => {
         event.complete("success");
 
         skipEmptyCartCheckRef.current = true;
+
+        const productIds = cart.map(item => item.id);
+        dispatch(
+          removeProducts({
+            product_ids: productIds,
+          })
+        );
+        dispatch(
+          removeShippingRate()
+        );
+        dispatch(fetchShippingRate({}));
         dispatch(setLastOrder(orderData));
         dispatch(clearCart());
         dispatch(removeCoupon());
@@ -1051,12 +1062,23 @@ const CheckoutForm = () => {
 
       const orderData = await placeOrder({ ...data, paymentIntentId });
       skipEmptyCartCheckRef.current = true;
+      const productIds = cart.map(item => item.id);
+      dispatch(
+        removeProducts({
+          product_ids: productIds,
+        })
+      );
+      dispatch(
+        removeShippingRate()
+      );
+      dispatch(fetchShippingRate({}));
       dispatch(setLastOrder(orderData));
       dispatch(clearCart());
       dispatch(removeCoupon());
       dispatch(resetMultiAddress());
       dispatch(resetShippingRates());
       dispatch(setIsMultiAddress(false));
+      dispatch(fetchCartList());
       localStorage.removeItem(CHECKOUT_STORAGE_KEY);
       router.push("/checkout/order-information");
     } catch (err: any) {
@@ -1106,69 +1128,6 @@ const CheckoutForm = () => {
   const isInitialLoad = useRef(true);
   const isRestored = useRef(false); // ✅ NEW
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Restore useEffect
-  // useEffect(() => {
-  //   const restoreData = async () => {
-  //     try {
-  //       const result = await dispatch(getCheckoutForm()).unwrap();
-  //       const apiData = result?.data;
-
-  //       if (apiData?.shipping_form_data) {
-  //         const shipping = apiData.shipping_form_data;
-  //         const billing = apiData.billing_form_data;
-
-  //         const shippingFields: (keyof CheckoutFormValues)[] = [
-  //           "email", "firstName", "lastName", "company", "phone",
-  //           "address1", "address2", "city", "country", "state", "zip",
-  //           "newsletter", "shippingMethod", "billingSame", "orderComment",
-  //         ];
-
-  //         shippingFields.forEach((field) => {
-  //           const val = (shipping as any)[field];
-  //           if (val !== undefined && val !== "") {
-  //             setValue(field, val);
-  //           }
-  //         });
-  //         setValue("isSaveAddressForShipping", false);
-
-  //         if (billing) {
-  //           const billingFields: (keyof CheckoutFormValues)[] = [
-  //             "billingFirstName", "billingLastName", "billingCompany",
-  //             "billingPhone", "billingAddress1", "billingAddress2",
-  //             "billingCity", "billingCountry", "billingState", "billingZip",
-  //           ];
-  //           billingFields.forEach((field) => {
-  //             const val = (billing as any)[field];
-  //             if (val !== undefined && val !== "") {
-  //               setValue(field, val);
-  //             }
-  //           });
-  //         }
-  //       }
-
-  //       // localStorage restore
-  //       // const saved = localStorage.getItem(CHECKOUT_STORAGE_KEY);
-  //       // if (saved) {
-  //       //   const parsed = JSON.parse(saved);
-  //       //   if (parsed._isMultiAddress && parsed._destinations?.length) {
-  //       //     // dispatch(restoreMultiAddress({ ...parsed }));
-  //       //   }
-  //       //   if (parsed._completedSteps) setCompletedSteps(parsed._completedSteps);
-  //       //   if (parsed._currentStep) setCurrentStep(parsed._currentStep);
-  //       //   if (parsed._cartItems?.length) dispatch(restoreCart(parsed._cartItems));
-  //       // }
-
-  //     } catch (e) {
-  //       console.error("Failed to restore:", e);
-  //     } finally {
-  //       // ✅ Restore complete — ab save enable karo
-  //       isRestored.current = true;
-  //     }
-  //   };
-
-  //   restoreData();
-  // }, [dispatch, setValue]);
 
   useEffect(() => {
     const restoreData = async () => {

@@ -112,6 +112,28 @@ export const deleteCart = createAsyncThunk(
         }
     }
 );
+export const removeProducts = createAsyncThunk(
+    "account/updatecustomer",
+    async (
+        { product_ids }: { product_ids: number[] },
+        { rejectWithValue }
+    ) => {
+        try {
+            const response = await axiosInstance.delete(
+                "web/cart/cart-remove-product",
+                {
+                    data: { product_ids },
+                }
+            );
+
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(
+                error.response?.data?.message || error.message
+            );
+        }
+    }
+);
 
 
 

@@ -73,6 +73,19 @@ export const checkoutFormSave = createAsyncThunk(
         }
     }
 );
+export const removeShippingRate = createAsyncThunk(
+    "shippingZone/remove-shipping-rate",
+    async (_, thunkAPI) => {
+        try {
+            const res = await axiosInstance.delete(`web/cart/remove-shipping-rate`);
+            return res.data;
+        } catch (err: any) {
+            return thunkAPI.rejectWithValue(
+                err.response?.data?.message || "Failed to remove shipping rate"
+            );
+        }
+    }
+);
 const initialState = {
     shippingRates: [] as any[],
     shippingDetail: null,
