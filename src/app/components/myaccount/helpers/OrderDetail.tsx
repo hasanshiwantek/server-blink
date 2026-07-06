@@ -207,7 +207,7 @@ export const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>(
             marginBottom: "12px",
           }}
         >
-          Server Blink LLC Invoice for Order #{order.id}
+          Server Blink LLC Invoice for Order #{order?.orderNumber}
         </div>
 
         {/* ── Company address ── */}
