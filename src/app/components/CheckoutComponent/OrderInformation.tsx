@@ -2,84 +2,37 @@
 
 import React, {
   useState,
-  useCallback,
   useMemo,
   useEffect,
-  useRef,
 } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
-import {
-  decreaseQty,
-  increaseQty,
-  removeFromCart,
-  clearCart,
-} from "@/redux/slices/cartSlice";
 import { applyCoupon, removeCoupon } from "@/redux/slices/couponSlice"; // ADD THIS
-import axiosInstance from "@/lib/axiosInstance";
 import { toast } from "sonner";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Country, State, City } from "country-state-city";
-import { useForm } from "react-hook-form";
-import type { PaymentRequest as StripePaymentRequest } from "@stripe/stripe-js";
-
+import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-// Import step components
-import CheckoutOrderSummary from "./CheckoutOrderSummary";
-import CheckoutMultipleOrderSummary from "./CheckoutMultipleOrderSummary";
 import LoadTrustpilotScript from "./TrustpilotWidget";
-export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
+import OrderInformationSummary from "./OrderInformationSummary";
+import { orderDetailById } from "@/redux/slices/OrderMessage";
 
 
 
 const roboto = "'Roboto', Arial, Helvetica, sans-serif";
 
-interface CheckoutFormValues {
-  email: string;
-  firstName: string;
-  lastName: string;
-  company: string;
-  phone: string;
-  address1: string;
-  address2: string;
-  city: string;
-  country: string;
-  state: string;
-  zip: string;
-  shippingMethod: string;
-  orderComment: string;
-  paymentMethod: string;
-  paymentIntentId?: string | null;
-  billingSame: boolean;
-  billingFirstName: string;
-  billingLastName: string;
-  billingCompany: string;
-  billingPhone: string;
-  billingAddress1: string;
-  billingAddress2: string;
-  billingCity: string;
-  billingCountry: string;
-  billingState: string;
-  billingZip: string;
-  newsletter?: boolean;
-}
-
 // Inner component that uses Stripe hooks
 const CheckoutForm = () => {
   const dispatch = useAppDispatch();
-  const cart = useAppSelector((state: RootState) => state?.carts?.items);
-  const auth = useAppSelector((state: RootState) => state?.auth);
-  const orders = useAppSelector((state) => state.order.lastOrder) ?? [];
-  const [localOrders] = useState(orders);
-  const orderCustomer = localOrders[0]
+  const params = useParams();
+  const orderId = params.orderId;
+  const router = useRouter();
+  const customerOrderDetail = useAppSelector((state: RootState) => state?.customerMessage?.orderDetail);
+  const orderCustomer = customerOrderDetail?.customer ? customerOrderDetail : null;
+  const cart: any = customerOrderDetail?.products
+    ? customerOrderDetail.products.map((product: any) => ({
+      ...product,
+      quantity: product.quantity || 1,
+    }))
+    : [];
   // ADD COUPON STATE FROM REDUX
   const { appliedCoupon, discountAmount } = useAppSelector(
     (state: RootState) => state.coupon
@@ -87,132 +40,25 @@ const CheckoutForm = () => {
 
   const [promoCode, setPromoCode] = useState("");
 
-  const [itemToDelete, setItemToDelete] = useState<any | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [cardCompletion, setCardCompletion] = useState({
-    number: false,
-    expiry: false,
-    cvc: false,
-  });
-  const [cardError, setCardError] = useState<string | null>(null);
-  const [paymentRequest, setPaymentRequest] =
-    useState<StripePaymentRequest | null>(null);
-  const [walletSupport, setWalletSupport] = useState<{
-    applePay: boolean;
-    googlePay: boolean;
-  }>({ applePay: false, googlePay: false });
-  const [pendingWalletForm, setPendingWalletForm] =
-    useState<CheckoutFormValues | null>(null);
-  const { isMultiAddress, completedDestinations, destinations, destShippingRates } = useAppSelector(
-    (state) => state.multiAddress
-  );
-  const router = useRouter();
-  const emptyCartWarningShownRef = useRef(false);
-  const skipEmptyCartCheckRef = useRef(false);
-
-
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    control,
-    trigger,
-    getValues,
-    formState: { errors },
-  } = useForm<CheckoutFormValues>({
-    defaultValues: {
-      paymentMethod: "credit_card",
-      billingSame: isMultiAddress ? false : true,
-      email: auth?.user?.email || "",
-      firstName: auth?.user?.firstName || "",
-      lastName: auth?.user?.lastName || "",
-      company: auth?.user?.companyName || "",
-      phone: auth?.user?.phone || "",
-      state: auth?.user?.state || "",
-      country: "",
-      billingCountry: "",
-      newsletter: false,
-    },
-  });
-  const watchedCountry = watch("country");
-  const watchedState = watch("state");
-  const { shippingRates } = useAppSelector((state) => state.shippingZone);
-  const stateList = useMemo(() => {
-    if (!watchedCountry) return [];
-    return State.getStatesOfCountry(watchedCountry).map((s) => ({
-      name: s.name,
-      code: s.isoCode,
-    }));
-  }, [watchedCountry]);
-  // ✅ State change hone pe cities
-  const cityList = useMemo(() => {
-    if (!watchedCountry || !watchedState) return [];
-    return City.getCitiesOfState(watchedCountry, watchedState).map((c) => ({
-      name: c.name,
-    }));
-  }, [watchedCountry, watchedState]);
-
-  const watchedBillingCountry = watch("billingCountry");
-  const watchedBillingState = watch("billingState");
-
-  const billingCityList = useMemo(() => {
-    if (!watchedBillingCountry || !watchedBillingState) return [];
-    return City.getCitiesOfState(watchedBillingCountry, watchedBillingState).map((c) => ({
-      name: c.name,
-    }));
-  }, [watchedBillingCountry, watchedBillingState]);
-  // 2. watchedShippingMethod add 
-  const watchedShippingMethod = watch("shippingMethod");
   // Memoized calculations
   const subtotal = useMemo(() => {
     return cart.reduce(
-      (acc, item) => acc + Number(item.price) * (item.quantity || 1),
+      (acc: any, item: any) => acc + Number(item.price) * (item.quantity || 1),
       0
     );
   }, [cart]);
 
   const shipping = useMemo(() => {
-    if (isMultiAddress) {
-      return destinations.reduce((sum, dest) => {
-        if (!dest.selectedShippingMethod) return sum;
 
-        // ✅ Per-dest rates check karo
-        const destRates = destShippingRates[dest.id] || [];
-        const globalRates = shippingRates || [];
-        const allRates = destRates.length > 0 ? destRates : globalRates;
-
-        const rate = allRates.find(
-          (r: any) => r.service_type === dest.selectedShippingMethod
-        );
-
-        if (!rate) {
-          if (dest.selectedShippingMethod === "flat") return sum + 10;
-          if (dest.selectedShippingMethod === "own") return sum + 0;
-          return sum;
-        }
-
-        return sum + Number(rate.total_charge || 0);
-      }, 0);
-    }
-
-    // Single address — existing logic
-    if (watchedShippingMethod) {
-      if (!shippingRates?.length) return 0;
-      const selected = shippingRates.find(
-        (rate: any) => rate.service_type === watchedShippingMethod
-      );
-      return selected ? Number(selected.total_charge) : 0;
-    }
     // ✅ Cart page se localStorage mein saved cost
     if (typeof window !== "undefined") {
-      const savedCost = localStorage.getItem("shippingCost");
+      const savedCost = customerOrderDetail?.shippingCost;
       if (savedCost) return Number(savedCost);
     }
 
     if (cart.length === 0) return 0;
-    return cart.reduce((sum, item) => sum + Number(item.fixedShippingCost || 0), 0);
-  }, [isMultiAddress, destinations, destShippingRates, watchedShippingMethod, shippingRates, cart]);
+    return cart.reduce((sum: any, item: any) => sum + Number(item.fixedShippingCost || 0), 0);
+  }, [cart]);
 
   const tax = 0;
 
@@ -249,151 +95,10 @@ const CheckoutForm = () => {
     toast.info("Coupon removed");
   };
 
-  // Memoized handlers
-  const confirmDelete = useCallback(() => {
-    if (itemToDelete) {
-      dispatch(removeFromCart(itemToDelete.id));
-      setItemToDelete(null);
-    }
-    setIsDialogOpen(false);
-  }, [itemToDelete, dispatch]);
-
-  const handleIncreaseQty = useCallback(
-    (itemId: string | number) => {
-      dispatch(increaseQty(itemId));
-    },
-    [dispatch]
-  );
-
-  const handleDecreaseQty = useCallback(
-    (itemId: string | number) => {
-      dispatch(decreaseQty(itemId));
-    },
-    [dispatch]
-  );
-
-  const handleDeleteClick = useCallback((item: any) => {
-    setItemToDelete(item);
-    setIsDialogOpen(true);
-  }, []);
-
-  const handlePaymentSelection = useCallback(
-    (method: CheckoutFormValues["paymentMethod"]) => {
-      setValue("paymentMethod", method);
-      setCardError(null);
-      setCardCompletion({
-        number: false,
-        expiry: false,
-        cvc: false,
-      });
-    },
-    [setValue, setCardCompletion, setCardError]
-  );
-
-  const getDeviceType = () => {
-    if (typeof window === "undefined") return "desktop";
-
-    const userAgent = navigator.userAgent;
-
-    if (/mobile/i.test(userAgent)) return "mobile";
-    if (/tablet/i.test(userAgent)) return "tablet";
-
-    return "desktop";
-  };
-
-  const user: any = localStorage.getItem("persist:auth");
-  const parsedAuth = auth ? JSON.parse(user) : null;
-  const token = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
-
-  const buildOrderPayload = useCallback(
-    (data: CheckoutFormValues & { paymentIntentId?: string | null }) => {
-      // ✅ Multi address mode
-      if (isMultiAddress && destinations.length > 0) {
-        return {
-          userType: token ? null : "guest",
-          deviceType: getDeviceType(),
-          email: data.email,
-          paymentMethod: data.paymentMethod,
-          discountAmount: discountAmount ? finalTotal : 0,
-          shippingCost: shipping,
-          comments: data.orderComment || "",
-          paymentIntentId: data.paymentIntentId ?? "",
-          newsletter: data.newsletter || false,
-          // ✅ Multi destination array
-          isMultiAddress: true,
-          destinations: destinations.map((dest) => {
-            // Per dest allocated products
-            const allocatedProducts: Record<string, number> = {};
-            dest.allocatedItems?.forEach((slot) => {
-              const itemId = slot.split("-")[0];
-              allocatedProducts[itemId] = (allocatedProducts[itemId] || 0) + 1;
-            });
-
-            // Per dest shipping rate
-            const destRates = destShippingRates[dest.id] || [];
-            const allRates = destRates.length > 0 ? destRates : (shippingRates || []);
-            const selectedRate = allRates.find(
-              (r: any) => r.service_type === dest.selectedShippingMethod
-            );
-
-            return {
-              firstName: dest.address?.firstName || "",
-              lastName: dest.address?.lastName || "",
-              companyName: dest.address?.company || "",
-              phone: dest.address?.phone || "",
-              addressLine1: dest.address?.address1 || "",
-              addressLine2: dest.address?.address2 || "",
-              city: dest.address?.city || "",
-              state: dest.address?.state || "",
-              zip: dest.address?.zip || "",
-              country: dest.address?.country || "",
-              shippingMethod: dest.selectedShippingMethod,
-
-              shippingCost: selectedRate ? Number(selectedRate.total_charge) : 0,
-              products: Object.entries(allocatedProducts).map(([productId, quantity]) => ({
-                product_id: Number(productId),
-                quantity,
-              })),
-            };
-          }),
-        };
-      }
-
-      // ✅ Single address — existing logic
-      return {
-        userType: token ? null : "guest",
-        deviceType: getDeviceType(),
-        firstName: data.firstName,
-        lastName: data.lastName,
-        companyName: data.company || "",
-        email: data.email,
-        phone: data.phone || "",
-        addressLine1: data.address1,
-        addressLine2: data.address2 || "",
-        city: data.city,
-        state: data.state || "",
-        zip: data.zip,
-        country: data.country,
-        paymentMethod: data.paymentMethod,
-        shippingMethod: data.shippingMethod,
-        discountAmount: discountAmount ? finalTotal : 0,
-        shippingCost: shipping,
-        comments: data.orderComment || "",
-        newsletter: data.newsletter || false,
-        paymentIntentId: data.paymentIntentId ?? "",
-        isMultiAddress: false,
-        products: cart.map((item) => ({
-          product_id: item.id,
-          quantity: item.quantity || 1,
-        })),
-      };
-    },
-    [cart, shipping, isMultiAddress, destinations, destShippingRates,
-      shippingRates, discountAmount, finalTotal, token]
-  );
-
-  console.log("vlocalOrders", { orderCustomer, cart, shipping, appliedCoupon, discountAmount });
-
+  useEffect(() => {
+    if (!orderId) return;
+    dispatch(orderDetailById({ orderId }));
+  }, [orderId]);
 
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
@@ -444,37 +149,20 @@ const CheckoutForm = () => {
 
           {/* RIGHT SIDE */}
           <div className="lg:col-span-1 lg:sticky lg:top-6">
-            {!isMultiAddress ? (
-              <CheckoutOrderSummary
-                cart={cart}
-                subtotal={subtotal}
-                shipping={shipping}
-                tax={tax}
-                total={totalBeforeDiscount}
-                finalTotal={finalTotal}
-                discountAmount={discountAmount}
-                appliedCoupon={appliedCoupon}
-                promoCode={promoCode}
-                setPromoCode={setPromoCode}
-                onApplyCoupon={handleApplyCoupon}
-                onRemoveCoupon={handleRemoveCoupon}
-              />
-            ) : (
-              <CheckoutMultipleOrderSummary
-                cart={cart}
-                subtotal={subtotal}
-                shipping={shipping}
-                tax={tax}
-                total={totalBeforeDiscount}
-                finalTotal={finalTotal}
-                discountAmount={discountAmount}
-                appliedCoupon={appliedCoupon}
-                promoCode={promoCode}
-                setPromoCode={setPromoCode}
-                onApplyCoupon={handleApplyCoupon}
-                onRemoveCoupon={handleRemoveCoupon}
-              />
-            )}
+            <OrderInformationSummary
+              cart={cart}
+              subtotal={subtotal}
+              shipping={shipping}
+              tax={tax}
+              total={totalBeforeDiscount}
+              finalTotal={finalTotal}
+              discountAmount={discountAmount}
+              appliedCoupon={appliedCoupon}
+              promoCode={promoCode}
+              setPromoCode={setPromoCode}
+              onApplyCoupon={handleApplyCoupon}
+              onRemoveCoupon={handleRemoveCoupon}
+            />
           </div>
 
         </div>

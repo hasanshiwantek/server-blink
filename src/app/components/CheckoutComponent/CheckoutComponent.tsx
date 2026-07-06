@@ -51,7 +51,7 @@ import PaymentStep from "./Paymentstep";
 import CheckoutOrderSummary from "./CheckoutOrderSummary";
 import CheckoutMultipleOrderSummary from "./CheckoutMultipleOrderSummary";
 import { calculatePackage } from "./Shippingstep";
-import { fetchAccountAddress, fetchCustomerAddress } from "@/redux/slices/myaccountSlice";
+import { fetchCustomerAddress } from "@/redux/slices/myaccountSlice";
 import { fetchCartList, removeProducts } from "@/redux/slices/cartsSlice";
 
 export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
@@ -342,7 +342,7 @@ const CheckoutForm = () => {
 
     if (cart.length === 0) return 0;
     return cart.reduce((sum, item) => sum + Number(item.fixedShippingCost || 0), 0);
-  }, [isMultiAddress, destinations, destShippingRates, watchedShippingMethod, shippingRates, cart]);
+  }, [isMultiAddress, destinations, destShippingRates, watchedShippingMethod, shippingRates, cart, shippingDetail]);
 
   const tax = 0;
 
@@ -758,7 +758,7 @@ const CheckoutForm = () => {
         event.complete("success");
 
         skipEmptyCartCheckRef.current = true;
-
+        const orderNumber = orderData?.[0]?.orderNumber;
         const productIds = cart.map(item => item.id);
         dispatch(
           removeProducts({
@@ -777,7 +777,7 @@ const CheckoutForm = () => {
         dispatch(setIsMultiAddress(false));
         dispatch(fetchCartList());
         localStorage.removeItem(CHECKOUT_STORAGE_KEY);
-        router.push("/checkout/order-information");
+        router.push(`/checkout/order-information/${orderNumber}`);
       } catch (err: any) {
         console.error("❌ Wallet payment failed:", err);
         event.complete("fail");
@@ -1061,8 +1061,10 @@ const CheckoutForm = () => {
       }
 
       const orderData = await placeOrder({ ...data, paymentIntentId });
+      const orderNumber = orderData?.[0]?.orderNumber;
       skipEmptyCartCheckRef.current = true;
       const productIds = cart.map(item => item.id);
+      console.log("orderData", orderData);
       dispatch(
         removeProducts({
           product_ids: productIds,
@@ -1071,6 +1073,9 @@ const CheckoutForm = () => {
       dispatch(
         removeShippingRate()
       );
+
+
+
       dispatch(fetchShippingRate({}));
       dispatch(setLastOrder(orderData));
       dispatch(clearCart());
@@ -1080,7 +1085,7 @@ const CheckoutForm = () => {
       dispatch(setIsMultiAddress(false));
       dispatch(fetchCartList());
       localStorage.removeItem(CHECKOUT_STORAGE_KEY);
-      router.push("/checkout/order-information");
+      router.push(`/checkout/order-information/${orderNumber}`);
     } catch (err: any) {
       console.error("❌ Error processing order:", err);
       const errorMessage =
