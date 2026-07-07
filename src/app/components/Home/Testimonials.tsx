@@ -148,7 +148,7 @@ const Testimonials = () => {
           src={review?.stars || "/default-product-image.svg"}
           alt="Rating"
           width={80}
-          height={32}fetchPriority="high"
+          height={32} fetchPriority="high"
           className="h-8 w-36 shrink-0"
           unoptimized
         />
@@ -179,6 +179,7 @@ const Testimonials = () => {
     </div>
   );
 
+
   return (
     <div>
       {/* Header */}
@@ -192,16 +193,18 @@ const Testimonials = () => {
           <h3 className="text-center h3-regular">
             {stats?.status || "Excellent"}
           </h3>
-          <Image
-            src={
-              stats?.image ||
-              "https://cdn.trustpilot.net/brand-assets/4.1.0/stars/stars-4.5.svg"
-            }
-            alt="Reviews"
-            width={200}
-            height={200}
-            className="max-w-44"
-          />
+          {/* Reserve exact space with correct star aspect ratio (~512:96) */}
+          <div className="w-44 aspect-[512/96]">
+            <Image
+              src="https://cdn.trustpilot.net/brand-assets/4.1.0/stars/stars-4.5.svg"
+              alt="Reviews"
+              width={512}
+              height={96}
+              className="w-full h-full object-contain"
+              fetchPriority="high"
+              unoptimized
+            />
+          </div>
           <span className="flex items-center justify-center gap-1 text-center">
             Based on
             <Link

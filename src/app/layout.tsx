@@ -23,9 +23,17 @@ const roboto = Roboto({
   adjustFontFallback: false,
 
 });
+// const robotoCondensed = Roboto_Condensed({
+//   subsets: ["latin"],
+//   weight: ["300", "400", "700"],
+//   variable: "--font-roboto-condensed",
+// });
+
 const robotoCondensed = Roboto_Condensed({
   subsets: ["latin"],
-  weight: ["300", "400", "700"],
+  weight: ["400", "700"],
+  display: "swap",        // ✅ FIX: swap add kiya
+  preload: true,          // ✅ FIX: preload add kiya
   variable: "--font-roboto-condensed",
 });
 // // ✅ Recoleta (400–700) - Loading multiple weights

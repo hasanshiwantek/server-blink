@@ -118,7 +118,7 @@ const PopularProducts = () => {
                   >
                     <Link
                       href={`/${product?.sku}`}
-                      className="relative inline-block cursor-pointer group"
+                      className="relative inline-block cursor-pointer group " 
                     >
                       <Image
                         src={
