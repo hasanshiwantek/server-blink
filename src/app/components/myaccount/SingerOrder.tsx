@@ -74,7 +74,7 @@ const SingleOrder = () => {
 
   const handlePrint = useReactToPrint({
     contentRef: invoiceRef,          // v3 API: pass the ref here
-    documentTitle: `Invoice-Order-${order?.id}`,
+    documentTitle: `Server Blink LLC -`,
     pageStyle: `
             @page {
                 size: A4;
