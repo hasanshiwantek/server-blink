@@ -104,6 +104,7 @@ const GlobalSearchBar: React.FC = () => {
       {/* Input Box */}
       <div className="relative w-full xl:max-w-[394px] 2xl:max-w-[394px] 2xl:ml-30 xl:ml-10 ml-0">
         <input
+          id="global-search"
           type="search"
           placeholder="SEARCH"
           value={searchQuery}
@@ -198,7 +199,7 @@ const GlobalSearchBar: React.FC = () => {
                       src={item?.image?.[0]?.path || "/default-product-image.svg"}
                       alt={item?.name || "product"}
                       width={145}
-                      height={125}fetchPriority="high"
+                      height={125} fetchPriority="high"
                       onMouseDown={(e) => {
                         e.preventDefault();
                         e.stopPropagation();

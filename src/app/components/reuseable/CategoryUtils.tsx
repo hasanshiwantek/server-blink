@@ -64,8 +64,8 @@ export const CategoryItem = ({
 
       {/* Render children only if open */}
       {hasChildren && isOpen && (
-        <div className="bg-[#f2f2f2]" id={`subcategory-${category.id}`} role="list">
-          {category.subcategories!.map((sub) => (
+        <div className="bg-[#f2f2f2]" id={`subcategory-${category.id}`} >
+          {category?.subcategories!.map((sub) => (
             <CategoryItem
               key={sub.id}
               category={sub}

@@ -70,10 +70,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <div className="bg-[#F2F2F2] rounded shadow hover:shadow-md transition flex flex-col h-full">
       {/* Image */}
-      <Link href={`${product?.productUrl}`}>
+      <Link href={product.productUrl!}>
         <div className="relative w-full h-72 mb-2 bg-white">
           <Image
-            src={imageSrc}fetchPriority="high"
+            src={imageSrc} fetchPriority="high"
             alt={productName}
             fill
             className="object-contain"
@@ -86,8 +86,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         style={robotoCondensedStyle}
       >
         <Link href={`/brand/${brandSlug || ""}`}>
-          <p className="text-[1rem] text-gray-500 hover:text-[#D42020]" style={{ fontFamily: '"Roboto Condensed"' }}
-          >{brandName} </p>
+          <span className="text-[1rem] text-gray-500 hover:text-[#D42020]" style={{ fontFamily: '"Roboto Condensed"' }}
+          >{brandName} </span>
         </Link>
         <p className="text-[1rem] text-gray-400 mb-1 hover:text-[#D42020]" style={{ fontFamily: '"Roboto Condensed"' }}>
           Sku: {product.sku}
