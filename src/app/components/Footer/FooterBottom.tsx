@@ -164,8 +164,7 @@ const FooterBottom = () => {
               <p className="mt-3">
                 <span className="font-semibold">Phone Number:</span>{" "}
                 <Link
-                  // href="tel:+15022063033"
-                  href="#"
+                  href="tel:+15022063033"
                   className="text-gray-300">
                   {/* +1502-206-3033 */}
                 </Link>
@@ -231,9 +230,9 @@ const FooterBottom = () => {
               {visiblePages?.map((page: any) => (
                 <li key={page.id}>
                   {page?.pageType == "2" ? (
-                    <Link href={`${page.link}`} target="_blank" rel="noopener noreferrer" className="hover:text-[#D42020]">
+                    <Link href={page.link} target="_blank" rel="noopener noreferrer" className="hover:text-[#D42020]">
                       {page.pageName}
-                    </Link>) : <Link href={`${page.slugWithUrl}`} className="hover:text-[#D42020]">
+                    </Link>) : <Link href={page.slugWithUrl} className="hover:text-[#D42020]">
                     {page.pageName}
                   </Link>
                   }

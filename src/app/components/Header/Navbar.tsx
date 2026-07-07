@@ -62,8 +62,7 @@ const Navbar: React.FC = () => {
                 <p className="text-[15px] font-semibold">
                   Call:{" "}
                   <Link
-                    // href="tel:+15022063033"
-                    href="#"
+                    href="tel:+15022063033"
                     className="text-[var(--primary-color)] text-[18px] hover:underline"
                   >
                     {/* +1 502-206-3033 */}
