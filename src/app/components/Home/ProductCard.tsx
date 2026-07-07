@@ -68,7 +68,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
 
   return (
-    <div className="bg-[#F2F2F2] rounded shadow hover:shadow-md transition flex flex-col h-full" >
+    <div className="bg-[#F2F2F2] rounded transition flex flex-col h-full">
       {/* Image */}
       <Link href={product.productUrl!}>
         <div className="relative w-full h-72 mb-2 bg-white">
@@ -86,7 +86,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         style={robotoCondensedStyle}
       >
         <Link href={`/brand/${brandSlug || ""}`}>
-          <span className="text-[1rem] text-gray-500 hover:text-[#D42020]" style={{ fontFamily: '"Roboto Condensed"' }}
+          <span className="text-[12px] text-[#7B7B7B] hover:text-[#D42020]" style={{ fontFamily: '"Roboto Condensed"' }}
           >{brandName} </span>
         </Link>
         <p className="text-[1rem] text-gray-400 mb-1 hover:text-[#D42020]" style={{ fontFamily: '"Roboto Condensed"' }}>
@@ -116,7 +116,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           {product?.msrp && Number(product.msrp) > 0 ? (
             <>
               {/* Old Price */}
-              <span className="text-gray-400 text-[1rem]">
+              <span className="text-[#545454] text-[1rem]">
                 Price $<span className="line-through !font-normal">{((Number(product.price) + Number(product.msrp)).toFixed(2))}</span>
               </span>
 
@@ -171,7 +171,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           {"ADD TO CART"}
         </button> : <button
           onClick={() => {
-            router.push(product?.productUrl || "#");
+            router.push(product?.productUrl || "/");
           }}
           className="w-full bg-[#CAC9C9] hover:bg-[#D42020] font-bold text-[#393939] border-b-2 border-[#393939] py-1 hover:text-white rounded text-[14px] mt-auto transition">
           {"CALL FOR PRICING"}
