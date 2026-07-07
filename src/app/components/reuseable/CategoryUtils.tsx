@@ -52,8 +52,11 @@ export const CategoryItem = ({
               e.preventDefault();  // optional
               toggle(category.id);
             }} className="p-1 flex-shrink-0"
+            aria-label={isOpen ? `Collapse ${category.name}` : `Expand ${category.name}`}
+            aria-expanded={isOpen}
+            aria-controls={`subcategory-${category.id}`}
           >
-            {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            {isOpen ? <ChevronUp className="w-4 h-4" aria-hidden="true" /> : <ChevronDown className="w-4 h-4" aria-hidden="true" />}
           </button>
         )}
       </div>
@@ -61,7 +64,7 @@ export const CategoryItem = ({
 
       {/* Render children only if open */}
       {hasChildren && isOpen && (
-        <div className="bg-[#f2f2f2]">
+        <div className="bg-[#f2f2f2]" id={`subcategory-${category.id}`} role="list">
           {category.subcategories!.map((sub) => (
             <CategoryItem
               key={sub.id}

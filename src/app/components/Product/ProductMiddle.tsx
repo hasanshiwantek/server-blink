@@ -142,18 +142,21 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
             </span>
 
             {/* Quantity Selector */}
-            <div className="flex items-center border border-[#ddd] rounded">
+            <div className="flex items-center border border-[#ddd] rounded" role="group" aria-label="Quantity selector">
               <button
                 aria-label="Decrease quantity"
                 onClick={decrement}
                 className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center hover:bg-[#f5f5f5] transition text-[#4a4a4a] bg-[#cac9c9]  border-b-3 border-[#8b8b8b]"
               >
-                <ChevronDown width={15} height={15} />
+                <ChevronDown width={15} height={15} aria-hidden="true" />
               </button>
 
               <input
+                id="product-quantity"           // ✅ label se match
                 type="text"
                 value={quantity}
+                aria-label="Product quantity"
+                aria-live="polite"
                 // readOnly
                 onChange={(e) => {
                   const val = e.target.value;
@@ -189,7 +192,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
                 onClick={increment}
                 className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center hover:bg-[#f5f5f5] transition text-[#4a4a4a] bg-[#cac9c9] border-b-3 border-[#8b8b8b]"
               >
-                <ChevronUp width={15} height={15} />
+                <ChevronUp width={15} height={15} aria-hidden="true" />
               </button>
             </div>
           </div>}

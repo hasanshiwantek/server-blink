@@ -130,18 +130,22 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
             <button
               onClick={scrollLeft}
               disabled={!canScrollLeft}
+              aria-label={`Scroll ${title} left`}
+              aria-controls="featured-products-slider"
               className={`p-2 rounded flex items-center justify-center text-white 
     hover:bg-gray-800 ${!canScrollLeft ? "opacity-50 cursor-not-allowed hover:bg-transparent" : ""}`}
             >
-              <ChevronLeft size={20} />
+              <ChevronLeft size={20} aria-hidden="true" />
             </button>
             <button
               onClick={scrollRight}
               disabled={!canScrollRight}
+              aria-label={`Scroll ${title} right`}  // ✅
+              aria-controls="featured-products-slider"
               className={`p-2 rounded flex items-center justify-center text-white 
     hover:bg-gray-800 ${!canScrollRight ? "opacity-50 cursor-not-allowed hover:bg-transparent" : ""}`}
             >
-              <ChevronRight size={20} />
+              <ChevronRight size={20} aria-hidden="true" />
             </button>
 
           </div>
@@ -188,6 +192,9 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
             /* Slider view */
             <div
               ref={sliderRef}
+              id="featured-products-slider"
+              role="region"
+              aria-label={`${title} products slider`}
               className="flex gap-4 overflow-x-auto pb-2 scroll-smooth scrollbar-hide"
             >
               {productsData.map((product: any) => (
