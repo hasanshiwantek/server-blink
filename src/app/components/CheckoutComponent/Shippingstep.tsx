@@ -19,7 +19,14 @@ import {
   UseFormSetValue,
 } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { addShippingCost, checkoutFormSave, fetchShippingRate, fetchShippingRates, removeShippingRate, resetShippingRates } from "@/redux/slices/shippingSlice";
+import {
+  addShippingCost,
+  checkoutFormSave,
+  fetchShippingRate,
+  fetchShippingRates,
+  removeShippingRate,
+  resetShippingRates,
+} from "@/redux/slices/shippingSlice";
 import { RootState } from "@/redux/store";
 import MultiAddressShipping from "./MultiAddressShipping";
 import {
@@ -53,7 +60,7 @@ interface ShippingStepProps {
     company: string;
     address1: string;
     address2: string;
-    phone: string
+    phone: string;
   };
   watchedShippingMethod?: string;
   onAddressSelect?: (address: any) => void;
@@ -140,35 +147,46 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state?.carts?.items);
   const auth = useAppSelector((state: RootState) => state?.auth);
-  const shippingCostLoading = useAppSelector((state: RootState) => state.shippingZone?.loading);
-  const { address, loading, customerAddresses } = useAppSelector((state: RootState) => state.myaccount);
+  const shippingCostLoading = useAppSelector(
+    (state: RootState) => state.shippingZone?.loading,
+  );
+  const { address, loading, customerAddresses } = useAppSelector(
+    (state: RootState) => state.myaccount,
+  );
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedLabel, setSelectedLabel] = useState<any>("ENTER A NEW ADDRESS");
+  const [selectedLabel, setSelectedLabel] = useState<any>(
+    "ENTER A NEW ADDRESS",
+  );
   // const [completedDestinations, setCompletedDestinations] = useState<any[]>([]);
   const { isMultiAddress, completedDestinations, destShippingRates } =
     useAppSelector((state) => state.multiAddress);
   const roboto = "'Roboto', Arial, Helvetica, sans-serif";
   const [showSingleAddressModal, setShowSingleAddressModal] = useState(false);
-  const [addressMode, setAddressMode] = useState<"none" | "selected" | "new">("none");
+  const [addressMode, setAddressMode] = useState<"none" | "selected" | "new">(
+    "none",
+  );
   const { saveDetail } = useAppSelector((state) => state.shippingZone);
-  const userAddresses = customerAddresses?.map((item: any) => ({
-    id: item.id,
-    storeId: item.store_id,
-    customerId: item.customer_id,
-    firstName: item.first_name,
-    lastName: item.last_name,
-    companyName: item.company_name,
-    phone: item.phone_number,
-    addressLine1: item.address_line_1,
-    addressLine2: item.address_line_2,
-    city: item.city,
-    state: item.state,
-    zip: item.zip,
-    country: item.country,
-    isDefault: item.is_default,
-    createdAt: item.created_at,
-    updatedAt: item.updated_at,
-  }));
+
+  const userAddresses = Array.isArray(customerAddresses)
+    ? customerAddresses?.map((item: any) => ({
+        id: item.id,
+        storeId: item.store_id,
+        customerId: item.customer_id,
+        firstName: item.first_name,
+        lastName: item.last_name,
+        companyName: item.company_name,
+        phone: item.phone_number,
+        addressLine1: item.address_line_1,
+        addressLine2: item.address_line_2,
+        city: item.city,
+        state: item.state,
+        zip: item.zip,
+        country: item.country,
+        isDefault: item.is_default,
+        createdAt: item.created_at,
+        updatedAt: item.updated_at,
+      }))
+    : [];
   // Watch form values to check if shipping address is complete
   const firstName = useWatch({ control, name: "firstName" });
   const lastName = useWatch({ control, name: "lastName" });
@@ -186,6 +204,9 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
     );
     return rate || null;
   };
+
+  console.log("userAddresses", customerAddresses, userAddresses);
+
   const isShippingComplete = useMemo(() => {
     return !!(
       firstName?.trim() &&
@@ -200,7 +221,13 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   useEffect(() => {
     if (!city?.trim() && !country?.trim() && !zip?.trim() && !state?.trim())
       return;
-    if (city?.trim() && country?.trim() && zip?.trim() && state?.trim() && cart?.length) {
+    if (
+      city?.trim() &&
+      country?.trim() &&
+      zip?.trim() &&
+      state?.trim() &&
+      cart?.length
+    ) {
       const pkg = calculatePackage(cart);
       const timer = setTimeout(() => {
         dispatch(
@@ -237,9 +264,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
       setAddressMode("new");
     }
   }, [auth?.isAuthenticated, userAddresses, saveDetail]);
-
-
-
 
   if (isCompleted && !isActive) {
     // ✅ Check karo agar multi address tha
@@ -319,7 +343,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
 
     // Single address completed view
     return (
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between w-full">
         {/* <div className="text-base text-gray-600">
           <p className="font-medium text-[13px] text-[#545454]">
             {shippingInfo?.firstName} {shippingInfo?.lastName}
@@ -334,11 +358,19 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
           <p className="font-medium text-[13px] text-[#545454]">
             {shippingInfo?.firstName} {shippingInfo?.lastName}
           </p>
-          <p className=" text-[#545454] text-[13px]">{shippingInfo?.company} {shippingInfo?.phone}</p>
-          <p className=" text-[#545454] text-[13px]">{shippingInfo?.address1}  {shippingInfo?.address2 ? ` / ${shippingInfo.address2}` : ""}</p>
-          <p className="text-[13px] text-[#545454]">{shippingInfo?.city}, {shippingInfo?.state} {shippingInfo?.zip} {shippingInfo?.country ? ` / ${shippingInfo.country}` : ""} </p>
+          <p className=" text-[#545454] text-[13px]">
+            {shippingInfo?.company} {shippingInfo?.phone}
+          </p>
+          <p className=" text-[#545454] text-[13px]">
+            {shippingInfo?.address1}{" "}
+            {shippingInfo?.address2 ? ` / ${shippingInfo.address2}` : ""}
+          </p>
+          <p className="text-[13px] text-[#545454]">
+            {shippingInfo?.city}, {shippingInfo?.state} {shippingInfo?.zip}{" "}
+            {shippingInfo?.country ? ` / ${shippingInfo.country}` : ""}{" "}
+          </p>
         </div>
-        <button type="button" onClick={onEdit} className="btn-primary">
+        <button type="button" onClick={onEdit}   className="btn-primary h-[30px] !text-[12px] w-[82px]">
           EDIT
         </button>
       </div>
@@ -373,12 +405,10 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                   localStorage.removeItem(CHECKOUT_STORAGE_KEY);
                   dispatch(setIsMultiAddress(true));
                 }
-                dispatch(
-                  removeShippingRate()
-                ).finally(() => {
+                dispatch(removeShippingRate()).finally(() => {
                   dispatch(fetchShippingRate({}));
                   dispatch(resetShippingRates());
-                })
+                });
               }}
               className="text-[13px] text-red-600 hover:underline font-medium"
             >
@@ -388,111 +418,134 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             </button>
           )}
         </div>
-        {!isMultiAddress && auth?.isAuthenticated && userAddresses?.length > 0 && (
-          <div className="relative mb-4">
-            {/* Trigger */}
-            <button
-              type="button"
-              className="w-full  border border-[#cac9c9] px-3 py-3 text-left text-sm text-[#545454] bg-white flex justify-between items-center"
-              onClick={() => {
-                dispatch(resetShippingRates())
-                setIsOpen(!isOpen)
-              }
-              }
-            >
-              {typeof selectedLabel === "object" ? (
-                <div className="space-y-0.5">
-                  <p className="font-semibold uppercase">{selectedLabel.firstName} {selectedLabel.lastName}</p>
-                  {(selectedLabel.companyName || selectedLabel.phone) && (
-                    <p className="uppercase">
-                      {selectedLabel.companyName} {selectedLabel.phone}
+        {!isMultiAddress &&
+          auth?.isAuthenticated &&
+          userAddresses?.length > 0 && (
+            <div className="relative mb-4">
+              {/* Trigger */}
+              <button
+                type="button"
+                className="w-full  border border-[#cac9c9] px-3 py-3 text-left text-sm text-[#545454] bg-white flex justify-between items-center"
+                onClick={() => {
+                  dispatch(resetShippingRates());
+                  setIsOpen(!isOpen);
+                }}
+              >
+                {typeof selectedLabel === "object" ? (
+                  <div className="space-y-0.5">
+                    <p className="font-semibold uppercase">
+                      {selectedLabel.firstName} {selectedLabel.lastName}
                     </p>
-                  )}
-                  <p className="uppercase">
-                    {selectedLabel.addressLine1}
-                    {selectedLabel.addressLine2 && ` / ${selectedLabel.addressLine2}`}
-                  </p>
-                  <p className="uppercase">
-                    {selectedLabel.city}, {selectedLabel.state}, {selectedLabel.zip} / {selectedLabel.country}
-                  </p>
-                </div>
-              ) : (
-                <span >{selectedLabel}</span>
-              )}
-              <span className="text-xs mt-1">▼</span>
-            </button>
+                    {(selectedLabel.companyName || selectedLabel.phone) && (
+                      <p className="uppercase">
+                        {selectedLabel.companyName} {selectedLabel.phone}
+                      </p>
+                    )}
+                    <p className="uppercase">
+                      {selectedLabel.addressLine1}
+                      {selectedLabel.addressLine2 &&
+                        ` / ${selectedLabel.addressLine2}`}
+                    </p>
+                    <p className="uppercase">
+                      {selectedLabel.city}, {selectedLabel.state},{" "}
+                      {selectedLabel.zip} / {selectedLabel.country}
+                    </p>
+                  </div>
+                ) : (
+                  <span>{selectedLabel}</span>
+                )}
+                <span className="text-xs mt-1">▼</span>
+              </button>
 
-            {/* Dropdown List */}
-            {isOpen && (
-              <div className="absolute z-50 w-full border border-[#cac9c9] bg-white shadow-lg max-h-72 overflow-y-auto">
-
-                {/* Default option */}
-                <div
-                  className="px-3 py-2 text-2xl hover:bg-gray-100 cursor-pointer"
-                  onClick={() => {
-                    // dispatch(resetShippingRates())
-                    setSelectedLabel("ENTER A NEW ADDRESS");
-                    setAddressMode("new");          // ✅ form fields show honge
-                    setIsOpen(false);
-                    // ✅ existing form fields clear karo
-                    setValue("firstName", "");
-                    setValue("lastName", "");
-                    setValue("address1", "");
-                    setValue("city", "");
-                    setValue("country", "");
-                    setValue("state", "");
-                    setValue("zip", "");
-                  }}
-                >
-                  ENTER A NEW ADDRESS
-                </div>
-
-                {/* Address options */}
-                {/* {address?.addresses?.map((item: any, i: number) => ( */}
-                {userAddresses?.map((item: any, i: number) => (
+              {/* Dropdown List */}
+              {isOpen && (
+                <div className="absolute z-50 w-full border border-[#cac9c9] bg-white shadow-lg max-h-72 overflow-y-auto">
+                  {/* Default option */}
                   <div
-                    key={i}
-                    className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer border-t border-gray-100"
+                    className="px-3 py-2 text-2xl hover:bg-gray-100 cursor-pointer"
                     onClick={() => {
-
-                      setSelectedLabel(item);
-                      setAddressMode("selected");
+                      // dispatch(resetShippingRates())
+                      setSelectedLabel("ENTER A NEW ADDRESS");
+                      setAddressMode("new"); // ✅ form fields show honge
                       setIsOpen(false);
-                      onAddressSelect?.(item);
-                      // ✅ form fields update karo
-
-
-                      if (!item?.city?.trim() && !item?.country?.trim() && !item?.zip?.trim() && !item?.state?.trim())
-                        return;
-                      if (item?.city?.trim() && item?.country?.trim() && item?.zip?.trim() && item?.state?.trim() && cart?.length) {
-                        const pkg = calculatePackage(cart);
-                        dispatch(
-                          fetchShippingRates({
-                            data: {
-                              destination: {
-                                country_code: item?.country?.trim(),
-                                state: item?.state?.trim(),
-                                postal_code: item?.zip?.trim(),
-                                ...(city?.trim() && { city: item?.city.trim() }),
-                              },
-                              package: pkg,
-                            },
-                          }),
-                        );
-                      }
+                      // ✅ existing form fields clear karo
+                      setValue("firstName", "");
+                      setValue("lastName", "");
+                      setValue("address1", "");
+                      setValue("city", "");
+                      setValue("country", "");
+                      setValue("state", "");
+                      setValue("zip", "");
                     }}
                   >
-                    <p className="font-medium text-[13px] text-[#545454]">{item.firstName} {item.lastName}</p>
-                    <p className=" text-[#545454] text-[13px]">{item.companyName} {item.phone}</p>
-                    <p className=" text-[#545454] text-[13px]">{item.addressLine1} / {item.addressLine2}</p>
-                    <p className="text-[13px] text-[#545454]">{item.city}, {item.state} {item.zip} / {item.country}</p>
-                    <p className="text-[13px] text-[#545454]"></p>
+                    ENTER A NEW ADDRESS
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+
+                  {/* Address options */}
+                  {/* {address?.addresses?.map((item: any, i: number) => ( */}
+                  {userAddresses?.map((item: any, i: number) => (
+                    <div
+                      key={i}
+                      className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer border-t border-gray-100"
+                      onClick={() => {
+                        setSelectedLabel(item);
+                        setAddressMode("selected");
+                        setIsOpen(false);
+                        onAddressSelect?.(item);
+                        // ✅ form fields update karo
+
+                        if (
+                          !item?.city?.trim() &&
+                          !item?.country?.trim() &&
+                          !item?.zip?.trim() &&
+                          !item?.state?.trim()
+                        )
+                          return;
+                        if (
+                          item?.city?.trim() &&
+                          item?.country?.trim() &&
+                          item?.zip?.trim() &&
+                          item?.state?.trim() &&
+                          cart?.length
+                        ) {
+                          const pkg = calculatePackage(cart);
+                          dispatch(
+                            fetchShippingRates({
+                              data: {
+                                destination: {
+                                  country_code: item?.country?.trim(),
+                                  state: item?.state?.trim(),
+                                  postal_code: item?.zip?.trim(),
+                                  ...(city?.trim() && {
+                                    city: item?.city.trim(),
+                                  }),
+                                },
+                                package: pkg,
+                              },
+                            }),
+                          );
+                        }
+                      }}
+                    >
+                      <p className="font-medium text-[13px] text-[#545454]">
+                        {item.firstName} {item.lastName}
+                      </p>
+                      <p className=" text-[#545454] text-[13px]">
+                        {item.companyName} {item.phone}
+                      </p>
+                      <p className=" text-[#545454] text-[13px]">
+                        {item.addressLine1} / {item.addressLine2}
+                      </p>
+                      <p className="text-[13px] text-[#545454]">
+                        {item.city}, {item.state} {item.zip} / {item.country}
+                      </p>
+                      <p className="text-[13px] text-[#545454]"></p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         {isMultiAddress ? (
           <MultiAddressShipping
             cart={cart}
@@ -522,12 +575,12 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     <Input
                       id="firstName"
                       type="text"
-                      className={`w-full !max-w-full h-[40px] ${errors.firstName ? "border-red-500" : ""
-                        }`}
+                      className={`w-full !max-w-full h-[40px] ${
+                        errors.firstName ? "border-red-500" : ""
+                      }`}
                       {...register("firstName", {
                         required: "First name is required",
                       })}
-
                     />
                     {errors.firstName && (
                       <p className="text-sm text-red-500 mt-1">
@@ -549,12 +602,12 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     <Input
                       id="lastName"
                       type="text"
-                      className={`w-full !max-w-full h-[40px] ${errors.lastName ? "border-red-500" : ""
-                        }`}
+                      className={`w-full !max-w-full h-[40px] ${
+                        errors.lastName ? "border-red-500" : ""
+                      }`}
                       {...register("lastName", {
                         required: "Last name is required",
                       })}
-
                     />
                     {errors.lastName && (
                       <p className="text-sm text-red-500 mt-1">
@@ -577,7 +630,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     type="text"
                     className="w-full !max-w-full h-[44px]  border border-[#cac9c9] rounded-none"
                     {...register("company")}
-
                   />
                 </div>
 
@@ -594,7 +646,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     type="text"
                     className="w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none"
                     {...register("phone")}
-
                   />
                 </div>
 
@@ -611,12 +662,12 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                   <Input
                     id="address1"
                     type="text"
-                    className={`w-full !max-w-full h-[40px] h-[44px] border border-[#cac9c9] rounded-none ${errors.address1 ? "border-red-500" : ""
-                      }`}
+                    className={`w-full !max-w-full h-[40px] h-[44px] border border-[#cac9c9] rounded-none ${
+                      errors.address1 ? "border-red-500" : ""
+                    }`}
                     {...register("address1", {
                       required: "Address is required",
                     })}
-
                   />
                   {errors.address1 && (
                     <p className="text-sm text-red-500 mt-1">
@@ -638,7 +689,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     type="text"
                     className="w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none"
                     {...register("address2")}
-
                   />
                 </div>
                 <div className="flex flex-col mt-4">
@@ -655,7 +705,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     type="text"
                     className="w-full !max-w-full  h-[44px] border border-[#cac9c9] rounded-none"
                     {...register("city", { required: "City is required" })}
-
                   />
                   {errors.city && (
                     <p className="text-sm text-red-500 mt-1">
@@ -683,15 +732,13 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                         onValueChange={(val) => {
                           field.onChange(val);
                           setValue("state", ""); //
-
-
-
                         }}
                         value={field.value}
                       >
                         <SelectTrigger
-                          className={`w-full !max-w-full  !h-[44px] border border-[#cac9c9] rounded-none ${errors.country ? "border-red-500" : ""
-                            }`}
+                          className={`w-full !max-w-full  !h-[44px] border border-[#cac9c9] rounded-none ${
+                            errors.country ? "border-red-500" : ""
+                          }`}
                         >
                           <SelectValue placeholder="Select country" />
                         </SelectTrigger>
@@ -723,7 +770,9 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     >
                       <span className="">State/Province</span>
                       {!stateList.length && (
-                        <span className="shrink-0 text-[#545454]">(Optional)</span>
+                        <span className="shrink-0 text-[#545454]">
+                          (Optional)
+                        </span>
                       )}
                     </label>
                     {stateList.length > 0 ? (
@@ -737,13 +786,14 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                             onValueChange={(val: any) => {
                               field.onChange(val);
                               register("state").onChange(val);
-                              //   
+                              //
                             }}
                             value={field.value}
                           >
                             <SelectTrigger
-                              className={`w-full !max-w-full !h-[44px] border border-[#cac9c9] rounded-none ${errors.state ? "border-red-500" : ""
-                                }`}
+                              className={`w-full !max-w-full !h-[44px] border border-[#cac9c9] rounded-none ${
+                                errors.state ? "border-red-500" : ""
+                              }`}
                             >
                               <SelectValue placeholder="Select state/province" />
                             </SelectTrigger>
@@ -761,11 +811,10 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                       <Input
                         id="state"
                         type="text"
-                        className={`w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none ${errors.state ? "border-red-500" : ""
-                          }`}
+                        className={`w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none ${
+                          errors.state ? "border-red-500" : ""
+                        }`}
                         {...register("state")}
-
-
                       />
                     )}
                     {errors.state && (
@@ -785,10 +834,12 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     <Input
                       id="zip"
                       type="text"
-                      className={`w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none ${errors.zip ? "border-red-500" : ""
-                        }`}
-                      {...register("zip", { required: "Postal code is required" })}
-
+                      className={`w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none ${
+                        errors.zip ? "border-red-500" : ""
+                      }`}
+                      {...register("zip", {
+                        required: "Postal code is required",
+                      })}
                     />
                     {errors.zip && (
                       <p className="text-sm text-red-500 mt-1">
@@ -798,21 +849,22 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                   </div>
                 </div>
 
-                {auth?.isAuthenticated && <div className="flex items-center gap-2 mt-4">
-                  <input
-                    type="checkbox"
-                    id="isSaveAddressForShipping"
-                    {...register("isSaveAddressForShipping")}
-                    className="w-4 h-4"
-
-                  />
-                  <label
-                    htmlFor="isSaveAddressForShipping"
-                    className="text-[13px] text-[#545454]"
-                  >
-                    Save this address in my address book.
-                  </label>
-                </div>}
+                {auth?.isAuthenticated && (
+                  <div className="flex items-center gap-2 mt-4">
+                    <input
+                      type="checkbox"
+                      id="isSaveAddressForShipping"
+                      {...register("isSaveAddressForShipping")}
+                      className="w-4 h-4"
+                    />
+                    <label
+                      htmlFor="isSaveAddressForShipping"
+                      className="text-[13px] text-[#545454]"
+                    >
+                      Save this address in my address book.
+                    </label>
+                  </div>
+                )}
               </>
             )}
 
@@ -822,7 +874,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                 id="billingSame"
                 {...register("billingSame")}
                 className="w-4 h-4"
-
               />
               <label
                 htmlFor="billingSame"
@@ -849,7 +900,10 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             </h3>
 
             {!isShippingComplete && (
-              <p className="text-[15px] text-amber-600 mb-3 bg-amber-50 p-3 rounded border border-amber-200" style={{ fontFamily: roboto }}>
+              <p
+                className="text-[15px] text-amber-600 mb-3 bg-amber-50 p-3 rounded border border-amber-200"
+                style={{ fontFamily: roboto }}
+              >
                 Please complete all required shipping address fields to select a
                 shipping method.
               </p>
@@ -859,95 +913,99 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
               <div className=" border border-black">
                 {ratesLoader
                   ? // Skeleton
-                  Array.from({ length: 3 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="flex items-start gap-3 border rounded p-4"
-                    >
-                      {/* Radio circle */}
-                      <div className="w-4 h-4 mt-1 rounded-full border-2 border-gray-200 flex-shrink-0 animate-pulse" />
-
-                      <div className="min-w-0 flex-1 flex items-center justify-between gap-3">
-                        {/* Left: service name */}
-                        <div className="flex items-center gap-2">
-                          <div className="h-4 bg-gray-200 rounded animate-pulse w-12" />
-                          <div className="h-4 bg-gray-200 rounded animate-pulse w-32" />
-                        </div>
-
-                        {/* Right: price */}
-                        <div className="h-4 bg-gray-200 rounded animate-pulse w-14 flex-shrink-0" />
-                      </div>
-                    </div>
-                  ))
-                  : shippingRates?.map((rate, i) => {
-                    return (
-                      <label
-                        key={`${rate.method_id}-${rate.service_type}`}
-                        className={`flex items-start gap-3 border rounded p-4 transition-colors ${isShippingComplete
-                          ? "cursor-pointer"
-                          : "cursor-not-allowed opacity-50"
-                          } ${watchedShippingMethod == rate.service_type
-                            ? "border-black  !bg-[#ffffff]"
-                            : ""
-                          }`}
+                    Array.from({ length: 3 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="flex items-start gap-3 border rounded p-4"
                       >
-                        <input
-                          type="radio"
-                          value={rate.service_type}
-                          // {...register("shippingMethod")}
-                          {...register("shippingMethod", {
-                            required: "Please select a shipping method",
-                          })}
-                          onChange={async (e) => {
-                            register("shippingMethod").onChange(e); // keep react-hook-form in sync
-                            const selectedRate = shippingRates?.find(
-                              (r: any) => r.service_type === e.target.value,
-                            );
-                            const cost = selectedRate
-                              ? Number(selectedRate.total_charge).toFixed(2)
-                              : "0";
-                            const shippingData: any = {
-                              country: country?.trim(),
-                              city: city?.trim(),
-                              state: state?.trim(),
-                              zip: zip?.trim(),
-                              "cartId": cart?.map(item => item.cartItemId),
-                              "rate": {
-                                "service_type": selectedRate?.service_type,
-                                "method_type": selectedRate?.method_type,
-                                "total_charge": cost
-                              }
-                            };
-                            await dispatch(addShippingCost(shippingData)).unwrap().then(() => {
-                              dispatch(fetchShippingRate({}))
-                            })
-                            // localStorage.setItem("shippingCost", cost);
-                            // localStorage.setItem(
-                            //   "shippingData",
-                            //   JSON.stringify(shippingData),
-                            // );
-                          }}
-                          className="mt-1"
-                          disabled={!isShippingComplete}
-                        />
+                        {/* Radio circle */}
+                        <div className="w-4 h-4 mt-1 rounded-full border-2 border-gray-200 flex-shrink-0 animate-pulse" />
+
                         <div className="min-w-0 flex-1 flex items-center justify-between gap-3">
-                          <div className="flex items-center gap-2 text-[#545454] text-[14px] font-normal">
-                            {rate.is_fedex && <span>FedEx</span>}
-                            <span>
-                              {rate.is_fedex
-                                ? `(${rate.service_name})`
-                                : rate.display_name}
-                            </span>
+                          {/* Left: service name */}
+                          <div className="flex items-center gap-2">
+                            <div className="h-4 bg-gray-200 rounded animate-pulse w-12" />
+                            <div className="h-4 bg-gray-200 rounded animate-pulse w-32" />
                           </div>
-                          <div className="text-[14px]  font-bold flex-shrink-0">
-                            {rate.total_charge === 0
-                              ? "Free"
-                              : `$${Number(rate.total_charge).toFixed(2)}`}
-                          </div>
+
+                          {/* Right: price */}
+                          <div className="h-4 bg-gray-200 rounded animate-pulse w-14 flex-shrink-0" />
                         </div>
-                      </label>
-                    );
-                  })}
+                      </div>
+                    ))
+                  : shippingRates?.map((rate, i) => {
+                      return (
+                        <label
+                          key={`${rate.method_id}-${rate.service_type}`}
+                          className={`flex items-start gap-3 border rounded p-4 transition-colors ${
+                            isShippingComplete
+                              ? "cursor-pointer"
+                              : "cursor-not-allowed opacity-50"
+                          } ${
+                            watchedShippingMethod == rate.service_type
+                              ? "border-black  !bg-[#ffffff]"
+                              : ""
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            value={rate.service_type}
+                            // {...register("shippingMethod")}
+                            {...register("shippingMethod", {
+                              required: "Please select a shipping method",
+                            })}
+                            onChange={async (e) => {
+                              register("shippingMethod").onChange(e); // keep react-hook-form in sync
+                              const selectedRate = shippingRates?.find(
+                                (r: any) => r.service_type === e.target.value,
+                              );
+                              const cost = selectedRate
+                                ? Number(selectedRate.total_charge).toFixed(2)
+                                : "0";
+                              const shippingData: any = {
+                                country: country?.trim(),
+                                city: city?.trim(),
+                                state: state?.trim(),
+                                zip: zip?.trim(),
+                                cartId: cart?.map((item) => item.cartItemId),
+                                rate: {
+                                  service_type: selectedRate?.service_type,
+                                  method_type: selectedRate?.method_type,
+                                  total_charge: cost,
+                                },
+                              };
+                              await dispatch(addShippingCost(shippingData))
+                                .unwrap()
+                                .then(() => {
+                                  dispatch(fetchShippingRate({}));
+                                });
+                              // localStorage.setItem("shippingCost", cost);
+                              // localStorage.setItem(
+                              //   "shippingData",
+                              //   JSON.stringify(shippingData),
+                              // );
+                            }}
+                            className="mt-1"
+                            disabled={!isShippingComplete}
+                          />
+                          <div className="min-w-0 flex-1 flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-2 text-[#545454] text-[14px] font-normal">
+                              {rate.is_fedex && <span>FedEx</span>}
+                              <span>
+                                {rate.is_fedex
+                                  ? `(${rate.service_name})`
+                                  : rate.display_name}
+                              </span>
+                            </div>
+                            <div className="text-[14px]  font-bold flex-shrink-0">
+                              {rate.total_charge === 0
+                                ? "Free"
+                                : `$${Number(rate.total_charge).toFixed(2)}`}
+                            </div>
+                          </div>
+                        </label>
+                      );
+                    })}
               </div>
             )}
 
@@ -976,16 +1034,20 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             />
           </div>
 
-          {shippingRates?.length ? <button
-            disabled={ratesLoader || shippingCostLoading}
-            type="button"
-            onClick={() => {
-              onContinue()
-            }}
-            className="btn-primary"
-          >
-            CONTINUE
-          </button> : <></>}
+          {shippingRates?.length ? (
+            <button
+              disabled={ratesLoader || shippingCostLoading}
+              type="button"
+              onClick={() => {
+                onContinue();
+              }}
+              className="btn-primary"
+            >
+              CONTINUE
+            </button>
+          ) : (
+            <></>
+          )}
         </>
       )}
     </div>

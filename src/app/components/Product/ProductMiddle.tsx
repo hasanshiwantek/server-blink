@@ -85,14 +85,14 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
             {product?.msrp && Number(product?.msrp) > 0 ? (
               <>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[16px] text-[#7b7b7b] font-normal">
+                  <span className="text-[16px] text-[#7B7B7B] font-normal">
                     Price
                   </span>
                   <span>
                     <ProductPrice
                       price={Number(product?.msrp)}
                       inline={true}
-                      className="!text-[16px] text-[#7b7b7b] font-normal !line-through"
+                      className="!text-[16px] text-[#7B7B7B] font-normal !line-through"
                     />
                   </span>
                 </div>
@@ -240,7 +240,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
           <p className="text-[15px] sm:text-[18px] text-[#545454] mt-3 font-normal">
             Looking for a large quantity?{" "}
             <span
-              className="text-[var(--primary-color)] hover:underline font-normal cursor-pointer"
+              className="text-[#D42020] hover:underline font-normal cursor-pointer"
               onClick={() => setIsModalOpen(true)}
             >
               Request A Bulk Quote

@@ -99,7 +99,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
     billingInfo?.zip && billingInfo?.state) {
     // Show completed state with billing info and edit button
     return (
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between w-full">
         <div className="text-base text-gray-600">
           <p className="font-medium text-[13px] text-[#545454]">
             {billingInfo?.firstName} {billingInfo?.lastName}
@@ -111,7 +111,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
         <button
           type="button"
           onClick={onEdit}
-          className="btn-primary"
+          className="btn-primary h-[30px] !text-[12px] w-[82px]"
         >
           EDIT
         </button>
