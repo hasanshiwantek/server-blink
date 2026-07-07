@@ -61,12 +61,12 @@ const Navbar: React.FC = () => {
               <div className="flex flex-col text-gray-800" style={{ fontFamily: "Roboto, Arial, Helvetica, sans-serif" }}>
                 <p className="text-[15px] font-semibold">
                   Call:{" "}
-                  <Link
+                  {/* <Link
                     href="tel:+15022063033"
                     className="text-[var(--primary-color)] text-[18px] hover:underline"
                   >
                     {/* +1 502-206-3033 */}
-                  </Link>
+                  {/* </Link> */} 
                 </p>
 
                 <p className="text-[15px] font-bold">
