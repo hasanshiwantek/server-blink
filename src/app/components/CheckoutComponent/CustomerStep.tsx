@@ -57,14 +57,14 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
     <>
       {isCompleted && !isActive ? (
         // Show completed state with email and edit button
-        <div className="flex items-center justify-between">
+        <div className="flex items-center mb-4 justify-between w-full">
           <span className="text-base text-gray-600">{emailValue}</span>
 
           {auth?.isAuthenticated ? (
             <button
               type="button"
               onClick={handleSignOut}
-              className="btn-primary"
+              className="btn-primary h-[30px] !text-[10px] w-[96px]"
             >
               SIGN OUT
             </button>
@@ -72,7 +72,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
             <button
               type="button"
               onClick={onEdit}
-              className="btn-primary"
+               className="btn-primary h-[32px] !text-[10px] w-[82px]"
             >
               EDIT
             </button>
@@ -127,13 +127,14 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
                         className="text-[13px] text-[#545454]"
                       >
                         Subscribe to our newsletter.
+                        
                       </label>
                     </div>
                   </div>
                   <button
                     type="button"
                     onClick={onContinue}
-                    className="btn-primary h-[44px] sm:h-[40px]  sm:w-auto order-3  sm:order-2"
+                    className="w-full btn-primary h-[44px] sm:h-[40px]  sm:w-auto order-3  sm:order-2"
                   >
                     CONTINUE
                   </button>

@@ -353,11 +353,11 @@ const FooterBottom = () => {
       </section>
 
       {/* Bottom Bar */}
-      <div className="bg-[#8b8b8b]  py-4">
+      <div className="bg-[#545454]  py-4">
         <div className="w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto px-4 xl:px-4 2xl:px-2 ">
-          <p className="text-[#ffffff] text-left text-base">
+          <p className="text-[#ffffff] text-[12px] text-left text-base">
             © {new Date().getFullYear()} Server Blink LLC |&nbsp;
-            <Link href="/sitemap" className="hover:text-gray-300">
+            <Link href="/sitemap" className="hover:text-[#D42020]">
               Sitemap
             </Link>
           </p>
