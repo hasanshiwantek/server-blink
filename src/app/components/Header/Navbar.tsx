@@ -55,7 +55,7 @@ const Navbar: React.FC = () => {
                   alt="Contact support"
                   fill
                   className="object-contain"
-                  sizes="48px"fetchPriority="high"
+                  sizes="48px" fetchPriority="high"
                 />
               </div>
               <div className="flex flex-col text-gray-800" style={{ fontFamily: "Roboto, Arial, Helvetica, sans-serif" }}>
@@ -74,6 +74,7 @@ const Navbar: React.FC = () => {
                   Email:{" "}
                   <Link
                     href="mailto:info@serverblink.uk"
+                    aria-label="Email us at info@serverblink.uk"
                     className="text-[var(--primary-color)] text-[14px] hover:underline"
                   >
                     info@serverblink.uk
@@ -126,40 +127,6 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Mobile Dropdown */}
-        {/* {mobileOpen && (
-          <div className="lg:hidden mt-4 space-y-4 px-4 pb-6 bg-white">
-            <div className="relative w-full">
-              <MobileSearchBar />
-            </div>
-
-            <div className="flex items-center gap-3 py-3 border-t">
-              <svg
-                className="w-6 h-6 text-gray-700"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z" />
-              </svg>
-              <div className="flex flex-col text-gray-800">
-                <p className="text-sm font-medium">
-                  Call:{" "}
-                  <span className="text-red-600 font-semibold">
-                    +1 502-206-3033
-                  </span>
-                </p>
-                <p className="text-sm">
-                  Email:{" "}
-                  <Link
-                    href="mailto:info@serverblink.uk"
-                    className="hover:text-red-600"
-                  >
-                    info@serverblink.uk
-                  </Link>
-                </p>
-              </div>
-            </div>
-          </div>
-        )} */}
       </nav>
     </header>
   );

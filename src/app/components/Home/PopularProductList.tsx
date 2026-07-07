@@ -32,7 +32,7 @@ const PopularProductList: React.FC<FeaturedProductsProps> = ({
 }) => {
     const sliderRef = useRef<HTMLDivElement>(null);
     const dispatch = useAppDispatch();
-    const [products,setProducts] = useState<any>([]);
+    const [products, setProducts] = useState<any>([]);
     // const { products, error } = useAppSelector((state: any) => state.home);
     const productsData = products?.data || [];
     const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -129,18 +129,19 @@ const PopularProductList: React.FC<FeaturedProductsProps> = ({
                         <button
                             onClick={scrollLeft}
                             disabled={!canScrollLeft}
+                            aria-label={`Scroll ${title} left`}
                             className={`p-2 rounded flex items-center justify-center text-white 
     hover:bg-gray-800 ${!canScrollLeft ? "opacity-50 cursor-not-allowed hover:bg-transparent" : ""}`}
                         >
-                            <ChevronLeft size={20} />
+                            <ChevronLeft size={20} aria-hidden="true" />
                         </button>
                         <button
                             onClick={scrollRight}
-                            disabled={!canScrollRight}
+                            disabled={!canScrollRight} aria-label={`Scroll ${title} right`}
                             className={`p-2 rounded flex items-center justify-center text-white 
     hover:bg-gray-800 ${!canScrollRight ? "opacity-50 cursor-not-allowed hover:bg-transparent" : ""}`}
                         >
-                            <ChevronRight size={20} />
+                            <ChevronRight size={20} aria-hidden="true" />
                         </button>
 
                     </div>
@@ -187,6 +188,8 @@ const PopularProductList: React.FC<FeaturedProductsProps> = ({
                         /* Slider view */
                         <div
                             ref={sliderRef}
+                            role="region"
+                            aria-label={`${title} products`}
                             className="flex gap-4 overflow-x-auto pb-2 scroll-smooth scrollbar-hide"
                         >
                             {productsData.map((product: any) => (
