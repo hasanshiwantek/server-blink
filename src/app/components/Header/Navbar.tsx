@@ -69,12 +69,12 @@ const Navbar: React.FC = () => {
                   </Link>
                 </p>
 
-                <p className="text-[15px] font-semibold">
+                <p className="text-[15px] font-bold">
                   Email:{" "}
                   <Link
                     href="mailto:info@serverblink.uk"
                     aria-label="Email us at info@serverblink.uk"
-                    className="text-[#D42020] text-[14px] hover:underline"
+                    className="text-[#D42020] text-[15px] hover:underline"
                   >
                     info@serverblink.uk
                   </Link>
@@ -115,7 +115,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Text Banner */}
-        <div className="w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto" style={{ fontFamily: robotoCondensed }}>
+        <div className="w-full xl:max-w-[1170px] border-none 2xl:max-w-[1170px] mx-auto" style={{ fontFamily: robotoCondensed }}>
           <div className="bg-white text-center p-0 mb-0 md:p-4 md:mb-4">
             <p className="p-4 md:text-[14px] text-[14px] font-semibold text-[#545454]">
               We Accept POs from Fortune 1000 Companies, Government Agencies

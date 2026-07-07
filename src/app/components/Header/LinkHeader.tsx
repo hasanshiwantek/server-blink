@@ -22,7 +22,7 @@ const LinkHeader = () => {
   const visibleCategories = categories.slice(0, 3);
 
   return (
-    <header className="bg-[#393939] text-white w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto border-b-3 border-[#8b8b8b] md:block hidden" style={{ fontFamily: "Roboto Condensed, Arial, Helvetica, sans-serif" }}>
+    <header className="bg-[#393939] text-white w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto border-b-3 border-none md:block hidden" style={{ fontFamily: "Roboto Condensed, Arial, Helvetica, sans-serif" }}>
       <nav className="px-4 sm:px-6 lg:px-8 xl:px-4 2xl:px-4">
         <ul className="flex items-center gap-8 xl:gap-12 h-12 sm:h-14 lg:h-13">
           {/* Dynamic Categories from API (first 3 only) */}
