@@ -70,13 +70,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <div className="bg-[#F2F2F2] rounded transition flex flex-col h-full">
       {/* Image */}
-      <Link href={product?.productUrl!}>
+      <Link href={product?.productUrl || "/"}>
         <div className="relative w-full h-72 mb-2 bg-white">
           <Image
-            src={imageSrc} fetchPriority="high"
+            src={imageSrc}
             alt={productName}
             fill
             className="object-contain"
+            priority
           />
         </div>
       </Link>
@@ -92,7 +93,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <p className="text-[1rem] text-gray-400 mb-1 hover:text-[#D42020]" style={{ fontFamily: '"Roboto Condensed"' }}>
           Sku: {product.sku}
         </p>
-        <Link href={product?.productUrl!}>
+        <Link href={product?.productUrl || "/"}>
           <span className="text-[14px] font-bold mb-1 text-[#545454] line-clamp-2 hover:text-[#D42020]" style={{ fontFamily: '"Roboto Condensed"' }}>
             {productName}
           </span>

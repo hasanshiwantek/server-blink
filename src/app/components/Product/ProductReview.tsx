@@ -42,7 +42,7 @@ const ProductReview = () => {
     return initials || "N/A";
   }, []);
 
- const handleSeeMore = useCallback(() => {
+  const handleSeeMore = useCallback(() => {
     // Always go to all reviews page (not single)
     window.open("https://www.trustpilot.com/review/newtownspares.com", "_blank");
   }, []);
@@ -74,9 +74,8 @@ const ProductReview = () => {
                   return (
                     <Star
                       key={i}
-                      className={`w-6 h-6 ${
-                        i < Math.floor(rating) ? "fill-[#FFA439]" : "fill-muted"
-                      }`}
+                      className={`w-6 h-6 ${i < Math.floor(rating) ? "fill-[#FFA439]" : "fill-muted"
+                        }`}
                     />
                   );
                 })}
@@ -156,7 +155,7 @@ const ProductReview = () => {
             <div
               className={`grid grid-cols-1 sm:grid-cols-2 gap-6 transition-all duration-700`}
             >
-              {displayedReviews.slice(0, 8).map((review, idx) => (
+              {displayedReviews.slice(0, 8).map((review: any, idx) => (
                 <article key={idx} className="border rounded-lg p-5 bg-white shadow-xs transition-all duration-500">
                   <header className="flex items-center justify-between mb-3 pb-2 border-b">
                     <div className="flex items-center gap-3">
@@ -178,7 +177,7 @@ const ProductReview = () => {
                         src={review.stars}
                         alt="Rating"
                         width={100}
-                        height={24}fetchPriority="high"
+                        height={24} fetchPriority="high"
                         className="h-6 w-auto object-contain"
                         unoptimized
                       />
@@ -208,8 +207,8 @@ const ProductReview = () => {
             !reviewsLoading &&
             !reviewsError &&
             reviews.length > displayedReviews.length && (
-            <div className="absolute bottom-0 left-0 right-0 h-96 pointer-events-none bg-gradient-to-t from-white to-transparent rounded-b-lg z-10" />
-          )}
+              <div className="absolute bottom-0 left-0 right-0 h-96 pointer-events-none bg-gradient-to-t from-white to-transparent rounded-b-lg z-10" />
+            )}
         </div>
       </div>
 
@@ -218,16 +217,16 @@ const ProductReview = () => {
         !reviewsLoading &&
         !reviewsError &&
         reviews.length > displayedReviews.length && (
-        <div className="text-center mt-8">
-          <Button
-            variant="link"
-            className="text-lg text-red-600 font-medium hover:underline"
-            onClick={handleSeeMore}
-          >
-            See all reviews ↓
-          </Button>
-        </div>
-      )}
+          <div className="text-center mt-8">
+            <Button
+              variant="link"
+              className="text-lg text-red-600 font-medium hover:underline"
+              onClick={handleSeeMore}
+            >
+              See all reviews ↓
+            </Button>
+          </div>
+        )}
     </section>
   );
 };
