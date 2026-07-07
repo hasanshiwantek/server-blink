@@ -320,7 +320,7 @@ export const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>(
                       >
                         Order:
                       </td>
-                      <td>#{order.id}</td>
+                      <td>#{order.orderNumber}</td>
                     </tr>
                     <tr>
                       <td
