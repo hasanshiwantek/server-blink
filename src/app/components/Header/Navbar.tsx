@@ -1,20 +1,17 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Search, ShoppingCart, Menu, X } from "lucide-react";
+import React, { useEffect } from "react";
 import navlogo from "@/assets/nav-logo.webp";
 import Image from "next/image";
 import Link from "next/link";
-import { RootState } from "@/redux/store";
 import { useAppSelector, useAppDispatch } from "@/hooks/useReduxHooks";
 import GlobalSearchBar from "./GlobalSearchBar";
-import MobileSearchBar from "./MobileSearchBar";
 import { fetchLogos } from "@/redux/slices/homeSlice";
+
+const robotoCondensed = "'Roboto ', Arial, Helvetica, sans-serif";
+
 const Navbar: React.FC = () => {
-  const [mobileOpen, setMobileOpen] = useState(false);
   const dispatch = useAppDispatch();
-  const cart = useAppSelector((state: RootState) => state.carts?.items);
-  const { logoUrl, faviconUrl, logoDimensions, logoType } = useAppSelector((state: any) => state?.home);
-  const robotoCondensed = "'Roboto ', Arial, Helvetica, sans-serif";
+  const { logoUrl, logoType } = useAppSelector((state: any) => state?.home);
   useEffect(() => {
     dispatch(fetchLogos());
   }, []);
@@ -63,6 +60,7 @@ const Navbar: React.FC = () => {
                   Call:{" "}
                   {/* <Link
                     href="tel:+15022063033"
+                    aria-label="Call +1 (502) 206-3033"
                     className="text-[var(--primary-color)] text-[18px] hover:underline"
                   >
                     {/* +1 502-206-3033 */}

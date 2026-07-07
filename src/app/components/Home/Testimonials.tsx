@@ -140,7 +140,6 @@ const Testimonials = () => {
     },
     [clickCarouselNav]
   );
-  // =======================================================
 
   const reviewTemplate = (review: Review) => (
     <div className="text-left p-4 flex flex-col gap-3 w-full max-w-[380px] h-[218px] box-border mx-auto">
@@ -199,7 +198,7 @@ const Testimonials = () => {
               "https://cdn.trustpilot.net/brand-assets/4.1.0/stars/stars-4.5.svg"
             }
             alt="Reviews"
-            width={200}fetchPriority="high"
+            width={200}
             height={200}
             className="max-w-44"
           />
