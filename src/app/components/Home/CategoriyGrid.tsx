@@ -1,16 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import { fetchCategories } from "@/lib/api/category";
 import Link from "next/link";
-
-import memoryImg from "@/assets/categories/memory.jpg";
-import motherboardImg from "@/assets/categories/motherboard.jpg";
-import gpuImg from "@/assets/categories/gpu.jpg";
-import hddImg from "@/assets/categories/hdd.jpg";
-import psuImg from "@/assets/categories/psu.jpg";
-
 interface Category {
   id: number;
   name: string;
@@ -23,14 +16,6 @@ interface Category {
   image?: string;
 }
 
-const GRID_CATEGORY_IMAGES: StaticImageData[] = [
-  memoryImg,
-  motherboardImg,
-  gpuImg,
-  hddImg,
-  psuImg,
-];
-
 const CategoryTile = ({
   category,
   index,
@@ -38,8 +23,7 @@ const CategoryTile = ({
   category: Category;
   index: number;
 }) => {
-  const categoryImage =
-    GRID_CATEGORY_IMAGES[index % GRID_CATEGORY_IMAGES.length];
+
   const colSpan = index < 3 ? "lg:col-span-2" : "lg:col-span-3";
 
   return (
@@ -49,8 +33,8 @@ const CategoryTile = ({
     >
       <div className="absolute inset-0">
         <Image
-          src={categoryImage}
-          alt={category.name}fetchPriority="high"
+          src={category?.image || "/default-product-image.svg"}
+          alt={category?.name}
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -64,7 +48,7 @@ const CategoryTile = ({
       <div className="absolute inset-x-0 bottom-4 z-20 bg-black/50 flex items-center justify-center px-6 py-7">
         <p
           className="text-white text-2xl md:text-3xl font-normal drop-shadow-2xl text-center uppercase tracking-wide m-0"
-          style={{ fontWeight:300 }}
+          style={{ fontWeight: 300 }}
         >
           {category.name}
         </p>
@@ -99,9 +83,8 @@ const CategoryGrid = () => {
           {[1, 2, 3, 4, 5].map((i) => (
             <div
               key={i}
-              className={`relative h-[200px] rounded-xs overflow-hidden bg-gray-200 animate-pulse ${
-                i < 4 ? "lg:col-span-2" : "lg:col-span-3"
-              }`}
+              className={`relative h-[200px] rounded-xs overflow-hidden bg-gray-200 animate-pulse ${i < 4 ? "lg:col-span-2" : "lg:col-span-3"
+                }`}
             />
           ))}
         </div>

@@ -119,9 +119,9 @@ const CategoriesSidebar: React.FC<CategoriesSidebarProps> = ({ activeCategoryId 
         <h2 className="text-[13px] lg:text-[15px] font-bold text-white ">SHOP BY CATEGORY</h2>
       </div>
       <div className="py-2 px-2 bg-white text-[#545454]" style={{ fontFamily: '"Roboto Condensed"' }}>
-        {categories?.slice(0, 10).map((category) => (
+        {categories?.slice(0, 10)?.map((category) => (
           <CategoryItem
-            key={category.id}
+            key={category?.id}
             category={category}
             expanded={expandedCategories}
             toggle={toggleCategory}

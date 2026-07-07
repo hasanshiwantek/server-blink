@@ -70,7 +70,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <div className="bg-[#F2F2F2] rounded transition flex flex-col h-full">
       {/* Image */}
-      <Link href={product.productUrl!}>
+      <Link href={product?.productUrl!}>
         <div className="relative w-full h-72 mb-2 bg-white">
           <Image
             src={imageSrc} fetchPriority="high"
@@ -85,17 +85,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         className="px-3 pb-3 flex flex-col flex-1"
         style={robotoCondensedStyle}
       >
-        <Link href={`/brand/${brandSlug || ""}`}>
+        <Link href={`/brand/${brandSlug || "/"}`}>
           <span className="text-[12px] text-[#7B7B7B] hover:text-[#D42020]" style={{ fontFamily: '"Roboto Condensed"' }}
           >{brandName} </span>
         </Link>
         <p className="text-[1rem] text-gray-400 mb-1 hover:text-[#D42020]" style={{ fontFamily: '"Roboto Condensed"' }}>
           Sku: {product.sku}
         </p>
-        <Link href={`${product?.productUrl}`}>
-          <p className="text-[14px] font-bold mb-1 text-[#545454] line-clamp-2 hover:text-[#D42020]" style={{ fontFamily: '"Roboto Condensed"' }}>
+        <Link href={product?.productUrl!}>
+          <span className="text-[14px] font-bold mb-1 text-[#545454] line-clamp-2 hover:text-[#D42020]" style={{ fontFamily: '"Roboto Condensed"' }}>
             {productName}
-          </p>
+          </span>
         </Link>
 
         {!availableForSale ? <div className="flex flex-col items-start gap-2 mb-2">
@@ -144,15 +144,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               // dispatch(addToCart(product));
               // Add only up to the allowed maximum
               const quantityToAdd = Math.min(minQty, remaining);
-
-              // dispatch(
-              //   addToCart({
-              //     ...product,
-              //     quantity: quantityToAdd,
-              //     minPurchaseQuantity: minQty,
-              //     maxPurchaseQuantity: maxQty,
-              //   })
-              // );
 
               dispatch(addCart({
                 data: {
