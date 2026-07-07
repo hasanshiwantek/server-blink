@@ -68,7 +68,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
 
   return (
-    <div className="bg-[#F2F2F2] rounded shadow hover:shadow-md transition flex flex-col h-full">
+    <div className="bg-[#F2F2F2] rounded shadow hover:shadow-md transition flex flex-col h-full" >
       {/* Image */}
       <Link href={product.productUrl!}>
         <div className="relative w-full h-72 mb-2 bg-white">
@@ -106,8 +106,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
             {/* New Price */}
             <span className="text-[1rem] font-bold  " style={{ fontFamily: '"Roboto"' }}>Call for pricing:<Link
-              //  href="tel:+15022063033"
-              href="#"
+              href="tel:+15022063033"
               className="text-[#d40511] underline">
               {/* (502) 206-3033 */}
             </Link></span>

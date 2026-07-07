@@ -13,10 +13,6 @@ import Autoplay from "embla-carousel-autoplay";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import Image from "next/image";
-import bannerImg1 from "@/assets/banner/banner-img1.jpg";
-import bannerImg2 from "@/assets/banner/banner-img2.jpg";
-import bannerImg3 from "@/assets/banner/banner-img3.jpg";
-import bannerImg4 from "@/assets/banner/banner-img4.jpg";
 import { fetchCarousels } from "@/redux/slices/homeSlice";
 
 const robotoCondensedStyle = { fontFamily: '"Roboto Condensed"' };
@@ -145,12 +141,13 @@ const Banner = () => {
           {carousels?.map((_: any, index: number) => (
             <button
               key={index}
+              type="button"
+              aria-label={`Go to slide ${index + 1}`}
               onClick={() => api?.scrollTo(index)}
               className={`w-4 h-4 rounded-full transition-all duration-300 ${current === index
                 ? "bg-[#d42020] w-3"
                 : "bg-white/60 hover:bg-white/90"
                 }`}
-              aria-label={`Go to slide ${index + 1}`}
             />
           ))}
         </div>
