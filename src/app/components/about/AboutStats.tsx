@@ -50,7 +50,7 @@ const AboutStats = () => {
                 fill
                 className="object-cover"
                 priority
-                fetchPriority="high"
+                
               />
 
               {/* Dark Overlay */}

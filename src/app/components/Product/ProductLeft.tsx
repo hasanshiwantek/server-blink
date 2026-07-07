@@ -136,7 +136,6 @@ const ProductLeft = ({
               width={500}
               height={500}
               priority={true}
-              fetchPriority="high"
               decoding="sync"
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 35vw"
               quality={80}
@@ -229,7 +228,7 @@ const ProductLeft = ({
                       alt={`Product image ${modalIndex + 1} of ${imageList.length}`}
 
                       width={1200}
-                      height={1200}fetchPriority="high"
+                      height={1200}
                       loading="lazy"
                       onClick={() => setExpanded((e) => !e)}
                       className={cn(
@@ -271,7 +270,7 @@ const ProductLeft = ({
                         src={badge.src}
                         alt={badge.alt}
                         width={90}
-                        height={90}fetchPriority="high"
+                        height={90}
                         loading="lazy"   // ✅ below fold — lazy
                         className="h-full w-full object-contain"
                       />

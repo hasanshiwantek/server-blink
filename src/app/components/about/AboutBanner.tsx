@@ -22,8 +22,8 @@ const AboutBanner = () => {
           fill
           className="object-cover -rotate-y-180 "
           priority
-          quality={90}
-          fetchPriority="high"
+          quality={75}
+         
         />
         {/* Overlay for better text readability */}
         {/* <div className="absolute inset-0 bg-gradient-to-r from-[#0a1a3a]/80 via-[#0a1a3a]/60 to-transparent"></div> */}
