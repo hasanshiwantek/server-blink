@@ -77,16 +77,20 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
     <div className="relative w-full overflow-hidden">
       {/* Navigation Buttons */}
       <button
+        type="button"
+        aria-label="Previous slide"
         onClick={scrollLeft}
         className="absolute top-1/2 -left-6 -translate-y-1/2 z-10 text-black p-2 rounded-full hover:bg-gray-100 transition-colors"
       >
-        <ChevronLeft size={34} />
+        <ChevronLeft size={34} aria-hidden="true" />
       </button>
       <button
+        type="button"
+        aria-label="Next slide"
         onClick={scrollRight}
         className="absolute top-1/2 -right-6 -translate-y-1/2 z-10 text-black p-2 rounded-full hover:bg-gray-100 transition-colors"
       >
-        <ChevronRight size={34} />
+        <ChevronRight size={34} aria-hidden="true" />
       </button>
 
       {/* Carousel Container */}
@@ -113,12 +117,12 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
           >
             <Card className="border-none shadow-none flex justify-center items-center bg-transparent">
               <CardContent className="flex items-center justify-center p-6 w-[100.2%] md:w-[139.2%] h-[13.34rem] bg-[#FFFFFF] rounded-2xl">
-                <Link href={`/brand/${item?.slug}`} title="" onClick={(e) => e.stopPropagation()}>
+                <Link href={`/brand/${item?.slug}`} aria-label={`View ${item.name} products`} onClick={(e) => e.stopPropagation()}>
                   <div className="w-32 h-32">
                     <Image
                       src={item.logo ?? "/default-product-image.svg"}
                       alt={item.name}
-                      width={250}fetchPriority="high"
+                      width={250} fetchPriority="high"
                       height={250}
                       className="object-contain transition-all duration-700 ease-in-out hover:scale-105 cursor-pointer w-full h-full select-none"
                       loading="lazy"

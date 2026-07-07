@@ -106,8 +106,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
             {/* New Price */}
             <span className="text-[1rem] font-bold  " style={{ fontFamily: '"Roboto"' }}>Call for pricing:<Link
-              //  href="tel:+15022063033"
-              href="#"
+              href="tel:+15022063033"
               className="text-[#d40511] underline">
               {/* (502) 206-3033 */}
             </Link></span>
@@ -172,7 +171,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           {"ADD TO CART"}
         </button> : <button
           onClick={() => {
-            router.push(product?.productUrl || "#");
+            router.push(product?.productUrl || "/");
           }}
           className="w-full bg-[#CAC9C9] hover:bg-[#D42020] font-bold text-[#393939] border-b-2 border-[#393939] py-1 hover:text-white rounded text-[14px] mt-auto transition">
           {"CALL FOR PRICING"}
