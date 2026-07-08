@@ -17,6 +17,16 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "backend.sparemicro.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "dn3xtdxrpdtqv.cloudfront.net",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "ecom.brokercell.com",
         pathname: "/product_images/**",
       },
@@ -40,12 +50,6 @@ const nextConfig: NextConfig = {
         hostname: "cdn11.bigcommerce.com",
         pathname: "/**",
       },
-      // Catch-all for any other HTTPS image
-      {
-        protocol: "https",
-        hostname: "*",
-        pathname: "/**",
-      },
     ],
   },
 
@@ -58,10 +62,6 @@ const nextConfig: NextConfig = {
   experimental: {
     esmExternals: true,
     serverActions: { allowedOrigins: [] },
-  },
-
-  future: {
-    webpack5: true,
   },
 
   async headers() {
@@ -126,11 +126,7 @@ const nextConfig: NextConfig = {
       fallback: [],
     };
   },
-  webpack(config, { dev, isServer }) {
-    // Target modern JS in client build
-    // if (!dev && !isServer) {
-    //   config.target = ["web", "es6"];
-    // }
+  webpack(config) {
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
