@@ -3,7 +3,6 @@
 import React from "react";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { addToCart } from "@/redux/slices/cartSlice";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -37,7 +36,9 @@ interface ProductCardProps {
   product: Product;
 }
 
-const robotoCondensedStyle = { fontFamily: '"Roboto Condensed"' };
+// const robotoCondensedStyle = { fontFamily: '"Roboto Condensed"' };
+const robotoCondensedStyle = { fontFamily: "var(--font-roboto-condensed)" };
+const robotoStyle = { fontFamily: "var(--font-roboto)" };
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const router = useRouter();
@@ -76,8 +77,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             src={imageSrc}
             alt={productName}
             fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className="object-contain"
-            priority
+            loading="lazy"      // ✅ priority hatao, lazy karo
+            quality={75}
           />
         </div>
       </Link>
@@ -87,14 +90,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         style={robotoCondensedStyle}
       >
         <Link href={`/brand/${brandSlug || "/"}`}>
-          <span className="text-[12px] text-[#7B7B7B] hover:text-[#D42020]" style={{ fontFamily: '"Roboto Condensed"' }}
+          <span className="text-[12px] text-[#7B7B7B] hover:text-[#D42020]" style={robotoCondensedStyle}
           >{brandName} </span>
         </Link>
-        <p className="text-[1rem] text-gray-400 mb-1 hover:text-[#D42020]" style={{ fontFamily: '"Roboto Condensed"' }}>
+        <p className="text-[1rem] text-gray-400 mb-1 hover:text-[#D42020]" style={robotoCondensedStyle}>
           Sku: {product.sku}
         </p>
         <Link href={product?.productUrl || "/"}>
-          <span className="text-[14px] font-bold mb-1 text-[#545454] line-clamp-2 hover:text-[#D42020]" style={{ fontFamily: '"Roboto Condensed"' }}>
+          <span className="text-[14px] font-bold mb-1 text-[#545454] line-clamp-2 hover:text-[#D42020]" style={robotoCondensedStyle}>
             {productName}
           </span>
         </Link>
@@ -106,14 +109,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </span>
 
             {/* New Price */}
-            <span className="text-[1rem] font-bold  " style={{ fontFamily: '"Roboto"' }}>Call for pricing:<Link
+            <span className="text-[1rem] font-bold  " style={robotoStyle}>Call for pricing:<Link
               href="tel:+15022063033"
               className="text-[#d40511] underline">
               {/* (502) 206-3033 */}
             </Link></span>
           </>
 
-        </div> : <div className="flex flex-col items-start gap-2 mb-2 " style={{ fontFamily: '"Roboto"' }}>
+        </div> : <div className="flex flex-col items-start gap-2 mb-2 " style={robotoStyle}>
           {product?.msrp && Number(product.msrp) > 0 ? (
             <>
               {/* Old Price */}

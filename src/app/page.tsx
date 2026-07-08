@@ -7,6 +7,9 @@ import Brands from "./components/Home/Brands";
 import ShopNow from "./components/Home/ShopNow";
 import Testimonials from "./components/Home/Testimonials";
 import { fetchWebsiteSeo } from "@/lib/api/storeFront";
+import { fetchCarousels } from "@/lib/api/home";
+import { fetchCategories } from "@/lib/api/category";
+import { fetchBrands } from "@/lib/api/brand";
 
 const CategoriesSidebar = dynamic(() => import("./components/Home/CategoriesSidebar"));
 const BrandsSidebar = dynamic(() => import("./components/Home/BrandsSidebar"));
@@ -51,6 +54,10 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 const Page = async () => {
+  const carousels = await fetchCarousels();
+  const categories = await fetchCategories();
+  const brands = await fetchBrands();
+
   return (
     <main className="flex flex-col gap-30" role="main">
       {/* Container: max-width 1170px, centered */}
@@ -64,8 +71,8 @@ const Page = async () => {
             </aside>
             {/* Main Content */}
             <div className="w-full lg:w-[78%] p-0">
-              <Banner />
-              <CategoryGrid />
+              <Banner carousels={carousels?.slides} settings={carousels?.settings} />
+              <CategoryGrid categories={(categories?.data ?? categories)?.slice(0, 5)} />
               <FeaturedProducts
                 endpoint="web/products/featured-products"
                 isSlider={true}
@@ -82,7 +89,7 @@ const Page = async () => {
                 title={"New Products".toUpperCase()}
               />
               <Testimonials />
-              <Brands />
+              <Brands brands={brands} />
               <ShopNow />
             </div>
           </div>
