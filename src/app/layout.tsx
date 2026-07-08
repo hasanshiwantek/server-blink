@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import LayoutWrapper from "./components/layout/LayoutWrapper";
-import { Inter, Jost, Roboto, Roboto_Condensed } from "next/font/google";
-import localFont from "next/font/local";
+import { Inter, Roboto, Roboto_Condensed } from "next/font/google";
 import ScriptInjector from "@/components/ScriptInjector";
 import DynamicFavicon from "@/components/DynamicFavicon";
-import "../styles/blog/api-content.css";
 import "./globals.css";
 const inter = Inter({
   subsets: ["latin"],
