@@ -54,9 +54,18 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 const Page = async () => {
-  const carousels = await fetchCarousels();
-  const categories = await fetchCategories();
-  const brands = await fetchBrands();
+    const [carouselsRes, categoriesRes, brandsRes] = await Promise.allSettled([
+    fetchCarousels(),
+    fetchCategories(),
+    fetchBrands(),
+  ]);
+
+  const carousels = carouselsRes.status === "fulfilled" ? carouselsRes.value : null;
+  const categories = categoriesRes.status === "fulfilled" ? categoriesRes.value : null;
+  const brands = brandsRes.status === "fulfilled" ? brandsRes.value : [];
+  // const carousels = await fetchCarousels();
+  // const categories = await fetchCategories();
+  // const brands = await fetchBrands();
 
   return (
     <main className="flex flex-col gap-30" role="main">
