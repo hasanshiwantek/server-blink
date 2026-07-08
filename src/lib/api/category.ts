@@ -30,7 +30,7 @@ export async function fetchCategoryById(id: number | string) {
     if (res.status === 404) return null;
 
     if (!res.ok) {
-      console.error(`Category API error: ${res.status} for id ${id}`);
+     
       return null;
     }
 
@@ -38,7 +38,7 @@ export async function fetchCategoryById(id: number | string) {
     return data || null;
 
   } catch (err) {
-    console.error(`fetchCategoryById failed for id ${id}:`, err);
+    
     return null;
   }
 }

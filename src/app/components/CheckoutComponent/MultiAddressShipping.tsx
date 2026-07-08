@@ -614,7 +614,7 @@ const MultiAddressShipping = ({
         }),
       );
     } catch (err) {
-      console.error("Failed to fetch rates for dest:", destId, err);
+    
       setDestShippingRates((prev) => ({ ...prev, [destId]: [] }));
     } finally {
       setDestRatesLoading((prev) => ({ ...prev, [destId]: false }));

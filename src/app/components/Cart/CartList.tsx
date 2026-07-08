@@ -224,7 +224,7 @@ const CartList = () => {
                       onChange={(e) => handleChange(item?.cartItemId, e.target.value, maxQty)}
                       onBlur={(e) => {
                         const parsed = Number(quantities[item.cartItemId]);
-                        console.log("parsed", parsed);
+                        
 
                         if (!parsed || parsed <= 0) {
                           dispatch(updateCart({

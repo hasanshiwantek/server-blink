@@ -120,7 +120,7 @@ const ReturnItemsModal: React.FC<ReturnItemsModalProps> = ({
         }
       } catch (err) {
         setError("Failed to load order details");
-        console.error(err);
+      
       } finally {
         setLoading(false);
       }
@@ -176,7 +176,7 @@ const ReturnItemsModal: React.FC<ReturnItemsModalProps> = ({
 
       onClose();
     } catch (err) {
-      console.error("Submission error:", err);
+   
       alert("Failed to submit return request. Please try again.");
     } finally {
       setSubmitting(false);

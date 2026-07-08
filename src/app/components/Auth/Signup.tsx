@@ -114,10 +114,10 @@ const SignupPage = () => {
       } else {
         const errorMessage =
           result.payload || "Registration failed. Please try again.";
-        console.error("Registration failed:", errorMessage);
+       
       }
     } catch (err: any) {
-      console.error("🚨 Unexpected error:", err);
+     
     }
   };
 

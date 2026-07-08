@@ -94,10 +94,10 @@ const SignupForm = ({ onCancel }: SignupFormProps) => {
         const errorMessage =
           result.payload || "Registration failed. Please try again.";
 
-        console.error("Registration failed:", errorMessage);
+     
       }
     } catch (err) {
-      console.error("🚨 Unexpected error:", err);
+    
     }
   };
   return (

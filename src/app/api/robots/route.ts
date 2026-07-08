@@ -38,7 +38,7 @@ export async function GET() {
     }
 
   } catch (err: any) {
-    console.error("Error:", err.response?.data || err.message);
+  
 
     // Fallback on error
     const fallback = `User-agent: *\nAllow: /\nSitemap: ${process.env.SITE_URL || "https://staging.sparemicro.com"

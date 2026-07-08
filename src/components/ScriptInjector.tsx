@@ -49,7 +49,7 @@ export default function ScriptInjector() {
                     scriptEl.textContent = content;
                     document[target]?.appendChild(scriptEl);
                 } catch (err) {
-                    console.error(`Failed to execute script ${script.id}:`, err);
+                
                 }
             });
         };

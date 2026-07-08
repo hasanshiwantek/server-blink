@@ -8,7 +8,7 @@ try {
   const result = await fetchBrands();
   brandsData = Array.isArray(result) ? result : [];
 } catch (error) {
-  console.error("Error fetching brands:", error);
+
   brandsData = [];
 }
 const AboutBrandSection = () => {

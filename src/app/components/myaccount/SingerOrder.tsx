@@ -109,7 +109,7 @@ const SingleOrder = () => {
         }
       } catch (err) {
         setError("Failed to load order details");
-        console.error(err);
+       
       } finally {
         setLoading(false);
       }

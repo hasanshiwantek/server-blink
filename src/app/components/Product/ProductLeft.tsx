@@ -26,19 +26,22 @@ const TRUST_BADGES = [
   {
     src: img1,
     alt: "Trustpilot — verified reviews platform",
-    tooltip: "A well-known review website is Trustpilot. It is used by companies of all sizes, from small local businesses to large international corporations.",
+    tooltip:
+      "A well-known review website is Trustpilot. It is used by companies of all sizes, from small local businesses to large international corporations.",
     border: true,
   },
   {
     src: img2,
     alt: "Easy Returns — hassle free returns",
-    tooltip: "Express shipping is available. Get your product delivered in as fast as one day",
+    tooltip:
+      "Express shipping is available. Get your product delivered in as fast as one day",
     border: true,
   },
   {
     src: img3,
     alt: "Fast Shipping — express delivery",
-    tooltip: "Have peace of mind knowing that *replacements/refunds are done promptly",
+    tooltip:
+      "Have peace of mind knowing that *replacements/refunds are done promptly",
     border: true,
   },
   {
@@ -76,14 +79,14 @@ const ProductLeft = ({
 
   const goPrev = useCallback(() => {
     setModalIndex((i) =>
-      imageList.length <= 1 ? i : (i - 1 + imageList.length) % imageList.length
+      imageList.length <= 1 ? i : (i - 1 + imageList.length) % imageList.length,
     );
     setZoomed(false);
   }, [imageList.length]);
 
   const goNext = useCallback(() => {
     setModalIndex((i) =>
-      imageList.length <= 1 ? i : (i + 1) % imageList.length
+      imageList.length <= 1 ? i : (i + 1) % imageList.length,
     );
     setZoomed(false);
   }, [imageList.length]);
@@ -99,7 +102,6 @@ const ProductLeft = ({
   }, [lightboxOpen, goPrev, goNext]);
 
   const modalSrc = imageList[modalIndex] ?? "/default-product-image.svg";
-
 
   useEffect(() => {
     if (!lightboxOpen) return;
@@ -123,21 +125,22 @@ const ProductLeft = ({
             type="button"
             onClick={() => {
               if (selectedImage) {
-                openLightbox()
+                openLightbox();
               }
             }}
             className="flex h-full w-full cursor-zoom-in items-center justify-center rounded-xl bg-transparent p-0 text-left outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-[#D42020]"
             aria-label="View product image larger"
           >
             <Image
-              src={selectedImage || "/default-product-image.svg"}
               alt="Main product image"
+              priority
               className="h-full w-full object-contain"
               width={500}
               height={500}
-              priority={true}
+              src={selectedImage || "/default-product-image.svg"}
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 35vw"
               quality={80}
+              fetchPriority="high"
             />
           </button>
         </div>
@@ -148,7 +151,7 @@ const ProductLeft = ({
             <DialogPrimitive.Content
               aria-describedby={undefined}
               className={cn(
-                "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-[101] flex flex-col border-0 bg-transparent p-0 shadow-none outline-none"
+                "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-[101] flex flex-col border-0 bg-transparent p-0 shadow-none outline-none",
               )}
             >
               <DialogPrimitive.Title className="sr-only">
@@ -188,7 +191,10 @@ const ProductLeft = ({
                     className="pointer-events-auto absolute left-2 top-1/2 z-[110] -translate-y-1/2 rounded-sm p-2 text-neutral-400 transition hover:text-white sm:left-4 md:left-8"
                     aria-label="Previous image"
                   >
-                    <ChevronLeft className="h-14 w-14 md:h-16 md:w-16" strokeWidth={1.25} />
+                    <ChevronLeft
+                      className="h-14 w-14 md:h-16 md:w-16"
+                      strokeWidth={1.25}
+                    />
                   </button>
                   <button
                     type="button"
@@ -199,7 +205,10 @@ const ProductLeft = ({
                     className="pointer-events-auto absolute right-2 top-1/2 z-[110] -translate-y-1/2 rounded-sm p-2 text-neutral-400 transition hover:text-white sm:right-4 md:right-8"
                     aria-label="Next image"
                   >
-                    <ChevronRight className="h-14 w-14 md:h-16 md:w-16" strokeWidth={1.25} />
+                    <ChevronRight
+                      className="h-14 w-14 md:h-16 md:w-16"
+                      strokeWidth={1.25}
+                    />
                   </button>
                 </>
               )}
@@ -212,20 +221,21 @@ const ProductLeft = ({
                     expanded
                       ? "max-h-[90vh] max-w-[90vw] w-[90vw] h-[90vh]"
                       : "max-h-[min(72vh,640px)] max-w-[min(82vw,640px)]",
-                    zoomed && !expanded && "max-h-[85vh] max-w-[92vw] overflow-auto"
+                    zoomed &&
+                      !expanded &&
+                      "max-h-[85vh] max-w-[92vw] overflow-auto",
                   )}
                 >
                   <div
                     className={cn(
                       "relative flex min-h-[160px] min-w-[160px] max-w-full items-center justify-center",
                       zoomed && !expanded && "min-h-[45vh]",
-                      expanded && "w-full h-full"
+                      expanded && "w-full h-full",
                     )}
                   >
                     <Image
                       src={modalSrc}
                       alt={`Product image ${modalIndex + 1} of ${imageList.length}`}
-
                       width={1200}
                       height={1200}
                       loading="lazy"
@@ -235,9 +245,10 @@ const ProductLeft = ({
                         expanded
                           ? "h-full w-full max-h-[calc(90vh-2.5rem)] max-w-full cursor-zoom-out"
                           : cn(
-                            "h-auto max-h-[56vh] w-auto max-w-[min(78vw,560px)] cursor-zoom-in",
-                            zoomed && "max-h-none max-w-none scale-[1.45] sm:scale-[1.6]"
-                          )
+                              "h-auto max-h-[56vh] w-auto max-w-[min(78vw,560px)] cursor-zoom-in",
+                              zoomed &&
+                                "max-h-none max-w-none scale-[1.45] sm:scale-[1.6]",
+                            ),
                       )}
                       sizes="90vw"
                       quality={90}
@@ -252,7 +263,7 @@ const ProductLeft = ({
         <TooltipProvider>
           <div
             className="mx-auto mt-2 flex w-fit items-center gap-0 overflow-x-auto border-2 border-[#545454] hidden sm:flex"
-            // className="mx-auto mt-2 hidden sm:flex w-fit items-center gap-0 overflow-x-auto border-2 border-[#545454]"  
+            // className="mx-auto mt-2 hidden sm:flex w-fit items-center gap-0 overflow-x-auto border-2 border-[#545454]"
             aria-label="Trust and security badges"
           >
             {TRUST_BADGES.map((badge, i) => (
@@ -261,7 +272,7 @@ const ProductLeft = ({
                   <div
                     className={cn(
                       "flex flex-col items-center",
-                      badge.border && "border-r-2 border-[#545454]"
+                      badge.border && "border-r-2 border-[#545454]",
                     )}
                   >
                     <div className="flex h-[60px] w-[60px] flex-shrink-0 items-center justify-center sm:h-[75px] sm:w-[75px] md:h-[90px] md:w-[90px]">
@@ -270,7 +281,7 @@ const ProductLeft = ({
                         alt={badge.alt}
                         width={90}
                         height={90}
-                        loading="lazy"   // ✅ below fold — lazy
+                        loading="lazy" // ✅ below fold — lazy
                         className="h-full w-full object-contain"
                       />
                     </div>
@@ -281,14 +292,15 @@ const ProductLeft = ({
                   className="max-w-[280px] rounded-md bg-[#3d3d3d] px-4 py-2 text-base text-white"
                 >
                   {badge.tooltip ? (
-                    <p className="text-[16px] roboto-font"  >{badge.tooltip}</p>
+                    <p className="text-[16px] roboto-font">{badge.tooltip}</p>
                   ) : (
                     // Secure Payment custom content
                     <>
                       <p className="text-[16px] mb-2 roboto-font">
-                        Protects both users and merchants from the threats posed by fraudulent payments. Accepted Payment Cards:
+                        Protects both users and merchants from the threats posed
+                        by fraudulent payments. Accepted Payment Cards:
                       </p>
-                      <ul className="list-none space-y-1 text-[16px] roboto-font" >
+                      <ul className="list-none space-y-1 text-[16px] roboto-font">
                         <li>Visa</li>
                         <li>Mastercard</li>
                         <li>American Express</li>

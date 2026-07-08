@@ -54,7 +54,7 @@ const MyAddress = () => {
         await dispatch(deletecustomeraddress({ id })).unwrap();
         dispatch(fetchCustomerAddress());
       } catch (err) {
-        console.error("Delete failed:", err);
+      
       }
     }
   };
@@ -103,7 +103,7 @@ const MyAddress = () => {
       setShowModal(false);
       dispatch(fetchCustomerAddress());
     } catch (err) {
-      console.error("Update failed:", err);
+   
     }
   };
   const stateList = useMemo(() => {

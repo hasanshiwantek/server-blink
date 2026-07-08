@@ -41,7 +41,7 @@ export const fetchProductBySlugAndUrl = async (slug?: string) => {
 
     return data.data;
   } catch (err) {
-    console.error("🚨 Error fetching product:", err);
+ 
     return null; // always return null, not throw
   }
 };
@@ -53,7 +53,7 @@ export const fetchProductBySlug = async (slug: string) => {
     });
 
     if (!res.ok) {
-      console.error(`❌ API failed for slug: ${slug}, status: ${res.status}`);
+  
       return null;
     }
 
@@ -65,7 +65,7 @@ export const fetchProductBySlug = async (slug: string) => {
 
     return data.data;
   } catch (err) {
-    console.error("🚨 Error fetching product:", err);
+   
     return null; // always return null, not throw
   }
 };
