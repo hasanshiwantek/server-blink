@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import { useAppSelector } from "@/hooks/useReduxHooks";
 import CommonCarousel from "../commoncarousel/CommonCarousel";

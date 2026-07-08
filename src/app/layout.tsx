@@ -4,6 +4,7 @@ import { Roboto, Roboto_Condensed } from "next/font/google";
 import ScriptInjector from "@/components/ScriptInjector";
 import DynamicFavicon from "@/components/DynamicFavicon";
 import "./globals.css";
+// import "./styles/blog/api-content.css";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -14,11 +15,6 @@ const roboto = Roboto({
   adjustFontFallback: false,
 
 });
-// const robotoCondensed = Roboto_Condensed({
-//   subsets: ["latin"],
-//   weight: ["300", "400", "700"],
-//   variable: "--font-roboto-condensed",
-// });
 
 const robotoCondensed = Roboto_Condensed({
   subsets: ["latin"],
@@ -27,45 +23,11 @@ const robotoCondensed = Roboto_Condensed({
   preload: true,          // ✅ FIX: preload add kiya
   variable: "--font-roboto-condensed",
 });
-// // ✅ Recoleta (400–700) - Loading multiple weights
-// const gilroy = localFont({
-//   src: [
-//     {
-//       // 🚨 Ensure file name matches exactly (with space)
-//       path: "./fonts/Gilroy-Regular.ttf",
-//       weight: "400", // Regular
-//       style: "normal",
-//     },
-//     {
-//       // 🚨 Ensure file name matches exactly (with space)
-//       path: "./fonts/Gilroy-Medium.ttf",
-//       weight: "500", // Medium
-//       style: "normal",
-//     },
-//     {
-//       // 🚨 Ensure file name matches exactly (with space)
-//       path: "./fonts/Gilroy-SemiBold.ttf",
-//       weight: "600", // SemiBold
-//       style: "normal",
-//     },
-//     {
-//       // 🚨 Ensure file name matches exactly (with space)
-//       path: "./fonts/Gilroy-Bold.ttf",
-//       weight: "700", // Bold
-//       style: "normal",
-//     },
-//   ],
-//   variable: "--font-recoleta",
-//   display: "swap",
-//   preload: true,
-// });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://staging.sparemicro.com"),
   robots: { index: false, follow: false },
   title: {
-    // default: "Server Blink",
-    // template: "%s | Server Blink",
     default: "Server Blink LLC",
     template: "%s | Server Blink ",
   },
