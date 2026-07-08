@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import {
   Carousel,
   CarouselContent,
@@ -11,19 +12,14 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { useRouter } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import Image from "next/image";
-import { fetchCarousels } from "@/redux/slices/homeSlice";
 
-const robotoCondensedStyle = { fontFamily: '"Roboto Condensed"' };
-const roboto = "'Roboto Condensed', Arial, Helvetica, sans-serif";
+const robotoCondensedStyle = { fontFamily: "var(--font-roboto-condensed)" };
+const roboto = "var(--font-roboto-condensed), Arial, Helvetica, sans-serif";
 
-const Banner = () => {
+const Banner = ({ carousels, settings }: any) => {
   const router = useRouter();
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
-  const { carousels, loading, swapInterval } = useAppSelector((state: any) => state?.home);
-  const dispatch = useAppDispatch();
   const plugin = useRef(
     Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true })
   );
@@ -41,14 +37,7 @@ const Banner = () => {
   }, [api]);
 
 
-  useEffect(() => {
-    dispatch(fetchCarousels());
-  }, []);
-
-
-  if (loading) return (
-    <div className="w-full h-[400px] animate-pulse bg-gray-200 rounded" />
-  )
+  if (!carousels?.length) return null
 
   return (
     <div className="relative w-full">
@@ -73,10 +62,10 @@ const Banner = () => {
                     src={slide.image}
                     alt={slide.altText}
                     fill
+                    sizes="(max-width: 640px) 100vw, 913px"
                     className="object-cover"
                     priority={index === 0}
-                    quality={90}
-                    fetchPriority="high"
+                    quality={75}
                   />
                 </div>
 
