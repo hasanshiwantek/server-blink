@@ -171,7 +171,6 @@ export const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>(
       <div
         ref={ref}
         style={{
-          fontFamily: "Roboto, Arial, Helvetica, sans-serif",
           fontSize: "13px",
           color: "#000",
           background: "#fff",
@@ -183,6 +182,7 @@ export const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>(
           lineHeight: 1.4,
           border: "3px solid #dcdcdc",
         }}
+        className="roboto-font"
       >
         {/* ── Logo ── */}
         <div style={{ marginBottom: "16px" }}>

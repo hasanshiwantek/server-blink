@@ -34,7 +34,7 @@ const MyAddress = () => {
   );
 
   const auth = useAppSelector((state: RootState) => state.auth);
-  const roboto = "'Roboto', Arial, Helvetica, sans-serif";
+  
 
   const [showModal, setShowModal] = useState(false);
   const [editData, setEditData] = useState<any>(null);
@@ -333,8 +333,8 @@ const MyAddress = () => {
 
           {!loading && !error && (
             <div
-              className="grid grid-cols-1 md:grid-cols-2 gap-6"
-              style={{ fontFamily: roboto }}
+              className="grid grid-cols-1 md:grid-cols-2 gap-6 roboto-font"
+            
             >
               {/* Address List */}
               {customerAddresses?.map((item: any) => (

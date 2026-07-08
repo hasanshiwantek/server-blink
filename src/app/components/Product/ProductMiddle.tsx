@@ -14,7 +14,7 @@ import BulkInquiryModal from "../modal/BulkInquiryModal";
 import AddReviewModal from "../modal/AddReviewModal";
 
 
-const ROBOTO_CONDENSED = "'Roboto Condensed'";
+
 
 const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }: any) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,7 +56,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
       <section className="product-middle flex flex-col h-full w-full max-w-full  xl:max-w-[50%] 2xl:max-w-[50%] ">
         {/* Title Section */}
         <div className="flex flex-col gap-2 mb-4">
-          <h1 className="font-bold text-[18px] sm:text-[18px] md:text-[18px] lg:text-[20px] xl:text-[20px] 2xl:text-[20px] leading-tight text-[#545454] border-b-1 border-[#8b8b8b] pb-3" style={{ fontFamily: ROBOTO_CONDENSED }}>
+          <h1 className="font-bold text-[18px] sm:text-[18px] md:text-[18px] lg:text-[20px] xl:text-[20px] 2xl:text-[20px] leading-tight text-[#545454] border-b-1 border-[#8b8b8b] pb-3 roboto-condensed-only-font" >
             {product?.name || "N/A"}
           </h1>
 

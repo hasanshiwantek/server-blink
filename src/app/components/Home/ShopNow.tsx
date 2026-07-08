@@ -15,7 +15,7 @@ const ShopNow = () => {
         <div className="max-w-7xl mx-auto px-6 py-10 w-full">
           <div className="w-full max-w-[361px] text-left text-[#444444]">
             <h2 className="text-[2.66rem] font-bold mb-4">ABOUT US</h2>
-            <p className="text-2xl leading-relaxed mb-6 text-[#444444]" style={{ fontFamily: "Roboto, Arial, Helvetica, sans-serif" }}>
+            <p className="text-2xl leading-relaxed mb-6 text-[#444444] roboto-font">
               We are a leading online retailer of server parts, committed to
               providing high-quality and reliable products to our customers.
               With a wide range of parts to choose from, we make it easy for

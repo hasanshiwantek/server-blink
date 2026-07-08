@@ -180,8 +180,8 @@ const TopHeader = () => {
                 }`}
             >
               <p
-                className="font-bold text-[14px]"
-                style={{ fontFamily: "Roboto Condensed, Arial, Helvetica, sans-serif" }}
+                className="font-bold text-[14px] roboto-condensed-font "
+              
               >
                 $10 off on First Order: Code: FIRSTORDER
               </p>
@@ -386,8 +386,8 @@ const TopHeader = () => {
                 {auth?.isAuthenticated ? (
                   <button
                     onClick={handleLogout}
-                    className="font-bold text-[12px] sm:text-[14px] hover:text-gray-300 transition"
-                    style={{ fontFamily: '"Roboto Condensed"' }}
+                    className="font-bold text-[12px] sm:text-[14px] hover:text-gray-300 transition roboto-condensed-only-font"
+                    
                   >
                     Logout
                   </button>
@@ -395,22 +395,22 @@ const TopHeader = () => {
                   <>
                     <Link href="/auth/login">
                       <button
-                        className="font-bold text-[12px] sm:text-[14px] hover:text-gray-300 transition"
-                        style={{ fontFamily: "Roboto Condensed, Arial, Helvetica, sans-serif" }}
+                        className="font-bold text-[12px] sm:text-[14px] hover:text-gray-300 transition roboto-condensed-font"
+                        
                       >
                         Login
                       </button>
                     </Link>
                     <span
-                      className="font-bold"
-                      style={{ fontFamily: "Roboto, Arial, Helvetica, sans-serif" }}
+                      className="font-bold roboto-font"
+                     
                     >
                       or
                     </span>
                     <Link href="/auth/signup">
                       <button
-                        className="font-bold text-[12px] sm:text-[14px] hover:text-gray-300 transition"
-                        style={{ fontFamily: "Roboto Condensed, Arial, Helvetica, sans-serif" }}
+                        className="font-bold text-[12px] sm:text-[14px] hover:text-gray-300 transition roboto-condensed-font"
+                      
                       >
                         Sign Up
                       </button>

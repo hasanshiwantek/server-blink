@@ -27,7 +27,7 @@ export default function ProductPage({
     const [query, setQuery] = useState("");
     const [category, setCategory] = useState([]);
     const [brand, setBrand] = useState([]);
-const roboto = "'Roboto', Arial, Helvetica, sans-serif";
+
     useEffect(() => {
         const stored = localStorage.getItem("advancedSearchFilters");
         if (stored) {
@@ -70,7 +70,7 @@ const roboto = "'Roboto', Arial, Helvetica, sans-serif";
                     </aside>
 
                     {/* Main Product Content - Fixed 912px max on desktop */}
-                    <article className="w-full lg:max-w-[78%]" style={{fontFamily:roboto}}>
+                    <article className="w-full lg:max-w-[78%] roboto-font " >
                         <div className="hidden md:flex mb-4 px-4 md:px-0">
                             <h2>
                                 <Link href={"/"} className="text-[11px]" itemProp="name">

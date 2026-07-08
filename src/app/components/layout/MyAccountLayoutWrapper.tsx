@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 
 const MyAccountTabs = () => {
   const pathname = usePathname();
-  const roboto = "'Roboto', Arial, Helvetica, sans-serif";
+ 
 
   const tabs = [
     { name: "Orders", href: "/my-account/orders" },
@@ -55,7 +55,7 @@ const MyAccountTabs = () => {
 </div>
 
 {/* Optional: Current Tab as Heading */}
-<div className="text-[28px] mb-8 text-[#545454] !font-normal" style={{fontFamily:roboto}}>
+<div className="text-[28px] mb-8 text-[#545454] !font-normal roboto-font">
   {getActiveTab()}
 </div>
 
@@ -69,8 +69,8 @@ const MyAccountTabs = () => {
       <Link
         key={tab.name}
         href={tab.href}
-        style={{fontFamily:roboto}}
-        className={`px-2  text-[14px] font-normal transition-colors duration-200 uppercase md:px-4 md:py-2 ${
+       
+        className={`px-2  text-[14px] font-normal transition-colors duration-200 uppercase md:px-4 md:py-2 roboto-font ${
           isActive
             ? "text-black md:underline md:underline-offset-4"
             : "text-[#393939] hover:text-[#D42020]"

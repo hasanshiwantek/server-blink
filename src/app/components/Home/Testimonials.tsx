@@ -44,7 +44,7 @@ const Carousel = dynamic(
 
 const SWIPE_THRESHOLD_PX = 45;
 const REVIEW_CARD_WIDTH = 380;
-const roboto = "Roboto, Arial, Helvetica, sans-serif";
+
 
 const Testimonials = () => {
   const dispatch = useAppDispatch();
@@ -171,7 +171,7 @@ const Testimonials = () => {
       >
         {review?.reviewContent ? review?.reviewContent : "No review content"}
       </div>
-      <p className="text-[#333333] text-[14px] truncate" style={{ fontFamily: roboto }}>
+      <p className="text-[#333333] text-[14px] truncate roboto-font" >
         <span className="font-bold">Date of Experience:</span> {review.dateOfExperience}
       </p>
 
