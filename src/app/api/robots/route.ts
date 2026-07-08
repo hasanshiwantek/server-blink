@@ -16,7 +16,7 @@ export async function GET() {
     const robotsTxt = res.data?.data?.[0]?.website?.robotsTxt;
 
     if (robotsTxt) {
-      const sitemapUrl = `${process.env.SITE_URL || "https://server-blink.vercel.app"}/sitemap.xml`;
+      const sitemapUrl = `${process.env.SITE_URL || "https://staging.sparemicro.com"}/sitemap.xml`;
       const robotsWithSitemap = `${robotsTxt}`;
 
       return new Response(robotsWithSitemap, {
@@ -28,7 +28,7 @@ export async function GET() {
       });
     } else {
       // Fallback if robotsTxt not found in response
-      const fallback = `User-agent: *\nAllow: /\nSitemap: ${process.env.SITE_URL || "https://server-blink.vercel.app"
+      const fallback = `User-agent: *\nAllow: /\nSitemap: ${process.env.SITE_URL || "https://staging.sparemicro.com"
         }/sitemap.xml\n`;
 
       return new Response(fallback, {
@@ -41,7 +41,7 @@ export async function GET() {
     console.error("Error:", err.response?.data || err.message);
 
     // Fallback on error
-    const fallback = `User-agent: *\nAllow: /\nSitemap: ${process.env.SITE_URL || "https://server-blink.vercel.app"
+    const fallback = `User-agent: *\nAllow: /\nSitemap: ${process.env.SITE_URL || "https://staging.sparemicro.com"
       }/sitemap.xml\n`;
 
     return new Response(fallback, {
