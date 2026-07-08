@@ -19,8 +19,7 @@ type ContactFormData = {
   rma_number?: string;
   comments: string;
 };
- const roboto = "'Roboto'";
-  const roboto1 = "'Roboto', Arial, Helvetica, sans-serif";
+
 const ContactForm = () => {
   const {
     register,
@@ -58,30 +57,30 @@ const ContactForm = () => {
 
       {/* Page Title */}
       <div className="mb-8">
-        <h1 className="text-[28px] text-[#545454] mb-4 !font-normal" style={{ fontFamily: roboto }}>
+        <h1 className="text-[28px] text-[#545454] mb-4 !font-normal roboto-only-font " >
           Contact Form
         </h1>
-        <h2 className="text-[28px] text-[#545454]  !font-normal" style={{ fontFamily: roboto }}>
+        <h2 className="text-[28px] text-[#545454]  !font-normal roboto-only-font " >
           Server Blink, LLC
         </h2>
       </div>
 
       {/* Intro Text */}
       <div className="mb-8">
-        <p className="sm:text-[14px] text-[1rem] text-[#545454] font-normal " style={{ fontFamily: roboto1 }}>
+        <p className="sm:text-[14px] text-[1rem] text-[#545454] font-normal roboto-font" >
           We're happy to answer questions or help you with returns.
         </p>
-        <p className="sm:text-[14px] text-[1rem] text-[#545454] font-normal" style={{ fontFamily: roboto1 }}>
+        <p className="sm:text-[14px] text-[1rem] text-[#545454] font-normal roboto-font" >
           Please fill out the form below if you need assistance.
         </p>
       </div>
 
       {/* Intro Text */}
       <div className="mb-8">
-        <p className="text-[10px] text-[#545454] font-bold mb-2" style={{ fontFamily: roboto1 }}>
+        <p className="text-[10px] text-[#545454] font-bold mb-2 roboto-font" >
           SMS Disclaimer:
         </p>
-        <p className="text-[10px] text-[#545454] font-normal leading-[1.8]" style={{ fontFamily: roboto1 }}>
+        <p className="text-[10px] text-[#545454] font-normal leading-[1.8] roboto-font" >
           By providing my phone number to Server Blink LLC, I agree and acknowledge
           that Server Blink may send text messages to my wireless phone number
           for any purpose. Message frequency will vary, and Message and data

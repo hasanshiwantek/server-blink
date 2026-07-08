@@ -68,8 +68,8 @@ const Messages = () => {
 
   return (
     <section
-      className="w-full text-[#545454]"
-      style={{ fontFamily: "Roboto, Arial, Helvetica, sans-serif" }}
+      className="w-full text-[#545454] roboto-font "
+    
     >
       {/* Title */}
       <h2 className="text-[26px]   mb-5">Send A Message</h2>

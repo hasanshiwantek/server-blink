@@ -16,7 +16,7 @@ const ProductCard = ({ product }: { product: any }) => {
   const cart = useAppSelector((state: RootState) => state.carts?.items);
   const availableForSale = product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
   const [quantity, setQuantity] = useState(minQty);
-  const roboto = "'Roboto', sans-serif";
+
   const addtocart = () => {
     if (availableForSale) {
       const cartItem = cart.find((item: any) => item.id === product.id);
@@ -48,7 +48,13 @@ const ProductCard = ({ product }: { product: any }) => {
       ? product?.image?.map((img: any) => img?.path)
       : [];
 
-  const [selectedImage, setSelectedImage] = useState(images[0]);
+ const [selectedImage, setSelectedImage] = useState("");
+
+useEffect(() => {
+  if (images.length > 0) {
+    setSelectedImage(images[0]);
+  }
+}, [images]);
 
   useEffect(() => {
     if (!product) return;
@@ -91,7 +97,7 @@ const ProductCard = ({ product }: { product: any }) => {
           className="hidden md:flex items-center justify-center lg:justify-normal space-x-2 text-[12px] text-[#393939] lg:mb-7 sm:mb-7 mb-7 flex-wrap"
         >
           <h2>
-            <Link href={"/"} className="text-[12px] hover:!text-[#D42020]" itemProp="name" style={{ fontFamily: roboto }}>
+            <Link href={"/"} className="text-[12px] hover:!text-[#D42020] roboto-sans-font" itemProp="name " >
               Home
             </Link>
 
@@ -105,8 +111,8 @@ const ProductCard = ({ product }: { product: any }) => {
                 </span>
 
                 <Link href={`/category/${cat?.slug}`}
-                  className={`text-[11px]   hover:!text-[#D42020]`}
-                  style={{ fontFamily: roboto }}
+                  className={`text-[11px]   hover:!text-[#D42020] roboto-sans-font`}
+                 
                   itemProp="name"
                 >
                   {cat.name}
@@ -119,7 +125,7 @@ const ProductCard = ({ product }: { product: any }) => {
             >
               /
             </span>
-            <Link href={product?.productUrl} className="text-[12px] !text-[#D42020]" itemProp="name" style={{ fontFamily: roboto }}>
+            <Link href={product?.productUrl} className="text-[12px] !text-[#D42020] roboto-sans-font" itemProp="name" >
               {product?.name}
             </Link>
 

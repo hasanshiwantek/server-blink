@@ -81,7 +81,7 @@ const OrderSummary = () => {
   const packageInfo = useMemo(() => calculatePackage(cart), [cart]);
 
   const shippingLabel = `FedEx priority $${shipping.toFixed(2)}`;
-  const roboto = "'Roboto', Arial, Helvetica, sans-serif";
+  
 
   // Total before discount
   const totalBeforeDiscount = subtotal + shipping;
@@ -205,7 +205,7 @@ const OrderSummary = () => {
       {/* Header */}
 
       {/* Estimate Shipping */}
-      <div className="px-6 py-6" style={{ fontFamily: roboto }}>
+      <div className="px-6 py-6 roboto-font" >
         {/* Subtotal + Shipping */}
         <div className="text-sm text-gray-700 space-y-2 mb-2">
           <div className="flex justify-between py-2">

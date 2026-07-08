@@ -98,8 +98,7 @@ const AddressForm = () => {
       console.error("Form submission error:", error);
     }
   };
-  const roboto = "'Roboto', Arial, Helvetica, sans-serif";
-  const robotoCondensed = "Roboto Condensed";
+  
   const inputClass =
     "!w-full h-[42px] text-[#545454] !font-normal !max-w-full py-[10px] px-[14px] border border-[#cac9c9] rounded-none";
 
@@ -107,8 +106,8 @@ const AddressForm = () => {
     <div className="max-w-full mx-auto p-8 rounded-lg">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-5"
-        style={{ fontFamily: roboto }}
+        className="space-y-5 roboto-font"
+      
       >
         {/* Row 0: First Name & Last Name */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -342,8 +341,8 @@ const AddressForm = () => {
 
         {/* Buttons */}
         <div
-          className="flex flex-col md:flex-row gap-4 mt-12"
-          style={{ fontFamily: robotoCondensed }}
+          className="flex flex-col md:flex-row gap-4 mt-12 roboto-condensed-only-font "
+         
         >
           <Button
             type="submit"

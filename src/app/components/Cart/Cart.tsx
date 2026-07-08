@@ -8,8 +8,8 @@ import { RootState } from "@/redux/store";
 import BlogSkeleton from "../loader/BlogSkeleton";
 import CartTableSkeleton from "../loader/CartTableSkeleton";
 
-const roboto = "'Roboto', Arial, Helvetica, sans-serif";
-const sans = "'Roboto', sans-serif";
+
+
 const Cart = () => {
   const cartItems = useAppSelector((state: RootState) => state?.carts?.items);
   const cartItemCount =
@@ -27,20 +27,20 @@ const Cart = () => {
         {/* Heading */}
         <div className="w-full">
           <h2 className=""><span
-            className="text-[11px]"
+            className="text-[11px] sans-font"
             itemProp="name"
-            style={{ fontFamily: sans }}
+         
           >
             Home
           </span> {" "} <span className="mt-2 mx-3 text-gray-400 text-[11px]" aria-hidden="true">/</span> {" "} <span
-            className="!text-[#D42020] text-[11px]"
+            className="!text-[#D42020] text-[11px] sans-font"
             itemProp="name"
-            style={{ fontFamily: sans }}
+           
           >
               Your Cart
             </span></h2>
 
-          <h1 className="text-[28px] mt-5 text-[#545454] font-light" style={{ fontFamily: roboto }}>Your Cart ({cartItemCount} items)
+          <h1 className="text-[28px] mt-5 text-[#545454] font-light roboto-font" >Your Cart ({cartItemCount} items)
           </h1>
           {cartItemCount === 0 && (
             <h1 className="text-[22px] mt-8 text-[#545454] font-light">Your cart is empty

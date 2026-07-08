@@ -48,7 +48,7 @@ const TRUST_BADGES = [
     border: false,
   },
 ];
-const ROBOTO = "'Roboto', Arial, Helvetica, sans-serif";
+
 const ProductLeft = ({
   images,
   selectedImage,
@@ -136,7 +136,6 @@ const ProductLeft = ({
               width={500}
               height={500}
               priority={true}
-              decoding="sync"
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 35vw"
               quality={80}
             />
@@ -282,14 +281,14 @@ const ProductLeft = ({
                   className="max-w-[280px] rounded-md bg-[#3d3d3d] px-4 py-2 text-base text-white"
                 >
                   {badge.tooltip ? (
-                    <p className="text-[16px]" style={{ fontFamily: ROBOTO }} >{badge.tooltip}</p>
+                    <p className="text-[16px] roboto-font"  >{badge.tooltip}</p>
                   ) : (
                     // Secure Payment custom content
                     <>
-                      <p className="text-[16px] mb-2" style={{ fontFamily: ROBOTO }}>
+                      <p className="text-[16px] mb-2 roboto-font">
                         Protects both users and merchants from the threats posed by fraudulent payments. Accepted Payment Cards:
                       </p>
-                      <ul className="list-none space-y-1 text-[16px]" style={{ fontFamily: ROBOTO }}>
+                      <ul className="list-none space-y-1 text-[16px] roboto-font" >
                         <li>Visa</li>
                         <li>Mastercard</li>
                         <li>American Express</li>

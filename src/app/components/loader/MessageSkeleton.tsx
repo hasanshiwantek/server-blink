@@ -3,8 +3,8 @@ import React from 'react'
 export const MessageSkeleton = () => {
     return (
         <div
-            className="w-full text-[#545454] py-4"
-            style={{ fontFamily: "Roboto, Arial, Helvetica, sans-serif" }}
+            className="w-full text-[#545454] py-4 roboto-font "
+            
         >
             {[...Array(5)].map((_, index) => (
                 <div key={index}>

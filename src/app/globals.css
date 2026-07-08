@@ -70,7 +70,35 @@
   --breakpoint-3xl: 2560px;
   /* 2560px → ultra-wide */
 }
+/* my fonts */
+.roboto-font {
+  font-family: 'Roboto', Arial, Helvetica, sans-serif !important;
+}
 
+.sans-font {
+  font-family: 'Roboto', sans-serif !important;
+}
+.roboto-condensed-font {
+  font-family: 'Roboto Condensed', Arial, Helvetica, sans-serif !important;
+}
+.roboto-only-font {
+  font-family: 'Roboto' !important;
+}
+.roboto-condensed-only-font {
+  font-family: 'Roboto Condensed' !important;
+}
+.roboto-sans-font {
+  font-family: 'Roboto', sans-serif !important;
+}
+
+
+
+
+
+
+
+
+/* my fonts */
 :root {
   --primary-color: #e62424;
   --bg-color: #eaeaea;

@@ -160,7 +160,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   // const [completedDestinations, setCompletedDestinations] = useState<any[]>([]);
   const { isMultiAddress, completedDestinations, destShippingRates } =
     useAppSelector((state) => state.multiAddress);
-  const roboto = "'Roboto', Arial, Helvetica, sans-serif";
+
   const [showSingleAddressModal, setShowSingleAddressModal] = useState(false);
   const [addressMode, setAddressMode] = useState<"none" | "selected" | "new">(
     "none",
@@ -205,7 +205,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
     return rate || null;
   };
 
-  console.log("userAddresses", customerAddresses, userAddresses);
+
 
   const isShippingComplete = useMemo(() => {
     return !!(
@@ -901,8 +901,8 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
 
             {!isShippingComplete && (
               <p
-                className="text-[15px] text-amber-600 mb-3 bg-amber-50 p-3 rounded border border-amber-200"
-                style={{ fontFamily: roboto }}
+                className="text-[15px] text-amber-600 mb-3 bg-amber-50 p-3 rounded border border-amber-200 roboto-font"
+                
               >
                 Please complete all required shipping address fields to select a
                 shipping method.

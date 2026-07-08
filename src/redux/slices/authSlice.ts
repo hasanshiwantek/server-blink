@@ -71,6 +71,7 @@ export const customerProfile = createAsyncThunk(
     }
   }
 );
+
 // Register thunk
 export const registerUser = createAsyncThunk(
   "auth/registerUser",

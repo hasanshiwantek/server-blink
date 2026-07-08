@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { fetchProductBySlugAndUrl, fetchWebPages } from "@/lib/api/products";
+import ProductCard from "../components/Product/ProductCard";
 const CategoriesSidebar = dynamic(
   () => import("../components/Home/CategoriesSidebar")
 );
@@ -18,9 +19,9 @@ const ProductExtras = dynamic(
 const ProductOverview = dynamic(
   () => import("../components/Product/ProductOverview")
 );
-const ProductCard = dynamic(
-  () => import("../components/Product/ProductCard")
-);
+// const ProductCard = dynamic(
+//   () => import("../components/Product/ProductCard")
+// );
 const DynamicWebPage = dynamic(
   () => import("../components/Product/DynamicWebPage")
 );
