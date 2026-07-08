@@ -7,7 +7,7 @@ import { useAppSelector, useAppDispatch } from "@/hooks/useReduxHooks";
 import GlobalSearchBar from "./GlobalSearchBar";
 import { fetchLogos } from "@/redux/slices/homeSlice";
 
-const robotoCondensed = "'Roboto ', Arial, Helvetica, sans-serif";
+
 
 const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -55,7 +55,7 @@ const Navbar: React.FC = () => {
                   sizes="48px" fetchPriority="high"
                 />
               </div>
-              <div className="flex flex-col text-gray-800" style={{ fontFamily: "Roboto, Arial, Helvetica, sans-serif" }}>
+              <div className="flex flex-col text-gray-800 roboto-font" >
                 <p className="text-[15px] font-semibold">
                   Call:{" "}
                   {/* <Link
@@ -113,7 +113,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Text Banner */}
-        <div className="w-full xl:max-w-[1170px] border-none 2xl:max-w-[1170px] mx-auto" style={{ fontFamily: robotoCondensed }}>
+        <div className="w-full xl:max-w-[1170px] border-none 2xl:max-w-[1170px] mx-auto roboto-font" >
           <div className="bg-white text-center p-0 mb-0 md:p-4 md:mb-4">
             <p className="p-4 md:text-[14px] text-[14px] font-semibold text-[#545454]">
               We Accept POs from Fortune 1000 Companies, Government Agencies

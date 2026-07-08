@@ -20,7 +20,7 @@ interface Category {
   subcategories?: Category[];
 }
 
-const robotoCondensedStyle = { fontFamily: '"Roboto Condensed"' };
+
 
 const FooterBottom = () => {
   const searchParams = useSearchParams();
@@ -31,7 +31,7 @@ const FooterBottom = () => {
   const token = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
-  const robotoCondensed = "'Roboto ', Arial, Helvetica, sans-serif";
+
   const { newsletterLoading } = useSelector((state: any) => state.contact);
   const { blogs, webPages, error, loading } = useAppSelector(
     (state: any) => state.storeFront
@@ -96,8 +96,8 @@ const FooterBottom = () => {
   }, [paramsToken, dispatch, router]);
   return (
     <footer
-      className="bg-[#333333] text-[#ffffff] w-full mx-auto"
-      style={{ fontFamily: robotoCondensed }}
+      className="bg-[#333333] text-[#ffffff] w-full mx-auto roboto-font"
+      
     >
       {/* 🔹 Newsletter Section */}
       <section className="bg-[#cac9c9] flex justify-center items-center h-auto min-h-[3rem]">
@@ -107,7 +107,7 @@ const FooterBottom = () => {
         flex flex-col md:flex-row items-center justify-between gap-2 md:gap-8 lg:gap-0 py-2
       "
         >
-          <div className="text-center  md:text-left  w-full md:w-[60%] 2xl:max-w-[50%]" style={{ fontFamily: robotoCondensed }}>
+          <div className="text-center  md:text-left  w-full md:w-[60%] 2xl:max-w-[50%] roboto-font" >
             <h3 className="text-[15px] md:text-[20px] text-[#545454] font-bold uppercase">
               Join Our Mailing List
               <span className="text-[16px] lowercase ml-2">
@@ -153,7 +153,7 @@ const FooterBottom = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Contact Us */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff]" style={{ fontFamily: robotoCondensed }}>
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff] roboto-font">
               Contact Us
             </h4>
             <div className="space-y-1 text-[14px] lg:text-[12px] text-[#ffffff]">
@@ -187,7 +187,7 @@ const FooterBottom = () => {
 
           {/* Accounts & Orders */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff]" style={{ fontFamily: robotoCondensed }}>
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff] roboto-font" >
               Accounts & Orders
             </h4>
             <ul className="space-y-1 text-[14px] lg:text-[12px] text-[#ffffff]">
@@ -223,10 +223,10 @@ const FooterBottom = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff]" style={{ fontFamily: robotoCondensed }}>
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff] roboto-font" >
               Quick Links
             </h4>
-            <ul className="space-y-1 text-[14px] lg:text-[12px] text-[#ffffff] " style={{ fontFamily: robotoCondensed }}>
+            <ul className="space-y-1 text-[14px] lg:text-[12px] text-[#ffffff] roboto-font " >
               {visiblePages?.map((page: any) => (
                 <li key={page.id}>
                   {page?.pageType == "2" ? (
@@ -243,7 +243,7 @@ const FooterBottom = () => {
 
           {/* Recent Blog Posts */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff]" style={{ fontFamily: robotoCondensed }}>
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff] roboto-font" >
               Recent Blog Posts
             </h4>
             <ul className="space-y-1 text-[14px] lg:text-[12px] text-[#ffffff]">
@@ -264,8 +264,8 @@ const FooterBottom = () => {
                   <li key={post.id}>
                     <Link
                       href={`/blogs/${post.slug}`}
-                      className="hover:text-[#D42020] text-[12px]"
-                      style={{ fontFamily: robotoCondensed }}
+                      className="hover:text-[#D42020] text-[12px] roboto-font"
+                  
                     >
                       {post.title}
                     </Link>
@@ -276,7 +276,7 @@ const FooterBottom = () => {
 
             {/* Connect with Us */}
             <div className=" md:mt-8">
-              <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff]" style={{ fontFamily: robotoCondensed }}>
+              <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff] roboto-font">
                 Connect with Us:
               </h4>
               <div className="flex justify-center md:justify-start gap-3">

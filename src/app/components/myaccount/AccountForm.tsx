@@ -67,15 +67,15 @@ const AccountForm = () => {
   const inputClass =
   "!w-full h-[42px] text-[#545454] !font-normal !max-w-full py-[10px] px-[14px] border border-[#cac9c9] rounded-none";
 
-   const roboto = "'Roboto', Arial, Helvetica, sans-serif";
+  ;
 
   return (
-    <div className="max-w-full mx-auto p-6 rounded-lg" style={{fontFamily:roboto}}>
+    <div className="max-w-full mx-auto p-6 rounded-lg roboto-font">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* First Name & Last Name */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
           <div>
-            <Label className="text-[14px]  text-[#545454] flex md:justify-between !font-normal" htmlFor="firstName" style={{fontFamily:roboto}}>First Name <span className="">*</span></Label>
+            <Label className="text-[14px]  text-[#545454] flex md:justify-between !font-normal" htmlFor="firstName roboto-font" >First Name <span className="">*</span></Label>
             <Input
               id="firstName"
               {...register("firstName", { required: "First Name is required" })}

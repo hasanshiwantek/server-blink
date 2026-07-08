@@ -41,7 +41,7 @@ const formatDate = (dateStr: string) => {
 const MessageList = () => {
     const { messages, loading } = useAppSelector((state: RootState) => state.customerMessage)
     return (
-        <div className="w-full text-[#545454] py-4" style={{ fontFamily: "Roboto, Arial, Helvetica, sans-serif" }}>
+        <div className="w-full text-[#545454] py-4 roboto-font ">
             {loading ? <MessageSkeleton /> : messages.length > 0 ? messages?.map((msg) => (
                 <div key={msg.id}>
                     <div className="py-4">

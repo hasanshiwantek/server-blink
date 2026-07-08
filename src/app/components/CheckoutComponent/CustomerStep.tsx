@@ -25,8 +25,8 @@ interface CustomerStepProps {
   emailValue?: string;
   newsletter?: boolean;
 }
-const roboto = "'Roboto', Arial, Helvetica, sans-serif";
-const roboto1 = "'Roboto Condensed', Arial, Helvetica, sans-serif";
+
+
 const CustomerStep: React.FC<CustomerStepProps> = ({
   register,
   errors,
@@ -81,7 +81,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
       ) : isActive ? (
         // Show active form
         <div className="space-y-4 ">
-          <div className="flex flex-col" style={{ fontFamily: roboto }}>
+          <div className="flex flex-col roboto-font">
             {!showLogin ? (
               <>
                 <label
@@ -145,8 +145,8 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
                   <button
                     type="button"
                     onClick={() => setShowLogin(true)}
-                    className="text-[#D42020]"
-                    style={{ fontFamily: roboto1 }}
+                    className="text-[#D42020] roboto-condensed-font"
+                    
                   >
                     Sign in now
                   </button>
