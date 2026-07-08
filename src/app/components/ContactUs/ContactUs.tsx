@@ -1,15 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import ContactBanner from "./ContactBanner";
 import ContactForm from "./ContactForm";
-import ReachOutSection from "./ReachOutSection";
-import FAQSection from "./FAQSection";
-import dynamic from "next/dynamic";
-
-const AOSWrapper = dynamic(
-  () => import("../../components/animation/AOSWrapper")
-);
 const ContactUs = () => {
   // Enable smooth scroll globally
   useEffect(() => {
