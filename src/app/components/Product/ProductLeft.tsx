@@ -137,7 +137,12 @@ const ProductLeft = ({
               className="h-full w-full object-contain"
               width={500}
               height={500}
+<<<<<<< HEAD
               src={selectedImage || "/default-product-image.svg"}
+=======
+              priority
+              fetchPriority="high"
+>>>>>>> f4612d3b20897b75b98f0642eeb5e1361d9bc5c3
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 35vw"
               quality={80}
               fetchPriority="high"

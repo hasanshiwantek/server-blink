@@ -56,7 +56,6 @@ export const metadata: Metadata = {
   },
 };
 
-const AOSWrapper = dynamic(() => import("../components/animation/AOSWrapper"));
 const page = () => {
   return (
         <main className="flex flex-col gap-30" role="main">
