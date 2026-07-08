@@ -1,6 +1,7 @@
 import React from "react";
 import BlogContainer from "../components/Blogs/BlogContainer";
 import { Metadata } from "next";
+import "../../styles/blog/api-content.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://server-blink.vercel.app"),
