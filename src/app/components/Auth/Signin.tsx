@@ -57,10 +57,10 @@ const SigninPage = () => {
             ? result.payload
             : "Login failed. Please try again.";
         toast.error(errorMessage);
-        console.error("❌ Login rejected with message:", errorMessage);
+      
       }
     } catch (err: any) {
-      console.error("🚨 Unexpected error during onSubmit:", err);
+      
     }
   };
 useEffect(() => {

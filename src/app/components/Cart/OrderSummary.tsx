@@ -178,7 +178,7 @@ const OrderSummary = () => {
       try {
         await dispatch(fetchShippingRate({})).unwrap();
       } catch (err) {
-        console.log("Failed to fetch shipping rates:", err);
+      
         detectCountry();
       }
     };

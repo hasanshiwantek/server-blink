@@ -94,7 +94,7 @@ export const fetchStats = createAsyncThunk(
       return null;
     } catch (err: any) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      console.error("Error fetching stats:", err);
+
       // Don't reject, just return null
       return null;
     }
@@ -116,7 +116,7 @@ export const bulkInquiry = createAsyncThunk(
 
       return null;
     } catch (err: any) {
-      console.error("Error sending bulk inquiry:", err);
+    
       return null;
     }
   }
@@ -136,7 +136,7 @@ export const addReview = createAsyncThunk(
 
       return thunkAPI.rejectWithValue(res?.data);
     } catch (err: any) {
-      console.error("Error sending review:", err);
+     
 
       return thunkAPI.rejectWithValue(
         err?.response?.data || "Something went wrong"
@@ -161,7 +161,7 @@ export const contactUs = createAsyncThunk(
 
       return null;
     } catch (err: any) {
-      console.error("Error sending contact request:", err);
+     
       return null;
     }
   }

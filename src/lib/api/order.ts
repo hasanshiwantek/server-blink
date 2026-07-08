@@ -20,7 +20,7 @@ export const fetchOrderDetails = async (orderId: string) => {
 
     return data?.order || [];
   } catch (error) {
-    console.error("Failed to fetch order details:", error);
+    
     throw new Error("Failed to fetch order details");
   }
 };

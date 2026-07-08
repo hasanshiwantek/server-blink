@@ -44,7 +44,7 @@ export default function ProductPage({
                 const brandData = await fetchBrands();
                 setBrand(brandData);
             } catch (error) {
-                console.error("Failed to load categories/brands", error);
+                
             }
         };
         loadData();

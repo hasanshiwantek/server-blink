@@ -92,10 +92,10 @@ const AddressForm = () => {
       } else {
         const errorMessage =
           result.error?.message || "Add address failed. Please try again.";
-        console.error("Add address failed:", errorMessage);
+       
       }
     } catch (error) {
-      console.error("Form submission error:", error);
+    
     }
   };
   

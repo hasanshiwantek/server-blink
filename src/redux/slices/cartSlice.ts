@@ -85,7 +85,7 @@ const saveCartToCheckoutStorage = (items: CartItem[]) => {
 
     localStorage.setItem(CHECKOUT_STORAGE_KEY, JSON.stringify(checkoutData));
   } catch (e) {
-    console.error("Failed to save cart to checkout storage:", e);
+   
   }
 };
 
