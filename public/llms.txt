@@ -1,0 +1,38 @@
+# Server Blink: IT Hardware, Servers, Networking & Enterprise Solutions
+
+> Buy servers, networking equipment, storage devices, computer parts, and enterprise IT hardware. Browse products, brands, categories, and technical resources.
+
+Generated for AI assistants and large language models.
+
+## Pages
+
+- [Home](https://staging.sparemicro.com/)
+- [About Us](https://staging.sparemicro.com/about-us)
+- [Products](https://staging.sparemicro.com/products)
+- [Categories](https://staging.sparemicro.com/category)
+- [Brands](https://staging.sparemicro.com/brands)
+- [Advanced Search](https://staging.sparemicro.com/advanced-search)
+- [Contact Us](https://staging.sparemicro.com/contact-us)
+- [Blogs](https://staging.sparemicro.com/blogs)
+- [Terms & Conditions](https://staging.sparemicro.com/terms-conditions)
+- [Privacy Policy](https://staging.sparemicro.com/privacy-Policy)
+- [Shipping Policy](https://staging.sparemicro.com/shipping-policy)
+- [Return Policy](https://staging.sparemicro.com/return-Policy)
+
+## Product Categories
+
+- Servers
+- Networking Equipment
+- Storage Solutions
+- Computer Parts
+- Accessories
+- Enterprise Hardware
+
+## Resources
+
+- [Sitemap](https://staging.sparemicro.com/sitemap.xml)
+- [Robots](https://staging.sparemicro.com/robots.txt)
+
+## Purpose
+
+Server Blink provides enterprise IT hardware, networking products, storage solutions, replacement parts, and accessories for businesses and IT professionals.

@@ -68,7 +68,7 @@ const robotoCondensed = Roboto_Condensed({
 // });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://server-blink.vercel.app"),
+  metadataBase: new URL("https://staging.sparemicro.com"),
   robots: { index: false, follow: false },
   title: {
     // default: "Server Blink",
@@ -89,7 +89,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://server-blink.vercel.app",
+    url: "https://staging.sparemicro.com",
     siteName: "Server Blink",
     title: "Server Blink – Quality Servers & IT Solutions",
     description:

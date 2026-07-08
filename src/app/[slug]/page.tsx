@@ -41,7 +41,7 @@ export async function generateMetadata({
     notFound();
   }
 
-  const url = `https://server-blink.vercel.app/${slug}`;
+  const url = `https://staging.sparemicro.com/${slug}`;
 
   if (webPages) {
     return {
