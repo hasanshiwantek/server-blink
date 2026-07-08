@@ -64,7 +64,9 @@ const Banner = ({ carousels, settings }: any) => {
                     fill
                     sizes="(max-width: 640px) 100vw, 913px"
                     className="object-cover"
-                    priority={index === 0}
+                   priority={index === 0}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    fetchPriority={index === 0 ? "high" : "low"}
                     quality={75}
                   />
                 </div>
