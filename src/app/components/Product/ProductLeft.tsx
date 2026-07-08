@@ -135,7 +135,8 @@ const ProductLeft = ({
               className="h-full w-full object-contain"
               width={500}
               height={500}
-              priority={true}
+              priority
+              fetchPriority="high"
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 35vw"
               quality={80}
             />
