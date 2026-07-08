@@ -155,7 +155,7 @@ const ProductReview = () => {
             <div
               className={`grid grid-cols-1 sm:grid-cols-2 gap-6 transition-all duration-700`}
             >
-              {displayedReviews.slice(0, 8).map((review: any, idx) => (
+              {displayedReviews?.slice(0, 8).map((review: any, idx: number) => (
                 <article key={idx} className="border rounded-lg p-5 bg-white shadow-xs transition-all duration-500">
                   <header className="flex items-center justify-between mb-3 pb-2 border-b">
                     <div className="flex items-center gap-3">

@@ -1,4 +1,3 @@
-// import { Home, ShoppingCart, Users, Store, LineChart, Gift, Settings, AppWindow, Layers, Banknote, Megaphone } from "lucide-react";
 import {
   Home,
   MessageSquareText,
@@ -13,7 +12,6 @@ export const sidebarData = [
     title: "Home",
     url: "/dashboard",
     icon: Home,
-    //  children: [],
   },
   {
     title: "Administrative Functions",

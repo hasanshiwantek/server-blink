@@ -1,16 +1,9 @@
 import type { Metadata } from "next";
 import LayoutWrapper from "./components/layout/LayoutWrapper";
-import { Inter, Roboto, Roboto_Condensed } from "next/font/google";
+import { Roboto, Roboto_Condensed } from "next/font/google";
 import ScriptInjector from "@/components/ScriptInjector";
 import DynamicFavicon from "@/components/DynamicFavicon";
 import "./globals.css";
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-  preload: true,
-});
-
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -125,7 +118,7 @@ export default function RootLayout({
     <html lang="en" className={`${roboto.variable} ${robotoCondensed.variable}`}>
       <body
         className="antialiased"
-        style={{ fontFamily: "sans-serif" }}
+        style={{ fontFamily: "var(--font-roboto), sans-serif" }}
         suppressHydrationWarning
       >
         <LayoutWrapper>
