@@ -109,11 +109,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </span>
 
             {/* New Price */}
-            <span className="text-[1rem] font-bold  " style={robotoStyle}>Call for pricing:<Link
+            <span className="text-[1rem] font-bold  " style={robotoStyle}>Call for pricing:
+              {/* <Link
               href="tel:+15022063033"
               className="text-[#d40511] underline">
-              {/* (502) 206-3033 */}
-            </Link></span>
+              (502) 206-3033
+            </Link> */}
+            </span>
           </>
 
         </div> : <div className="flex flex-col items-start gap-2 mb-2 " style={robotoStyle}>
