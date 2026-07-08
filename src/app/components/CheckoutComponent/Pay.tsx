@@ -38,7 +38,7 @@ export default function Pay() {
                 },
             }}
             onLoadPaymentData={(data) => {
-                console.log(data);
+               
             }}
         />
     );

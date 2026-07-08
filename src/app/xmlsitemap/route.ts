@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
                 },
             });
         } catch (error) {
-            console.error('Main sitemap error:', error);
+           
             return new Response('Error loading sitemap index', { status: 500 });
         }
     }
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
             },
         });
     } catch (error) {
-        console.error(`Error fetching ${type} sitemap:`, error);
+        
         return new Response(`Failed to load ${type} sitemap`, { status: 500 });
     }
 }

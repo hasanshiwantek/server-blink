@@ -57,10 +57,10 @@ const AccountForm = () => {
               } else {
                 const errorMessage =
                   result.error?.message || "update info failed. Please try again.";
-                console.error("update info failed:", errorMessage);
+             
               }
     } catch (error) {
-      console.error("Form submission error:", error);
+      
     }
   };
 

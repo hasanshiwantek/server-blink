@@ -303,7 +303,7 @@ const CheckoutForm = () => {
       try {
         await dispatch(fetchShippingRate({})).unwrap();
       } catch (err) {
-        console.log("Failed to fetch shipping rates:", err);
+       
         detectCountry();
       }
     };
@@ -541,7 +541,7 @@ const CheckoutForm = () => {
           })),
         });
       } catch (err) {
-        console.error(err);
+       
 
         event.updateWith({
           status: "fail",
@@ -814,7 +814,7 @@ const CheckoutForm = () => {
         localStorage.removeItem(CHECKOUT_STORAGE_KEY);
         router.push(`/checkout/order-information/${orderNumber}`);
       } catch (err: any) {
-        console.error("❌ Wallet payment failed:", err);
+       
         event.complete("fail");
         const errorMessage =
           err?.response?.data?.message || err?.message || "Payment failed.";
@@ -869,7 +869,7 @@ const CheckoutForm = () => {
       //     body: JSON.stringify({ email, newsletter: !!newsletter }),
       //   });
       // } catch (error) {
-      //   console.error("Customer API error:", error);
+      //  
       // }
       setCompletedSteps((prev) => [...new Set([...prev, 1])]);
       setCurrentStep(2);
@@ -971,7 +971,7 @@ const CheckoutForm = () => {
     try {
       paymentRequest.show();
     } catch (err: any) {
-      console.error("❌ Unable to launch wallet:", err);
+   
       const methodName = method === "apple_pay" ? "Apple Pay" : "Google Pay";
       toast.error(
         `Could not open ${methodName}. Please ensure you have a card set up in your wallet or try credit card payment.`,
@@ -1025,7 +1025,7 @@ const CheckoutForm = () => {
       try {
         paymentRequest.show();
       } catch (err: any) {
-        console.error("❌ Unable to launch wallet:", err);
+        
         toast.error("Could not open the wallet sheet. Please try again.");
         setIsProcessing(false);
         setPendingWalletForm(null);
@@ -1076,7 +1076,7 @@ const CheckoutForm = () => {
           });
 
         if (pmError) {
-          console.error("Payment method error:", pmError);
+         
           toast.error(pmError.message || "Unable to create payment method.");
           setIsProcessing(false);
           return;
@@ -1115,7 +1115,7 @@ const CheckoutForm = () => {
       localStorage.removeItem(CHECKOUT_STORAGE_KEY);
       router.push(`/checkout/order-information/${orderNumber}`);
     } catch (err: any) {
-      console.error("❌ Error processing order:", err);
+     
       const errorMessage =
         err.response?.data?.message ||
         err.message ||
@@ -1299,7 +1299,7 @@ const CheckoutForm = () => {
           }
         }
       } catch (e) {
-        console.error("Failed to restore:", e);
+        
       } finally {
         isRestored.current = true;
         setTimeout(() => {
@@ -1345,7 +1345,7 @@ const CheckoutForm = () => {
       );
 
       if (!hasShippingData) {
-        console.log("Skipping save — no meaningful shipping data");
+       
         return;
       }
 

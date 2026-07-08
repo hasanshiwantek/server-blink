@@ -69,10 +69,10 @@ const LoginForm = ({ onCancel }: LoginFormProps) => {
             : "Login failed. Please try again.";
 
         toast.error(errorMessage);
-        console.error("❌ Login rejected with message:", errorMessage);
+       
       }
     } catch (err) {
-      console.error("🚨 Unexpected error during onSubmit:", err);
+     
     }
   };
 

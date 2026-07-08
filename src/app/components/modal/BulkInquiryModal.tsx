@@ -80,7 +80,7 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
         onClose();
         toast.success("Bulk inquiry submitted successfully!");
       } else {
-        console.error("Failed to submit bulk inquiry");
+       
       }
     } catch (err) {
 

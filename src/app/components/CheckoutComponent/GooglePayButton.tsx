@@ -84,15 +84,14 @@ export default function GPayButton({ amount,totalWeight,
       }}
 
       onPaymentDataChanged={async (paymentData: any) => {
-        console.log("Google Pay callback", paymentData);
+       
         try {
           const trigger = paymentData.callbackTrigger;
 
           if (trigger === "INITIALIZE" || trigger === "SHIPPING_ADDRESS") {
             const address = paymentData.shippingAddress;
 
-            console.log("Trigger:", trigger);
-            console.log("Address:", paymentData.shippingAddress);
+            
 
             const response = await fetch(
               "https://backend.sparemicro.com/api/web/checkout/get-shipping-rates",
@@ -119,7 +118,7 @@ export default function GPayButton({ amount,totalWeight,
             );
 
             const data = await response.json();
-            console.log("Shipping API Response:", data);
+           
 
             if (!data.success || !data.rates?.length) {
               
@@ -140,7 +139,7 @@ export default function GPayButton({ amount,totalWeight,
               description: `$${Number(rate.total_charge).toFixed(2)}`,
             }));
 
-            console.log("Shipping Options:", shippingOptions);
+          
             const defaultRate = data.rates[0];
 
             setSelectedShippingRate(defaultRate);
@@ -191,7 +190,7 @@ export default function GPayButton({ amount,totalWeight,
 
           return {};
         } catch (error) {
-          console.error(error);
+         
 
           return {
             error: {
@@ -251,13 +250,13 @@ export default function GPayButton({ amount,totalWeight,
             `/order-confirmation?payment_intent=${data.paymentIntentId}`
           );
         } catch (err) {
-          console.error(err);
+         
           toast.error("Something went wrong");
         }
       }}
 
       onError={(err) => {
-        console.error(err);
+       
         toast.error("Google Pay error");
       }}
     />
