@@ -1,20 +1,14 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { getBrands } from "@/redux/slices/homeSlice";
+import React from "react";
+import { useAppSelector } from "@/hooks/useReduxHooks";
 import CommonCarousel from "../commoncarousel/CommonCarousel";
 
-const Brands = () => {
-  const dispatch = useAppDispatch();
-  const { getBrand, error, loading } = useAppSelector(
+const Brands = ({ brands }: any) => {
+  const { error, loading } = useAppSelector(
     (state: any) => state?.home
   );
-  const data = getBrand?.data?.map((item: any) => item?.brand);
-
-  useEffect(() => {
-    dispatch(getBrands());
-  }, [dispatch]);
+  const data = brands?.map((item: any) => item?.brand);
 
   return (
     <>
@@ -29,9 +23,9 @@ const Brands = () => {
       ) : data && data?.length > 0 ? (
         <CommonCarousel items={data} />
       ) : (
-        error && <div className="flex justify-center items-center h-20"> 
-        <div className="text-red-600">Failed to load brands </div>
-         </div>
+        error && <div className="flex justify-center items-center h-20">
+          <div className="text-red-600">Failed to load brands </div>
+        </div>
       )}
     </>
   );

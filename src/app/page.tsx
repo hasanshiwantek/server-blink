@@ -2,14 +2,25 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import Banner from "./components/Home/Banner";
 import CategoryGrid from "./components/Home/CategoriyGrid";
-import FeaturedProducts from "./components/Home/FeaturedProducts";
-import Brands from "./components/Home/Brands";
-import ShopNow from "./components/Home/ShopNow";
-import Testimonials from "./components/Home/Testimonials";
 import { fetchWebsiteSeo } from "@/lib/api/storeFront";
+import { fetchCarousels } from "@/lib/api/home";
+import { fetchCategories } from "@/lib/api/category";
+import { fetchBrands } from "@/lib/api/brand";
 
 const CategoriesSidebar = dynamic(() => import("./components/Home/CategoriesSidebar"));
 const BrandsSidebar = dynamic(() => import("./components/Home/BrandsSidebar"));
+const FeaturedProducts = dynamic(
+  () => import("./components/Home/FeaturedProducts")
+);
+const Brands = dynamic(
+  () => import("./components/Home/Brands")
+);
+const ShopNow = dynamic(
+  () => import("./components/Home/ShopNow")
+);
+const Testimonials = dynamic(
+  () => import("./components/Home/Testimonials")
+);
 
 // ✅ Dynamic metadata from backend
 export async function generateMetadata(): Promise<Metadata> {
@@ -51,6 +62,19 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 const Page = async () => {
+  const [carouselsRes, categoriesRes, brandsRes] = await Promise.allSettled([
+    fetchCarousels(),
+    fetchCategories(),
+    fetchBrands(),
+  ]);
+
+  const carousels = carouselsRes.status === "fulfilled" ? carouselsRes.value : null;
+  const categories = categoriesRes.status === "fulfilled" ? categoriesRes.value : null;
+  const brands = brandsRes.status === "fulfilled" ? brandsRes.value : [];
+  // const carousels = await fetchCarousels();
+  // const categories = await fetchCategories();
+  // const brands = await fetchBrands();
+
   return (
     <main className="flex flex-col gap-30" role="main">
       {/* Container: max-width 1170px, centered */}
@@ -64,8 +88,8 @@ const Page = async () => {
             </aside>
             {/* Main Content */}
             <div className="w-full lg:w-[78%] p-0">
-              <Banner />
-              <CategoryGrid />
+              <Banner carousels={carousels?.slides} settings={carousels?.settings} />
+              <CategoryGrid categories={(categories?.data ?? categories)?.slice(0, 5)} />
               <FeaturedProducts
                 endpoint="web/products/featured-products"
                 isSlider={true}
@@ -82,7 +106,7 @@ const Page = async () => {
                 title={"New Products".toUpperCase()}
               />
               <Testimonials />
-              <Brands />
+              <Brands brands={brands} />
               <ShopNow />
             </div>
           </div>

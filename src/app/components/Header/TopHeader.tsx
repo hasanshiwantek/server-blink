@@ -58,20 +58,33 @@ const TopHeader = () => {
     }
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY > 100) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const currentScrollY = window.scrollY;
+  //     if (currentScrollY > 100) {
+  //       setIsScrolled(true);
+  //     } else {
+  //       setIsScrolled(false);
+  //     }
+  //   };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
+  //   window.addEventListener("scroll", handleScroll, { passive: true });
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, []);
+  useEffect(() => {
+    let ticking = false;
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        setIsScrolled(window.scrollY > 100);
+        ticking = false;
+      });
     };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
 
@@ -277,7 +290,7 @@ const TopHeader = () => {
                             <Image
                               src={item?.image?.[0]?.path || "/default-product-image.svg"}
                               alt={item?.name || "product"}
-                              width={145}fetchPriority="high"
+                              width={145} fetchPriority="high"
                               height={125}
                               onMouseDown={(e) => {
                                 e.preventDefault();
@@ -456,7 +469,7 @@ const TopHeader = () => {
                                   <Image
                                     src={item?.image?.[0]?.path || "/default-product-image.svg"}
                                     alt={item?.name}
-                                    width={64}fetchPriority="high"
+                                    width={64} fetchPriority="high"
                                     height={64}
                                     className="w-full h-full object-contain"
                                   />

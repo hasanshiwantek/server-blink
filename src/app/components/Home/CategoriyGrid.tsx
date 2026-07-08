@@ -1,8 +1,4 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { fetchCategories } from "@/lib/api/category";
 import Link from "next/link";
 interface Category {
   id: number;
@@ -38,6 +34,8 @@ const CategoryTile = ({
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          priority={index < 2}     // ← pehli 2 tiles above-fold, eager load
+          quality={75}
         />
       </div>
 
@@ -47,8 +45,7 @@ const CategoryTile = ({
       {/* Semi-transparent black text band (center, like reference) */}
       <div className="absolute inset-x-0 bottom-4 z-20 bg-black/50 flex items-center justify-center px-6 py-7">
         <p
-          className="text-white text-2xl md:text-3xl font-normal drop-shadow-2xl text-center uppercase tracking-wide m-0"
-          style={{ fontWeight: 300 }}
+          className="text-white text-2xl md:text-3xl !font-light drop-shadow-2xl text-center uppercase tracking-wide m-0"
         >
           {category.name}
         </p>
@@ -57,45 +54,12 @@ const CategoryTile = ({
   );
 };
 
-const CategoryGrid = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        const data = await fetchCategories();
-        setCategories(data.slice(0, 5));
-      } catch (error) {
-        console.error("Failed to fetch categories:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadCategories();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="mt-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div
-              key={i}
-              className={`relative h-[200px] rounded-xs overflow-hidden bg-gray-200 animate-pulse ${i < 4 ? "lg:col-span-2" : "lg:col-span-3"
-                }`}
-            />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
+const CategoryGrid = ({ categories }: any) => {
+  if (!categories?.length) return null
   return (
     <div className="mt-6 group/grid">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-2.5">
-        {categories.map((category, index) => (
+        {categories?.map((category: Category, index: number) => (
           <CategoryTile
             key={category.id}
             category={category}

@@ -379,11 +379,12 @@ img {
 
 
 /* ✅ ReCAPTCHA challenge popup — always on top */
-body > div[style*="z-index: 2000000100"],
-body > div[style*="z-index: 2000000000"],
-body > div[style*="z-index: 2000000099"] {
+body>div[style*="z-index: 2000000100"],
+body>div[style*="z-index: 2000000000"],
+body>div[style*="z-index: 2000000099"] {
   z-index: 99999999 !important;
 }
+
 /* Only show scrollbar when scrolling */
 .custom-scroll {
   scrollbar-width: thin;
@@ -467,6 +468,8 @@ body > div[style*="z-index: 2000000099"] {
   font-size: 15px;
   transition: 0.3s;
 }
+
+
 
 .faqs-section .accordion h3 label:hover {
   background: #d42020;

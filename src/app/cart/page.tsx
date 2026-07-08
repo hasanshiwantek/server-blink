@@ -15,13 +15,13 @@ export const metadata: Metadata = {
     "Server Blink cart",
   ],
   alternates: {
-    canonical: "https://server-blink.vercel.app/cart",
+    canonical: "https://staging.sparemicro.com/cart",
   },
   openGraph: {
     title: "Shopping Cart",
     description:
       "View and manage your items in the shopping cart at Server Blink. Add, remove, or update quantities before checkout.",
-    url: "https://server-blink.vercel.app/cart",
+    url: "https://staging.sparemicro.com/cart",
     siteName: "Server Blink",
     images: [
       {

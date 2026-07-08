@@ -72,11 +72,12 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
         {!availableForSale ? <div>
           <div className="flex flex-col">
             <h2 className="text-[#545454] flex items-center font-bold !text-[22px]" style={{ color: "#545454" }}>
-              Call for pricing: <Link
+              Call for pricing:
+              {/* <Link
                 href="tel:+15022063033"
                 className="text-[#d40511] underline">
-                {/* (502) 206-3033 */}
-              </Link>
+                (502) 206-3033
+              </Link> */}
             </h2>
           </div>
         </div> : <div>
