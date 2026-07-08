@@ -163,11 +163,11 @@ const FooterBottom = () => {
               <p>Louisville, KY 40218</p>
               <p className="mt-3">
                 <span className="font-semibold">Phone Number:</span>{" "}
-                <Link
+                {/* <Link
                   href="tel:+15022063033"
                   className="text-gray-300">
-                  {/* +1502-206-3033 */}
-                </Link>
+                  +1502-206-3033
+                </Link> */}
               </p>
               <p>
                 <span className="font-semibold">Email:</span>{" "}

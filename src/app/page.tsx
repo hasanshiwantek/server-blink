@@ -2,10 +2,6 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import Banner from "./components/Home/Banner";
 import CategoryGrid from "./components/Home/CategoriyGrid";
-import FeaturedProducts from "./components/Home/FeaturedProducts";
-import Brands from "./components/Home/Brands";
-import ShopNow from "./components/Home/ShopNow";
-import Testimonials from "./components/Home/Testimonials";
 import { fetchWebsiteSeo } from "@/lib/api/storeFront";
 import { fetchCarousels } from "@/lib/api/home";
 import { fetchCategories } from "@/lib/api/category";
@@ -13,6 +9,18 @@ import { fetchBrands } from "@/lib/api/brand";
 
 const CategoriesSidebar = dynamic(() => import("./components/Home/CategoriesSidebar"));
 const BrandsSidebar = dynamic(() => import("./components/Home/BrandsSidebar"));
+const FeaturedProducts = dynamic(
+  () => import("./components/Home/FeaturedProducts")
+);
+const Brands = dynamic(
+  () => import("./components/Home/Brands")
+);
+const ShopNow = dynamic(
+  () => import("./components/Home/ShopNow")
+);
+const Testimonials = dynamic(
+  () => import("./components/Home/Testimonials")
+);
 
 // ✅ Dynamic metadata from backend
 export async function generateMetadata(): Promise<Metadata> {
@@ -54,7 +62,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 const Page = async () => {
-    const [carouselsRes, categoriesRes, brandsRes] = await Promise.allSettled([
+  const [carouselsRes, categoriesRes, brandsRes] = await Promise.allSettled([
     fetchCarousels(),
     fetchCategories(),
     fetchBrands(),
