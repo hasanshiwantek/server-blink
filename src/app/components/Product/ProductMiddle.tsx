@@ -33,12 +33,6 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
     dispatch(fetchStats());
   }, []);
 
-  const openBulkModal = useCallback(() => setIsModalOpen(true), []);
-  const closeBulkModal = useCallback(() => setIsModalOpen(false), []);
-  const openReviewModal = useCallback(() => setIsReviewModalOpen(true), []);
-  const closeReviewModal = useCallback(() => setIsReviewModalOpen(false), []);
-
-
   const bulkProduct = product ? {
     name: product.name,
     image: product.image?.[1]?.path || product.image?.[0]?.path || "/default-product-image.svg",

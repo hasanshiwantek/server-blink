@@ -116,6 +116,7 @@ const ProductLeft = ({
       setExpanded(false);
     }
   }, []);
+
   return (
     <div className="product-left flex w-full md:w-[70%] flex-col px-10 md:px-0  lg:w-[50%]">
       <div className="flex flex-col items-center gap-8">
@@ -132,17 +133,15 @@ const ProductLeft = ({
             aria-label="View product image larger"
           >
             <Image
+              src={selectedImage || "/default-product-image.svg"}
               alt="Main product image"
-              priority
               className="h-full w-full object-contain"
               width={500}
               height={500}
-              src={selectedImage || "/default-product-image.svg"}
-              
+              priority
               fetchPriority="high"
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 35vw"
               quality={80}
-             
             />
           </button>
         </div>
@@ -224,8 +223,8 @@ const ProductLeft = ({
                       ? "max-h-[90vh] max-w-[90vw] w-[90vw] h-[90vh]"
                       : "max-h-[min(72vh,640px)] max-w-[min(82vw,640px)]",
                     zoomed &&
-                      !expanded &&
-                      "max-h-[85vh] max-w-[92vw] overflow-auto",
+                    !expanded &&
+                    "max-h-[85vh] max-w-[92vw] overflow-auto",
                   )}
                 >
                   <div
@@ -247,10 +246,10 @@ const ProductLeft = ({
                         expanded
                           ? "h-full w-full max-h-[calc(90vh-2.5rem)] max-w-full cursor-zoom-out"
                           : cn(
-                              "h-auto max-h-[56vh] w-auto max-w-[min(78vw,560px)] cursor-zoom-in",
-                              zoomed &&
-                                "max-h-none max-w-none scale-[1.45] sm:scale-[1.6]",
-                            ),
+                            "h-auto max-h-[56vh] w-auto max-w-[min(78vw,560px)] cursor-zoom-in",
+                            zoomed &&
+                            "max-h-none max-w-none scale-[1.45] sm:scale-[1.6]",
+                          ),
                       )}
                       sizes="90vw"
                       quality={90}

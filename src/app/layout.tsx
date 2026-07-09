@@ -19,8 +19,8 @@ const roboto = Roboto({
 const robotoCondensed = Roboto_Condensed({
   subsets: ["latin"],
   weight: ["400", "700"],
-  display: "swap",        // ✅ FIX: swap add kiya
-  preload: true,          // ✅ FIX: preload add kiya
+  display: "swap",
+  preload: true,
   variable: "--font-roboto-condensed",
 });
 

@@ -32,8 +32,8 @@ const CategoryTile = ({
           src={category?.image || "/default-product-image.svg"}
           alt={category?.name}
           fill
-          priority={index < 2}     // ← pehli 2 tiles above-fold, eager load
           fetchPriority="high"
+          priority={index < 2}   
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 356px"
           className="object-cover"
           quality={70}
