@@ -33,7 +33,7 @@ const CategoryTile = ({
           alt={category?.name}
           fill
           priority={index < 2}     // ← pehli 2 tiles above-fold, eager load
-          fetchpriority="high"
+          fetchPriority="high"
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className="object-cover"
           quality={70}
