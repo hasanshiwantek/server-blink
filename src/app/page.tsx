@@ -86,7 +86,7 @@ const Page = async () => {
             {/* Main Content */}
             <div className="w-full lg:w-[78%] p-0">
               <Banner carousels={carousels?.slides} settings={carousels?.settings} />
-              <CategoryGrid categories={(categories?.data ?? categories)?.slice(0, 5)} />
+              {/* <CategoryGrid categories={(categories?.data ?? categories)?.slice(0, 5)} /> */}
               <FeaturedProducts
                 endpoint="web/products/featured-products"
                 isSlider={true}
