@@ -148,8 +148,9 @@ const Testimonials = () => {
           src={review?.stars || "/default-product-image.svg"}
           alt="Rating"
           width={80}
-          height={32} fetchPriority="high"
+          height={32}
           className="h-8 w-36 shrink-0"
+          loading="lazy"
           unoptimized
         />
         <p className="mb-0 text-sm font-medium shrink-0">{review.dateOfExperience}</p>

@@ -63,6 +63,7 @@ const nextConfig: NextConfig = {
 
   experimental: {
     // esmExternals: true,
+    optimizeCss: true,
     serverActions: { allowedOrigins: [] },
   },
 

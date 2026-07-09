@@ -1,9 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
 import Script from "next/script";
-import { FaTintSlash } from "react-icons/fa";
 
 interface BreadcrumbItem {
   name: string;
