@@ -62,12 +62,11 @@ const Banner = ({ carousels, settings }: any) => {
                     src={slide.image}
                     alt={slide.altText}
                     fill
+                    priority={index === 0}           // ← sirf pehli slide
+                    loading={index === 0 ? "eager" : "lazy"}
                     sizes="(max-width: 640px) 100vw, 913px"
                     className="object-cover"
                     quality={75}
-                    priority={index === 0}
-                    loading={index === 0 ? "eager" : "lazy"}
-                    fetchPriority={index === 0 ? "high" : "low"}
                   />
                 </div>
 

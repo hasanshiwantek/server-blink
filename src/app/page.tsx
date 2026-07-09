@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
-import Banner from "./components/Home/Banner";
-import CategoryGrid from "./components/Home/CategoriyGrid";
 import { fetchWebsiteSeo } from "@/lib/api/storeFront";
 import { fetchCarousels } from "@/lib/api/home";
 import { fetchCategories } from "@/lib/api/category";
@@ -15,6 +13,8 @@ const FeaturedProducts = dynamic(
 const Brands = dynamic(
   () => import("./components/Home/Brands")
 );
+const Banner = dynamic(() => import('./components/Home/Banner'));
+const CategoryGrid = dynamic(() => import('./components/Home/CategoriyGrid'));
 const ShopNow = dynamic(
   () => import("./components/Home/ShopNow")
 );
@@ -86,7 +86,7 @@ const Page = async () => {
             {/* Main Content */}
             <div className="w-full lg:w-[78%] p-0">
               <Banner carousels={carousels?.slides} settings={carousels?.settings} />
-            <CategoryGrid categories={(categories?.data ?? categories)?.slice(0, 5)} /> 
+              <CategoryGrid categories={(categories?.data ?? categories)?.slice(0, 5)} />
               <FeaturedProducts
                 endpoint="web/products/featured-products"
                 isSlider={true}
