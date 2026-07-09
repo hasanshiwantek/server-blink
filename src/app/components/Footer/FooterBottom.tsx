@@ -13,24 +13,14 @@ import { customerProfile, logout } from "@/redux/slices/authSlice";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { useSearchParams } from "next/navigation";
 
-interface Category {
-  id: number;
-  name: string;
-  slug: string;
-  subcategories?: Category[];
-}
-
-
 
 const FooterBottom = () => {
   const searchParams = useSearchParams();
   const paramsToken = searchParams.get("token");
   const auth = useAppSelector((state: RootState) => state?.auth);
-  const user: any = localStorage.getItem("persist:auth");
-  const parsedAuth = auth ? JSON.parse(user) : null;
-  const token = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
+  const [token, setToken] = useState<string | null>(null);
 
   const { newsletterLoading } = useSelector((state: any) => state.contact);
   const { blogs, webPages, error, loading } = useAppSelector(
@@ -57,7 +47,12 @@ const FooterBottom = () => {
       router.replace("/auth/login");
     }
   };
-
+  useEffect(() => {
+    const user = localStorage.getItem("persist:auth");
+    const parsedAuth = user ? JSON.parse(user) : null;
+    const t = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
+    setToken(t);
+  }, []);
   useEffect(() => {
     const existingSession = localStorage.getItem("sessionId");
     if (existingSession) {
@@ -69,11 +64,17 @@ const FooterBottom = () => {
   }, [])
 
   useEffect(() => {
-    dispatch(getBlogs({ page: 1, perPage: 20 }));
-    dispatch(getWebPages({ page: 1, perPage: 100 }));
-    dispatch(fetchCartList());
+    const id = requestIdleCallback?.(() => {
+      dispatch(getBlogs({ page: 1, perPage: 5 }));
+      dispatch(getWebPages({ page: 1, perPage: 100 }));
+      dispatch(fetchCartList());
+    }) ?? setTimeout(() => {
+      dispatch(getBlogs({ page: 1, perPage: 5 }));
+      dispatch(getWebPages({ page: 1, perPage: 100 }));
+      dispatch(fetchCartList());
+    }, 0);
+    return () => cancelIdleCallback?.(id);
   }, [dispatch]);
-
   useEffect(() => {
     if (!paramsToken) return;
 
@@ -97,7 +98,7 @@ const FooterBottom = () => {
   return (
     <footer
       className="bg-[#333333] text-[#ffffff] w-full mx-auto roboto-font"
-      
+
     >
       {/* 🔹 Newsletter Section */}
       <section className="bg-[#cac9c9] flex justify-center items-center h-auto min-h-[3rem]">
@@ -126,7 +127,7 @@ const FooterBottom = () => {
                 });
               }
             }}
-            className="w-[80%] mb-[6px] md:w-[30%] mb-[7px] 2xl:max-w-[30%] flex items-center gap-2 mt-4 md:mt-0 lg:ml-24"
+            className="w-[80%] md:w-[30%] mb-[7px] 2xl:max-w-[30%] flex items-center gap-2 mt-4 md:mt-0 lg:ml-24"
           >
             <input
               type="email"
@@ -265,7 +266,7 @@ const FooterBottom = () => {
                     <Link
                       href={`/blogs/${post.slug}`}
                       className="hover:text-[#D42020] text-[12px] roboto-font"
-                  
+
                     >
                       {post.title}
                     </Link>
@@ -322,30 +323,34 @@ const FooterBottom = () => {
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
             <Image
               src="/american-express.svg"
-              alt="American Express" fetchPriority="high"
+              alt="American Express"
               width={60}
               height={40}
+              loading="lazy"
               className="object-contain"
             />
             <Image
               src="/discover.svg"
-              alt="Discover" fetchPriority="high"
+              alt="Discover"
               width={60}
               height={40}
+              loading="lazy"
               className="object-contain "
             />
             <Image
-              src="/master.svg" fetchPriority="high"
+              src="/master.svg"
               alt="Mastercard"
               width={60}
               height={40}
+              loading="lazy"
               className="object-contain"
             />
             <Image
               src="/visa.svg"
-              alt="Visa" fetchPriority="high"
+              alt="Visa"
               width={60}
               height={40}
+              loading="lazy"
               className="object-contain"
             />
           </div>

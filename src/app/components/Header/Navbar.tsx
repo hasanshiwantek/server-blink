@@ -12,6 +12,7 @@ import { fetchLogos } from "@/redux/slices/homeSlice";
 const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
   const { logoUrl, logoType } = useAppSelector((state: any) => state?.home);
+  
   useEffect(() => {
     dispatch(fetchLogos());
   }, []);

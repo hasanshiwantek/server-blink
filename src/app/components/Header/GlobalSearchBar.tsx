@@ -83,21 +83,7 @@ const GlobalSearchBar: React.FC = () => {
     }
   }, [pathname]);
 
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     const currentScrollY = window.scrollY;
-  //     if (currentScrollY > 100) {
-  //       setIsScrolled(true);
-  //     } else {
-  //       setIsScrolled(false);
-  //     }
-  //   };
-
-  //   window.addEventListener("scroll", handleScroll, { passive: true });
-  //   return () => {
-  //     window.removeEventListener("scroll", handleScroll);
-  //   };
-  // }, []);
+  
   useEffect(() => {
     let ticking = false;
     const handleScroll = () => {
@@ -212,7 +198,7 @@ const GlobalSearchBar: React.FC = () => {
                       src={item?.image?.[0]?.path || "/default-product-image.svg"}
                       alt={item?.name || "product"}
                       width={145}
-                      height={125} fetchPriority="high"
+                      height={125} 
                       onMouseDown={(e) => {
                         e.preventDefault();
                         e.stopPropagation();

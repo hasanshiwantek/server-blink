@@ -67,7 +67,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     typeof product.brand === "object" ? product?.brand?.slug : undefined;
   const availableForSale = product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
 
-
   return (
     <div className="bg-[#F2F2F2] rounded transition flex flex-col h-full">
       {/* Image */}
