@@ -32,11 +32,7 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
     dispatch(fetchReviews());
     dispatch(fetchStats());
   }, []);
-
-  const openBulkModal = useCallback(() => setIsModalOpen(true), []);
-  const closeBulkModal = useCallback(() => setIsModalOpen(false), []);
-  const openReviewModal = useCallback(() => setIsReviewModalOpen(true), []);
-  const closeReviewModal = useCallback(() => setIsReviewModalOpen(false), []);
+  console.log("product", product);
 
 
   const bulkProduct = product ? {
