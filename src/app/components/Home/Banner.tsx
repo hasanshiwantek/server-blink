@@ -64,6 +64,7 @@ const Banner = ({ carousels, settings }: any) => {
                     fill
                     priority={index === 0}           // ← sirf pehli slide
                     loading={index === 0 ? "eager" : "lazy"}
+                    fetchPriority="high"
                     sizes="(max-width: 640px) 100vw, 913px"
                     className="object-cover"
                     quality={75}
