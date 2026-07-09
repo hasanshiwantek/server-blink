@@ -22,7 +22,7 @@ interface Category {
   slug: string;
   subcategories: Category[];
 }
-const isMobile = window.innerWidth < 768;
+// const isMobile = window.innerWidth < 768;
 
 const TopHeader = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -31,10 +31,9 @@ const TopHeader = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
-  const [searchCache, setSearchCache] = useState<{ [key: string]: any[] }>({});
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
   const [query, setQuery] = useState("");
-  // const { searchData, loading } = useAppSelector((state: any) => state.home);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -42,7 +41,6 @@ const TopHeader = () => {
   const router = useRouter();
   const cartItemCount =
     cart?.reduce((sum: any, item: any) => sum + (item?.quantity ?? 1), 0) ?? 0;
-  const [results, setResults] = useState<any[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
   const { searchQuery, showSearchDropdown, searchData, loading } = useAppSelector((state: any) => state.home);
@@ -58,21 +56,6 @@ const TopHeader = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     const currentScrollY = window.scrollY;
-  //     if (currentScrollY > 100) {
-  //       setIsScrolled(true);
-  //     } else {
-  //       setIsScrolled(false);
-  //     }
-  //   };
-
-  //   window.addEventListener("scroll", handleScroll, { passive: true });
-  //   return () => {
-  //     window.removeEventListener("scroll", handleScroll);
-  //   };
-  // }, []);
   useEffect(() => {
     let ticking = false;
     const handleScroll = () => {
@@ -87,15 +70,6 @@ const TopHeader = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-
-  const handleSearch = (e?: any) => {
-    e?.preventDefault();
-    const trimmed = searchQuery.trim();
-    if (trimmed.length > 1) {
-      dispatch(globalSearch({ query: trimmed }));
-    }
-  };
-
   // Fetch categories
   useEffect(() => {
     fetchCategories().then((data) => setCategories(data));
@@ -109,39 +83,22 @@ const TopHeader = () => {
   };
   const handleSelect = (url: string) => {
     dispatch(clearSearch());
-    setQuery("");
-    setShowDropdown(false);
     setIsOpen(false);
     router.push(url);
   };
-  useEffect(() => {
-    if (searchData?.data) {
-      const mapped = searchData.data.map((item: any) => ({
-        id: item.id,
-        name: item.name,
-        slug: item.categories?.[0]?.slug || item.slug,
-        brand: item.brand?.name || "N/A",
-        sku: item.sku || "N/A",
-        price: item.price || item.costPrice || "0.00",
-        url: `/${item?.sku}`,
-        productUrl: `${item?.productUrl}`,
-      }));
 
-      setResults(mapped);
-      setShowDropdown(true);
+   useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
-      const cacheKey = query.trim().toLowerCase();
-      if (cacheKey.length > 1) {
-        setSearchCache((prev) => ({ ...prev, [cacheKey]: mapped }));
-      }
-    }
-  }, [searchData]);
+ 
   // Hide dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setShowDropdown(false);
-        setQuery("");
         dispatch(setShowSearchDropdown(false));
       }
     };
@@ -177,8 +134,7 @@ const TopHeader = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-
+ 
   return (
     <>
       <header
@@ -194,7 +150,7 @@ const TopHeader = () => {
             >
               <p
                 className="font-bold text-[14px] roboto-condensed-font "
-              
+
               >
                 $10 off on First Order: Code: FIRSTORDER
               </p>
@@ -400,7 +356,7 @@ const TopHeader = () => {
                   <button
                     onClick={handleLogout}
                     className="font-bold text-[12px] sm:text-[14px] hover:text-gray-300 transition roboto-condensed-only-font"
-                    
+
                   >
                     Logout
                   </button>
@@ -409,21 +365,21 @@ const TopHeader = () => {
                     <Link href="/auth/login">
                       <button
                         className="font-bold text-[12px] sm:text-[14px] hover:text-gray-300 transition roboto-condensed-font"
-                        
+
                       >
                         Login
                       </button>
                     </Link>
                     <span
                       className="font-bold roboto-font"
-                     
+
                     >
                       or
                     </span>
                     <Link href="/auth/signup">
                       <button
                         className="font-bold text-[12px] sm:text-[14px] hover:text-gray-300 transition roboto-condensed-font"
-                      
+
                       >
                         Sign Up
                       </button>
