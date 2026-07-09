@@ -91,7 +91,7 @@ const AllBrandsClient = ({ brands }: AllBrandsClientProps) => {
             </div>
 
             {totalPages > 1 && (
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="mt-8 flex flex-row justify-between gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex flex-wrap gap-2">
                   {pages.map((p) => (
                     <button
@@ -114,7 +114,7 @@ const AllBrandsClient = ({ brands }: AllBrandsClientProps) => {
                   disabled={page >= totalPages}
                   onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
                   className={cn(
-                    "inline-flex items-center justify-center border px-5 py-2.5 text-sm font-medium",
+                    "inline-flex h-10 w-auto  items-center justify-center border !px-4 py-2.5 text-sm font-medium",
                     "border-gray-300 bg-white text-[#545454] text-[12px] roboto-font  hover:border-gray-400",
                     "disabled:cursor-not-allowed disabled:opacity-50"
                   )}

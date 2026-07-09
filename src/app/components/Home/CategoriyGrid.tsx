@@ -35,7 +35,7 @@ const CategoryTile = ({
           className="object-cover"
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           priority={index < 2}     // ← pehli 2 tiles above-fold, eager load
-          quality={50}
+          quality={70}
         />
       </div>
 
