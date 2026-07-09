@@ -42,19 +42,19 @@ const AllBrandsClient = ({ brands }: AllBrandsClientProps) => {
   );
 
   return (
-    <div className="w-full bg-white pb-10">
+    <div className="w-full bg-[var(--bg-color)] pb-10">
       <div className="mx-auto w-full max-w-[1170px] px-3 py-5 sm:px-4 md:px-0">
         <nav className="mb-3">
-          <div className="flex flex-wrap items-center gap-2 text-sm">
-            <Link href="/" className="text-black hover:underline">
+          <div className="hidden md:flex flex-wrap items-center gap-2 text-sm roboto-sans-font">
+            <Link href="/" className="text-[#393939] text-[11px] hover:underline">
               Home
             </Link>
             <span className="text-gray-500">/</span>
-            <span className="text-[#D40511]">All Brands</span>
+            <span className="text-[#D42020] text-[11px]">All Brands</span>
           </div>
         </nav>
 
-        <h1 className="mb-5 text-2xl md:text-[28px] font-light tracking-tight text-gray-800 md:text-4xl">
+        <h1 className="mb-5 text-2xl md:text-[28px] font-light tracking-tight text-[#545454] roboto-font  md:text-4xl">
           Brands
         </h1>
 
@@ -73,15 +73,16 @@ const AllBrandsClient = ({ brands }: AllBrandsClientProps) => {
                   >
                     <div className="flex w-full aspect-square items-center justify-center border-2 border-black bg-white p-1 transition-opacity group-hover:opacity-90 md:aspect-auto md:w-[226px] md:p-0">
                       <Image
-                        src={brand.logo || "/default-product-image.svg"}
-                        alt={brand.name}
-                        width={190}
-                        height={190}fetchPriority="high"
-                        className="h-auto w-auto max-h-[90%] max-w-[90%] object-contain md:h-[190px] md:w-[190px] md:max-h-none md:max-w-none"
-                        unoptimized
-                      />
+  src={brand.logo || "/default-product-image.svg"}
+  alt={brand.name}
+  width={190}
+  height={190}
+  sizes="(max-width:768px) 45vw, 190px"
+  priority={pageItems[0].id === brand.id}
+  className="h-auto w-auto max-h-[90%] max-w-[90%] object-contain md:h-[190px] md:w-[190px] md:max-h-none md:max-w-none"
+/>
                     </div>
-                    <p className="mt-1.5 line-clamp-2 text-center text-xs font-normal leading-tight text-gray-800 sm:text-[14px]">
+                    <p className="mt-1.5 line-clamp-2 text-center text-xs font-normal leading-tight text-[#545454] text-[15px] !font-semibold  roboto-font  sm:text-[14px]">
                       {brand.name}
                     </p>
                   </Link>
@@ -101,7 +102,7 @@ const AllBrandsClient = ({ brands }: AllBrandsClientProps) => {
                         "flex h-10 min-w-10 items-center justify-center border px-3 text-sm font-medium transition-colors",
                         page === p
                           ? "border-[#D42020] text-[#D42020] bg-white"
-                          : "border-gray-300 bg-white text-gray-700 hover:border-gray-400"
+                          : "border-gray-300 bg-white text-[#393939] text-[12px] roboto-font hover:border-gray-400"
                       )}
                     >
                       {p}
@@ -114,7 +115,7 @@ const AllBrandsClient = ({ brands }: AllBrandsClientProps) => {
                   onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
                   className={cn(
                     "inline-flex items-center justify-center border px-5 py-2.5 text-sm font-medium",
-                    "border-gray-300 bg-white text-gray-800 hover:border-gray-400",
+                    "border-gray-300 bg-white text-[#545454] text-[12px] roboto-font  hover:border-gray-400",
                     "disabled:cursor-not-allowed disabled:opacity-50"
                   )}
                 >
