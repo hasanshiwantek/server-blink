@@ -32,8 +32,6 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
     dispatch(fetchReviews());
     dispatch(fetchStats());
   }, []);
-  console.log("product", product);
-
 
   const bulkProduct = product ? {
     name: product.name,
