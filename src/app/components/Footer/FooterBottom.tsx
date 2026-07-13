@@ -63,18 +63,41 @@ const FooterBottom = () => {
     }
   }, [])
 
+  // useEffect(() => {
+  //   const id = requestIdleCallback?.(() => {
+  //     dispatch(getBlogs({ page: 1, perPage: 5 }));
+  //     dispatch(getWebPages({ page: 1, perPage: 100 }));
+  //     dispatch(fetchCartList());
+  //   }) ?? setTimeout(() => {
+  //     dispatch(getBlogs({ page: 1, perPage: 5 }));
+  //     dispatch(getWebPages({ page: 1, perPage: 100 }));
+  //     dispatch(fetchCartList());
+  //   }, 0);
+  //   return () => cancelIdleCallback?.(id);
+  // }, [dispatch]);
   useEffect(() => {
-    const id = requestIdleCallback?.(() => {
-      dispatch(getBlogs({ page: 1, perPage: 5 }));
-      dispatch(getWebPages({ page: 1, perPage: 100 }));
-      dispatch(fetchCartList());
-    }) ?? setTimeout(() => {
-      dispatch(getBlogs({ page: 1, perPage: 5 }));
-      dispatch(getWebPages({ page: 1, perPage: 100 }));
-      dispatch(fetchCartList());
-    }, 0);
-    return () => cancelIdleCallback?.(id);
-  }, [dispatch]);
+  const callback = () => {
+    dispatch(getBlogs({ page: 1, perPage: 5 }));
+    dispatch(getWebPages({ page: 1, perPage: 100 }));
+    dispatch(fetchCartList());
+  };
+
+  let id: ReturnType<typeof setTimeout> | number;
+
+  if ("requestIdleCallback" in globalThis) {
+    id = (globalThis as any).requestIdleCallback(callback);
+  } else {
+    id = setTimeout(callback, 0);
+  }
+
+  return () => {
+    if ("cancelIdleCallback" in globalThis) {
+      (globalThis as any).cancelIdleCallback(id as number);
+    } else {
+      clearTimeout(id as ReturnType<typeof setTimeout>);
+    }
+  };
+}, [dispatch]);
   useEffect(() => {
     if (!paramsToken) return;
 

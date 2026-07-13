@@ -40,7 +40,8 @@ export default function ScriptInjector() {
                     .replace(/<\/?script[^>]*>/gi, "")
                     .trim();
 
-
+console.log("Injecting Script:", script.id);
+console.log(content);
                 if (!content) return;
 
                 try {
