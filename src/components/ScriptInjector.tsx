@@ -39,8 +39,6 @@ export default function ScriptInjector() {
                 const content = script.script_content
                     .replace(/<\/?script[^>]*>/gi, "")
                     .trim();
-
-
                 if (!content) return;
 
                 try {
