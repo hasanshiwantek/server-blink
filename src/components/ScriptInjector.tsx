@@ -39,9 +39,6 @@ export default function ScriptInjector() {
                 const content = script.script_content
                     .replace(/<\/?script[^>]*>/gi, "")
                     .trim();
-
-console.log("Injecting Script:", script.id);
-console.log(content);
                 if (!content) return;
 
                 try {
