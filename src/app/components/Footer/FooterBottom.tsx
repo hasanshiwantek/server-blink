@@ -4,7 +4,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { subscribeNewsletter } from "@/redux/slices/contactSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { getBlogs, getWebPages, visitorSession } from "@/redux/slices/storeFrontSlice";
+import {
+  getBlogs,
+  getWebPages,
+  visitorSession,
+} from "@/redux/slices/storeFrontSlice";
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -12,7 +16,6 @@ import { toast } from "react-toastify";
 import { customerProfile, logout } from "@/redux/slices/authSlice";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { useSearchParams } from "next/navigation";
-
 
 const FooterBottom = () => {
   const searchParams = useSearchParams();
@@ -24,13 +27,13 @@ const FooterBottom = () => {
 
   const { newsletterLoading } = useSelector((state: any) => state.contact);
   const { blogs, webPages, error, loading } = useAppSelector(
-    (state: any) => state.storeFront
+    (state: any) => state.storeFront,
   );
 
   const pagesList = webPages?.data || [];
-  const visiblePages = pagesList?.filter((page: any) =>
-    !page.restrictToCustomersOnly || token
-  );
+  const visiblePages = pagesList
+    ?.filter((page: any) => !page.restrictToCustomersOnly || token)
+    .filter((item: any) => item?.showInNavigation);
   const router = useRouter();
 
   const blogPosts = blogs?.data || [];
@@ -56,12 +59,12 @@ const FooterBottom = () => {
   useEffect(() => {
     const existingSession = localStorage.getItem("sessionId");
     if (existingSession) {
-      dispatch(visitorSession({ sessionId: existingSession }))
+      dispatch(visitorSession({ sessionId: existingSession }));
     } else {
       const randomString = Math.random().toString(36).substring(2, 15);
-      localStorage.setItem("sessionId", randomString)
+      localStorage.setItem("sessionId", randomString);
     }
-  }, [])
+  }, []);
 
   // useEffect(() => {
   //   const id = requestIdleCallback?.(() => {
@@ -76,28 +79,28 @@ const FooterBottom = () => {
   //   return () => cancelIdleCallback?.(id);
   // }, [dispatch]);
   useEffect(() => {
-  const callback = () => {
-    dispatch(getBlogs({ page: 1, perPage: 5 }));
-    dispatch(getWebPages({ page: 1, perPage: 100 }));
-    dispatch(fetchCartList());
-  };
+    const callback = () => {
+      dispatch(getBlogs({ page: 1, perPage: 5 }));
+      dispatch(getWebPages({ page: 1, perPage: 100 }));
+      dispatch(fetchCartList());
+    };
 
-  let id: ReturnType<typeof setTimeout> | number;
+    let id: ReturnType<typeof setTimeout> | number;
 
-  if ("requestIdleCallback" in globalThis) {
-    id = (globalThis as any).requestIdleCallback(callback);
-  } else {
-    id = setTimeout(callback, 0);
-  }
-
-  return () => {
-    if ("cancelIdleCallback" in globalThis) {
-      (globalThis as any).cancelIdleCallback(id as number);
+    if ("requestIdleCallback" in globalThis) {
+      id = (globalThis as any).requestIdleCallback(callback);
     } else {
-      clearTimeout(id as ReturnType<typeof setTimeout>);
+      id = setTimeout(callback, 0);
     }
-  };
-}, [dispatch]);
+
+    return () => {
+      if ("cancelIdleCallback" in globalThis) {
+        (globalThis as any).cancelIdleCallback(id as number);
+      } else {
+        clearTimeout(id as ReturnType<typeof setTimeout>);
+      }
+    };
+  }, [dispatch]);
   useEffect(() => {
     if (!paramsToken) return;
 
@@ -119,10 +122,7 @@ const FooterBottom = () => {
     login();
   }, [paramsToken, dispatch, router]);
   return (
-    <footer
-      className="bg-[#333333] text-[#ffffff] w-full mx-auto roboto-font"
-
-    >
+    <footer className="bg-[#333333] text-[#ffffff] w-full mx-auto roboto-font">
       {/* 🔹 Newsletter Section */}
       <section className="bg-[#cac9c9] flex justify-center items-center h-auto min-h-[3rem]">
         <div
@@ -131,7 +131,7 @@ const FooterBottom = () => {
         flex flex-col md:flex-row items-center justify-between gap-2 md:gap-8 lg:gap-0 py-2
       "
         >
-          <div className="text-center  md:text-left  w-full md:w-[60%] 2xl:max-w-[50%] roboto-font" >
+          <div className="text-center  md:text-left  w-full md:w-[60%] 2xl:max-w-[50%] roboto-font">
             <h3 className="text-[15px] md:text-[20px] text-[#545454] font-bold uppercase">
               Join Our Mailing List
               <span className="text-[16px] lowercase ml-2">
@@ -144,10 +144,12 @@ const FooterBottom = () => {
             onSubmit={(e) => {
               e.preventDefault();
               if (email.trim()) {
-                dispatch(subscribeNewsletter({ email: email.trim() })).unwrap().then(() => {
-                  handleSelect("/result")
-                  setEmail("")
-                });
+                dispatch(subscribeNewsletter({ email: email.trim() }))
+                  .unwrap()
+                  .then(() => {
+                    handleSelect("/result");
+                    setEmail("");
+                  });
               }
             }}
             className="w-[80%] md:w-[30%] mb-[7px] 2xl:max-w-[30%] flex items-center gap-2 mt-4 md:mt-0 lg:ml-24"
@@ -162,7 +164,8 @@ const FooterBottom = () => {
               className="w-full h-[32px] px-4 py-3 border border-white text-[#545454] bg-white focus:outline-none rounded-xs text-sm md:text-base"
             />
             <button
-              type="submit" disabled={newsletterLoading}
+              type="submit"
+              disabled={newsletterLoading}
               className="btn-primary h-[32px] !px-4 !py-1 !rounded-sm w-[120px]"
             >
               {newsletterLoading ? "LOADING.." : "JOIN"}
@@ -170,7 +173,6 @@ const FooterBottom = () => {
           </form>
         </div>
       </section>
-
 
       {/* Main Footer Content */}
       <section className="text-center md:text-left w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto px-4 xl:px-4 2xl:px-2 py-12">
@@ -211,55 +213,76 @@ const FooterBottom = () => {
 
           {/* Accounts & Orders */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff] roboto-font" >
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff] roboto-font">
               Accounts & Orders
             </h4>
             <ul className="space-y-1 text-[14px] lg:text-[12px] text-[#ffffff]">
-              {!auth?.isAuthenticated ? <li>
-                <Link href="/auth/login" className="hover:text-[#D42020]">
-                  Login
-                </Link>{" "}
-                or{" "}
-                <Link href="/auth/signup" className="hover:text-[#D42020]">
-                  Sign Up
-                </Link>
-              </li> : <>
+              {!auth?.isAuthenticated ? (
                 <li>
-                  <Link href="/my-account/orders" className="hover:text-[#D42020]">
-                    Account
+                  <Link href="/auth/login" className="hover:text-[#D42020]">
+                    Login
+                  </Link>{" "}
+                  or{" "}
+                  <Link href="/auth/signup" className="hover:text-[#D42020]">
+                    Sign Up
                   </Link>
                 </li>
-                <li>
-                  <span onClick={handleLogout} className="hover:text-[#D42020] cursor-pointer">
-                    Logout
-                  </span>
-                </li>
-                <li>
-                  <Link href="/my-account/orders" className="hover:text-[#D42020]">
-                    Order Status
-                  </Link>
-                </li>
-              </>
-              }
-
+              ) : (
+                <>
+                  <li>
+                    <Link
+                      href="/my-account/orders"
+                      className="hover:text-[#D42020]"
+                    >
+                      Account
+                    </Link>
+                  </li>
+                  <li>
+                    <span
+                      onClick={handleLogout}
+                      className="hover:text-[#D42020] cursor-pointer"
+                    >
+                      Logout
+                    </span>
+                  </li>
+                  <li>
+                    <Link
+                      href="/my-account/orders"
+                      className="hover:text-[#D42020]"
+                    >
+                      Order Status
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff] roboto-font" >
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff] roboto-font">
               Quick Links
             </h4>
-            <ul className="space-y-1 text-[14px] lg:text-[12px] text-[#ffffff] roboto-font " >
+            <ul className="space-y-1 text-[14px] lg:text-[12px] text-[#ffffff] roboto-font ">
               {visiblePages?.map((page: any) => (
                 <li key={page.id}>
                   {page?.pageType == "2" ? (
-                    <Link href={page.link} target="_blank" rel="noopener noreferrer" className="hover:text-[#D42020]">
+                    <Link
+                      href={page.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-[#D42020]"
+                    >
                       {page.pageName}
-                    </Link>) : <Link href={page.slugWithUrl} className="hover:text-[#D42020]">
-                    {page.pageName}
-                  </Link>
-                  }
+                    </Link>
+                  ) : (
+                    <Link
+                      href={page.slugWithUrl}
+                      className="hover:text-[#D42020]"
+                    >
+                      {page.pageName}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -267,7 +290,7 @@ const FooterBottom = () => {
 
           {/* Recent Blog Posts */}
           <div>
-            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff] roboto-font" >
+            <h4 className="text-[16px] lg:text-[16px] font-bold mb-4 text-[#ffffff] roboto-font">
               Recent Blog Posts
             </h4>
             <ul className="space-y-1 text-[14px] lg:text-[12px] text-[#ffffff]">
@@ -280,7 +303,7 @@ const FooterBottom = () => {
                   ></li>
                 ))
               ) : error ? (
-                <li className="text-red-500 px-2 py-1" >{error}</li>
+                <li className="text-red-500 px-2 py-1">{error}</li>
               ) : blogPosts.length === 0 ? (
                 <li className="text-gray-500 px-2 py-1">No blogs available</li>
               ) : (
@@ -289,7 +312,6 @@ const FooterBottom = () => {
                     <Link
                       href={`/blogs/${post.slug}`}
                       className="hover:text-[#D42020] text-[12px] roboto-font"
-
                     >
                       {post.title}
                     </Link>
@@ -396,14 +418,3 @@ const FooterBottom = () => {
 };
 
 export default FooterBottom;
-
-
-
-
-
-
-
-
-
-
-

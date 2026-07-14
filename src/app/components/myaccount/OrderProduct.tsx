@@ -100,7 +100,7 @@ const OrderProduct = () => {
               <div className="flex flex-col justify-center w-full">
                 <Link href={`/my-account/orders/${item.order_number || ""}`}>
                   <p className="mb-1 text-xl text-red-600 hover:text-red-700 transition-colors duration-200">
-                    Order #{item.order_number || "N/A"}
+                    Order #{item?.id || "N/A"}
                   </p>
                 </Link>
                 <p className="text-sm md:text-[14px]">
