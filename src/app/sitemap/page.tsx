@@ -1,4 +1,3 @@
-import React from "react";
 import Link from "next/link";
 import { baseURL, storeId } from "@/lib/axiosInstance";
 import WebDynamicList from "../components/sitemap/WebDynamicList";
