@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
@@ -73,7 +72,7 @@ const SingleOrder = () => {
   const invoiceRef = useRef<HTMLDivElement>(null);
 
   const handlePrint = useReactToPrint({
-    contentRef: invoiceRef,          // v3 API: pass the ref here
+    contentRef: invoiceRef, // v3 API: pass the ref here
     documentTitle: `Server Blink LLC -`,
     pageStyle: `
             @page {
@@ -99,7 +98,7 @@ const SingleOrder = () => {
       try {
         setLoading(true);
         const res = await dispatch(
-          fetchOrderDetails({ orderId: orderNumber })
+          fetchOrderDetails({ orderId: orderNumber }),
         ).unwrap();
 
         if (res?.order?.length > 0) {
@@ -109,7 +108,6 @@ const SingleOrder = () => {
         }
       } catch (err) {
         setError("Failed to load order details");
-       
       } finally {
         setLoading(false);
       }
@@ -143,7 +141,7 @@ const SingleOrder = () => {
   const subtotal =
     order.shippingDestinations[0]?.products.reduce(
       (sum, item) => sum + parseFloat(item.price) * item.quantity,
-      0
+      0,
     ) || 0;
 
   const shippingCost = parseFloat(order.shippingCost) || 0;
@@ -162,7 +160,7 @@ const SingleOrder = () => {
   // Get product quantities from shipping destinations
   const getProductQuantity = (productId: number) => {
     const product = order.shippingDestinations[0]?.products.find(
-      (p) => p.productId === productId
+      (p) => p.productId === productId,
     );
     return product?.quantity || 1;
   };
@@ -183,10 +181,12 @@ const SingleOrder = () => {
           </p>
 
           <div className="divide-y">
-            {order.products.map((item) => {
+            {order?.products?.map((item) => {
               const quantity = getProductQuantity(item.id);
               const itemPrice = parseFloat(item.price);
-              const primaryImage = item.image.find((img) => img.isPrimary === 1);
+              const primaryImage = item.image.find(
+                (img) => img.isPrimary === 1,
+              );
 
               return (
                 <div
@@ -199,7 +199,8 @@ const SingleOrder = () => {
                         src={primaryImage?.path || "/default-product-image.svg"}
                         alt={primaryImage?.altText || item.name}
                         fill
-                        className="object-contain bg-white p-2"fetchPriority="high"
+                        className="object-contain bg-white p-2"
+                        fetchPriority="high"
                       />
                     </div>
                     <div>
@@ -220,9 +221,7 @@ const SingleOrder = () => {
           <div className="flex flex-col items-end mt-6 gap-1 text-xl">
             <p>Subtotal: ${subtotal.toFixed(2)}</p>
             {shippingCost > 0 && <p>Shipping: ${shippingCost.toFixed(2)}</p>}
-            <p className="font-semibold">
-              Grand total: ${total.toFixed(2)}
-            </p>
+            <p className="font-semibold">Grand total: ${total.toFixed(2)}</p>
           </div>
         </div>
 
@@ -230,15 +229,16 @@ const SingleOrder = () => {
         <div className="flex flex-col gap-6">
           {/* Order Details */}
           <div className="border rounded-md p-4 text-xl">
-            <p>Order number: {order.orderNumber}</p>
             <p>Order status: {order.status}</p>
             <p>Order date: {orderDate}</p>
             <p>Order total: ${total.toFixed(2)}</p>
-            <button onClick={() => handlePrint()} className="mt-3 text-2xl font-bold border-b-2 border-black px-4 py-2 bg-[#D42020] text-white rounded-md hover:bg-red-700 transition w-60">
+            <button
+              onClick={() => handlePrint()}
+              className="mt-3 text-2xl font-bold border-b-2 border-black px-4 py-2 bg-[#D42020] text-white rounded-md hover:bg-red-700 transition w-60"
+            >
               PRINT INVOICE
             </button>
             {/* ── Invoice preview (screen only) ── */}
-
           </div>
 
           {/* Ship To */}
@@ -246,7 +246,9 @@ const SingleOrder = () => {
             <p>
               {shippingAddress?.firstName} {shippingAddress?.lastName}
             </p>
-            {shippingAddress?.companyName && <p>{shippingAddress.companyName}</p>}
+            {shippingAddress?.companyName && (
+              <p>{shippingAddress.companyName}</p>
+            )}
             <p>{shippingAddress?.addressLine1}</p>
             {shippingAddress?.addressLine2 && (
               <p>{shippingAddress.addressLine2}</p>
@@ -256,7 +258,9 @@ const SingleOrder = () => {
               {shippingAddress?.zip}
             </p>
             <p>{shippingAddress?.country}</p>
-            <p className="mt-2 text-sm text-gray-600">{shippingAddress?.phone}</p>
+            <p className="mt-2 text-sm text-gray-600">
+              {shippingAddress?.phone}
+            </p>
             <p className="text-gray-600">{shippingAddress?.email}</p>
           </div>
 
@@ -268,19 +272,22 @@ const SingleOrder = () => {
             </p>
             {billingAddress?.companyName && <p>{billingAddress.companyName}</p>}
             <p>{billingAddress?.addressLine1}</p>
-            {billingAddress?.addressLine2 && <p>{billingAddress.addressLine2}</p>}
+            {billingAddress?.addressLine2 && (
+              <p>{billingAddress.addressLine2}</p>
+            )}
             <p>
               {billingAddress?.city}, {billingAddress?.state}{" "}
               {billingAddress?.zip}
             </p>
             <p>{billingAddress?.country}</p>
-            <p className="mt-2 text-sm text-gray-600">{billingAddress?.phone}</p>
+            <p className="mt-2 text-sm text-gray-600">
+              {billingAddress?.phone}
+            </p>
             <p className="text-gray-600">{billingAddress?.email}</p>
           </div>
         </div>
       </div>
     </>
-
   );
 };
 

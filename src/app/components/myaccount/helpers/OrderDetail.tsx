@@ -83,7 +83,6 @@ interface Customer {
 
 interface OrderData {
   id: number;
-  orderNumber: string;
   status: string;
   shippingCost: string;
   comments: string;
@@ -207,7 +206,7 @@ export const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>(
             marginBottom: "12px",
           }}
         >
-          Server Blink LLC Invoice for Order #{order?.orderNumber}
+          Server Blink LLC Invoice for Order #{order?.id}
         </div>
 
         {/* ── Company address ── */}
@@ -320,7 +319,7 @@ export const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>(
                       >
                         Order:
                       </td>
-                      <td>#{order.orderNumber}</td>
+                      <td>#{order.id}</td>
                     </tr>
                     <tr>
                       <td
