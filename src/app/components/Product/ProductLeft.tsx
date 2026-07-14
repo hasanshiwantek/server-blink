@@ -3,7 +3,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { ChevronLeft, ChevronRight, Search, X } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Search,
+  X,
+  ZoomIn,
+  ZoomOut,
+} from "lucide-react";
 import img1 from "@/assets/slug/trustpilot-img.webp";
 import img2 from "@/assets/slug/easyReturn-image.webp";
 import img3 from "@/assets/slug/fastShipping-img.webp";
@@ -167,7 +174,8 @@ const ProductLeft = ({
                   className="flex h-11 w-11 items-center justify-center bg-neutral-800 text-white transition hover:bg-neutral-700"
                   aria-label={zoomed ? "Zoom out" : "Zoom in"}
                 >
-                  <Search className="h-5 w-5" strokeWidth={2} />
+                  {/* <Search className="h-5 w-5" strokeWidth={2} /> */}
+                  {zoomed ? <ZoomOut className="h-5 w-5"  strokeWidth={2}/> : <ZoomIn className="h-5 w-5" strokeWidth={2} />}
                 </button>
                 <DialogPrimitive.Close asChild>
                   <button
@@ -223,8 +231,8 @@ const ProductLeft = ({
                       ? "max-h-[90vh] max-w-[90vw] w-[90vw] h-[90vh]"
                       : "max-h-[min(72vh,640px)] max-w-[min(82vw,640px)]",
                     zoomed &&
-                    !expanded &&
-                    "max-h-[85vh] max-w-[92vw] overflow-auto",
+                      !expanded &&
+                      "max-h-[85vh] max-w-[92vw] overflow-auto",
                   )}
                 >
                   <div
@@ -246,10 +254,10 @@ const ProductLeft = ({
                         expanded
                           ? "h-full w-full max-h-[calc(90vh-2.5rem)] max-w-full cursor-zoom-out"
                           : cn(
-                            "h-auto max-h-[56vh] w-auto max-w-[min(78vw,560px)] cursor-zoom-in",
-                            zoomed &&
-                            "max-h-none max-w-none scale-[1.45] sm:scale-[1.6]",
-                          ),
+                              "h-auto max-h-[56vh] w-auto max-w-[min(78vw,560px)] cursor-zoom-in",
+                              zoomed &&
+                                "max-h-none max-w-none scale-[1.45] sm:scale-[1.6]",
+                            ),
                       )}
                       sizes="90vw"
                       quality={90}
