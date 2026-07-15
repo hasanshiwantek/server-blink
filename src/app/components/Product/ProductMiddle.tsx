@@ -72,6 +72,11 @@ const ProductMiddle = ({ product, quantity, increment, decrement, setQuantity }:
                 className="text-[#d40511] underline">
                 (502) 206-3033
               </Link> */}
+              <Link
+                href="tel:+15020000000"
+                className="text-[#d40511] underline">
+                (502) 000-0000
+              </Link>
             </h2>
           </div>
         </div> : <div>
