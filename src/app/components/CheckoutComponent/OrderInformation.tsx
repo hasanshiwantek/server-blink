@@ -119,7 +119,7 @@ const CheckoutForm = () => {
               <h6 className="text-lg font-medium mb-6 text-[#545454]">
                 Your order number is{" "}
                 <span className="font-bold text-[#545454]">
-                  {orderCustomer?.orderNumber}
+                  #{orderCustomer?.id}
                 </span>
               </h6>
 
