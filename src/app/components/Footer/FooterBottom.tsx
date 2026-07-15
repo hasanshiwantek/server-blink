@@ -194,6 +194,11 @@ const FooterBottom = () => {
                   className="text-gray-300">
                   +1502-206-3033
                 </Link> */}
+                <Link
+                  href="tel:+15020000000"
+                  className="text-gray-300">
+                  +1502-000-0000
+                </Link>
               </p>
               <p>
                 <span className="font-semibold">Email:</span>{" "}

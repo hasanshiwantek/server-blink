@@ -115,6 +115,11 @@ export default function ProductCategoryCard({ product }: { product: Product }) {
             className="text-[#d40511] underline">
             (502) 206-3033
           </Link> */}
+            <Link
+             href="tel:+15020000000"
+            className="text-[#d40511] underline">
+            (502) 000-0000
+          </Link>
           </span>
         </div>}
       </div>

@@ -7,12 +7,10 @@ import { useAppSelector, useAppDispatch } from "@/hooks/useReduxHooks";
 import GlobalSearchBar from "./GlobalSearchBar";
 import { fetchLogos } from "@/redux/slices/homeSlice";
 
-
-
 const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
   const { logoUrl, logoType } = useAppSelector((state: any) => state?.home);
-  
+
   useEffect(() => {
     dispatch(fetchLogos());
   }, []);
@@ -25,15 +23,17 @@ const Navbar: React.FC = () => {
           <div className="flex items-center justify-center flex-shrink-0">
             <Link href={"/"}>
               <div className="relative w-80 h-14 sm:w-70 sm:h-30 md:w-44 md:h-9 lg:w-48 lg:h-20 xl:w-76 xl:h-18 2xl:w-[253.48px] 2xl:h-[48px]">
-                {logoType == "upload" && <Image
-                  src={logoUrl || navlogo}
-                  alt="Logo"
-                  fill
-                  fetchPriority="high"
-                  className="object-contain"
-                  priority
-                  sizes="(max-width: 768px) 200px, (max-width: 1200px) 200px, 253px"
-                />}
+                {logoType == "upload" && (
+                  <Image
+                    src={logoUrl || navlogo}
+                    alt="Logo"
+                    fill
+                    fetchPriority="high"
+                    className="object-contain"
+                    priority
+                    sizes="(max-width: 768px) 200px, (max-width: 1200px) 200px, 253px"
+                  />
+                )}
               </div>
             </Link>
           </div>
@@ -53,10 +53,11 @@ const Navbar: React.FC = () => {
                   alt="Contact support"
                   fill
                   className="object-contain"
-                  sizes="48px" fetchPriority="high"
+                  sizes="48px"
+                  fetchPriority="high"
                 />
               </div>
-              <div className="flex flex-col text-gray-800 roboto-font" >
+              <div className="flex flex-col text-gray-800 roboto-font">
                 <p className="text-[15px] font-semibold">
                   Call:{" "}
                   {/* <Link
@@ -64,8 +65,15 @@ const Navbar: React.FC = () => {
                     aria-label="Call +1 (502) 206-3033"
                     className="text-[var(--primary-color)] text-[18px] hover:underline"
                   >
-                    {/* +1 502-206-3033 */}
-                  {/* </Link> */} 
+                     +1 502-206-3033 
+                  </Link> */}
+                  <Link
+                    href="tel:+15020000000"
+                    aria-label="Call +1 (502) 206-3033"
+                    className="text-[var(--primary-color)] text-[18px] hover:underline"
+                  >
+                    +1 502-000-0000
+                  </Link>
                 </p>
 
                 <p className="text-[15px] font-bold">
@@ -114,7 +122,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Text Banner */}
-        <div className="w-full xl:max-w-[1170px] border-none 2xl:max-w-[1170px] mx-auto roboto-font" >
+        <div className="w-full xl:max-w-[1170px] border-none 2xl:max-w-[1170px] mx-auto roboto-font">
           <div className="bg-white text-center p-0 mb-0 md:p-4 md:mb-4">
             <p className="p-4 md:text-[14px] text-[14px] font-semibold text-[#545454]">
               We Accept POs from Fortune 1000 Companies, Government Agencies
