@@ -32,10 +32,10 @@ const ContactForm = () => {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const onSubmit = (data: ContactFormData) => {
-    if (!captchaToken) {
-      toast("Please verify the captcha.");
-      return;
-    }
+    // if (!captchaToken) {
+    //   toast("Please verify the captcha.");
+    //   return;
+    // }
     // You can also log it in a more formatted way
     dispatch(contactRequests(data))
       .unwrap()
@@ -59,7 +59,7 @@ const ContactForm = () => {
       </nav>
 
       {/* Page Title */}
-      {!showSuccess ? (
+      {showSuccess ? (
         <div>
           <div className="mb-8">
             <h1 className="text-[28px] text-[#545454] mb-4 !font-normal roboto-only-font ">
@@ -274,13 +274,13 @@ const ContactForm = () => {
           </form>
         </div>
       ) : (
-        <div>
-          <h1 className="text-[28px] text-[#545454] !font-normal roboto-only-font ">
+        <div className="!mb-0">
+          <h1 className="text-[28px] text-[#545454] !font-normal roboto-only-font  ">
             Contact Form
           </h1>
           <p className="sm:text-[14px] text-[1rem] text-[#545454] font-normal roboto-font">
             {" "}
-            we've received your feedback and will respond shortly if requird.{" "}
+            We've received your feedback and will respond shortly if requird.{" "}
             <span className="text-[#D42020] underline ">
               <Link href={"/"}>Continue</Link>
             </span>
