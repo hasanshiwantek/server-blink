@@ -205,8 +205,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
     return rate || null;
   };
 
-
-
   const isShippingComplete = useMemo(() => {
     return !!(
       firstName?.trim() &&
@@ -230,6 +228,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
     ) {
       const pkg = calculatePackage(cart);
       const timer = setTimeout(() => {
+        dispatch(resetShippingRates());
         dispatch(
           fetchShippingRates({
             data: {
@@ -370,7 +369,11 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             {shippingInfo?.country ? ` / ${shippingInfo.country}` : ""}{" "}
           </p>
         </div>
-        <button type="button" onClick={onEdit}   className="btn-primary h-[30px] !text-[12px] w-[82px]">
+        <button
+          type="button"
+          onClick={onEdit}
+          className="btn-primary h-[30px] !text-[12px] w-[82px]"
+        >
           EDIT
         </button>
       </div>
@@ -900,10 +903,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             </h3>
 
             {!isShippingComplete && (
-              <p
-                className="text-[15px] text-amber-600 mb-3 bg-amber-50 p-3 rounded border border-amber-200 roboto-font"
-                
-              >
+              <p className="text-[15px] text-amber-600 mb-3 bg-amber-50 p-3 rounded border border-amber-200 roboto-font">
                 Please complete all required shipping address fields to select a
                 shipping method.
               </p>
