@@ -186,6 +186,7 @@ const CheckoutForm = () => {
         if (!emptyCartWarningShownRef.current) {
           emptyCartWarningShownRef.current = true;
           toast.error("Please add something");
+
           // router.push("/cart");
         }
       } else {
@@ -1487,8 +1488,7 @@ const CheckoutForm = () => {
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
       {paymentRequest && (
-        <div className="">
-          {/* <PaymentRequestButtonElement options={{ paymentRequest }} /> */}
+        <div>
           {paymentRequest && (
             <PaymentRequestButtonElement
               options={{
@@ -1604,36 +1604,38 @@ const CheckoutForm = () => {
             </div>
 
             {/* STEP 4: Payment */}
-            <div className="p-6  border-b-[1px] border-b-[#8b8b8b]">
-              <h2 className="text-[1.92308rem] font-normal mb-4 text-[#545454]">
-                Payment
-              </h2>
-              <PaymentStep
-                register={register}
-                errors={errors}
-                watchedPaymentMethod={watchedPaymentMethod}
-                handlePaymentSelection={handlePaymentSelection}
-                cardCompletion={cardCompletion}
-                setCardCompletion={setCardCompletion}
-                cardError={cardError}
-                setCardError={setCardError}
-                walletSupport={walletSupport}
-                isProcessing={isProcessing}
-                stripe={stripe}
-                isActive={currentStep === 4}
-                isCompleted={completedSteps.includes(4)}
-                onEdit={handleEditPayment}
-                paymentMethodLabel={
-                  watchedPaymentMethod === "credit_card"
-                    ? "Credit Card"
-                    : watchedPaymentMethod === "apple_pay"
-                      ? "Apple Pay"
-                      : watchedPaymentMethod === "google_pay"
-                        ? "Google Pay"
-                        : "Credit Card"
-                }
-              />
-            </div>
+            {cart?.length > 0 && (
+              <div className="p-6  border-b-[1px] border-b-[#8b8b8b]">
+                <h2 className="text-[1.92308rem] font-normal mb-4 text-[#545454]">
+                  Payment
+                </h2>
+                <PaymentStep
+                  register={register}
+                  errors={errors}
+                  watchedPaymentMethod={watchedPaymentMethod}
+                  handlePaymentSelection={handlePaymentSelection}
+                  cardCompletion={cardCompletion}
+                  setCardCompletion={setCardCompletion}
+                  cardError={cardError}
+                  setCardError={setCardError}
+                  walletSupport={walletSupport}
+                  isProcessing={isProcessing}
+                  stripe={stripe}
+                  isActive={currentStep === 4}
+                  isCompleted={completedSteps.includes(4)}
+                  onEdit={handleEditPayment}
+                  paymentMethodLabel={
+                    watchedPaymentMethod === "credit_card"
+                      ? "Credit Card"
+                      : watchedPaymentMethod === "apple_pay"
+                        ? "Apple Pay"
+                        : watchedPaymentMethod === "google_pay"
+                          ? "Google Pay"
+                          : "Credit Card"
+                  }
+                />
+              </div>
+            )}
           </div>
 
           {/* RIGHT SECTION - Order Summary */}
