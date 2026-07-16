@@ -15,11 +15,16 @@ import {
 import countries from "world-countries";
 import { applyCoupon, removeCoupon } from "@/redux/slices/couponSlice";
 import { Country, State, City } from "country-state-city";
-import { checkoutFormSave, fetchShippingRate, fetchShippingRates, getCheckoutForm } from "@/redux/slices/shippingSlice";
+import {
+  checkoutFormSave,
+  fetchShippingRate,
+  fetchShippingRates,
+  getCheckoutForm,
+  resetShippingRates,
+} from "@/redux/slices/shippingSlice";
 import { calculatePackage } from "../CheckoutComponent/Shippingstep";
 import Image from "next/image";
 import { addShippingCost } from "@/redux/slices/shippingSlice";
-
 
 const OrderSummary = () => {
   const dispatch = useAppDispatch();
@@ -39,8 +44,12 @@ const OrderSummary = () => {
   const [loadingDetectCountry, setLoadingDetectCountry] = useState(false);
   const [fedexShow, setFedexShow] = useState(false);
   const [selectedShippingMethod, setSelectedShippingMethod] = useState("");
-  const shippingCostLoading = useAppSelector((state: RootState) => state.shippingZone?.loading);
-  const { shippingDetail, saveDetail } = useAppSelector((state: any) => state.shippingZone);
+  const shippingCostLoading = useAppSelector(
+    (state: RootState) => state.shippingZone?.loading,
+  );
+  const { shippingDetail, saveDetail } = useAppSelector(
+    (state: any) => state.shippingZone,
+  );
   const cartItems = useAppSelector((state: RootState) => state?.carts?.items);
   const [shippingData, setShippingData] = useState({
     country: "",
@@ -81,7 +90,6 @@ const OrderSummary = () => {
   const packageInfo = useMemo(() => calculatePackage(cart), [cart]);
 
   const shippingLabel = `FedEx priority $${shipping.toFixed(2)}`;
-  
 
   // Total before discount
   const totalBeforeDiscount = subtotal + shipping;
@@ -97,6 +105,7 @@ const OrderSummary = () => {
     const pkg = calculatePackage(cart);
     const { city, zip, country, ...restShippingData } = shippingData;
 
+    dispatch(resetShippingRates());
     dispatch(
       fetchShippingRates({
         data: {
@@ -151,17 +160,16 @@ const OrderSummary = () => {
     router.push("/checkout");
   }, [cart.length, router]);
 
-
   useEffect(() => {
     // if (shippingDetail?.country) return; // already hai, mat karo
 
     const detectCountry = async () => {
-      setLoadingDetectCountry(true)
+      setLoadingDetectCountry(true);
       try {
         const res = await fetch("/api/detect-country");
         const data = await res.json();
         if (data.country_code) {
-          setShowShipping(false)
+          setShowShipping(false);
           // dispatch(fetchShippingRate({}))
           setShippingData((prev) => ({
             ...prev,
@@ -171,14 +179,13 @@ const OrderSummary = () => {
       } catch {
         setShippingData((prev) => ({ ...prev, country: "US" }));
       } finally {
-        setLoadingDetectCountry(false)
+        setLoadingDetectCountry(false);
       }
     };
     const getShippingRates = async () => {
       try {
         await dispatch(fetchShippingRate({})).unwrap();
       } catch (err) {
-      
         detectCountry();
       }
     };
@@ -197,15 +204,16 @@ const OrderSummary = () => {
   }, [shippingDetail]);
 
   useEffect(() => {
-    dispatch(getCheckoutForm())
-  }, [])
+    dispatch(getCheckoutForm());
+  }, []);
+  console.log(shippingRates);
 
   return (
     <div className="border rounded-lg 2xl:w-full">
       {/* Header */}
 
       {/* Estimate Shipping */}
-      <div className="px-6 py-6 roboto-font" >
+      <div className="px-6 py-6 roboto-font">
         {/* Subtotal + Shipping */}
         <div className="text-sm text-gray-700 space-y-2 mb-2">
           <div className="flex justify-between py-2">
@@ -222,15 +230,17 @@ const OrderSummary = () => {
               Shipping:
             </span>
 
-            {shippingCostLoading || loadingDetectCountry ? <span
-              className={
-                showShipping
-                  ? " text-[14px] inline-block cursor-pointer italic "
-                  : " text-[14px]   inline-block "
-              }
-            >
-              <div className="h-6 w-6 rounded-full border-[3px] border-gray-300 border-t-red-500 animate-spin" />
-            </span> : shippingCost ? (
+            {shippingCostLoading || loadingDetectCountry ? (
+              <span
+                className={
+                  showShipping
+                    ? " text-[14px] inline-block cursor-pointer italic "
+                    : " text-[14px]   inline-block "
+                }
+              >
+                <div className="h-6 w-6 rounded-full border-[3px] border-gray-300 border-t-red-500 animate-spin" />
+              </span>
+            ) : shippingCost ? (
               <span
                 className={
                   shippingCost
@@ -318,7 +328,6 @@ const OrderSummary = () => {
                     }
                   />
                 )}
-
               </div>
 
               {/* City */}
@@ -355,7 +364,6 @@ const OrderSummary = () => {
                   type="submit"
                   disabled={loading}
                   className="w-full md:w-[65%] btn-primary"
-                // className="w-full md:w-[65%] p-2 border-b border-black  bg-[#D42020] text-white text-[14px] font-bold"
                 >
                   {loading ? "Loading..." : "Estimate Shipping"}
                 </button>
@@ -365,53 +373,53 @@ const OrderSummary = () => {
                 <div>
                   {ratesLoader
                     ? Array.from({ length: 2 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="flex items-start gap-3 border rounded p-4 animate-pulse"
-                      >
-                        <div className="w-4 h-4 mt-1 bg-gray-200 rounded-full flex-shrink-0" />
-                        <div className="flex-1 space-y-2">
-                          <div className="h-4 bg-gray-200 rounded w-3/4" />
-                          <div className="h-5 bg-gray-200 rounded w-16" />
-                        </div>
-                      </div>
-                    ))
-                    : shippingRates?.map((rate, i) => {
-                      return (
-                        <label
-                          key={`${rate.method_id}-${rate.service_type}`}
-                          className={`flex items-start gap-3  p-4 transition-colors cursor-pointer ${selectedShippingMethod === rate.service_type ? "" : ""}`}
+                        <div
+                          key={i}
+                          className="flex items-start gap-3 border rounded p-4 animate-pulse"
                         >
-                          <input
-                            type="radio"
-                            name="shippingMethod"
-                            value={rate.service_type}
-                            checked={
-                              selectedShippingMethod === rate.service_type
-                            }
-                            onChange={(e) =>
-                              setSelectedShippingMethod(e.target.value)
-                            }
-                            className="mt-1"
-                          />
-                          <div className="min-w-0 flex-1 flex items-center justify-between gap-3 text-[#545454] text-[14px] ">
-                            <div className="flex items-center gap-2 font-normal">
-                              {rate.is_fedex && <span>FedEx</span>}
-                              <span className="">
-                                {rate.is_fedex
-                                  ? `(${rate.service_name})`
-                                  : rate.display_name}
-                              </span>
-                            </div>
-                            <div className=" font-bold flex-shrink-0">
-                              {rate.total_charge === 0
-                                ? "Free"
-                                : `$${Number(rate.total_charge).toFixed(2)}`}
-                            </div>
+                          <div className="w-4 h-4 mt-1 bg-gray-200 rounded-full flex-shrink-0" />
+                          <div className="flex-1 space-y-2">
+                            <div className="h-4 bg-gray-200 rounded w-3/4" />
+                            <div className="h-5 bg-gray-200 rounded w-16" />
                           </div>
-                        </label>
-                      );
-                    })}
+                        </div>
+                      ))
+                    : shippingRates?.map((rate, i) => {
+                        return (
+                          <label
+                            key={`${rate.method_id}-${rate.service_type}`}
+                            className={`flex items-start gap-3  p-4 transition-colors cursor-pointer ${selectedShippingMethod === rate.service_type ? "" : ""}`}
+                          >
+                            <input
+                              type="radio"
+                              name="shippingMethod"
+                              value={rate.service_type}
+                              checked={
+                                selectedShippingMethod === rate.service_type
+                              }
+                              onChange={(e) =>
+                                setSelectedShippingMethod(e.target.value)
+                              }
+                              className="mt-1"
+                            />
+                            <div className="min-w-0 flex-1 flex items-center justify-between gap-3 text-[#545454] text-[14px] ">
+                              <div className="flex items-center gap-2 font-normal">
+                                {rate.is_fedex && <span>FedEx</span>}
+                                <span className="">
+                                  {rate.is_fedex
+                                    ? `(${rate.service_name})`
+                                    : rate.display_name}
+                                </span>
+                              </div>
+                              <div className=" font-bold flex-shrink-0">
+                                {rate.total_charge === 0
+                                  ? "Free"
+                                  : `$${Number(rate.total_charge).toFixed(2)}`}
+                              </div>
+                            </div>
+                          </label>
+                        );
+                      })}
                   <div className="flex justify-end mt-1.5 mb-1.5">
                     <button
                       type="button"
@@ -433,50 +441,54 @@ const OrderSummary = () => {
                         //   JSON.stringify(shippingData),
                         // );
 
-
-
                         const shippingPayload: any = {
                           country: shippingData.country,
                           city: shippingData.city,
                           state: shippingData.state,
                           zip: shippingData.zip,
-                          "cartId": cartItems.map(item => item.cartItemId),
-                          "rate": {
-                            "service_type": selectedRate?.service_type,
-                            "method_type": selectedRate?.method_type,
-                            "total_charge": cost
-                          }
-                        }
+                          cartId: cartItems.map((item) => item.cartItemId),
+                          rate: {
+                            service_type: selectedRate?.service_type,
+                            method_type: selectedRate?.method_type,
+                            total_charge: cost,
+                          },
+                        };
 
-                        await dispatch(addShippingCost(shippingPayload)).unwrap().then(() => {
-                          if (shippingData && saveDetail) {
-                            const updatedShippingFormData = {
-                              ...saveDetail.shipping_form_data,  // ← existing preserve
-                              country: shippingData.country,
-                              city: shippingData.city,
-                              state: shippingData.state || null,
-                              zip: shippingData.zip,
-                              shippingMethod: selectedShippingMethod,
-                            };
+                        await dispatch(addShippingCost(shippingPayload))
+                          .unwrap()
+                          .then(() => {
+                            if (shippingData && saveDetail) {
+                              const updatedShippingFormData = {
+                                ...saveDetail.shipping_form_data, // ← existing preserve
+                                country: shippingData.country,
+                                city: shippingData.city,
+                                state: shippingData.state || null,
+                                zip: shippingData.zip,
+                                shippingMethod: selectedShippingMethod,
+                              };
 
-                            dispatch(checkoutFormSave({
-                              data: {
-                                shippingFormData: updatedShippingFormData,
-                                billingFormData: saveDetail.billing_form_data || {},
-                              }
-                            }));
-                          }
-                          window.location.reload();
-                        })
-
+                              dispatch(
+                                checkoutFormSave({
+                                  data: {
+                                    shippingFormData: updatedShippingFormData,
+                                    billingFormData:
+                                      saveDetail.billing_form_data || {},
+                                  },
+                                }),
+                              );
+                            }
+                            window.location.reload();
+                          });
 
                         /// Refresh to update totals with new shipping cost
                       }}
                       disabled={shippingCostLoading}
                       className="w-full md:w-[55%] text-[18px] btn-primary"
-                    // className="w-full md:w-[65%] p-2 border-b border-black  bg-[#D42020] text-white text-[14px] font-bold"
+                      // className="w-full md:w-[65%] p-2 border-b border-black  bg-[#D42020] text-white text-[14px] font-bold"
                     >
-                      {shippingCostLoading ? "Loading..." : "Update Shipping Cost"}
+                      {shippingCostLoading
+                        ? "Loading..."
+                        : "Update Shipping Cost"}
                     </button>
                   </div>
                 </div>

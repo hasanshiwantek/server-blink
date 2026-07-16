@@ -303,7 +303,6 @@ const CheckoutForm = () => {
       try {
         await dispatch(fetchShippingRate({})).unwrap();
       } catch (err) {
-       
         detectCountry();
       }
     };
@@ -541,8 +540,6 @@ const CheckoutForm = () => {
           })),
         });
       } catch (err) {
-       
-
         event.updateWith({
           status: "fail",
         });
@@ -814,7 +811,6 @@ const CheckoutForm = () => {
         localStorage.removeItem(CHECKOUT_STORAGE_KEY);
         router.push(`/checkout/order-information/${orderNumber}`);
       } catch (err: any) {
-       
         event.complete("fail");
         const errorMessage =
           err?.response?.data?.message || err?.message || "Payment failed.";
@@ -869,7 +865,7 @@ const CheckoutForm = () => {
       //     body: JSON.stringify({ email, newsletter: !!newsletter }),
       //   });
       // } catch (error) {
-      //  
+      //
       // }
       setCompletedSteps((prev) => [...new Set([...prev, 1])]);
       setCurrentStep(2);
@@ -971,7 +967,6 @@ const CheckoutForm = () => {
     try {
       paymentRequest.show();
     } catch (err: any) {
-   
       const methodName = method === "apple_pay" ? "Apple Pay" : "Google Pay";
       toast.error(
         `Could not open ${methodName}. Please ensure you have a card set up in your wallet or try credit card payment.`,
@@ -1025,7 +1020,6 @@ const CheckoutForm = () => {
       try {
         paymentRequest.show();
       } catch (err: any) {
-        
         toast.error("Could not open the wallet sheet. Please try again.");
         setIsProcessing(false);
         setPendingWalletForm(null);
@@ -1076,7 +1070,6 @@ const CheckoutForm = () => {
           });
 
         if (pmError) {
-         
           toast.error(pmError.message || "Unable to create payment method.");
           setIsProcessing(false);
           return;
@@ -1115,7 +1108,6 @@ const CheckoutForm = () => {
       localStorage.removeItem(CHECKOUT_STORAGE_KEY);
       router.push(`/checkout/order-information/${orderNumber}`);
     } catch (err: any) {
-     
       const errorMessage =
         err.response?.data?.message ||
         err.message ||
@@ -1182,6 +1174,7 @@ const CheckoutForm = () => {
         if (apiData?.shipping_form_data) {
           const shipping = apiData.shipping_form_data;
           const billing = apiData.billing_form_data;
+
           if (
             shipping.city &&
             shipping.country &&
@@ -1299,7 +1292,6 @@ const CheckoutForm = () => {
           }
         }
       } catch (e) {
-        
       } finally {
         isRestored.current = true;
         setTimeout(() => {
@@ -1309,7 +1301,7 @@ const CheckoutForm = () => {
     };
 
     restoreData();
-  }, [dispatch, setValue]);
+  }, [dispatch, setValue, cart]);
   // ✅ Save to localStorage on form changes (debounced)
   const watchedValues = watch();
   useEffect(() => {
@@ -1345,7 +1337,6 @@ const CheckoutForm = () => {
       );
 
       if (!hasShippingData) {
-       
         return;
       }
 
@@ -1536,7 +1527,7 @@ const CheckoutForm = () => {
             </div>
 
             {/* STEP 2: Shipping */}
-               <div
+            <div
               className={`p-6 border-b-[1px]  items-center border-b-[#8b8b8b] ${currentStep >= 3 ? "flex gap-10" : "block"}`}
             >
               <h2 className="hidden md:flex text-[25px] font-normal mt-6 mb-6 text-[#545454]">
@@ -1575,7 +1566,7 @@ const CheckoutForm = () => {
             </div>
 
             {/* STEP 3: Billing */}
-             <div
+            <div
               className={`p-6 border-b-[1px]  items-center border-b-[#8b8b8b] ${currentStep >= 4 ? "flex gap-16" : "block"}`}
             >
               <h2 className="hidden md:flex text-[1.92308rem] font-normal mb-4 text-[#545454]">
