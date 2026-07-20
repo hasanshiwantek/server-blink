@@ -45,7 +45,7 @@ const WebContactForm = ({ showTheseFields }: { showTheseFields: string[] }) => {
 
     const onSubmit = (data: WebContactFormData) => {
           if (!captchaToken && showField("spamProtection")) {
-            toast("Please verify the captcha.");
+            toast.error("Please verify the captcha.");
             return;
         }
         dispatch(contactRequests(data)).unwrap().then(() => {
