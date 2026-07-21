@@ -148,7 +148,7 @@ export const fetchWebPages = async (slug?: string) => {
     const data = await res.json();
 
     // const filteredPages = data?.data?.find((page: any) => page?.slugWithUrl === slug);
-    const filteredPages = data?.data?.filter((item: any) => item?.showInNavigation)?.find(
+    const filteredPages = data?.data?.find(
       (page: any) => normalizeSlug(page?.slugWithUrl) === normalizeSlug(slug)
     );
 

@@ -32,10 +32,10 @@ const ContactForm = () => {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const onSubmit = (data: ContactFormData) => {
-    // if (!captchaToken) {
-    //   toast("Please verify the captcha.");
-    //   return;
-    // }
+    if (!captchaToken) {
+      toast("Please verify the captcha.");
+      return;
+    }
     // You can also log it in a more formatted way
     dispatch(contactRequests(data))
       .unwrap()

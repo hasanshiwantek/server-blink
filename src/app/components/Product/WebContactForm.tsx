@@ -2,12 +2,16 @@
 
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import ReCAPTCHA from "react-google-recaptcha";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
 import { X } from "lucide-react";
 import { contactRequests } from "@/redux/slices/contactSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
+import { sitekey } from "@/lib/axiosInstance";
+import { toast } from "react-toastify";
+
 type WebContactFormData = {
     full_name: string;
     phone_number: string;
@@ -36,10 +40,14 @@ const WebContactForm = ({ showTheseFields }: { showTheseFields: string[] }) => {
     } = useForm<WebContactFormData>();
     const dispatch = useAppDispatch()
     const { loading } = useAppSelector((state: any) => state.contact);
-
+    const [captchaToken, setCaptchaToken] = useState<string | null>(null);
     const showField = (id: string) => showTheseFields?.includes(id);
 
     const onSubmit = (data: WebContactFormData) => {
+          if (!captchaToken && showField("spamProtection")) {
+            toast.error("Please verify the captcha.");
+            return;
+        }
         dispatch(contactRequests(data)).unwrap().then(() => {
             reset();
         })
@@ -141,7 +149,12 @@ const WebContactForm = ({ showTheseFields }: { showTheseFields: string[] }) => {
                 {/* Spam Protection */}
                 {showField("spamProtection") && (
                     <div>
-
+  <ReCAPTCHA
+                            sitekey={sitekey}
+                            onChange={(token: any) => {
+                                setCaptchaToken(token);
+                            }}
+                        />
                     </div>
                 )}
 
