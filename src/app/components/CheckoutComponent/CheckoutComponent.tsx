@@ -62,11 +62,21 @@ import PaymentStep from "./Paymentstep";
 import CheckoutOrderSummary from "./CheckoutOrderSummary";
 import CheckoutMultipleOrderSummary from "./CheckoutMultipleOrderSummary";
 import { calculatePackage } from "./Shippingstep";
-import { fetchCustomerAddress } from "@/redux/slices/myaccountSlice";
+import {
+  addCustomerAddress,
+  fetchCustomerAddress,
+} from "@/redux/slices/myaccountSlice";
 import { fetchCartList, removeProducts } from "@/redux/slices/cartsSlice";
 
 export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
+function splitName(fullName: string) {
+  const parts = fullName.trim().split(/\s+/);
 
+  return {
+    firstName: parts.shift() || "",
+    lastName: parts.join(" "),
+  };
+}
 // Stripe publishable key
 const stripePromise = loadStripe(
   "pk_test_51TTnoo8vkezGA3pyz8ekc5xIQNyhweCnxiumTB1si5Dejq5YWPGHDJIJPpBHMLw9hYRkbSkOGpdCzPrlW8g59HZ600cueNQymh",
@@ -128,6 +138,7 @@ const CheckoutForm = () => {
   const cart = useAppSelector((state: RootState) => state?.carts?.items);
   const { loading } = useAppSelector((state: RootState) => state?.carts);
   const auth = useAppSelector((state: RootState) => state?.auth);
+  console.log("auth", auth);
 
   // ADD COUPON STATE FROM REDUX
   const { appliedCoupon, discountAmount } = useAppSelector(
@@ -795,11 +806,13 @@ const CheckoutForm = () => {
         skipEmptyCartCheckRef.current = true;
         const orderNumber = orderData?.[0]?.orderNumber;
         const productIds = cart.map((item) => item.id);
+
         dispatch(
           removeProducts({
             product_ids: productIds,
           }),
         );
+
         dispatch(removeShippingRate());
         dispatch(fetchShippingRate({}));
         dispatch(setLastOrder(orderData));
@@ -1089,15 +1102,60 @@ const CheckoutForm = () => {
 
       const orderData = await placeOrder({ ...data, paymentIntentId });
       const orderNumber = orderData?.[0]?.orderNumber;
+      const orderDetail = orderData?.[0];
       skipEmptyCartCheckRef.current = true;
       const productIds = cart.map((item) => item.id);
+
+      if (auth?.user?.id) {
+        if (orderDetail?.isSaveAddressForBilling) {
+          const splitNameRes = splitName(orderDetail?.billingAddress?.name);
+          const billingAddress = {
+            ...splitNameRes,
+            companyName: orderDetail?.billingAddress?.companyName,
+            phoneNumber: orderDetail?.billingAddress?.phone,
+            addressLine1: orderDetail?.billingAddress?.addressLine1,
+            addressLine2: orderDetail?.billingAddress?.addressLine2,
+            city: orderDetail?.billingAddress?.city,
+            state: orderDetail?.billingAddress?.state,
+            zip: orderDetail?.billingAddress?.zip,
+            country: orderDetail?.billingAddress?.country,
+          };
+          dispatch(
+            addCustomerAddress({
+              id: auth?.user?.id,
+              data: billingAddress,
+            }),
+          );
+        }
+
+        if (orderDetail?.isSaveAddressForShipping) {
+          const shippingAddress = {
+            firstName: orderDetail?.billingInformation?.firstName,
+            lastName: orderDetail?.billingInformation?.firstName,
+            companyName: orderDetail?.billingInformation?.companyName,
+            phoneNumber: orderDetail?.billingInformation?.phone,
+            addressLine1: orderDetail?.billingInformation?.addressLine1,
+            addressLine2: orderDetail?.billingInformation?.addressLine2,
+            city: orderDetail?.billingInformation?.city,
+            state: orderDetail?.billingInformation?.state,
+            zip: orderDetail?.billingInformation?.zip,
+            country: orderDetail?.billingInformation?.country,
+          };
+          dispatch(
+            addCustomerAddress({
+              id: auth?.user?.id,
+              data: shippingAddress,
+            }),
+          );
+        }
+      }
+
       dispatch(
         removeProducts({
           product_ids: productIds,
         }),
       );
       dispatch(removeShippingRate());
-
       dispatch(fetchShippingRate({}));
       dispatch(setLastOrder(orderData));
       dispatch(clearCart());
