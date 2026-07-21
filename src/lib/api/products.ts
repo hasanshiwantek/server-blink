@@ -115,7 +115,7 @@ export async function fetchFilteredProducts(filters: {
 export const getBlogByIdServer = async (id: string) => {
   try {
     const res = await fetch(`${baseURL}web/blogs/blog-posts/${id}`, {
-      next: { revalidate: 3600 }, // Example: revalidate every hour
+      next: { revalidate: 1 }, // Example: revalidate every hour
       headers: {
         storeId: storeId,
       },

@@ -1,7 +1,6 @@
 "use client"
 import React from "react";
 import { useRouter } from "next/navigation";
-import { CHECKOUT_STORAGE_KEY } from "../CheckoutComponent/CheckoutComponent";
 import { useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 
@@ -9,7 +8,6 @@ const ActionSuccess = () => {
     const router = useRouter();
         const auth = useAppSelector((state: RootState) => state?.auth);
     const handleShopping = () => {
-        localStorage.removeItem(CHECKOUT_STORAGE_KEY);
         router.push("/");
     };
     return (

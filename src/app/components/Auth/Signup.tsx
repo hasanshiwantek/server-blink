@@ -21,6 +21,7 @@ import { useEffect, useMemo } from "react";
 import { Country, State, City } from "country-state-city";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { baseURL, sitekey, storeId } from "@/lib/axiosInstance";
+import { addCustomerAddress } from "@/redux/slices/myaccountSlice";
 
 interface SignupFormValues {
   firstName: string;
@@ -81,10 +82,10 @@ const SignupPage = () => {
     }));
   }, [watchedCountry, watchedState]);
   const onSubmit = async (data: SignupFormValues) => {
-    if (!captchaToken) {
-      alert("Please verify the captcha.");
-      return;
-    }
+    // if (!captchaToken) {
+    //   alert("Please verify the captcha.");
+    //   return;
+    // }
 
     try {
       const payload = {
@@ -94,31 +95,48 @@ const SignupPage = () => {
       const result = await dispatch(registerUser(payload));
 
       if (registerUser.fulfilled.match(result)) {
-        const token = result?.payload?.token
+        const token = result?.payload?.token;
         const fetchCartListInner = async () => {
-          const sessionId = localStorage.getItem("sessionId")
+          const sessionId = localStorage.getItem("sessionId");
           const res = await fetch(`${baseURL}web/cart/transfer`, {
             method: "POST",
             headers: {
-              "Authorization": `Bearer ${token}`,
-              "storeId": storeId,
+              Authorization: `Bearer ${token}`,
+              storeId: storeId,
               "X-Session-ID": sessionId || "",
               "Content-Type": "application/json",
             },
           });
-          reset();
+
+          const {
+            email,
+            userRole,
+            password,
+            password_confirmation,
+            suburb,
+            ...body
+          } = payload;
+
+          const addressPayload = {
+            ...body,
+            city: suburb,
+          };
+          dispatch(
+            addCustomerAddress({
+              id: result?.payload?.user?.id,
+              data: addressPayload,
+            }),
+          );
           dispatch(fetchCartList());
+          reset();
           router.push("/action");
         };
-        fetchCartListInner()
+        fetchCartListInner();
       } else {
         const errorMessage =
           result.payload || "Registration failed. Please try again.";
-       
       }
-    } catch (err: any) {
-     
-    }
+    } catch (err: any) {}
   };
 
   useEffect(() => {
@@ -140,7 +158,7 @@ const SignupPage = () => {
   }, [setValue]);
 
   return (
-    <div className="">
+    <div>
       {/* Header/Navigation - Dark gray bar at top */}
       <div className=" w-full" />
 
@@ -215,7 +233,6 @@ const SignupPage = () => {
             {/* Confirm Password */}
             <div>
               <div className="flex justify-between items-center">
-
                 <label
                   htmlFor="confirmPassword"
                   className="block text-[14px] font-normal text-[#545454] mb-2"
@@ -271,7 +288,6 @@ const SignupPage = () => {
             {/* Last Name */}
             <div>
               <div className="flex justify-between items-center">
-
                 <label
                   htmlFor="lastName"
                   className="block text-[14px] font-normal text-[#545454] mb-2"
@@ -326,7 +342,6 @@ const SignupPage = () => {
             {/* Address Line 1 */}
             <div>
               <div className="flex justify-between items-center">
-
                 <label
                   htmlFor="addressLine1"
                   className="block text-[14px] font-normal text-[#545454] mb-2"
@@ -353,7 +368,6 @@ const SignupPage = () => {
             {/* Address Line 2 */}
             <div>
               <div className="flex justify-between items-center">
-
                 <label
                   htmlFor="addressLine2"
                   className="block text-[14px] font-normal text-[#545454] mb-2"
@@ -372,7 +386,6 @@ const SignupPage = () => {
             {/* Suburb/City */}
             <div>
               <div className="flex justify-between items-center">
-
                 <label
                   htmlFor="suburb"
                   className="block text-[14px] font-normal text-[#545454] mb-2"
@@ -380,7 +393,6 @@ const SignupPage = () => {
                   Suburb/City
                 </label>
                 <span className="text-[#545454]">*</span>
-
               </div>
 
               <Input
@@ -405,13 +417,14 @@ const SignupPage = () => {
                   Country
                 </label>
                 <span className="text-[#545454]">*</span>
-
               </div>
-              <Select value={watchedCountry}
+              <Select
+                value={watchedCountry}
                 onValueChange={(value) => {
                   setValue("country", value);
                   setValue("state", "");
-                }}>
+                }}
+              >
                 <SelectTrigger className="h-[42px] min-h-[42px] w-full max-w-full">
                   <SelectValue placeholder="Choose a Country" />
                 </SelectTrigger>
@@ -424,7 +437,9 @@ const SignupPage = () => {
                 </SelectContent>
               </Select>
               {errors.country && (
-                <p className="mt-1 text-[14px] text-red-500">Country is required</p>
+                <p className="mt-1 text-[14px] text-red-500">
+                  Country is required
+                </p>
               )}
             </div>
 
@@ -437,34 +452,45 @@ const SignupPage = () => {
                 >
                   State/Province
                 </label>
-                {stateList?.length > 0 && <span className="text-[#545454]">*</span>}
+                {stateList?.length > 0 && (
+                  <span className="text-[#545454]">*</span>
+                )}
               </div>
               <input
                 type="hidden"
                 {...register("state", {
                   validate: (value) => {
-                    if (stateList.length > 0 && !value) return "State/Province is required";
+                    if (stateList.length > 0 && !value)
+                      return "State/Province is required";
                     return true;
                   },
                 })}
               />
-              {stateList?.length > 0 ? <Select value={watchedState} onValueChange={(value) => setValue("state", value, { shouldValidate: true })
-              }>
-                <SelectTrigger className="h-[42px] min-h-[42px] w-full max-w-full">
-                  <SelectValue placeholder="Choose a State/Province" />
-                </SelectTrigger>
-                <SelectContent>
-                  {stateList.map((state) => (
-                    <SelectItem key={state.code} value={state.code}>
-                      {state.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select> : <Input
-                id="state"
-                className="h-[42px] min-h-[42px] w-full max-w-full"
-                {...register("state")}
-              />}
+              {stateList?.length > 0 ? (
+                <Select
+                  value={watchedState}
+                  onValueChange={(value) =>
+                    setValue("state", value, { shouldValidate: true })
+                  }
+                >
+                  <SelectTrigger className="h-[42px] min-h-[42px] w-full max-w-full">
+                    <SelectValue placeholder="Choose a State/Province" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {stateList.map((state) => (
+                      <SelectItem key={state.code} value={state.code}>
+                        {state.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <Input
+                  id="state"
+                  className="h-[42px] min-h-[42px] w-full max-w-full"
+                  {...register("state")}
+                />
+              )}
               {errors.state && stateList?.length > 0 && (
                 <p className="mt-1 text-[14px] text-red-500">
                   {errors.state.message}
@@ -476,7 +502,6 @@ const SignupPage = () => {
           {/* Zip/Postcode - Full Width */}
           <div className="w-full md:max-w-[calc(50%-1rem)]">
             <div className="flex justify-between items-center">
-
               <label
                 htmlFor="zip"
                 className="block text-[14px] font-normal text-[#545454] mb-2"
@@ -484,7 +509,6 @@ const SignupPage = () => {
                 Zip/Postcode
               </label>
               <span className="text-[#545454]">*</span>
-
             </div>
 
             <Input
@@ -493,7 +517,9 @@ const SignupPage = () => {
               {...register("zip", { required: "Zip/Postcode is required" })}
             />
             {errors.zip && (
-              <p className="mt-1 text-[14px] text-red-500">{errors.zip.message}</p>
+              <p className="mt-1 text-[14px] text-red-500">
+                {errors.zip.message}
+              </p>
             )}
           </div>
           <div className="mt-6">
@@ -511,14 +537,17 @@ const SignupPage = () => {
                 <div className="w-6 h-6 border-4 border-t-transparent border-red-600 rounded-full animate-spin"></div>
               </div>
             ) : (
-              <button type="submit" className="btn-primary w-full sm:w-auto  px-[30px]">
+              <button
+                type="submit"
+                className="btn-primary w-full sm:w-auto  px-[30px]"
+              >
                 CREATE ACCOUNT
               </button>
             )}
           </div>
         </form>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 };
 
