@@ -138,7 +138,6 @@ const CheckoutForm = () => {
   const cart = useAppSelector((state: RootState) => state?.carts?.items);
   const { loading } = useAppSelector((state: RootState) => state?.carts);
   const auth = useAppSelector((state: RootState) => state?.auth);
-  console.log("auth", auth);
 
   // ADD COUPON STATE FROM REDUX
   const { appliedCoupon, discountAmount } = useAppSelector(
