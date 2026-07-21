@@ -1371,7 +1371,7 @@ const CheckoutForm = () => {
 
     saveTimeoutRef.current = setTimeout(() => {
       const shippingFormData = {
-        email: auth?.user?.email || watchedValues.email || "",
+        email: watchedValues.email || "",
         firstName: watchedValues.firstName || "",
         lastName: watchedValues.lastName || "",
         company: watchedValues.company || "",
