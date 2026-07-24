@@ -59,7 +59,7 @@ const ContactForm = () => {
       </nav>
 
       {/* Page Title */}
-      {showSuccess ? (
+      {!showSuccess ? (
         <div>
           <div className="mb-8">
             <h1 className="text-[28px] text-[#545454] mb-4 !font-normal roboto-only-font ">
