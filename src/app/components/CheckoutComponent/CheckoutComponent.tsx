@@ -639,7 +639,7 @@ const CheckoutForm = () => {
           deviceType: getDeviceType(),
           ipAddress: ipAddress,
           email: data.email,
-          paymentMethod: data.paymentMethod,
+                paymentMethod: data.paymentMethod == "credit_card" ? "Credit Card (Via Stripe)" : data.paymentMethod == "apple_pay" ? "Apple Pay" : "Google Pay",
           discountAmount: discountAmount ? finalTotal : 0,
           shippingCost: shipping,
           comments: data.orderComment || "",
@@ -674,7 +674,8 @@ const CheckoutForm = () => {
               state: dest.address?.state || "",
               zip: dest.address?.zip || "",
               country: dest.address?.country || "",
-              shippingMethod: dest.selectedShippingMethod,
+                         shippingMethod: shippingRates.find((item) => item?.service_type == dest.selectedShippingMethod),
+
 
               shippingCost: selectedRate
                 ? Number(selectedRate.total_charge)
@@ -709,8 +710,8 @@ const CheckoutForm = () => {
         state: data.state || "",
         zip: data.zip,
         country: data.country,
-        paymentMethod: data.paymentMethod,
-        shippingMethod: data.shippingMethod,
+                paymentMethod: data.paymentMethod == "credit_card" ? "Credit Card (Via Stripe)" : data.paymentMethod == "apple_pay" ? "Apple Pay" : "Google Pay",
+              shippingMethod: shippingRates.find((item) => item?.service_type == data.shippingMethod),
         discountAmount: discountAmount ? finalTotal : 0,
         shippingCost: shipping,
         comments: data.orderComment || "",
