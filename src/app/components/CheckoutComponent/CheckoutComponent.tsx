@@ -590,15 +590,15 @@ const CheckoutForm = () => {
       isMounted = false;
     };
   }, [stripe, cart, finalTotal]); // DEPENDENCY: finalTotal instead of total
-  const getDeviceType = () => {
-    if (typeof window === "undefined") return "desktop";
+ const getDeviceType = () => {
+    if (typeof window === "undefined") return "Server Blink (Desktop)";
 
     const userAgent = navigator.userAgent;
 
-    if (/mobile/i.test(userAgent)) return "mobile";
-    if (/tablet/i.test(userAgent)) return "tablet";
+    if (/mobile/i.test(userAgent)) return "Server Blink (Mobile)";
+    if (/tablet/i.test(userAgent)) return "Server Blink (Tablet)";
 
-    return "desktop";
+    return "Server Blink (Desktop)";
   };
 
   // const buildOrderPayload = useCallback(
