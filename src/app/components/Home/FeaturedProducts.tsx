@@ -197,7 +197,7 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
               aria-label={`${title} products slider`}
               className="flex gap-4 overflow-x-auto pb-2 scroll-smooth scrollbar-hide"
             >
-              {productsData.map((product: any) => (
+              {productsData?.slice(0, 8)?.map((product: any) => (
                 <div
                   key={product.id}
                   className="flex-shrink-0 w-1/2 md:w-1/3 lg:w-1/4"
@@ -209,7 +209,7 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
           ) : (
             /* Grid view */
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {productsData.map((product: any) => (
+              {productsData?.slice(0, 8)?.map((product: any) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
