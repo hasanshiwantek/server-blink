@@ -9,7 +9,7 @@ const RecentPost = () => {
   const [filters, setFilters] = useState({ page: 1, perPage: 20 });
   const dispatch = useAppDispatch();
   const { blogs, error, loading } = useAppSelector(
-    (state: any) => state.storeFront
+    (state: any) => state.storeFront,
   );
   const blogPosts = blogs?.data;
   const pagination = blogs?.pagination || null;
@@ -24,7 +24,7 @@ const RecentPost = () => {
       <section className="w-full flex  justify-center border">
         <div className="w-full xl:max-w-[1440px] 2xl:max-w-[1920px] ">
           <div className="flex flex-col gap-5 justify-items-center ">
-            {blogPosts?.map((blog: any) => (
+            {blogPosts?.filter((item:any) => item?.thumbnail)?.map((blog: any) => (
               <Link
                 key={blog.id}
                 href={`/blogs/${blog.slug}`}
@@ -52,7 +52,6 @@ const RecentPost = () => {
                   />
                 </div>
 
-                {/* Text */}
                 <div
                   className="
               flex flex-col justify-center gap-1.5 lg:justify-between items-start 
@@ -60,9 +59,6 @@ const RecentPost = () => {
               text-left
             "
                 >
-                  {/* <p className="h5-20px-regular  ">
-                  {blog.author}
-                </p> */}
                   <h3 className="text-xl group-hover:text-[#F15939] transition-colors duration-200 line-clamp-2">
                     {blog.title}
                   </h3>

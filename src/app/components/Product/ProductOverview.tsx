@@ -25,11 +25,25 @@ const ProductOverview = ({ product }: { product: any }) => {
         {/* Product Details Section */}
         <section className="border" aria-labelledby="product-details-heading">
           <div
-          //  className="!p-4 bg-[#F2F2F2] text-[14px] text-[#545454] prose max-w-none"
-            className="p-5 bg-[#F2F2F2] text-[14px] leading-relaxed text-[#545454] prose prose-sm max-w-none
-               prose-p:my-2 prose-strong:text-[#333] prose-strong:font-semibold"
-            dangerouslySetInnerHTML={{ __html: decodedHtml || "No description available for this product." }}
-          />
+  className="
+    p-4
+    bg-[#F2F2F2]
+    text-[14px]
+    text-[#545454]
+    prose
+    max-w-none
+    break-words
+    [&_*]:max-w-full
+    [&_img]:max-w-full
+    [&_img]:h-auto
+    [&_table]:w-full
+    [&_pre]:whitespace-pre-wrap
+    [&_pre]:break-words
+  "
+  dangerouslySetInnerHTML={{
+    __html: decodedHtml || "No description available for this product.",
+  }}
+/>
           {customFields?.length > 0 && <>
             <h3 className="text-[20px] bg-[#F2F2F2] px-5 text-[#545454] py-2 font-bold">PRODUCT DETAILS</h3>
             <div className="w-[97%] mx-auto h-[1px] bg-[#545454]"></div>

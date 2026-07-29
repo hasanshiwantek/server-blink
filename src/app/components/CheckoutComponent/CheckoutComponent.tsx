@@ -138,6 +138,7 @@ const CheckoutForm = () => {
   const cart = useAppSelector((state: RootState) => state?.carts?.items);
   const { loading } = useAppSelector((state: RootState) => state?.carts);
   const auth = useAppSelector((state: RootState) => state?.auth);
+  console.log("auth", auth);
 
   // ADD COUPON STATE FROM REDUX
   const { appliedCoupon, discountAmount } = useAppSelector(
@@ -1371,7 +1372,7 @@ const CheckoutForm = () => {
 
     saveTimeoutRef.current = setTimeout(() => {
       const shippingFormData = {
-        email: auth?.user?.email || watchedValues.email || "",
+        email: watchedValues.email || "",
         firstName: watchedValues.firstName || "",
         lastName: watchedValues.lastName || "",
         company: watchedValues.company || "",
