@@ -21,6 +21,7 @@ const FooterBottom = () => {
   const searchParams = useSearchParams();
   const paramsToken = searchParams.get("token");
   const auth = useAppSelector((state: RootState) => state?.auth);
+
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
   const [token, setToken] = useState<string | null>(null);
@@ -78,6 +79,11 @@ const FooterBottom = () => {
   //   }, 0);
   //   return () => cancelIdleCallback?.(id);
   // }, [dispatch]);
+  useEffect(() => {
+  if (auth?.user?.email) {
+    setEmail(auth.user.email);
+  }
+}, [auth?.user]);
   useEffect(() => {
     const callback = () => {
       dispatch(getBlogs({ page: 1, perPage: 5 }));
