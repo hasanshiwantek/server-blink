@@ -1,11 +1,15 @@
 
-import Link from "next/link";
 import React from "react";
+import Link from "next/link";
+import { decode } from "html-entities";
 
 const ProductOverview = ({ product }: { product: any }) => {
   const customFields = product?.customFields?.filter(
     (item: { name: string; value: string }) => item.name && item.value
   )
+    const decodedHtml = decode(
+    product?.description?.replace(/<pre[^>]*>/gi, "")?.replace(/<\/pre>/gi, "")
+  );
   return (
     <section className={"py-10   xl:px-0 2xl:px-0 w-[100%] lg:w-full max-w-[1170px] mx-autu px-0 " + (product.relatedProductsEnabled ? "border-b-2 border-[#545454]" : "")} aria-labelledby="product-overview-heading">
       <div className="w-full  flex flex-col roboto-condensed-only-font" >
@@ -22,7 +26,7 @@ const ProductOverview = ({ product }: { product: any }) => {
         <section className="border" aria-labelledby="product-details-heading">
           <div
             className="!p-4 bg-[#F2F2F2] text-[14px] text-[#545454] prose max-w-none"
-            dangerouslySetInnerHTML={{ __html: product?.description || "No description available for this product." }}
+            dangerouslySetInnerHTML={{ __html: decodedHtml || "No description available for this product." }}
           />
           {customFields?.length > 0 && <>
             <h3 className="text-[20px] bg-[#F2F2F2] px-5 text-[#545454] py-2 font-bold">PRODUCT DETAILS</h3>
