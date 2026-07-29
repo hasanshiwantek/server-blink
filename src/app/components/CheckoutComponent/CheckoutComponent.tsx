@@ -591,15 +591,15 @@ const CheckoutForm = () => {
       isMounted = false;
     };
   }, [stripe, cart, finalTotal]); // DEPENDENCY: finalTotal instead of total
-  const getDeviceType = () => {
-    if (typeof window === "undefined") return "desktop";
+ const getDeviceType = () => {
+    if (typeof window === "undefined") return "Server Blink (Desktop)";
 
     const userAgent = navigator.userAgent;
 
-    if (/mobile/i.test(userAgent)) return "mobile";
-    if (/tablet/i.test(userAgent)) return "tablet";
+    if (/mobile/i.test(userAgent)) return "Server Blink (Mobile)";
+    if (/tablet/i.test(userAgent)) return "Server Blink (Tablet)";
 
-    return "desktop";
+    return "Server Blink (Desktop)";
   };
 
   // const buildOrderPayload = useCallback(
@@ -640,7 +640,7 @@ const CheckoutForm = () => {
           deviceType: getDeviceType(),
           ipAddress: ipAddress,
           email: data.email,
-          paymentMethod: data.paymentMethod,
+                paymentMethod: data.paymentMethod == "credit_card" ? "Credit Card (Via Stripe)" : data.paymentMethod == "apple_pay" ? "Apple Pay" : "Google Pay",
           discountAmount: discountAmount ? finalTotal : 0,
           shippingCost: shipping,
           comments: data.orderComment || "",
@@ -675,8 +675,8 @@ const CheckoutForm = () => {
               state: dest.address?.state || "",
               zip: dest.address?.zip || "",
               country: dest.address?.country || "",
-              shippingMethod: dest.selectedShippingMethod,
-
+               shippingMethod:  dest.selectedShippingMethod,
+             shippingData: shippingRates.find((item) => item?.service_type == dest.selectedShippingMethod),
               shippingCost: selectedRate
                 ? Number(selectedRate.total_charge)
                 : 0,
@@ -710,8 +710,9 @@ const CheckoutForm = () => {
         state: data.state || "",
         zip: data.zip,
         country: data.country,
-        paymentMethod: data.paymentMethod,
-        shippingMethod: data.shippingMethod,
+                paymentMethod: data.paymentMethod == "credit_card" ? "Credit Card (Via Stripe)" : data.paymentMethod == "apple_pay" ? "Apple Pay" : "Google Pay",
+              shippingMethod: data.shippingMethod,
+              shippingData : shippingRates.find((item) => item?.service_type == data.shippingMethod),
         discountAmount: discountAmount ? finalTotal : 0,
         shippingCost: shipping,
         comments: data.orderComment || "",

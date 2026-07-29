@@ -1,8 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import OurLatestBlogs from "./OurLatestBlogs";
-import GridCard from "./GridCard";
-import BlogTrending from "./BlogTrending";
 import BlogCategories from "./BlogCategories";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { getBlogs } from "@/redux/slices/storeFrontSlice";

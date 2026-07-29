@@ -365,7 +365,7 @@ export const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>(
                       </td>
                       <td>
                         {order.shippingMethod.method ??
-                          order.billingInformation.shippingMethod ??
+                          order.billingInformation.shippingData ??
                           "—"}
                       </td>
                     </tr>
