@@ -11,11 +11,12 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useAppDispatch } from "@/hooks/useReduxHooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { addReview, } from "@/redux/slices/homeSlice";
 import { Label } from "@/components/ui/label";
 import { toast } from "react-toastify";
 import { sitekey } from "@/lib/axiosInstance";
+import { RootState } from "@/redux/store";
 
 
 interface AddReviewModalProps {
@@ -44,6 +45,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
     const [captchaToken, setCaptchaToken] = useState<string | null>(null); // ✅
     const recaptchaRef = useRef<ReCAPTCHA>(null);
     const [loading, setLoading] = useState(false);
+     const auth = useAppSelector((state: RootState) => state?.auth);
     const dispatch = useAppDispatch();
     const handleChange = (
         e: any
@@ -86,16 +88,18 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
     };
 
     useEffect(() => {
-        setFormData({
-            name: "",
-            email: "",
-            subject: "",
-            comment: "",
-            rating: 0,
-        })
+      setFormData({
+    name: auth?.user
+      ? `${auth.user.firstName ?? ""} ${auth.user.lastName ?? ""}`.trim()
+      : "",
+    email: auth?.user?.email || "",
+    subject: "",
+    comment: "",
+    rating: 0,
+  });
         setCaptchaToken(null);          // ✅ reset
         recaptchaRef.current?.reset();
-    }, [isOpen])
+    }, [isOpen,auth?.user])
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
