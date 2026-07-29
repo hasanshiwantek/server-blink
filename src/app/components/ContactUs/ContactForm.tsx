@@ -1,6 +1,6 @@
 "use client";
 import ReCAPTCHA from "react-google-recaptcha";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,6 +10,8 @@ import { contactRequests } from "@/redux/slices/contactSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { sitekey } from "@/lib/axiosInstance";
 import { toast } from "react-toastify";
+import { customerProfile } from "@/redux/slices/authSlice";
+import { RootState } from "@/redux/store";
 type ContactFormData = {
   full_name: string;
   phone_number: string;
@@ -24,6 +26,7 @@ const ContactForm = () => {
   const {
     register,
     handleSubmit,
+     setValue,
     formState: { errors },
     reset,
   } = useForm<ContactFormData>();
@@ -31,6 +34,19 @@ const ContactForm = () => {
   const { loading } = useAppSelector((state: any) => state.contact);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
+  const { isAuthenticated, user } = useAppSelector(
+  (state: RootState) => state.auth
+);
+
+
+useEffect(() => {
+  if (!user) return;
+
+  setValue("full_name", `${user.firstName} ${user.lastName}`);
+  setValue("email", user.email);
+  setValue("phone_number", user.phone);
+}, [user, setValue]);
+
   const onSubmit = (data: ContactFormData) => {
     if (!captchaToken) {
       toast("Please verify the captcha.");
@@ -59,7 +75,7 @@ const ContactForm = () => {
       </nav>
 
       {/* Page Title */}
-      {showSuccess ? (
+      {!showSuccess ? (
         <div>
           <div className="mb-8">
             <h1 className="text-[28px] text-[#545454] mb-4 !font-normal roboto-only-font ">
