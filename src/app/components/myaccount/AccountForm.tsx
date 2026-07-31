@@ -9,6 +9,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import { postAccountDetails } from "@/redux/slices/myaccountSlice";
+import { customerProfile } from "@/redux/slices/authSlice";
 
 interface AccountFormValues {
   firstName: string;
@@ -20,14 +21,16 @@ interface AccountFormValues {
   password_confirmation: string;
   currentPassword?: string;
 }
+const inputClass =
+  "!w-full h-[42px] text-[#545454] !font-normal !max-w-full py-[10px] px-[14px] border border-[#cac9c9] rounded-none";
 
 const AccountForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-    const auth = useAppSelector((state: RootState) => state?.auth);
-  const {  loading, error } = useAppSelector((state: RootState) => state?.myaccount);
-    const dispatch = useAppDispatch();
+  const auth = useAppSelector((state: RootState) => state?.auth);
+  const { loading } = useAppSelector((state: RootState) => state?.myaccount);
+  const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
@@ -35,39 +38,33 @@ const AccountForm = () => {
     reset,
     formState: { errors },
   } = useForm<AccountFormValues>({
-  defaultValues: {
-    email: auth?.user?.email || "",
-    firstName: auth?.user?.firstName || "",
-    lastName: auth?.user?.lastName || "",
-    companyName: auth?.user?.companyName || "",
-    phone: auth?.user?.phone || "",
-    
-  },
-});
-
+    defaultValues: {
+      email: auth?.user?.email || "",
+      firstName: auth?.user?.firstName || "",
+      lastName: auth?.user?.lastName || "",
+      companyName: auth?.user?.companyName || "",
+      phone: auth?.user?.phone || "",
+    },
+  });
   const password = watch("password");
+  const password_confirmation = watch("password_confirmation");
+  const currentPassword = watch("currentPassword");
 
-  const onSubmit =async (data: AccountFormValues) => {
-    
-
+  const isChangingPassword = !!(password || password_confirmation || currentPassword);
+  const onSubmit = async (data: AccountFormValues) => {
     try {
-       const result = await dispatch(postAccountDetails(data)); 
-        if (postAccountDetails.fulfilled.match(result)) {
-                reset();
-              } else {
-                const errorMessage =
-                  result.error?.message || "update info failed. Please try again.";
-             
-              }
+      const result = await dispatch(postAccountDetails(data));
+      if (postAccountDetails.fulfilled.match(result)) {
+        await dispatch(customerProfile())
+        window.location.reload()
+        reset();
+      }
     } catch (error) {
-      
+      console.log("error", error);
+
     }
   };
 
-  const inputClass =
-  "!w-full h-[42px] text-[#545454] !font-normal !max-w-full py-[10px] px-[14px] border border-[#cac9c9] rounded-none";
-
-  ;
 
   return (
     <div className="max-w-full mx-auto p-6 rounded-lg roboto-font">
@@ -75,7 +72,7 @@ const AccountForm = () => {
         {/* First Name & Last Name */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
           <div>
-            <Label className="text-[14px]  text-[#545454] flex md:justify-between !font-normal" htmlFor="firstName roboto-font" >First Name <span className="">*</span></Label>
+            <Label className="text-[14px]  text-[#545454] flex md:justify-between !font-normal" htmlFor="firstName roboto-font" >First Name <span  >*</span></Label>
             <Input
               id="firstName"
               {...register("firstName", { required: "First Name is required" })}
@@ -84,7 +81,7 @@ const AccountForm = () => {
             {errors.firstName && <p className="text-sm text-red-500">{errors.firstName.message}</p>}
           </div>
           <div>
-            <Label className="text-[14px] text-[#545454] flex md:justify-between !font-normal" htmlFor="lastName" >Last Name <span className="">*</span></Label>
+            <Label className="text-[14px] text-[#545454] flex md:justify-between !font-normal" htmlFor="lastName" >Last Name <span  >*</span></Label>
             <Input
               id="lastName"
               {...register("lastName", { required: "Last Name is required" })}
@@ -117,23 +114,23 @@ const AccountForm = () => {
         {/* Email & Password */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-7 mt-[20px]">
           <div>
-            <Label className="text-[14px] text-[#545454]   flex md:justify-between  !font-normal" htmlFor="email">Email Address <span className="">*</span></Label>
+            <Label className="text-[14px] text-[#545454]   flex md:justify-between  !font-normal" htmlFor="email">Email Address <span  >*</span></Label>
             <Input
               id="email"
               type="email"
               {...register("email", { required: "Email is required" })}
               className={inputClass}
-               disabled
+              disabled
             />
             {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
           </div>
 
           <div className="relative">
-            <Label className="text-[14px] text-[#545454]    flex md:justify-between !font-normal " htmlFor="password">Password <span className="">*</span></Label>
+            <Label className="text-[14px] text-[#545454]    flex md:justify-between !font-normal " htmlFor="password">Password <span  >*</span></Label>
             <Input
               id="password"
               type={showPassword ? "text" : "password"}
-              {...register("password", { required: "Password is required" })}
+              {...register("password", { required: isChangingPassword ? "Password is required" : false })}
               className={`${inputClass} pr-12`}
             />
             <button
@@ -145,17 +142,18 @@ const AccountForm = () => {
             </button>
             {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
           </div>
+
         </div>
 
         {/* Confirm Password & Current Password */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-7 mt-[20px]">
           <div className="relative">
-            <Label className="text-[14px] flex md:justify-between !font-normal " htmlFor="password_confirmation">Confirm Password <span className="">*</span></Label>
+            <Label className="text-[14px] flex md:justify-between !font-normal " htmlFor="password_confirmation">Confirm Password <span  >*</span></Label>
             <Input
               id="password_confirmation"
               type={showConfirmPassword ? "text" : "password"}
               {...register("password_confirmation", {
-                required: "Confirm password is required",
+                required: isChangingPassword ? "Confirm password is required" : false,
                 validate: (value) => value === password || "Passwords do not match"
               })}
               className={`${inputClass} pr-12`}
@@ -169,13 +167,14 @@ const AccountForm = () => {
             </button>
             {errors.password_confirmation && <p className="text-sm text-red-500">{errors.password_confirmation.message}</p>}
           </div>
-
           <div className="relative">
             <Label className="text-[14px] flex md:justify-between !font-normal " htmlFor="currentPassword">Current Password</Label>
             <Input
               id="currentPassword"
               type={showCurrentPassword ? "text" : "password"}
-              {...register("currentPassword")}
+              {...register("currentPassword", {
+                required: isChangingPassword ? "Current password is required" : false,
+              })}
               className={`${inputClass} pr-12`}
             />
             <button
@@ -190,7 +189,7 @@ const AccountForm = () => {
 
         {/* Submit */}
         <Button type="submit" className=" w-full mt-[12px] md:w-64 !p-7 text-2xl rounded-none border-b-2 border-black bg-[#D42020] text-white font-bold md:mt-8 " >
-         {loading ? "Loading..." : "UPDATE DETAILS"}
+          {loading ? "Loading..." : "UPDATE DETAILS"}
         </Button>
       </form>
     </div>
