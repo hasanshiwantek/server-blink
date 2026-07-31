@@ -126,7 +126,7 @@ const AccountForm = () => {
           </div>
 
           <div className="relative">
-            <Label className="text-[14px] text-[#545454]    flex md:justify-between !font-normal " htmlFor="password">Password <span  >*</span></Label>
+            <Label className="text-[14px] text-[#545454]    flex md:justify-between !font-normal " htmlFor="password">Password {isChangingPassword && <span  >*</span>}</Label>
             <Input
               id="password"
               type={showPassword ? "text" : "password"}
@@ -148,7 +148,7 @@ const AccountForm = () => {
         {/* Confirm Password & Current Password */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-7 mt-[20px]">
           <div className="relative">
-            <Label className="text-[14px] flex md:justify-between !font-normal " htmlFor="password_confirmation">Confirm Password <span  >*</span></Label>
+            <Label className="text-[14px] flex md:justify-between !font-normal " htmlFor="password_confirmation">Confirm Password {isChangingPassword && <span  >*</span>}</Label>
             <Input
               id="password_confirmation"
               type={showConfirmPassword ? "text" : "password"}
@@ -168,7 +168,7 @@ const AccountForm = () => {
             {errors.password_confirmation && <p className="text-sm text-red-500">{errors.password_confirmation.message}</p>}
           </div>
           <div className="relative">
-            <Label className="text-[14px] flex md:justify-between !font-normal " htmlFor="currentPassword">Current Password</Label>
+            <Label className="text-[14px] flex md:justify-between !font-normal " htmlFor="currentPassword">Current Password {isChangingPassword && <span  >*</span>}</Label>
             <Input
               id="currentPassword"
               type={showCurrentPassword ? "text" : "password"}
