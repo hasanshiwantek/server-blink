@@ -32,8 +32,6 @@ export async function generateMetadata({
 
   // Clean and optimize description
   const cleanDescription = blog?.metaDescription?.substring(0, 160);
-  console.log(blog);
-
   // URL Construction
   const url = `${BASE_URL}/blogs/${blog.postUrl}`;
   const imageUrl = blog.thumbnail || `${BASE_URL}/default-blog-image.svg`;

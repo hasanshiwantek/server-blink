@@ -318,7 +318,7 @@ const FooterBottom = () => {
               ) : blogPosts.length === 0 ? (
                 <li className="text-gray-500 px-2 py-1">No blogs available</li>
               ) : (
-                blogPosts.map((post: any) => (
+                blogPosts?.filter((item: any) => item?.thumbnail)?.map((post: any) => (
                   <li key={post.id}>
                     <Link
                       href={`/blogs/${post.slug}`}
