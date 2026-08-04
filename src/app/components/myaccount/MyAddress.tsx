@@ -25,6 +25,7 @@ import {
 import countries from "world-countries";
 import { Country, State } from "country-state-city";
 import { useMemo } from "react";
+import { toast } from "react-toastify";
 
 const MyAddress = () => {
   const dispatch = useAppDispatch();
@@ -34,7 +35,7 @@ const MyAddress = () => {
   );
 
   const auth = useAppSelector((state: RootState) => state.auth);
-  
+
 
   const [showModal, setShowModal] = useState(false);
   const [editData, setEditData] = useState<any>(null);
@@ -54,7 +55,7 @@ const MyAddress = () => {
         await dispatch(deletecustomeraddress({ id })).unwrap();
         dispatch(fetchCustomerAddress());
       } catch (err) {
-      
+
       }
     }
   };
@@ -78,42 +79,49 @@ const MyAddress = () => {
   };
 
   const handleUpdate = async () => {
-    const payload = {
-      address_line_1: editData.addressLine1,
-      address_line_2: editData.addressLine2,
-      city: editData.city,
-      state: editData.state,
-      zip: editData.zip,
-      country: editData.country,
-      first_name: editData.firstName,
-      last_name: editData.lastName,
-      company_name: editData.companyName,
-      phone_number: editData.phone,
+    if (editData.firstName && editData.lastName && editData.addressLine1 && editData.city && editData.state && editData.country && editData.zip) {
+
+      const payload = {
+        address_line_1: editData.addressLine1,
+        address_line_2: editData.addressLine2,
+        city: editData.city,
+        state: editData.state,
+        zip: editData.zip,
+        country: editData.country,
+        first_name: editData.firstName,
+        last_name: editData.lastName,
+        company_name: editData.companyName,
+        phone_number: editData.phone,
+      }
+
+
+      try {
+        await dispatch(
+          updateCustomerAddress({
+            id: editData.addressId,
+            data: payload,
+          }),
+        ).unwrap();
+
+        setShowModal(false);
+        dispatch(fetchCustomerAddress());
+      } catch (err) {
+
+      }
+    } else {
+      toast.error("Please fill in all required fields before updating the address.");
+      return;
     }
 
-
-    try {
-      await dispatch(
-        updateCustomerAddress({
-          id: editData.addressId,
-          data: payload,
-        }),
-      ).unwrap();
-
-      setShowModal(false);
-      dispatch(fetchCustomerAddress());
-    } catch (err) {
-   
-    }
   };
   const stateList = useMemo(() => {
-  if (!editData?.country) return [];
+    if (!editData?.country) return [];
 
-  return State.getStatesOfCountry(editData.country).map((s) => ({
-    name: s.name,
-    code: s.isoCode,
-  }));
-}, [editData?.country]);
+    return State.getStatesOfCountry(editData.country).map((s) => ({
+      name: s.name,
+      code: s.isoCode,
+    }));
+  }, [editData?.country]);
 
   useEffect(() => {
     dispatch(fetchCustomerAddress());
@@ -221,39 +229,39 @@ const MyAddress = () => {
                 className="!w-full !max-w-full !h-[42px]"
               /> */}
               {stateList.length > 0 ? (
-  <Select
-    value={editData.state}
-    onValueChange={(value) =>
-      setEditData({
-        ...editData,
-        state: value,
-      })
-    }
-  >
-    <SelectTrigger className="!w-full !max-w-full !h-[42px]">
-      <SelectValue placeholder="Choose a State" />
-    </SelectTrigger>
+                <Select
+                  value={editData.state}
+                  onValueChange={(value) =>
+                    setEditData({
+                      ...editData,
+                      state: value,
+                    })
+                  }
+                >
+                  <SelectTrigger className="!w-full !max-w-full !h-[42px]">
+                    <SelectValue placeholder="Choose a State" />
+                  </SelectTrigger>
 
-    <SelectContent>
-      {stateList.map((state) => (
-        <SelectItem key={state.code} value={state.code}>
-          {state.name}
-        </SelectItem>
-      ))}
-    </SelectContent>
-  </Select>
-) : (
-  <Input
-    value={editData.state}
-    onChange={(e) =>
-      setEditData({
-        ...editData,
-        state: e.target.value,
-      })
-    }
-    className="!w-full !max-w-full !h-[42px]"
-  />
-)}
+                  <SelectContent>
+                    {stateList.map((state) => (
+                      <SelectItem key={state.code} value={state.code}>
+                        {state.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <Input
+                  value={editData.state}
+                  onChange={(e) =>
+                    setEditData({
+                      ...editData,
+                      state: e.target.value,
+                    })
+                  }
+                  className="!w-full !max-w-full !h-[42px]"
+                />
+              )}
             </div>
 
             {/* Zip */}
@@ -267,7 +275,7 @@ const MyAddress = () => {
                 className="!w-full !max-w-full !h-[42px]"
               />
             </div>
-            
+
 
             {/* Country */}
             <div>
@@ -275,7 +283,7 @@ const MyAddress = () => {
               <Select
                 value={editData.country}
                 onValueChange={(value) =>
-                  setEditData({ ...editData, country: value,state:"" })
+                  setEditData({ ...editData, country: value, state: "" })
                 }
               >
                 <SelectTrigger className="!w-full !max-w-full !h-[42px]">
@@ -334,7 +342,7 @@ const MyAddress = () => {
           {!loading && !error && (
             <div
               className="grid grid-cols-1 md:grid-cols-2 gap-6 roboto-font"
-            
+
             >
               {/* Address List */}
               {customerAddresses?.map((item: any) => (
