@@ -39,13 +39,18 @@ const MyAddress = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [editData, setEditData] = useState<any>(null);
-  const countryList = countries
-    .map((country) => ({
-      name: country.name.common,
-      code: country.cca2,
-    }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+  const countryList = Country.getAllCountries().map((c) => ({
+    name: c.name,
+    code: c.isoCode,
+  }));
+  const stateList = useMemo(() => {
+    if (!editData?.country) return [];
 
+    return State?.getStatesOfCountry(editData?.country).map((s) => ({
+      name: s.name,
+      code: s.isoCode,
+    }));
+  }, [editData?.country]);
   const handleDelete = async (id: number | string) => {
     const confirmDelete = confirm(
       `Are you sure you want to delete address with ID: ${id}?`,
@@ -114,14 +119,6 @@ const MyAddress = () => {
     }
 
   };
-  const stateList = useMemo(() => {
-    if (!editData?.country) return [];
-
-    return State.getStatesOfCountry(editData.country).map((s) => ({
-      name: s.name,
-      code: s.isoCode,
-    }));
-  }, [editData?.country]);
 
   useEffect(() => {
     dispatch(fetchCustomerAddress());
