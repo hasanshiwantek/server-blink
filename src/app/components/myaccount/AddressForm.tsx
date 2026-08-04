@@ -42,7 +42,7 @@ const AddressForm = () => {
     formState: { errors },
     reset,
   } = useForm<AddressFormValues>({
-    shouldUnregister: true,
+      shouldUnregister: true,
   });
   const { loading, error } = useAppSelector(
     (state: RootState) => state.myaccount,
@@ -66,11 +66,10 @@ const AddressForm = () => {
   }, [selectedCountry]);
 
   const onSubmit = async (data: AddressFormValues) => {
-
+      
     try {
       // Only addresses in payload
       const mergedData = {
-        customer_id: auth?.user?.id,
         firstName: data.firstName,
         lastName: data.lastName,
         companyName: data.companyName || "",
@@ -93,13 +92,13 @@ const AddressForm = () => {
       } else {
         const errorMessage =
           result.error?.message || "Add address failed. Please try again.";
-
+       
       }
     } catch (error) {
-
+    
     }
   };
-
+  
   const inputClass =
     "!w-full h-[42px] text-[#545454] !font-normal !max-w-full py-[10px] px-[14px] border border-[#cac9c9] rounded-none";
 
@@ -108,7 +107,7 @@ const AddressForm = () => {
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-5 roboto-font"
-
+      
       >
         {/* Row 0: First Name & Last Name */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -243,7 +242,7 @@ const AddressForm = () => {
               name="country"
               control={control}
               rules={{ required: "Country is required" }}
-
+             
               render={({ field }) => (
                 <Select
                   value={field.value}
@@ -287,9 +286,9 @@ const AddressForm = () => {
                 name="state"
                 control={control}
                 rules={{ required: "State/Province is required" }}
-
+          
                 render={({ field }) => (
-
+                  
                   <Select
                     value={field.value}
                     onValueChange={field.onChange}
@@ -343,7 +342,7 @@ const AddressForm = () => {
         {/* Buttons */}
         <div
           className="flex flex-col md:flex-row gap-4 mt-12 roboto-condensed-only-font "
-
+         
         >
           <Button
             type="submit"
