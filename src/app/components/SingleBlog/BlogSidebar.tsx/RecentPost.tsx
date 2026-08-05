@@ -24,7 +24,7 @@ const RecentPost = () => {
       <section className="w-full flex  justify-center border">
         <div className="w-full xl:max-w-[1440px] 2xl:max-w-[1920px] ">
           <div className="flex flex-col gap-5 justify-items-center ">
-            {blogPosts?.filter((item:any) => item?.thumbnail)?.map((blog: any) => (
+            {blogPosts?.filter((item: any) => item?.thumbnail)?.map((blog: any) => (
               <Link
                 key={blog.id}
                 href={`/blogs/${blog.slug}`}
@@ -43,13 +43,13 @@ const RecentPost = () => {
               relative overflow-hidden  flex-shrink-0 m-auto
             "
                 >
-                  <Image
+                  {blog?.thumbnail && (<Image
                     src={blog.thumbnail}
                     alt={blog.title}
                     width={300}
                     height={200}
                     className="w-full h-full object-cover"
-                  />
+                  />)}
                 </div>
 
                 <div
