@@ -128,7 +128,12 @@ const MyAddress = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* First Name */}
             <div>
-              <Label className="text-[14px]">First Name</Label>
+             <Label
+                          className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+                          htmlFor="firstName"
+                        >
+                          First Name <span className="text-[11px]">*</span>
+                        </Label>
               <Input
                 value={editData.firstName}
                 onChange={(e) =>
@@ -140,7 +145,12 @@ const MyAddress = () => {
 
             {/* Last Name */}
             <div>
-              <Label className="text-[14px]">Last Name</Label>
+             <Label
+                          className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+                          htmlFor="lastName"
+                        >
+                          Last Name <span className="text-[11px]">*</span>
+                        </Label>
               <Input
                 value={editData.lastName}
                 onChange={(e) =>
@@ -176,7 +186,12 @@ const MyAddress = () => {
 
             {/* Address Line 1 */}
             <div>
-              <Label className="text-[14px]">Address Line 1</Label>
+              <Label
+                           className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+                           htmlFor="address1"
+                         >
+                           Address Line 1 <span className="text-[11px]">*</span>
+                         </Label>
               <Input
                 value={editData.addressLine1}
                 onChange={(e) =>
@@ -200,7 +215,12 @@ const MyAddress = () => {
 
             {/* City */}
             <div>
-              <Label className="text-[14px]">City</Label>
+             <Label
+                          className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+                          htmlFor="suburb"
+                        >
+                          Suburb / City <span className="text-[11px]">*</span>
+                        </Label>
               <Input
                 value={editData.city}
                 onChange={(e) =>
@@ -212,7 +232,12 @@ const MyAddress = () => {
 
             {/* State */}
             <div>
-              <Label className="text-[14px]">State</Label>
+              <Label
+                           className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+                           htmlFor="state"
+                         >
+                           State <span className="text-[11px]">*</span>
+                         </Label>
               {/* <Input
                 value={editData.state}
                 onChange={(e) =>
@@ -258,7 +283,12 @@ const MyAddress = () => {
 
             {/* Zip */}
             <div>
-              <Label className="text-[14px]">Zip Code</Label>
+              <Label
+                           className="text-[14px] text-[#545454] !font-normal  flex md:justify-between"
+                           htmlFor="postcode"
+                         >
+                           Zip / Postcode <span className="text-[11px]">*</span>
+                         </Label>
               <Input
                 value={editData.zip}
                 onChange={(e) =>
@@ -271,7 +301,12 @@ const MyAddress = () => {
 
             {/* Country */}
             <div>
-              <Label className="text-[14px]">Country</Label>
+               <Label
+                            className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+                            htmlFor="country"
+                          >
+                            Country <span className="text-[11px]">*</span>
+                          </Label>
               <Select
                 value={editData.country}
                 onValueChange={(value) =>
