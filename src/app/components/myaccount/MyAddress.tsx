@@ -29,13 +29,21 @@ import { toast } from "react-toastify";
 
 const MyAddress = () => {
   const dispatch = useAppDispatch();
+  const [errors, setErrors] = useState({
+  firstName: "",
+  lastName: "",
+  addressLine1: "",
+  city: "",
+  state: "",
+  zip: "",
+  country: "",
+});
 
   const { address, loading, error, customerAddresses } = useAppSelector(
     (state: RootState) => state.myaccount,
   );
 
   const auth = useAppSelector((state: RootState) => state.auth);
-
 
   const [showModal, setShowModal] = useState(false);
   const [editData, setEditData] = useState<any>(null);
@@ -59,9 +67,7 @@ const MyAddress = () => {
       try {
         await dispatch(deletecustomeraddress({ id })).unwrap();
         dispatch(fetchCustomerAddress());
-      } catch (err) {
-
-      }
+      } catch (err) {}
     }
   };
 
@@ -83,42 +89,50 @@ const MyAddress = () => {
     setShowModal(true);
   };
 
-  const handleUpdate = async () => {
-    if (editData.firstName && editData.lastName && editData.addressLine1 && editData.city && editData.state && editData.country && editData.zip) {
-
-      const payload = {
-        address_line_1: editData.addressLine1,
-        address_line_2: editData.addressLine2,
-        city: editData.city,
-        state: editData.state,
-        zip: editData.zip,
-        country: editData.country,
-        first_name: editData.firstName,
-        last_name: editData.lastName,
-        company_name: editData.companyName,
-        phone_number: editData.phone,
-      }
-
-
-      try {
-        await dispatch(
-          updateCustomerAddress({
-            id: editData.addressId,
-            data: payload,
-          }),
-        ).unwrap();
-
-        setShowModal(false);
-        dispatch(fetchCustomerAddress());
-      } catch (err) {
-
-      }
-    } else {
-      toast.error("Please fill in all required fields before updating the address.");
-      return;
-    }
-
+ const handleUpdate = async () => {
+  const newErrors = {
+    firstName: editData.firstName ? "" : "First Name is required",
+    lastName: editData.lastName ? "" : "Last Name is required",
+    addressLine1: editData.addressLine1
+      ? ""
+      : "Address Line 1 is required",
+    city: editData.city ? "" : "City is required",
+    state: editData.state ? "" : "State is required",
+    zip: editData.zip ? "" : "Zip is required",
+    country: editData.country ? "" : "Country is required",
   };
+
+  setErrors(newErrors);
+
+  if (Object.values(newErrors).some((err) => err !== "")) {
+    return;
+  }
+
+  const payload = {
+    address_line_1: editData.addressLine1,
+    address_line_2: editData.addressLine2,
+    city: editData.city,
+    state: editData.state,
+    zip: editData.zip,
+    country: editData.country,
+    first_name: editData.firstName,
+    last_name: editData.lastName,
+    company_name: editData.companyName,
+    phone_number: editData.phone,
+  };
+
+  try {
+    await dispatch(
+      updateCustomerAddress({
+        id: editData.addressId,
+        data: payload,
+      })
+    ).unwrap();
+
+    setShowModal(false);
+    dispatch(fetchCustomerAddress());
+  } catch (err) {}
+};
 
   useEffect(() => {
     dispatch(fetchCustomerAddress());
@@ -129,11 +143,15 @@ const MyAddress = () => {
       {/* -------------------- EDIT MODAL -------------------- */}
       {showModal ? (
         <div className="rounded-lg w-full max-w-full p-6 relative">
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* First Name */}
             <div>
-              <Label className="text-[14px]">First Name</Label>
+              <Label
+                className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+                htmlFor="firstName"
+              >
+                First Name <span className="text-[11px]">*</span>
+              </Label>
               <Input
                 value={editData.firstName}
                 onChange={(e) =>
@@ -141,11 +159,19 @@ const MyAddress = () => {
                 }
                 className="!w-full !max-w-full !h-[42px]"
               />
+              {errors.firstName && (
+  <p className="text-red-500 text-[12px]  mt-1 ml-2">{errors.firstName}</p>
+)}
             </div>
 
             {/* Last Name */}
             <div>
-              <Label className="text-[14px]">Last Name</Label>
+              <Label
+                className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+                htmlFor="lastName"
+              >
+                Last Name <span className="text-[11px]">*</span>
+              </Label>
               <Input
                 value={editData.lastName}
                 onChange={(e) =>
@@ -153,6 +179,9 @@ const MyAddress = () => {
                 }
                 className="!w-full !max-w-full !h-[42px]"
               />
+                  {errors.lastName && (
+  <p className="text-red-500 text-[12px] mt-1 ml-2">{errors.lastName}</p>
+)}
             </div>
 
             {/* Company */}
@@ -181,7 +210,12 @@ const MyAddress = () => {
 
             {/* Address Line 1 */}
             <div>
-              <Label className="text-[14px]">Address Line 1</Label>
+              <Label
+                className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+                htmlFor="address1"
+              >
+                Address Line 1 <span className="text-[11px]">*</span>
+              </Label>
               <Input
                 value={editData.addressLine1}
                 onChange={(e) =>
@@ -189,6 +223,9 @@ const MyAddress = () => {
                 }
                 className="!w-full !max-w-full !h-[42px]"
               />
+                  {errors.addressLine1 && (
+  <p className="text-red-500 text-[12px]  mt-1 ml-2">{errors.addressLine1}</p>
+)}
             </div>
 
             {/* Address Line 2 */}
@@ -205,7 +242,12 @@ const MyAddress = () => {
 
             {/* City */}
             <div>
-              <Label className="text-[14px]">City</Label>
+              <Label
+                className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+                htmlFor="suburb"
+              >
+                Suburb / City <span className="text-[11px]">*</span>
+              </Label>
               <Input
                 value={editData.city}
                 onChange={(e) =>
@@ -213,11 +255,19 @@ const MyAddress = () => {
                 }
                 className="!w-full !max-w-full !h-[42px]"
               />
+              {errors.city && (
+  <p className="text-red-500 text-[12px]  mt-1">{errors.city}</p>
+)}
             </div>
 
             {/* State */}
             <div>
-              <Label className="text-[14px]">State</Label>
+              <Label
+                className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+                htmlFor="state"
+              >
+                State <span className="text-[11px]">*</span>
+              </Label>
               {/* <Input
                 value={editData.state}
                 onChange={(e) =>
@@ -226,6 +276,7 @@ const MyAddress = () => {
                 className="!w-full !max-w-full !h-[42px]"
               /> */}
               {stateList.length > 0 ? (
+                 <>
                 <Select
                   value={editData.state}
                   onValueChange={(value) =>
@@ -247,7 +298,14 @@ const MyAddress = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                  {errors.state && (
+        <p className="text-red-500 text-[12px]  mt-1">
+          {errors.state}
+        </p>
+      )}
+    </>
               ) : (
+                <>
                 <Input
                   value={editData.state}
                   onChange={(e) =>
@@ -258,12 +316,23 @@ const MyAddress = () => {
                   }
                   className="!w-full !max-w-full !h-[42px]"
                 />
+                    {errors.state && (
+        <p className="text-red-500 text-[12px] mt-1">
+          {errors.state}
+        </p>
+      )}
+    </>
               )}
             </div>
 
             {/* Zip */}
             <div>
-              <Label className="text-[14px]">Zip Code</Label>
+              <Label
+                className="text-[14px] text-[#545454] !font-normal  flex md:justify-between"
+                htmlFor="postcode"
+              >
+                Zip / Postcode <span className="text-[11px]">*</span>
+              </Label>
               <Input
                 value={editData.zip}
                 onChange={(e) =>
@@ -271,12 +340,19 @@ const MyAddress = () => {
                 }
                 className="!w-full !max-w-full !h-[42px]"
               />
+              {errors.zip && (
+  <p className="text-red-500 text-[12px] mt-1">{errors.zip}</p>
+)}
             </div>
-
 
             {/* Country */}
             <div>
-              <Label className="text-[14px]">Country</Label>
+              <Label
+                className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+                htmlFor="country"
+              >
+                Country <span className="text-[11px]">*</span>
+              </Label>
               <Select
                 value={editData.country}
                 onValueChange={(value) =>
@@ -294,6 +370,9 @@ const MyAddress = () => {
                   ))}
                 </SelectContent>
               </Select>
+              {errors.country && (
+  <p className="text-red-500 text-[12px] mt-1">{errors.country}</p>
+)}
             </div>
           </div>
 
@@ -337,10 +416,7 @@ const MyAddress = () => {
           )}
 
           {!loading && !error && (
-            <div
-              className="grid grid-cols-1 md:grid-cols-2 gap-6 roboto-font"
-
-            >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 roboto-font">
               {/* Address List */}
               {customerAddresses?.map((item: any) => (
                 <div
@@ -349,7 +425,7 @@ const MyAddress = () => {
                 >
                   <div className="flex flex-col gap-1 mb-4">
                     <p className="text-[15px] mb-6 text-[#545454]">
-                      {item.first_name || "N/A"}   {item.last_name}
+                      {item.first_name || "N/A"} {item.last_name}
                     </p>
                     <p className="text-[15px] text-[#545454]">
                       {item.address_line_1}
