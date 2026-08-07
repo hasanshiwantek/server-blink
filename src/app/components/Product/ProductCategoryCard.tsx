@@ -90,7 +90,7 @@ export default function ProductCategoryCard({ product }: { product: Product }) {
               <p className="mb-1 text-[15px]">
                 Price{" "}
                 <ProductPrice
-                  price={Number(product.price) + Number(product.msrp)}
+                  price={Number(product.msrp)}
                   inline={true}
                   className="line-through !text-[15px] !font-normal"
                 />
