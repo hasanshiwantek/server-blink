@@ -149,7 +149,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 <span className="text-[#545454] text-[1rem]">
                   Price $
                   <span className="line-through !font-normal">
-                    {(Number(product.price) + Number(product.msrp)).toFixed(2)}
+                    {Number(product.msrp).toFixed(2)}
                   </span>
                 </span>
 
