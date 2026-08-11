@@ -43,7 +43,7 @@ export default function SortingBar({
   };
 
   return (
-    <div  className="flex flex-col items-center xl:flex-row justify-between items-center border 2xl:py-[20px] xl:py-[15px] py-5 w-full">
+    <div className="flex flex-col items-center xl:flex-row justify-between items-center border 2xl:py-[20px] xl:py-[15px] py-5 w-full">
 
       {/* ✅ Dynamic Heading Placeholder */}
       {/* <h4 className="h3-regular">{getFilterTitle()}</h4> */}
@@ -53,10 +53,12 @@ export default function SortingBar({
         {/* View Toggle */}
         <div className="flex items-center space-x-2">
           <button
+            title="Toggle Grid view"
+            aria-label="Toggle Grid view"
             onClick={() => setView("grid")}
             className={`w-[35px] h-[35px] flex items-center justify-center border transition-colors ${view === "grid"
-                ? "bg-[var(--primary-color)] text-white  shadow-md"
-                : "bg-white text-gray-600 border-gray-300 hover:bg-gray-100"
+              ? "bg-[var(--primary-color)] text-white  shadow-md"
+              : "bg-white text-gray-600 border-gray-300 hover:bg-gray-100"
               }`}
           >
             <svg
@@ -82,10 +84,12 @@ export default function SortingBar({
             </svg>
           </button>
           <button
+            title="Toggle List view"
+            aria-label="Toggle List view"
             onClick={() => setView("list")}
             className={`w-[35px] h-[35px] flex items-center justify-center border transition-colors ${view === "list"
-                ? "bg-[var(--primary-color)] text-white  shadow-md"
-                : "bg-white text-gray-600 border-gray-300 hover:bg-gray-100"
+              ? "bg-[var(--primary-color)] text-white  shadow-md"
+              : "bg-white text-gray-600 border-gray-300 hover:bg-gray-100"
               }`}
           >
             <svg

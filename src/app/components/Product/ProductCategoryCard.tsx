@@ -28,17 +28,6 @@ interface Product {
 }
 
 export default function ProductCategoryCard({ product }: { product: Product }) {
-  const { reviews, reviewsLoading, reviewsError, stats } = useAppSelector(
-    (state) => state.home
-  );
-  const dispatch = useAppDispatch();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  // useEffect(() => {
-  //   if (!stats || Object.keys(stats).length === 0) {
-  //     dispatch(fetchStats());
-  //   }
-  // }, [dispatch, stats]);
-
   const imageUrl = product.image?.[0]?.path || "/default-product-image.svg";
   const availableForSale = product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
 
@@ -56,15 +45,19 @@ export default function ProductCategoryCard({ product }: { product: Product }) {
   "
     >
       {/* ✅ Product Image */}
-      <div className="flex items-center justify-center md:w-[314px] md:h-[171px] w-full h-auto shrink-0 p-4 md:p-0">
-        <Image
-          src={imageUrl}
-          alt={product?.name}
-          width={171}
-          height={171} fetchPriority="high"
-          className="object-contain md:w-[171px] md:h-[171px] w-[150px] h-[150px]"
-        />
-      </div>
+      <Link
+        href={`${product?.productUrl}`}
+      >
+        <div className="flex items-center justify-center md:w-[314px] md:h-[171px] w-full h-auto shrink-0 p-4 md:p-0">
+          <Image
+            src={imageUrl}
+            alt={product?.name}
+            width={171}
+            height={171} fetchPriority="high"
+            className="object-contain md:w-[171px] md:h-[171px] w-[150px] h-[150px]"
+          />
+        </div>
+      </Link>
 
       {/* ✅ Product Info */}
       <div className="flex flex-col justify-between p-4 md:h-[171px] h-auto bg-[#F2F2F2]">
@@ -116,10 +109,10 @@ export default function ProductCategoryCard({ product }: { product: Product }) {
             (502) 206-3033
           </Link> */}
             <Link
-             href="tel:+15020000000"
-            className="text-[#d40511] underline">
-            (502) 000-0000
-          </Link>
+              href="tel:+15020000000"
+              className="text-[#d40511] underline">
+              (502) 000-0000
+            </Link>
           </span>
         </div>}
       </div>
