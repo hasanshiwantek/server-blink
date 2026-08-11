@@ -24,7 +24,7 @@ function Input({
         "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-400 focus-visible:border-[var(--primary-color)]",
 
         // Dark mode & placeholder
-        "dark:bg-input/30 placeholder:text-gray-400 file:text-foreground !font-[520]",
+        "dark:bg-input/30 placeholder:text-gray-400 file:text-foreground ",
 
         // Validation & accessibility
         "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",

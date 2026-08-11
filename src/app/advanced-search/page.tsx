@@ -103,7 +103,7 @@ export default function ProductPage({
                             <ProductTabs
                                 tabs={[
                                     { label: "PRODUCTS", count: productCount },
-                                    // { label: "NEWS & INFORMATION", count: 0 },
+                                    { label: "NEWS & INFORMATION", count: 0 },
                                     { label: searchForm ? "HIDE SEARCH FORM" : "SHOW SEARCH FORM", isDivided: true },
                                 ]}
                                 activeTab={currentTab}
