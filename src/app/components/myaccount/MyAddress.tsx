@@ -380,13 +380,13 @@ const MyAddress = () => {
             <Button
               onClick={handleUpdate}
               disabled={loading}
-              className="w-full md:w-[16%] !p-7 text-2xl border-b-2 border-black bg-[#D42020] text-white font-bold"
+              className="w-full md:w-[16%] !p-7 text-2xl border-b-2 rounded-none border-black bg-[#D42020] text-white font-bold"
             >
               {loading ? "UPDATING..." : "UPDATING ADDRESS"}
             </Button>
             <Button
               onClick={() => setShowModal(false)}
-              className="w-full md:w-36 !p-7 text-2xl border-b-2 border-black bg-[#D42020] font-bold text-white transition"
+              className="w-full md:w-36 !p-7 text-2xl border-b-2 rounded-none border-black bg-[#D42020] font-bold text-white transition"
             >
               CANCEL
             </Button>
