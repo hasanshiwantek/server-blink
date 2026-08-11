@@ -30,6 +30,7 @@ interface AddReviewModalProps {
     };
 }
 
+
 const AddReviewModal: React.FC<AddReviewModalProps> = ({
     isOpen,
     onClose,
@@ -46,7 +47,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
     const recaptchaRef = useRef<ReCAPTCHA>(null);
     const [loading, setLoading] = useState(false);
      const auth = useAppSelector((state: RootState) => state?.auth);
-     console.log(auth,'ya auth hy')
+
     const dispatch = useAppDispatch();
     const handleChange = (
         e: any
