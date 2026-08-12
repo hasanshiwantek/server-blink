@@ -59,7 +59,10 @@ const SignupPage = () => {
     reset,
     setValue,
     formState: { errors },
-  } = useForm<SignupFormValues>();
+  } = useForm<SignupFormValues>({
+      mode: "onBlur",
+  reValidateMode: "onChange",
+  });
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const dispatch = useAppDispatch();
   const { registerLoading } = useAppSelector((state: RootState) => state?.auth);

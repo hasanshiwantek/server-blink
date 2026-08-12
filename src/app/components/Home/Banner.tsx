@@ -44,7 +44,7 @@ const Banner = ({ carousels, settings }: any) => {
       <Carousel
         setApi={setApi}
         plugins={[plugin.current]}
-        className="w-full"
+        className="group   w-full"
         opts={{
           align: "start",
           loop: true,
@@ -144,8 +144,8 @@ const Banner = ({ carousels, settings }: any) => {
         </div>
 
         {/* Arrow Navigation — visible on all breakpoints; vertically center on mobile image */}
-        <CarouselPrevious className="flex size-9 border-white/30 bg-white/10 text-white hover:bg-white/20 sm:size-8 sm:left-4 left-2 top-[110px] z-20 -translate-y-1/2 sm:top-1/2" />
-        <CarouselNext className="flex size-9 border-white/30 bg-white/10 text-white hover:bg-white/20 sm:size-8 sm:right-4 right-2 top-[110px] z-20 -translate-y-1/2 sm:top-1/2" />
+       <CarouselPrevious className="flex size-9 border-white/30 bg-white/10 text-white opacity-0  transition-opacity duration-200 group-hover:opacity-100 hover:bg-white/20 sm:size-8 sm:left-4 left-2 top-[110px] z-20 -translate-y-1/2 sm:top-1/2" />
+    <CarouselNext className="flex size-9 border-white/30 bg-white/10 text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 sm:size-8 sm:right-2 right-2 top-[110px] z-20 -translate-y-1/2 sm:top-1/2" />
       </Carousel>
 
       {/* Promo Banner Below Carousel */}
