@@ -24,32 +24,123 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
   const startX = React.useRef(0);
   const scrollLeftStart = React.useRef(0);
 
-  // width cache — avoids reading offsetWidth on every click (no forced reflow)
-  const widthRef = React.useRef(0);
-  // rAF throttle for drag writes
   const rafId = React.useRef<number | null>(null);
   const latestX = React.useRef(0);
 
+  const [isTransitioning, setIsTransitioning] = React.useState(false);
+
+  if (!items.length) return null;
+
+  // Duplicate items for seamless infinite loop
+  const loopItems = [...items, ...items, ...items];
+
+  const getItemWidth = () => {
+    const el = carouselRef.current;
+    if (!el) return 0;
+
+    const firstItem = el.firstElementChild as HTMLElement;
+    if (!firstItem) return 0;
+
+    return firstItem.offsetWidth;
+  };
+
+  // Start position in the middle set
   React.useEffect(() => {
     const el = carouselRef.current;
     if (!el) return;
-    const update = () => { widthRef.current = el.offsetWidth; };
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
 
-  const scrollLeft = () => {
-    carouselRef.current?.scrollBy({ left: -widthRef.current, behavior: "smooth" });
-  };
+    const setInitialPosition = () => {
+      const itemWidth = getItemWidth();
+
+      if (itemWidth) {
+        el.scrollLeft = itemWidth * items.length;
+      }
+    };
+
+    setInitialPosition();
+
+    const handleResize = () => {
+      requestAnimationFrame(setInitialPosition);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [items.length]);
 
   const scrollRight = () => {
-    carouselRef.current?.scrollBy({ left: widthRef.current, behavior: "smooth" });
+    const el = carouselRef.current;
+    if (!el || isTransitioning) return;
+
+    const itemWidth = getItemWidth();
+    if (!itemWidth) return;
+
+    setIsTransitioning(true);
+
+    el.scrollBy({
+      left: itemWidth,
+      behavior: "smooth",
+    });
+
+    setTimeout(() => {
+      const currentPosition = el.scrollLeft;
+      const middleStart = itemWidth * items.length;
+      const middleEnd = itemWidth * items.length * 2;
+
+      // When moving into third copy,
+      // silently move back to the same position in middle copy
+      if (currentPosition >= middleEnd) {
+        el.style.scrollBehavior = "auto";
+
+        el.scrollLeft =
+          currentPosition - itemWidth * items.length;
+
+        el.style.scrollBehavior = "";
+      }
+
+      setIsTransitioning(false);
+    }, 450);
+  };
+
+  const scrollLeft = () => {
+    const el = carouselRef.current;
+    if (!el || isTransitioning) return;
+
+    const itemWidth = getItemWidth();
+    if (!itemWidth) return;
+
+    setIsTransitioning(true);
+
+    el.scrollBy({
+      left: -itemWidth,
+      behavior: "smooth",
+    });
+
+    setTimeout(() => {
+      const currentPosition = el.scrollLeft;
+
+      // If we go before the middle copy,
+      // silently move forward to the same position
+      if (currentPosition <= 0) {
+        el.style.scrollBehavior = "auto";
+
+        el.scrollLeft =
+          currentPosition + itemWidth * items.length;
+
+        el.style.scrollBehavior = "";
+      }
+
+      setIsTransitioning(false);
+    }, 450);
   };
 
   // ==================== DRAG HANDLERS ====================
-  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+
+  const handlePointerDown = (
+    e: React.PointerEvent<HTMLDivElement>
+  ) => {
     if ((e.target as HTMLElement).closest("a")) return;
     if (!carouselRef.current) return;
 
@@ -61,34 +152,48 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
     carouselRef.current.setPointerCapture(e.pointerId);
   };
 
-  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+  const handlePointerMove = (
+    e: React.PointerEvent<HTMLDivElement>
+  ) => {
     if (!isDragging.current || !carouselRef.current) return;
+
     latestX.current = e.clientX;
 
-    // per-frame ek hi write — layout thrash avoid
     if (rafId.current !== null) return;
+
     rafId.current = requestAnimationFrame(() => {
       if (carouselRef.current) {
-        const walk = (startX.current - latestX.current) * 2;
-        carouselRef.current.scrollLeft = scrollLeftStart.current + walk;
+        const walk =
+          (startX.current - latestX.current) * 2;
+
+        carouselRef.current.scrollLeft =
+          scrollLeftStart.current + walk;
       }
+
       rafId.current = null;
     });
   };
 
-  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+  const handlePointerUp = (
+    e: React.PointerEvent<HTMLDivElement>
+  ) => {
     if (!carouselRef.current) return;
+
     if (rafId.current !== null) {
       cancelAnimationFrame(rafId.current);
       rafId.current = null;
     }
-    isDragging.current = false;
-    carouselRef.current.style.cursor = "grab";
-    carouselRef.current.releasePointerCapture(e.pointerId);
-  };
-  // =======================================================
 
-  if (!items.length) return null;
+    isDragging.current = false;
+
+    carouselRef.current.style.cursor = "grab";
+
+    if (carouselRef.current.hasPointerCapture(e.pointerId)) {
+      carouselRef.current.releasePointerCapture(e.pointerId);
+    }
+  };
+
+  // =======================================================
 
   return (
     <div className="relative w-full overflow-hidden">
@@ -100,6 +205,7 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
       >
         <ChevronLeft size={34} aria-hidden="true" />
       </button>
+
       <button
         type="button"
         aria-label="Next slide"
@@ -112,24 +218,34 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
       <div
         ref={carouselRef}
         className="flex overflow-x-auto scrollbar-hide scroll-smooth cursor-grab active:cursor-grabbing"
-        style={{ WebkitUserSelect: "none", userSelect: "none" }}
+        style={{
+          WebkitUserSelect: "none",
+          userSelect: "none",
+        }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerUp}
         onPointerCancel={handlePointerUp}
       >
-        {items.map((item, index) => (
+        {loopItems.map((item, index) => (
           <div
-            key={index}
+            key={`${item.slug}-${index}`}
             className="flex-shrink-0 w-1/2 sm:w-1/3 md:w-1/4 flex justify-center"
           >
             <Card className="border-none shadow-none flex justify-center items-center bg-transparent">
               <CardContent className="flex items-center justify-center p-6 w-[100.2%] md:w-[139.2%] h-[13.34rem] bg-[#FFFFFF] rounded-2xl">
-                <Link href={`/brand/${item?.slug}`} aria-label={`View ${item.name} products`} onClick={(e) => e.stopPropagation()}>
+                <Link
+                  href={`/brand/${item.slug}`}
+                  aria-label={`View ${item.name} products`}
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <div className="w-32 h-32">
                     <Image
-                      src={item.logo ?? "/default-product-image.svg"}
+                      src={
+                        item.logo ??
+                        "/default-product-image.svg"
+                      }
                       alt={item.name}
                       width={250}
                       height={250}

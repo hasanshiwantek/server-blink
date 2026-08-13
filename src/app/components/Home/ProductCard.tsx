@@ -99,12 +99,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             {brandName}{" "}
           </span>
         </Link>
-        <p
+        <Link href={product?.productUrl || "/"}>
+  <p
           className="text-[1rem] text-gray-400 mb-1 hover:text-[#D42020]"
           style={robotoCondensedStyle}
         >
           Sku: {product.sku}
         </p>
+        </Link>
+      
         <Link href={product?.productUrl || "/"}>
           <span
             className="text-[14px] font-bold mb-1 text-[#545454] line-clamp-2 hover:text-[#D42020]"
