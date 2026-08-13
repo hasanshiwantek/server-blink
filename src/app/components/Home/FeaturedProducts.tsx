@@ -28,7 +28,7 @@ interface FeaturedProductsProps {
 const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
   endpoint,
   isSlider = false,
-  title
+  title,
 }) => {
   const sliderRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
@@ -63,8 +63,6 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
     };
   }, [productsData]);
 
-
-
   // ... (keep all your existing functions)
 
   useEffect(() => {
@@ -84,23 +82,69 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
         setLoading(false);
       });
   }, [dispatch, endpoint, title]);
+  const getScrollAmount = () => {
+    const el = sliderRef.current;
+    if (!el) return 0;
 
+    const firstCard = el.firstElementChild as HTMLElement;
+    if (!firstCard) return 0;
+
+    const cardWidth = firstCard.offsetWidth;
+
+    const styles = window.getComputedStyle(el);
+    const gap = parseFloat(styles.columnGap || styles.gap || "0");
+
+    const itemWidth = cardWidth + gap;
+
+    // Kitne cards currently visible hain?
+    const visibleCards = Math.round(el.clientWidth / itemWidth);
+
+    // 4 visible  -> move 2
+    // 3 visible  -> move 2
+    // 2 visible  -> move 1
+    const cardsToMove = Math.ceil(visibleCards / 2);
+
+    return itemWidth * cardsToMove;
+  };
+
+  // const scrollLeft = () => {
+  //   sliderRef.current?.scrollBy({
+  //     left: -sliderRef.current.offsetWidth,
+  //     behavior: "smooth"
+  //   });
+  //   checkScrollEnd();
+  // };
+
+  // const scrollRight = () => {
+  //   sliderRef.current?.scrollBy({
+  //     left: sliderRef.current.offsetWidth,
+  //     behavior: "smooth"
+  //   });
+  //   checkScrollEnd();
+  // };
   const scrollLeft = () => {
+    const amount = getScrollAmount();
+    if (!amount) return;
+
     sliderRef.current?.scrollBy({
-      left: -sliderRef.current.offsetWidth,
-      behavior: "smooth"
+      left: -amount,
+      behavior: "smooth",
     });
+
     checkScrollEnd();
   };
 
   const scrollRight = () => {
+    const amount = getScrollAmount();
+    if (!amount) return;
+
     sliderRef.current?.scrollBy({
-      left: sliderRef.current.offsetWidth,
-      behavior: "smooth"
+      left: amount,
+      behavior: "smooth",
     });
+
     checkScrollEnd();
   };
-
   const checkScrollEnd = () => {
     let lastScrollLeft = sliderRef.current?.scrollLeft || 0;
 
@@ -140,18 +184,16 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
             <button
               onClick={scrollRight}
               disabled={!canScrollRight}
-              aria-label={`Scroll ${title} right`}  // ✅
+              aria-label={`Scroll ${title} right`} // ✅
               aria-controls="featured-products-slider"
               className={`p-2 rounded flex items-center justify-center text-white 
     hover:bg-gray-800 ${!canScrollRight ? "opacity-50 cursor-not-allowed hover:bg-transparent" : ""}`}
             >
               <ChevronRight size={20} aria-hidden="true" />
             </button>
-
           </div>
         )}
       </div>
-
 
       {/* Error - Stop rendering here if error */}
       {localError && (
@@ -200,7 +242,7 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
               {productsData?.slice(0, 8)?.map((product: any) => (
                 <div
                   key={product.id}
-                  className="flex-shrink-0 w-1/2 md:w-1/3 lg:w-1/4"
+                  className="flex-shrink-0 w-[calc((100%-16px)/2)] md:w-[calc((100%-32px)/3)] lg:w-[calc((100%-48px)/4)]"
                 >
                   <ProductCard product={product} />
                 </div>
@@ -218,6 +260,6 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
       )}
     </div>
   );
-}
+};
 
 export default FeaturedProducts;

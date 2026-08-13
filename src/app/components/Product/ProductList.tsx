@@ -229,12 +229,12 @@ export default function ProductList({
       {!isBrandPage && <div>
         <div className="my-6 ">
           <div className="grid grid-cols-2 md:grid-cols-4">
-            <Link
+            {/* <Link
               href={`/category/${categories?.slug}`}
               className="py-3 px-4 text-center text-[14px] text-[#545454] font-bold  hover:text-[#d42020] transition-colors"
             >
               {categories?.name}
-            </Link>
+            </Link> */}
             {cleanSubcategories?.length > 0 ? cleanSubcategories?.map((sub: any, i: number) => (
               <Link
                 key={sub?.id}
