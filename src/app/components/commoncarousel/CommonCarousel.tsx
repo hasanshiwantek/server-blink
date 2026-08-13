@@ -12,12 +12,10 @@ interface CarouselItemType {
 
 interface CommonCarouselProps {
   items?: CarouselItemType[];
-  autoPlayInterval?: number;
 }
 
 const CommonCarousel: React.FC<CommonCarouselProps> = ({
   items = [],
-  autoPlayInterval = 3000,
 }) => {
   const carouselRef = React.useRef<HTMLDivElement>(null);
   const isDragging = React.useRef(false);
@@ -28,8 +26,6 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
   const latestX = React.useRef(0);
 
   const [isTransitioning, setIsTransitioning] = React.useState(false);
-
-  if (!items.length) return null;
 
   // Duplicate items for seamless infinite loop
   const loopItems = [...items, ...items, ...items];
@@ -47,13 +43,15 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
   // Start position in the middle set
   React.useEffect(() => {
     const el = carouselRef.current;
-    if (!el) return;
+    if (!el || !items.length) return;
 
     const setInitialPosition = () => {
       const itemWidth = getItemWidth();
 
       if (itemWidth) {
+        el.style.scrollBehavior = "auto";
         el.scrollLeft = itemWidth * items.length;
+        el.style.scrollBehavior = "";
       }
     };
 
@@ -75,7 +73,7 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
     if (!el || isTransitioning) return;
 
     const itemWidth = getItemWidth();
-    if (!itemWidth) return;
+    if (!itemWidth || !items.length) return;
 
     setIsTransitioning(true);
 
@@ -86,11 +84,9 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
 
     setTimeout(() => {
       const currentPosition = el.scrollLeft;
-      const middleStart = itemWidth * items.length;
       const middleEnd = itemWidth * items.length * 2;
 
-      // When moving into third copy,
-      // silently move back to the same position in middle copy
+      // Third copy reached → silently move back to middle copy
       if (currentPosition >= middleEnd) {
         el.style.scrollBehavior = "auto";
 
@@ -109,7 +105,7 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
     if (!el || isTransitioning) return;
 
     const itemWidth = getItemWidth();
-    if (!itemWidth) return;
+    if (!itemWidth || !items.length) return;
 
     setIsTransitioning(true);
 
@@ -121,8 +117,7 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
     setTimeout(() => {
       const currentPosition = el.scrollLeft;
 
-      // If we go before the middle copy,
-      // silently move forward to the same position
+      // Before middle copy → silently move forward
       if (currentPosition <= 0) {
         el.style.scrollBehavior = "auto";
 
@@ -146,7 +141,8 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
 
     isDragging.current = true;
     startX.current = e.clientX;
-    scrollLeftStart.current = carouselRef.current.scrollLeft;
+    scrollLeftStart.current =
+      carouselRef.current.scrollLeft;
 
     carouselRef.current.style.cursor = "grabbing";
     carouselRef.current.setPointerCapture(e.pointerId);
@@ -188,12 +184,22 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
 
     carouselRef.current.style.cursor = "grab";
 
-    if (carouselRef.current.hasPointerCapture(e.pointerId)) {
-      carouselRef.current.releasePointerCapture(e.pointerId);
+    if (
+      carouselRef.current.hasPointerCapture(
+        e.pointerId
+      )
+    ) {
+      carouselRef.current.releasePointerCapture(
+        e.pointerId
+      );
     }
   };
 
   // =======================================================
+
+  // IMPORTANT:
+  // This must be AFTER all hooks.
+  if (!items.length) return null;
 
   return (
     <div className="relative w-full overflow-hidden">
@@ -203,7 +209,10 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
         onClick={scrollLeft}
         className="absolute top-1/2 -left-6 -translate-y-1/2 z-10 text-black p-2 rounded-full hover:bg-gray-100 transition-colors"
       >
-        <ChevronLeft size={34} aria-hidden="true" />
+        <ChevronLeft
+          size={34}
+          aria-hidden="true"
+        />
       </button>
 
       <button
@@ -212,7 +221,10 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
         onClick={scrollRight}
         className="absolute top-1/2 -right-6 -translate-y-1/2 z-10 text-black p-2 rounded-full hover:bg-gray-100 transition-colors"
       >
-        <ChevronRight size={34} aria-hidden="true" />
+        <ChevronRight
+          size={34}
+          aria-hidden="true"
+        />
       </button>
 
       <div
@@ -238,7 +250,9 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
                 <Link
                   href={`/brand/${item.slug}`}
                   aria-label={`View ${item.name} products`}
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={(e) =>
+                    e.stopPropagation()
+                  }
                 >
                   <div className="w-32 h-32">
                     <Image
