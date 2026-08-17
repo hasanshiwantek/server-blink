@@ -157,7 +157,7 @@ const Testimonials = () => {
       </div>
       <Link href={review?.url} target="_blank" className="block min-w-0">
         <h2 className="text-[14px] text-[#333333] font-bold ">
-          <span className="inline-block w-full max-w-[348px] border-b border-black overflow-hidden whitespace-nowrap text-ellipsis">
+          <span className="inline-block w-full max-w-[348px] underline border-black overflow-hidden whitespace-nowrap text-ellipsis">
             {review?.reviewHeading}
           </span>
         </h2>
