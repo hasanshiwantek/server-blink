@@ -113,7 +113,7 @@ const Banner = ({ carousels, settings }: any) => {
                     <button
                       type="button"
                       onClick={() => router.push(slide?.link)}
-                      className="inline-flex items-center justify-center rounded bg-[var(--primary-color)] border-0 border-b-[3px] border-b-[#860109] box-border h-[30px] px-5 text-[18px] font-bold uppercase tracking-wide text-white shadow-xl transition-colors duration-200"
+                      className="inline-flex items-center justify-center rounded-none bg-[#D42020] border-0 border-b-[3px] border-b-[#860109] box-border h-[32px] px-5 text-[18px] font-bold uppercase tracking-wide text-white shadow-xl transition-colors duration-200 hover:bg-[#860109]"
                       style={robotoCondensedStyle}
                     >
                       {slide.buttonText}

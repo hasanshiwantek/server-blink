@@ -64,7 +64,10 @@ export default function ProductCategoryCard({ product }: { product: Product }) {
         <p className="text-[12px]">
           <span className="text-[12px] hover:text-[#D42020]">{product?.brand?.name}</span>{" "}
           <span className="text-[12px] hover:text-[#D42020]">SKU:</span>
+          <Link href={product?.productUrl || "/"}>
           <span className="text-[12px] hover:text-[#D42020]">{product?.sku}</span>
+          </Link>
+          
         </p>
 
         <Link
