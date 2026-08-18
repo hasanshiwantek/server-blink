@@ -138,7 +138,6 @@ const CheckoutForm = () => {
   const cart = useAppSelector((state: RootState) => state?.carts?.items);
   const { loading } = useAppSelector((state: RootState) => state?.carts);
   const auth = useAppSelector((state: RootState) => state?.auth);
-  console.log("auth", auth);
 
   // ADD COUPON STATE FROM REDUX
   const { appliedCoupon, discountAmount } = useAppSelector(
@@ -214,6 +213,7 @@ const CheckoutForm = () => {
     control,
     trigger,
     getValues,
+    setError,
     formState: { errors },
   } = useForm<CheckoutFormValues>({
     defaultValues: {
@@ -591,7 +591,7 @@ const CheckoutForm = () => {
       isMounted = false;
     };
   }, [stripe, cart, finalTotal]); // DEPENDENCY: finalTotal instead of total
- const getDeviceType = () => {
+  const getDeviceType = () => {
     if (typeof window === "undefined") return "Server Blink (Desktop)";
 
     const userAgent = navigator.userAgent;
@@ -640,8 +640,14 @@ const CheckoutForm = () => {
           deviceType: getDeviceType(),
           ipAddress: ipAddress,
           email: data.email,
-                paymentMethod: data.paymentMethod == "credit_card" ? "Credit Card (Via Stripe)" : data.paymentMethod == "apple_pay" ? "Apple Pay" : "Google Pay",
-          discountAmount: discountAmount ? finalTotal : 0,
+          paymentMethod:
+            data.paymentMethod == "credit_card"
+              ? "Credit Card (Via Stripe)"
+              : data.paymentMethod == "apple_pay"
+                ? "Apple Pay"
+                : "Google Pay",
+          discountAmount: discountAmount,
+          couponCode: appliedCoupon?.couponCode,
           shippingCost: shipping,
           comments: data.orderComment || "",
           paymentIntentId: data.paymentIntentId ?? "",
@@ -675,8 +681,10 @@ const CheckoutForm = () => {
               state: dest.address?.state || "",
               zip: dest.address?.zip || "",
               country: dest.address?.country || "",
-               shippingMethod:  dest.selectedShippingMethod,
-             shippingData: shippingRates.find((item) => item?.service_type == dest.selectedShippingMethod),
+              shippingMethod: dest.selectedShippingMethod,
+              shippingData: shippingRates.find(
+                (item) => item?.service_type == dest.selectedShippingMethod,
+              ),
               shippingCost: selectedRate
                 ? Number(selectedRate.total_charge)
                 : 0,
@@ -710,10 +718,18 @@ const CheckoutForm = () => {
         state: data.state || "",
         zip: data.zip,
         country: data.country,
-                paymentMethod: data.paymentMethod == "credit_card" ? "Credit Card (Via Stripe)" : data.paymentMethod == "apple_pay" ? "Apple Pay" : "Google Pay",
-              shippingMethod: data.shippingMethod,
-              shippingData : shippingRates.find((item) => item?.service_type == data.shippingMethod),
-        discountAmount: discountAmount ? finalTotal : 0,
+        paymentMethod:
+          data.paymentMethod == "credit_card"
+            ? "Credit Card (Via Stripe)"
+            : data.paymentMethod == "apple_pay"
+              ? "Apple Pay"
+              : "Google Pay",
+        shippingMethod: data.shippingMethod,
+        shippingData: shippingRates.find(
+          (item) => item?.service_type == data.shippingMethod,
+        ),
+        discountAmount: discountAmount,
+        couponCode: appliedCoupon?.couponCode,
         shippingCost: shipping,
         comments: data.orderComment || "",
         newsletter: data.newsletter || false,
@@ -888,6 +904,14 @@ const CheckoutForm = () => {
   };
 
   const handleContinueToBilling = async () => {
+    if (!shippingRates || shippingRates?.length === 0) {
+      setError("shippingMethod", {
+        type: "manual",
+        message: "Please select a shipping method",
+      });
+
+      return;
+    }
     const isValid = await trigger([
       "firstName",
       "lastName",
@@ -1543,6 +1567,7 @@ const CheckoutForm = () => {
       dispatch(fetchCustomerAddress());
     }
   }, [auth?.isAuthenticated]);
+  console.log(discountAmount, appliedCoupon);
 
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">

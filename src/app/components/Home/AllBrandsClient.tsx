@@ -80,7 +80,7 @@ const AllBrandsClient = ({ brands }: AllBrandsClientProps) => {
   height={190}
   sizes="(max-width: 768px) 45vw, 190px"
   priority={pageItems[0].id === brand.id}
-  className="h-[85%] w-[85%] object-contain"
+  className="h-[83%] w-[83 %] object-contain"
 />
         </div>
 
@@ -133,3 +133,5 @@ const AllBrandsClient = ({ brands }: AllBrandsClientProps) => {
 };
 
 export default AllBrandsClient;
+
+
