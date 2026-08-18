@@ -210,7 +210,10 @@ export const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>(
         </div>
 
         {/* ── Company address ── */}
-        <div className="text-[14px] italic font-bold leading-4 mb-5" style={{visibility:"hidden"}}>
+        <div
+          className="text-[14px] italic font-bold leading-4 mb-5"
+          style={{ visibility: "hidden" }}
+        >
           <span className="inline-block mb-[2px]"> Address:</span>
           <br />
           2210 Goldsmith Lane
@@ -414,17 +417,14 @@ export const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>(
                 Qty
               </th>
               <th
-                    style={{
-        textAlign: "left",
-        padding: "6px 8px",
-        fontWeight: "bold",
-        width: "120px",
-        whiteSpace: "nowrap",
-    }}
-
+                style={{
+                  textAlign: "left",
+                  padding: "6px 8px",
+                  fontWeight: "bold",
+                  width: "120px",
+                  whiteSpace: "nowrap",
+                }}
               >
-               
-
                 Code/SKU
               </th>
               <th
@@ -488,15 +488,15 @@ export const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>(
                       width: "100%",
                     }}
                   >
-                     <div
-        style={{
-            width: "100%",
-            display: "block",
-            whiteSpace: "normal",
-            wordBreak: "normal",
-            overflowWrap: "anywhere",
-        }}
-    ></div>
+                    <div
+                      style={{
+                        width: "100%",
+                        display: "block",
+                        whiteSpace: "normal",
+                        wordBreak: "normal",
+                        overflowWrap: "anywhere",
+                      }}
+                    ></div>
                     {product.name}
                   </td>
                   <td
@@ -517,21 +517,17 @@ export const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>(
                   >
                     {fmt(lineTotal)}
                   </td>
-                  
                 </tr>
-                
               );
             })}
           </tbody>
-         
+
           <tfoot>
             {[
               { label: "Subtotal", value: subtotal },
               { label: "Shipping", value: shipping },
               { label: "Tax", value: tax },
-              
             ].map(({ label, value }) => (
-              
               <tr key={label}>
                 <td colSpan={3} />
                 <td
@@ -568,7 +564,7 @@ export const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>(
                   fontSize: "14px",
                 }}
               >
-                {fmt(grand)}
+                {fmt(order?.totalAmount)}
               </td>
             </tr>
           </tfoot>

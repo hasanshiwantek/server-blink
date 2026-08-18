@@ -81,7 +81,7 @@ const GlobalSearchBar: React.FC = () => {
               e.preventDefault();
               const q = searchQuery.trim();
               dispatch(clearSearch());
-              if (q) {
+             
                 localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
                 window.dispatchEvent(new Event("searchFiltersUpdated"));
                 if (pathname === "/advanced-search") {
@@ -89,7 +89,7 @@ const GlobalSearchBar: React.FC = () => {
                 } else {
                   router.push(`/advanced-search`);
                 }
-              }
+              
             }
           }}
           className="
@@ -111,7 +111,7 @@ const GlobalSearchBar: React.FC = () => {
               e.preventDefault();
               const q = searchQuery.trim();
               dispatch(clearSearch());
-              if (q) {
+             
                 localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
                 window.dispatchEvent(new Event("searchFiltersUpdated"));
                 if (pathname === "/advanced-search") {
@@ -119,7 +119,7 @@ const GlobalSearchBar: React.FC = () => {
                 } else {
                   router.push(`/advanced-search`);
                 }
-              }
+              
             }}
             className="flex items-center justify-center"
           >

@@ -63,32 +63,34 @@ const AllBrandsClient = ({ brands }: AllBrandsClientProps) => {
         ) : (
           <>
             <div
-              className="grid w-full gap-x-2 gap-y-4 sm:gap-x-3 max-md:grid-cols-2 md:justify-start md:gap-x-3 md:[grid-template-columns:repeat(auto-fill,226px)]"
-            >
-              {pageItems.map((brand) => (
-                <div key={brand.id} className="min-w-0 w-full md:w-[226px]">
-                  <Link
-                    href={`/brand/${brand.slug}`}
-                    className="group block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D42020] focus-visible:ring-offset-2 md:w-[226px]"
-                  >
-                    <div className="flex w-full aspect-square items-center justify-center border-2 border-black bg-white p-1 transition-opacity group-hover:opacity-90 md:aspect-auto md:w-[226px] md:p-0">
-                      <Image
+  className="grid w-full gap-x-2 gap-y-4 sm:gap-x-3 max-md:grid-cols-2 md:justify-start md:gap-x-3 md:[grid-template-columns:repeat(auto-fill,226px)]"
+>
+  {pageItems.map((brand) => (
+    <div key={brand.id} className="min-w-0 w-full md:w-[226px]">
+      <Link
+        href={`/brand/${brand.slug}`}
+        className="group block w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D42020] focus-visible:ring-offset-2 md:w-[226px]"
+      >
+      
+        <div className="flex aspect-square w-full items-center justify-center border-2 border-black bg-white p-4 transition-opacity group-hover:opacity-90 md:w-[226px] md:p-5">
+        <Image
   src={brand.logo || "/default-product-image.svg"}
   alt={brand.name}
   width={190}
   height={190}
-  sizes="(max-width:768px) 45vw, 190px"
+  sizes="(max-width: 768px) 45vw, 190px"
   priority={pageItems[0].id === brand.id}
-  className="h-auto w-auto max-h-[90%] max-w-[90%] object-contain md:h-[190px] md:w-[190px] md:max-h-none md:max-w-none"
+  className="h-[83%] w-[83 %] object-contain"
 />
-                    </div>
-                    <p className="mt-1.5 line-clamp-2 text-center text-xs font-normal leading-tight text-[#545454] text-[15px] !font-semibold  roboto-font  sm:text-[14px]">
-                      {brand.name}
-                    </p>
-                  </Link>
-                </div>
-              ))}
-            </div>
+        </div>
+
+        <p className="mt-1.5 line-clamp-2 text-center text-[15px] font-semibold leading-tight text-[#545454] roboto-font sm:text-[14px]">
+          {brand.name}
+        </p>
+      </Link>
+    </div>
+  ))}
+</div>
 
             {totalPages > 1 && (
               <div className="mt-8 flex flex-row justify-between gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -131,3 +133,5 @@ const AllBrandsClient = ({ brands }: AllBrandsClientProps) => {
 };
 
 export default AllBrandsClient;
+
+

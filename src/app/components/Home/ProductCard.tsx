@@ -100,14 +100,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </span>
         </Link>
         <Link href={product?.productUrl || "/"}>
-  <p
-          className="text-[1rem] text-gray-400 mb-1 hover:text-[#D42020]"
-          style={robotoCondensedStyle}
-        >
-          Sku: {product.sku}
-        </p>
+          <p
+            className="text-[1rem] text-gray-400 mb-1 hover:text-[#D42020]"
+            style={robotoCondensedStyle}
+          >
+            Sku: {product.sku}
+          </p>
         </Link>
-      
+
         <Link href={product?.productUrl || "/"}>
           <span
             className="text-[14px] font-bold mb-1 text-[#545454] line-clamp-2 hover:text-[#D42020]"
@@ -204,10 +204,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                     toast.success(`${product.name} added to cart!`);
                     dispatch(fetchCartList());
                     router.push("/cart");
+                  })
+                  .catch((err) => {
+                    toast.error(err);
                   });
               }
             }}
-            disabled={!availableForSale || cartLoad}
+            // disabled={!availableForSale || cartLoad}
             className="w-full bg-[#CAC9C9] hover:bg-[#D42020] font-bold text-[#393939] border-b-2 border-[#393939] py-1 hover:text-white rounded text-[14px] mt-auto transition"
           >
             {"ADD TO CART"}
