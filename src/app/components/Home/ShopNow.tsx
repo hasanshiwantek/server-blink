@@ -4,41 +4,48 @@ const ShopNow = () => {
   return (
     <section className="w-full">
       {/* Mobile (< sm): image only, then text below */}
-      <div className="sm:hidden">
-        <div
-          className="relative w-full h-[220px] bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/about/about-us.jpg')" }}
-          aria-hidden
+      <div className="lg:hidden">
+  {/* Image */}
+  <div
+    className="relative w-full h-[280px] md:h-[380px] bg-cover bg-center bg-no-repeat"
+    style={{ backgroundImage: "url('/about/about-us.jpg')" }}
+    aria-hidden
+  >
+    <div className="absolute inset-0 bg-white/35" />
+  </div>
+
+  {/* Content */}
+  <div className="w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-12 py-10 md:py-12">
+    <div className="w-full max-w-[361px] md:max-w-[700px] text-left text-[#444444]">
+      <h2 className="text-[2.66rem] md:text-[3rem] font-bold mb-4">
+        ABOUT US
+      </h2>
+
+      <p className="text-2xl md:text-[1.6rem] leading-relaxed mb-6 text-[#444444] roboto-font">
+        We are a leading online retailer of server parts, committed to
+        providing high-quality and reliable products to our customers.
+        With a wide range of parts to choose from, we make it easy for
+        businesses of all sizes to upgrade and maintain their servers.
+        Our team of experts is dedicated to delivering exceptional
+        customer service and technical support, ensuring that our
+        customers get the best possible experience when shopping with us.
+      </p>
+
+      <Link href="/">
+        <button
+          type="button"
+          className="bg-[#444444] text-white px-5 md:px-8 py-3 rounded text-2xl md:text-[1.5rem]"
         >
-          <div className="absolute inset-0 bg-white/35" />
-        </div>
-        <div className="max-w-7xl mx-auto px-6 py-10 w-full">
-          <div className="w-full max-w-[361px] text-left text-[#444444]">
-            <h2 className="text-[2.66rem] font-bold mb-4">ABOUT US</h2>
-            <p className="text-2xl leading-relaxed mb-6 text-[#444444] roboto-font">
-              We are a leading online retailer of server parts, committed to
-              providing high-quality and reliable products to our customers.
-              With a wide range of parts to choose from, we make it easy for
-              businesses of all sizes to upgrade and maintain their servers.
-              Our team of experts is dedicated to delivering exceptional
-              customer service and technical support, ensuring that our
-              customers get the best possible experience when shopping with us.
-            </p>
-            <Link href="/">
-              <button
-                type="button"
-                className="bg-[#444444] text-white px-4 py-3 rounded text-2xl"
-              >
-                SHOP NOW
-              </button>
-            </Link>
-          </div>
-        </div>
-      </div>
+          SHOP NOW
+        </button>
+      </Link>
+    </div>
+  </div>
+</div>
 
       {/* sm+: unchanged — text on image */}
       <div
-        className="relative hidden sm:block w-full bg-cover bg-center bg-no-repeat h-[350px] md:h-[490px]"
+        className="relative hidden lg:block w-full bg-cover bg-center bg-no-repeat h-[350px] md:h-[490px]"
         style={{
            backgroundImage: "url('/about/about-us-update.webp')",
         }}

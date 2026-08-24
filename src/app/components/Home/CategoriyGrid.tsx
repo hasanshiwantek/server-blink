@@ -59,7 +59,7 @@ const CategoryGrid = ({ categories }: any) => {
   if (!categories?.length) return null
   return (
     <div className="mt-6 group/grid">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-2.5">
+      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-6 gap-2.5">
         {categories?.map((category: Category, index: number) => (
           <CategoryTile
             key={category.id}

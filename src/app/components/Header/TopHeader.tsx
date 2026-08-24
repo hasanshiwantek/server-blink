@@ -40,7 +40,7 @@ const TopHeader = () => {
   const [query, setQuery] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null); 
   const dispatch = useAppDispatch();
   const router = useRouter();
   const cartItemCount =
@@ -75,6 +75,7 @@ const TopHeader = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  
   // Fetch categories
   useEffect(() => {
     fetchCategories().then((data) => setCategories(data));
@@ -153,10 +154,10 @@ const TopHeader = () => {
         }`}
       >
         <div className="w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto px-4 xl:px-4 2xl:px-2">
-          <div className="flex items-center md:justify-between justify-between gap-4 sm:py-2">
+          <div className="md:relative flex items-center md:justify-between justify-between gap-4 sm:py-2">
             {/* Left: Promo Text (hidden when scrolled) */}
             <div
-              className={`md:flex hidden items-center whitespace-nowrap space-x-2 md:space-x-3 transition-all duration-300 flex-1 ${
+              className={`md:flex hidden items-center whitespace-nowrap space-x-2 md:space-x-3 transition-all duration-300 flex-1  md:pl-20 lg:pl-0 ${
                 isScrolled ? "hidden" : "flex"
               }`}
             >
@@ -166,7 +167,7 @@ const TopHeader = () => {
             </div>
 
             {/* Center: Search Bar (visible when scrolled) */}
-            {!isMobile && (
+           {!isMobile && window.innerWidth >= 1024 && (
               <div
                 ref={containerRef}
                 className={`relative flex-1 flex  justify-center transition-all duration-300 
@@ -371,9 +372,9 @@ const TopHeader = () => {
             )}
 
             {/* Right: Login/Signup + Cart */}
-            <div className="flex items-center md:justify-end justify-between whitespace-nowrap flex-1 gap-5 md:gap-5">
+          <div className="flex items-center justify-between whitespace-nowrap flex-1 gap-5">
               {/* Hamburger */}
-              <div className="md:hidden block">
+             <div className="block lg:hidden md:absolute md:left-0 lg:static">
                 <button
                   aria-label="hamburger"
                   onClick={() => setMobileOpen(!mobileOpen)}
