@@ -205,7 +205,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                     dispatch(fetchCartList());
                     router.push("/cart");
                   })
-                  .catch((err) => {
+                  .catch((err) => {                           
                     toast.error(err);
                   });
               }
@@ -231,3 +231,5 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 };
 
 export default ProductCard;
+
+
