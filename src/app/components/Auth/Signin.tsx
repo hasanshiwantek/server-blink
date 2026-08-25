@@ -76,7 +76,7 @@ useEffect(() => {
       <div className=" h-2 w-full  xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-8xl" />
 
       {/* Breadcrumb */}
-      <div className="pt-0 pb-4 md:py-3 md:px-10 xl:px-0 w-full xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-8xl mx-auto">
+      <div className="pt-0 pb-4 md:py-2 md:px-10 xl:px-0 w-full xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-8xl mx-auto">
         <div className="hidden md:flex items-center gap-2 text-sm">
           <Link href="/" className="text-gray-600 hover:text-gray-900 text-[11px]">
             Home
@@ -105,7 +105,7 @@ useEffect(() => {
                 <Input
                   id="email"
                   type="email"
-                  className="w-full h-12 max-w-full py-[15px] "
+                  className="w-full h-15 max-w-full py-[15px] rounded-none "
                   {...register("email", { required: "Email is required" })}
                 />
                 {errors.email && (
@@ -126,7 +126,7 @@ useEffect(() => {
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"} // toggle type
-                  className="w-full h-12 max-w-full py-[15px] pr-10" // add padding for icon
+                  className="w-full h-15 rounded-none max-w-full py-[15px] pr-10" // add padding for icon
                   {...register("password", {
                     required: "Password is required",
                   })}

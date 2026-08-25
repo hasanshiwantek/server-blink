@@ -69,7 +69,7 @@ const Cart = () => {
             </div>
 
             {/* Order Summary */}
-            <div className="w-full md:w-[45%] xl:ml-auto mt-6">
+            <div className="w-full md:w-[45%] md:ml-auto mt-6">
               <OrderSummary />
             </div>
           </div>
