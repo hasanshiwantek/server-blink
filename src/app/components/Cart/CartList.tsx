@@ -143,9 +143,9 @@ const CartList = () => {
 
           return (
             <div key={index}>
-              <div className="flex flex-col xl:flex-row items-center justify-between py-5">
-                <div className="flex flex-row items-start  xl:flex-row items-center xl:w-[65.1%] 2xl:w-[64.5%]">
-                  <div className="w-[40%] xl:w-[18.1%] 2xl:w-[17.7%]">
+              <div className="flex flex-col md:grid md:grid-cols-[180px_minmax(0,1fr)] md:items-start md:gap-x-5 py-5 xl:flex xl:flex-row xl:items-center xl:justify-between">
+                <div className="flex flex-row items-center w-full md:contents xl:flex xl:w-[65.1%] 2xl:w-[64.5%]">
+                  <div className="w-[40%] md:w-[220px] md:row-span-2 xl:w-[18.1%] 2xl:w-[17.7%]">
                     <Image
                       width={98}
                       height={105}
@@ -157,21 +157,21 @@ const CartList = () => {
                       fetchPriority="high"
                     />
                   </div>
-                  <div className="w-[60%] pl-3 text-[15px] text-[#545454] xl:w-[63.1%] 2xl:w-[71%] mx-4">
+                  <div className="w-[60%] md:w-auto md:col-start-2 md:row-start-1  text-[15px] text-[#545454] xl:w-[63.1%] 2xl:w-[71%] mx-4">
                     <p className="  xl:text-start">
                       {item?.brand?.name || "N/A"}
                     </p>
                     <Link href={`${item?.productUrl || "#"}`}>
-                      <p className=" text-[#D42020] underline  lg:mx-auto md:mx-auto sm:mx-auto w-[100%] sm:w-[60%]  md:w-[70%] lg:w-[80%] xl:text-start xl:w-[100%] 2xl:w-[100%]">
+                      <p className=" text-[#D42020] underline xl:text-start xl:w-[100%] ">
                         {item.name}
                       </p>
                     </Link>
                   </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row w-full gap-3 xl:gap-0 xl:w-[66%] 2xl:w-[68%] xl:flex-nowrap xl:justify-between">
+                <div className="flex flex-col md:flex-row md:col-start-2 md:row-start-2 md:items-center md:gap-3 justify-between w-[78%] pl-3 xl:w-[66%] 2xl:w-[68%] gap-3 md:gap-0 xl:flex-nowrap xl:justify-between">
                   <div className="flex items-center justify-between md:block">
-                    <p className=" text-[14px] text-[#545454] md:hidden">
+                    <p className=" text-[14px] text-[#545454] lg:hidden">
                       Price
                     </p>
 
@@ -181,8 +181,8 @@ const CartList = () => {
                     <div></div>
                   </div>
 
-                  <div className="flex items-center justify-between ">
-                    <p className=" text-[14px] text-[#545454]    md:hidden">
+                  <div className="flex items-center justify-between md:block">
+                    <p className=" text-[14px] text-[#545454]  lg:hidden">
                       Quantity
                     </p>
                     <div className="flex items-center  border-gray-300 overflow-hidden">
@@ -237,53 +237,39 @@ const CartList = () => {
                           handleChange(item?.cartItemId, e.target.value, maxQty)
                         }
                         onBlur={(e) => {
-                          const parsed = Number(quantities[item.cartItemId]);
+                          const inputValue = quantities[item.cartItemId];
+                          const parsed = Number(inputValue);
 
-                          if (!parsed || parsed <= 0) {
-                            dispatch(
-                              updateCart({
-                                id: item?.cartItemId,
-                                data: {
-                                  quantity: parsed,
-                                },
-                              }),
-                            )
-                              .unwrap()
-                              .then(() => {
-                                dispatch(fetchCartList());
-                                // removeLocalShipping()
-                              });
-                            // dispatch(updateQty({ id: item.id, quantity: 1 }));
-                            setQuantities((prev) => ({
-                              ...prev,
-                              [item.cartItemId]: 1,
-                            }));
-                          } else if (item.maxQty && parsed > maxQty) {
-                            dispatch(
-                              updateCart({
-                                id: item?.cartItemId,
-                                data: {
-                                  quantity: parsed,
-                                },
-                              }),
-                            )
-                              .unwrap()
-                              .then(() => {
-                                dispatch(fetchCartList());
-                                // removeLocalShipping()
-                              });
-                            // dispatch(updateQty({ id: item.id, quantity: maxQty }));
-                            setQuantities((prev) => ({
-                              ...prev,
-                              [item.cartItemId]: maxQty,
-                            }));
-                          }
+                          const newQty = maxQty
+                            ? Math.min(parsed > 0 ? parsed : 1, maxQty)
+                            : parsed > 0
+                              ? parsed
+                              : 1;
+
+                          dispatch(
+                            updateCart({
+                              id: item?.cartItemId,
+                              data: {
+                                quantity: newQty,
+                              },
+                            }),
+                          )
+                            .unwrap()
+                            .then(() => {
+                              dispatch(fetchCartList());
+                              removeLocalShipping();
+                            });
+
+                          setQuantities((prev) => ({
+                            ...prev,
+                            [item.cartItemId]: newQty,
+                          }));
                         }}
                         min={minQty}
                         max={maxQty || undefined}
-                        onKeyDown={(e) =>
-                          handleManualQtyUpdate(e, item?.cartItemId, maxQty)
-                        }
+                        // onKeyDown={(e) =>
+                        //   handleManualQtyUpdate(e, item?.cartItemId, maxQty)
+                        // }
                         className="
       w-10 bg-white text-center py-0 outline-none
       border-x border-gray-300
@@ -330,26 +316,31 @@ const CartList = () => {
                     <div></div>
                   </div>
 
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-[14px] text-[#545454]   md:hidden">
-                      Total
-                    </p>
+                  <div className="flex items-center justify-between gap-2 ">
+                    <div className="flex items-center justify-between gap-2 w-[60%] md:block">
+                      <div>
+                        <p className="text-[14px] text-[#545454] lg:hidden">
+                          Total
+                        </p>
+                      </div>
 
-                    <p className="text-[15px] text-[#545454]  ">
-                      ${Number(item.price * item.quantity).toFixed(2)}
-                    </p>
-
-                    <button
-                      type="button"
-                      aria-label="Remove item from cart"
-                      onClick={() => {
-                        setItemToDelete(item);
-                        setIsDialogOpen(true);
-                      }}
-                      className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#CAC9C9] text-[#D42020] transition hover:bg-[#B8B7B7] hover:text-[#b81a1a]"
-                    >
-                      <X className="h-4 w-4" strokeWidth={2.25} />
-                    </button>
+                      <p className="text-[15px] text-[#545454]  ">
+                        ${Number(item.price * item.quantity).toFixed(2)}
+                      </p>
+                    </div>
+                    <div>
+                      <button
+                        type="button"
+                        aria-label="Remove item from cart"
+                        onClick={() => {
+                          setItemToDelete(item);
+                          setIsDialogOpen(true);
+                        }}
+                        className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#CAC9C9] text-[#D42020] transition hover:bg-[#B8B7B7] hover:text-[#b81a1a]"
+                      >
+                        <X className="h-4 w-4" strokeWidth={2.25} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
