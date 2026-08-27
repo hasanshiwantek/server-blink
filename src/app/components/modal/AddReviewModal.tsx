@@ -105,7 +105,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="!max-w-[70rem]  w-full max-h-[90vh] overflow-y-auto p-0 rounded-none shadow-sm bg-[#eaeaea] !z-[9999]">
+            <DialogContent className="!max-w-[70rem]  w-full max-h-[90vh] overflow-y-auto p-0 rounded-none shadow-sm bg-[#eaeaea] ">
                 {/* ✅ Sticky Header */}
                 <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-[#ddd] bg-[#eaeaea]">
                     <DialogTitle className="text-[18px] font-light text-[#545454]  w-full flex justify-center">
@@ -249,7 +249,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
                                 />
                             </div>
                             {/* ✅ ReCAPTCHA */}
-                            <div className="relative !z-[99999]">
+                            <div className="relative">
                                 <ReCAPTCHA
                                     ref={recaptchaRef}
                                     sitekey={sitekey}
