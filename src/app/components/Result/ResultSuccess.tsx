@@ -1,5 +1,3 @@
-"use client"
-import React from "react";
 const ResultSuccess = () => {
     return (
         <main className="flex flex-col gap-8 w-full ">

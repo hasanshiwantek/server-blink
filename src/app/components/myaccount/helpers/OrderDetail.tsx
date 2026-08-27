@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
-import { useReactToPrint } from "react-to-print";
+import React from "react";
 
 // ── Types (same as before) ───────────────────────────────────────────────────
 
