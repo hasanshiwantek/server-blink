@@ -22,7 +22,7 @@ interface AccountFormValues {
   currentPassword?: string;
 }
 const inputClass =
-  "!w-full h-[42px] text-[#545454] !font-normal !max-w-full py-[10px] px-[14px] border border-[#cac9c9] rounded-none";
+  "!w-full h-[46px] text-[#545454] !font-normal !max-w-full py-[10px] px-[14px] border border-[#cac9c9] rounded-none";
 
 const AccountForm = () => {
   const [showPassword, setShowPassword] = useState(false);

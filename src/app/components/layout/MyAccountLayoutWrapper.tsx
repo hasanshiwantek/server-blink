@@ -27,7 +27,7 @@ const MyAccountTabs = () => {
     <div >
       {/* Breadcrumb */}
     {/* Breadcrumb */}
-<div className="hidden md:flex items-center text-[11px] mb-4 text-gray-600" aria-label="breadcrumb">
+<div className="hidden md:flex items-center text-[11px] mb-4 pl-2 text-gray-600" aria-label="breadcrumb">
   {/* Home */}
   <span className="" itemProp="name">
     Home
@@ -55,13 +55,13 @@ const MyAccountTabs = () => {
 </div>
 
 {/* Optional: Current Tab as Heading */}
-<div className="text-[28px] mb-8 text-[#545454] !font-normal roboto-font">
+<div className="text-[28px] mb-8 pl-2 text-[#545454] !font-normal roboto-font">
   {getActiveTab()}
 </div>
 
 
       {/* Tabs */}
-  <div className="flex flex-col items-center mb-6 gap-0 md:flex-row md:justify-center md:gap-2">
+  <div className="flex flex-col items-center mb-6 gap-0 lg:flex-row md:justify-center lg:gap-2">
   {tabs.map((tab) => {
     const isActive = pathname.startsWith(tab.href);
 
