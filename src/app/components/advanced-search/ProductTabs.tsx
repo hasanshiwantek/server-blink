@@ -14,19 +14,12 @@ interface ProductTabsProps {
   onTabChange?: (index: number) => void;
 }
 
-export default function ProductTabs({ tabs, activeTab: controlledActive, onTabChange }: ProductTabsProps) {
+export default function ProductTabs({ tabs = [], activeTab: controlledActive, onTabChange }: ProductTabsProps) {
   const [internalActive, setInternalActive] = useState(0);
   const activeIndex = controlledActive ?? internalActive;
 
-  const defaultTabs: Tab[] = [
-    { label: "PRODUCTS", count: 10000 },
-    // { label: "NEWS & INFORMATION", count: 0 },
-    { label: "SHOW SEARCH FORM", isDivided: true },
-  ];
-
+  const items = tabs;
   
-  const items = tabs || defaultTabs;
-
   const handleClick = (index: number) => {
     if (onTabChange) {
       onTabChange(index);
@@ -44,11 +37,10 @@ export default function ProductTabs({ tabs, activeTab: controlledActive, onTabCh
           )}
           <button
             onClick={() => handleClick(index)}
-            className={`uppercase tracking-wide transition-colors ${
-              activeIndex === index
-                ? "text-[#d42020] border-b-1 border-[#d42020] "
-                : "text-[#393939]  hover:text-[#393939]"
-            }`}
+            className={`uppercase tracking-wide transition-colors ${activeIndex === index
+              ? "text-[#d42020] border-b-1 border-[#d42020] "
+              : "text-[#393939]  hover:text-[#393939]"
+              }`}
           >
             {tab.label}
             {tab.count !== undefined && ` (${tab.count})`}

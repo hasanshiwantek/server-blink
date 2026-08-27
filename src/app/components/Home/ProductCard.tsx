@@ -30,6 +30,7 @@ interface Product {
   callPricing?: boolean; // optional max quantity
   purchasabilityStatus?: string; //
   quantity?: number; //
+  currentStock?: number; //s
 }
 
 interface ProductCardProps {
@@ -48,6 +49,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     (state: RootState) => state.carts,
   );
   const cartLoad = cartLoading || loading;
+  const currentStockEqualent = Number(product?.currentStock) === 0;
 
   // safe brand name
   const brandName =
@@ -99,7 +101,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             {brandName}{" "}
           </span>
         </Link>
-        <Link href={product?.productUrl || "/"}>
+        <Link href={product?.productUrl || "/"} className="inline-block w-fit"
+        >
           <p
             className="text-[1rem] text-gray-400 mb-1 hover:text-[#D42020]"
             style={robotoCondensedStyle}
@@ -201,17 +204,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 )
                   .unwrap()
                   .then(() => {
-                    toast.success(`${product.name} added to cart!`);
+                    // toast.success(`${product.name} added to cart!`);
                     dispatch(fetchCartList());
                     router.push("/cart");
                   })
-                  .catch((err) => {                           
+                  .catch((err) => {
                     toast.error(err);
                   });
               }
             }}
+            disabled={currentStockEqualent}
             // disabled={!availableForSale || cartLoad}
-            className="w-full bg-[#CAC9C9] hover:bg-[#D42020] font-bold text-[#393939] border-b-2 border-[#393939] py-1 hover:text-white rounded text-[14px] mt-auto transition"
+            className={currentStockEqualent ? "w-full bg-[#CAC9C9] font-bold text-[#393939] border-b-2 border-[#393939] py-1 !cursor-not-allowed rounded text-[14px] mt-auto transition" : "w-full bg-[#CAC9C9] hover:bg-[#D42020] font-bold text-[#393939] border-b-2 border-[#393939] py-1 hover:text-white rounded text-[14px] mt-auto transition"}
           >
             {"ADD TO CART"}
           </button>
