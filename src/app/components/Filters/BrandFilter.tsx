@@ -14,7 +14,7 @@ export default function BrandFilter({
 }: BrandFilterProps) {
   return (
     <ul className="space-y-1 bg-white">
-      {brands.slice(0, 11).map((b: any) => {
+      {brands?.slice(0, 11).map((b: any) => {
         const isActive = activeBrandId === b.brand.id;
         return (
           <Link href={`/brand/${b?.brand?.slug}`} key={b?.brand.id}>
@@ -32,6 +32,12 @@ export default function BrandFilter({
           </Link>
         );
       })}
+      {brands?.length > 9 && <>
+        <Link href="/brands"
+          className="w-full px-3 py-1 text-left text-[15px] font-normal flex items-center gap-3 transition-colors text-[#545454] hover:text-[var(--primary-color)]"
+        >
+          <span>View all brands</span>
+        </Link> </>}
     </ul>
   );
 }

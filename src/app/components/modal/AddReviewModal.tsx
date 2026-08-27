@@ -46,7 +46,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
     const [captchaToken, setCaptchaToken] = useState<string | null>(null); // ✅
     const recaptchaRef = useRef<ReCAPTCHA>(null);
     const [loading, setLoading] = useState(false);
-     const auth = useAppSelector((state: RootState) => state?.auth);
+    const auth = useAppSelector((state: RootState) => state?.auth);
 
     const dispatch = useAppDispatch();
     const handleChange = (
@@ -61,10 +61,10 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         // ✅ Captcha check
-        // if (!captchaToken) {
-        //     toast.error("Please verify the captcha.");
-        //     return;
-        // }
+        if (!captchaToken) {
+            toast.error("Please verify the captcha.");
+            return;
+        }
 
         setLoading(true);
 
@@ -90,18 +90,18 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
     };
 
     useEffect(() => {
-      setFormData({
-    name: auth?.user
-      ? `${auth.user.firstName ?? ""} ${auth.user.lastName ?? ""}`.trim()
-      : "",
-    email: auth?.user?.email || "",
-    subject: "",
-    comment: "",
-    rating: 0,
-  });
+        setFormData({
+            name: auth?.user
+                ? `${auth.user.firstName ?? ""} ${auth.user.lastName ?? ""}`.trim()
+                : "",
+            email: auth?.user?.email || "",
+            subject: "",
+            comment: "",
+            rating: 0,
+        });
         setCaptchaToken(null);          // ✅ reset
         recaptchaRef.current?.reset();
-    }, [isOpen,auth?.user])
+    }, [isOpen, auth?.user])
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -127,7 +127,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
                             <Image
                                 src={product.image}
                                 alt={product.name || "Product"}
-                                width={300}fetchPriority="high"
+                                width={300} fetchPriority="high"
                                 height={300}
                                 className="object-contain"
                             />
