@@ -76,15 +76,18 @@ const AllBrandsClient = ({ brands }: AllBrandsClientProps) => {
       >
       
         <div className="flex aspect-square w-full items-center justify-center border-2 border-black bg-white p-4 transition-opacity group-hover:opacity-90 md:w-[226px] md:p-5">
+        <div className="w-40 h-40 flex items-center justify-center">
         <Image
-  src={brand.logo || "/default-product-image.svg"}
-  alt={brand.name}
-  width={190}
-  height={190}
-  sizes="(max-width: 768px) 45vw, 190px"
-  priority={pageItems[0].id === brand.id}
-  className="h-[83%] w-[83 %] object-contain"
-/>
+          src={brand.logo || "/default-product-image.svg"}
+          alt={brand.name}
+          width={260}
+          height={260}
+          sizes="128px"
+          priority={pageItems[0].id === brand.id}
+          className="w-full h-full object-contain transition-all duration-700 ease-in-out group-hover:scale-105 select-none"
+          draggable={false}
+        />
+      </div>
         </div>
 
         <p className="mt-1.5 line-clamp-2 text-center text-[15px] font-semibold leading-tight text-[#545454] roboto-font sm:text-[14px]">
