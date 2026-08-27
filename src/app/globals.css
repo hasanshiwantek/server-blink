@@ -4,6 +4,12 @@
 @custom-variant dark (&:is(.dark *));
 
 
+
+
+body>div:has(iframe[src*="recaptcha/api2/bframe"]) {
+  pointer-events: auto !important;
+}
+
 /* globals.css or app/globals.css */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
