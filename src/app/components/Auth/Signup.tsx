@@ -60,8 +60,8 @@ const SignupPage = () => {
     setValue,
     formState: { errors },
   } = useForm<SignupFormValues>({
-      mode: "onBlur",
-  reValidateMode: "onChange",
+    mode: "onBlur",
+    reValidateMode: "onChange",
   });
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const dispatch = useAppDispatch();
@@ -85,10 +85,10 @@ const SignupPage = () => {
     }));
   }, [watchedCountry, watchedState]);
   const onSubmit = async (data: SignupFormValues) => {
-    //  if (!captchaToken) {
-    //    alert("Please verify the captcha.");
-    //   return;
-    // }
+    if (!captchaToken) {
+      alert("Please verify the captcha.");
+      return;
+    }
 
     try {
       const payload = {
@@ -139,7 +139,7 @@ const SignupPage = () => {
         const errorMessage =
           result.payload || "Registration failed. Please try again.";
       }
-    } catch (err: any) {}
+    } catch (err: any) { }
   };
 
   useEffect(() => {
