@@ -66,11 +66,9 @@ export default function ProductCategoryCard({ product }: { product: Product }) {
           <Link href={`/brand/${brandSlug || "/"}`}>
             <span className="text-[12px] hover:text-[#D42020]">{product?.brand?.name}</span>{" "}
           </Link>
-          <span className="text-[12px] hover:text-[#D42020]">SKU:</span>
           <Link href={product?.productUrl || "/"}>
-            <span className="text-[12px] hover:text-[#D42020]">{product?.sku}</span>
+            <span className="text-[12px] hover:text-[#D42020]"> SKU:{product?.sku}</span>
           </Link>
-
         </p>
 
         <Link
