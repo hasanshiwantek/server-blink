@@ -416,7 +416,7 @@ const MyAddress = () => {
           )}
 
           {!loading && !error && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 roboto-font">
+            <div className="grid grid-cols-1 m-2 md:grid-cols-2 gap-6 roboto-font">
               {/* Address List */}
               {customerAddresses?.map((item: any) => (
                 <div
@@ -463,7 +463,7 @@ const MyAddress = () => {
               ))}
 
               {/* New Address Button */}
-              <div className="border border-gray-400 rounded-lg p-6 flex flex-col items-center justify-center h-[235px] hover:bg-gray-50 cursor-pointer">
+              <div className="border border-gray-400 rounded-none p-6 flex flex-col items-center justify-center h-[235px] hover:bg-gray-50 cursor-pointer">
                 <Link
                   href="/my-account/addresses/new-address"
                   className="flex flex-col items-center justify-center gap-2"
