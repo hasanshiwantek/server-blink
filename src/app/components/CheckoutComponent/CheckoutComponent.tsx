@@ -16,7 +16,7 @@ import {
   restoreCart,
 } from "@/redux/slices/cartSlice";
 import { applyCoupon, removeCoupon } from "@/redux/slices/couponSlice"; // ADD THIS
-import axiosInstance, { baseURL } from "@/lib/axiosInstance";
+import axiosInstance, { baseURL, stripePublishableKey } from "@/lib/axiosInstance";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -79,7 +79,7 @@ function splitName(fullName: string) {
 }
 // Stripe publishable key
 const stripePromise = loadStripe(
-  "pk_test_51TTnoo8vkezGA3pyz8ekc5xIQNyhweCnxiumTB1si5Dejq5YWPGHDJIJPpBHMLw9hYRkbSkOGpdCzPrlW8g59HZ600cueNQymh",
+  stripePublishableKey,
 );
 
 // Pre-compute country list at module level
@@ -1428,29 +1428,29 @@ const CheckoutForm = () => {
       // billingSame false → actual billing values use karo (sirf agar filled hain)
       const billingFormData = watchedValues.billingSame
         ? {
-            billingFirstName: watchedValues.firstName || "",
-            billingLastName: watchedValues.lastName || "",
-            billingCompany: watchedValues.company || "",
-            billingPhone: watchedValues.phone || "",
-            billingAddress1: watchedValues.address1 || "",
-            billingAddress2: watchedValues.address2 || "",
-            billingCity: watchedValues.city || "",
-            billingCountry: watchedValues.country || "",
-            billingState: watchedValues.state || "",
-            billingZip: watchedValues.zip || "",
-          }
+          billingFirstName: watchedValues.firstName || "",
+          billingLastName: watchedValues.lastName || "",
+          billingCompany: watchedValues.company || "",
+          billingPhone: watchedValues.phone || "",
+          billingAddress1: watchedValues.address1 || "",
+          billingAddress2: watchedValues.address2 || "",
+          billingCity: watchedValues.city || "",
+          billingCountry: watchedValues.country || "",
+          billingState: watchedValues.state || "",
+          billingZip: watchedValues.zip || "",
+        }
         : {
-            billingFirstName: watchedValues.billingFirstName || "",
-            billingLastName: watchedValues.billingLastName || "",
-            billingCompany: watchedValues.billingCompany || "",
-            billingPhone: watchedValues.billingPhone || "",
-            billingAddress1: watchedValues.billingAddress1 || "",
-            billingAddress2: watchedValues.billingAddress2 || "",
-            billingCity: watchedValues.billingCity || "",
-            billingCountry: watchedValues.billingCountry || "",
-            billingState: watchedValues.billingState || "",
-            billingZip: watchedValues.billingZip || "",
-          };
+          billingFirstName: watchedValues.billingFirstName || "",
+          billingLastName: watchedValues.billingLastName || "",
+          billingCompany: watchedValues.billingCompany || "",
+          billingPhone: watchedValues.billingPhone || "",
+          billingAddress1: watchedValues.billingAddress1 || "",
+          billingAddress2: watchedValues.billingAddress2 || "",
+          billingCity: watchedValues.billingCity || "",
+          billingCountry: watchedValues.billingCountry || "",
+          billingState: watchedValues.billingState || "",
+          billingZip: watchedValues.billingZip || "",
+        };
 
       dispatch(
         checkoutFormSave({ data: { shippingFormData, billingFormData } }),
@@ -1670,20 +1670,20 @@ const CheckoutForm = () => {
                 onEdit={handleEditBilling}
                 onAddressSelect={handleBillingAddressSelect}
                 billingInfo={billingInfoMemo}
-                // billingInfo={{
-                //   firstName: watch("billingFirstName"),
-                //   lastName: watch("billingLastName"),
-                //   address: watch("billingAddress1"),
-                //   city: watch("billingCity"),
-                //   state: watch("billingState"),
-                //   country: watch("billingCountry"),
-                //   zip: watch("billingZip"),
+              // billingInfo={{
+              //   firstName: watch("billingFirstName"),
+              //   lastName: watch("billingLastName"),
+              //   address: watch("billingAddress1"),
+              //   city: watch("billingCity"),
+              //   state: watch("billingState"),
+              //   country: watch("billingCountry"),
+              //   zip: watch("billingZip"),
 
-                //   company: watch("billingCompany"),
-                //   address1: watch("billingAddress1"),
-                //   address2: watch("billingAddress2"),
-                //   phone: watch("billingPhone"),
-                // }}
+              //   company: watch("billingCompany"),
+              //   address1: watch("billingAddress1"),
+              //   address2: watch("billingAddress2"),
+              //   phone: watch("billingPhone"),
+              // }}
               />
             </div>
 
