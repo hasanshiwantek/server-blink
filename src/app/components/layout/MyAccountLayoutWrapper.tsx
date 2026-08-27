@@ -29,9 +29,10 @@ const MyAccountTabs = () => {
     {/* Breadcrumb */}
 <div className="hidden md:flex items-center text-[11px] mb-4 pl-2 text-gray-600" aria-label="breadcrumb">
   {/* Home */}
-  <span className="" itemProp="name">
+  <Link  href="/" className="" itemProp="name" >
+    
     Home
-  </span>
+  </Link>
 
   {/* Separator */}
   <span className="hidden md:flex mx-3 text-gray-400" aria-hidden="true">
@@ -40,6 +41,7 @@ const MyAccountTabs = () => {
 
   {/* Your Account */}
   <span className="hidden md:flex text-gray-600" itemProp="name">
+    
     Your Account
   </span>
 
