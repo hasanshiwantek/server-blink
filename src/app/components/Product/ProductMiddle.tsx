@@ -12,6 +12,7 @@ import { RootState } from "@/redux/store";
 import { addCart, fetchCartList } from "@/redux/slices/cartsSlice";
 import BulkInquiryModal from "../modal/BulkInquiryModal";
 import AddReviewModal from "../modal/AddReviewModal";
+import { fetchProductReviews } from "@/redux/slices/storeFrontSlice";
 
 const ProductMiddle = ({
   product,
@@ -36,26 +37,32 @@ const ProductMiddle = ({
     dispatch(fetchReviews());
     dispatch(fetchStats());
   }, []);
+  useEffect(() => {
+    if (!product?.id) return
+    dispatch(fetchProductReviews(product?.id));
+  }, [product?.id]);
 
   const bulkProduct = product
     ? {
-        name: product.name,
-        image:
-          product.image?.[1]?.path ||
-          product.image?.[0]?.path ||
-          "/default-product-image.svg",
-        sku: product.sku ?? "",
-      }
+      name: product.name,
+      image:
+        product.image?.[1]?.path ||
+        product.image?.[0]?.path ||
+        "/default-product-image.svg",
+      sku: product.sku ?? "",
+    }
     : undefined;
+  const currentStockEqualent = Number(product?.currentStock) === 0;
 
   const reviewProduct = product
     ? {
-        name: product.name ?? "",
-        image: product?.image?.[0]?.path || "/default-product-image.svg",
-        sku: product.sku ?? "",
-        id: product.id,
-      }
+      name: product.name ?? "",
+      image: product?.image?.[0]?.path || "/default-product-image.svg",
+      sku: product.sku ?? "",
+      id: product.id,
+    }
     : undefined;
+
   return (
     <>
       <section className="product-middle flex flex-col h-full w-full max-w-full  xl:max-w-[50%] 2xl:max-w-[50%] ">
@@ -66,8 +73,9 @@ const ProductMiddle = ({
           </h1>
 
           {/* Brand */}
-          <Link href={`/brand/${product?.brand?.slug}`}>
-            <h2 className="text-[14px] sm:text-[14px] md:text-[14px] text-[#545454] font-[400] uppercase hover:text-[#d40511] transition">
+          <Link href={`/brand/${product?.brand?.slug}`} className="inline-block w-fit"
+          >
+            <h2 className="text-[14px] sm:text-[14px] md:text-[14px] text-[#545454] font-normal uppercase hover:text-[#d40511] transition">
               {product?.brand?.name || "N/A"}
             </h2>
           </Link>
@@ -220,6 +228,13 @@ const ProductMiddle = ({
             </div>
           )}
 
+
+          {currentStockEqualent && <div className='flex items-center gap-1'>
+            <svg className="text-[#d40511] fill-current" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>
+            <p className="text-[#d40511] text-[14px]">
+              This product is currently out of stock.
+            </p>
+          </div>}
           {/* Add to Cart Button */}
           {availableForSale && (
             <button
@@ -252,16 +267,17 @@ const ProductMiddle = ({
                   .unwrap()
                   .then(() => {
                     dispatch(fetchCartList());
-                    toast.success(
-                      `${product.name} added to cart (${quantityToAdd})!`,
-                    );
+                    // toast.success(
+                    //   `${product.name} added to cart (${quantityToAdd})!`,
+                    // );
                     router.push("/cart");
                   })
                   .catch((err) => {
                     toast.error(err);
                   });
               }}
-              className="btn-primary !w-full sm:!w-[51.7%] !py-3.5"
+              disabled={currentStockEqualent}
+              className={currentStockEqualent ? "!w-full sm:!w-[51.7%] !py-3.5 !bg-gray-300 !text-gray-700 !cursor-not-allowed" : "btn-primary !w-full sm:!w-[51.7%] !py-3.5"}
             >
               ADD TO CART
             </button>

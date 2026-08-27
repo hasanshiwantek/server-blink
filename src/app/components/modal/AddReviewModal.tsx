@@ -61,10 +61,10 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         // ✅ Captcha check
-        if (!captchaToken) {
-            toast.error("Please verify the captcha.");
-            return;
-        }
+        // if (!captchaToken) {
+        //     toast.error("Please verify the captcha.");
+        //     return;
+        // }
 
         setLoading(true);
 
@@ -249,7 +249,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
                                 />
                             </div>
                             {/* ✅ ReCAPTCHA */}
-                            <div className="relative z-[99999]">
+                            <div className="relative !z-[99999]">
                                 <ReCAPTCHA
                                     ref={recaptchaRef}
                                     sitekey={sitekey}

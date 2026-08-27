@@ -48,13 +48,13 @@ const ProductCard = ({ product }: { product: any }) => {
       ? product?.image?.map((img: any) => img?.path)
       : [];
 
- const [selectedImage, setSelectedImage] = useState("");
+  const [selectedImage, setSelectedImage] = useState("");
 
-useEffect(() => {
-  if (images.length > 0) {
-    setSelectedImage(images[0]);
-  }
-}, [images]);
+  useEffect(() => {
+    if (images.length > 0) {
+      setSelectedImage(images[0]);
+    }
+  }, [images]);
 
   useEffect(() => {
     if (!product) return;
@@ -87,7 +87,7 @@ useEffect(() => {
 
   const decrement = () => quantity > minQty && setQuantity(quantity - 1);
 
-  
+
   return (
     <div className="max-w-full mx-auto">
       <div className=" rounded-xl w-full px-0">
@@ -112,7 +112,7 @@ useEffect(() => {
 
                 <Link href={`/category/${cat?.slug}`}
                   className={`text-[11px]   hover:!text-[#D42020] roboto-sans-font`}
-                 
+
                   itemProp="name"
                 >
                   {cat.name}

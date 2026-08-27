@@ -56,7 +56,7 @@ const BrandsSidebar: React.FC<BrandsSidebarProps> = ({ activeBrandId }) => {
           </div>
         )}
 
-        {data?.length > 0 && <>
+        {data?.length > 9 && <>
           <Link href="/brands"
             className="w-full px-3 py-1 text-left text-[15px] font-normal flex items-center gap-3 transition-colors text-[#545454] hover:text-[var(--primary-color)]"
           >

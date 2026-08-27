@@ -18,7 +18,7 @@ interface Product {
   msrp: any;
   rating: any;
   reviews: any;
-  brand?: { id: number; name: string };
+  brand?: { id: number; name: string; slug?: string; };
   categories?: { id: number; name: string }[];
   image?: { path?: string }[];
   availabilityText?: string;
@@ -30,7 +30,8 @@ interface Product {
 export default function ProductCategoryCard({ product }: { product: Product }) {
   const imageUrl = product.image?.[0]?.path || "/default-product-image.svg";
   const availableForSale = product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
-
+  const brandSlug =
+    typeof product.brand === "object" ? product?.brand?.slug : undefined;
   return (
     <div
       style={{ height: "auto" }}  /* auto height for mobile, fixed on md+ */
@@ -61,14 +62,13 @@ export default function ProductCategoryCard({ product }: { product: Product }) {
 
       {/* ✅ Product Info */}
       <div className="flex flex-col justify-between p-4 md:h-[171px] h-auto bg-[#F2F2F2]">
-        <p className="text-[12px] ">
-          <span className="text-[12px] hover:text-[#D42020]">{product?.brand?.name}</span>{" "}
-         
-          <Link href={product?.productUrl || "/"}>
-        
-          <span className="text-[12px] hover:text-[#D42020]"> SKU:{product?.sku}</span>
+        <p className="text-[12px]">
+          <Link href={`/brand/${brandSlug || "/"}`}>
+            <span className="text-[12px] hover:text-[#D42020]">{product?.brand?.name}</span>{" "}
           </Link>
-          
+          <Link href={product?.productUrl || "/"}>
+            <span className="text-[12px] hover:text-[#D42020]"> SKU:{product?.sku}</span>
+          </Link>
         </p>
 
         <Link
