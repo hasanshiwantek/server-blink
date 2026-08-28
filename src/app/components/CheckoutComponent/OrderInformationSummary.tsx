@@ -43,6 +43,7 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
   //         // setDiscountOpen(true);
   //     }
   // }, [appliedCoupon, discountAmount])
+  console.log(discountAmount, appliedCoupon);
 
   return (
     <div className="bg-white border-[1px] border-[#8b8b8b] rounded-sm shadow-sm py-6 h-fit sticky top-9">
@@ -98,7 +99,32 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
           <span className="font-medium">${subtotal.toFixed(2)}</span>
         </div>
 
+        {/* Discounts */}
+        {appliedCoupon && discountAmount > 0 && (
+          <div className="mt-2">
+            {/* Discounts header with arrow */}
+            <div
+              className="flex text-[13px] justify-between items-center text-gray-700 cursor-pointer select-none"
+            >
+              <span className="flex items-center gap-1 font-medium">
+                Discounts
+              </span>
 
+              {/* Discount value */}
+              <span className="font-medium">
+                -${discountAmount.toFixed(2)}
+              </span>
+            </div>
+
+            {/* Expanded details */}
+            <div className="flex justify-between text-gray-600 text-[13px] mt-1">
+              <span>
+                ${Number(discountAmount).toFixed(2)} off the
+                order total ({appliedCoupon.toUpperCase()})
+              </span>
+            </div>
+          </div>
+        )}
         <div className="flex justify-between text-[13px] text-[#545454] roboto-font">
           <span>Shipping</span>
           <span className="font-medium">${shipping.toFixed(2)}</span>
