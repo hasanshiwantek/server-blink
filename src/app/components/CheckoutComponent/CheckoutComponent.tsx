@@ -982,6 +982,10 @@ const CheckoutForm = () => {
 
   const handleEditBilling = () => {
     setCurrentStep(3);
+
+    setTimeout(() => {
+      setValue("billingSame", false);
+    }, 100)
   };
 
   const handleEditPayment = () => {
@@ -1221,14 +1225,14 @@ const CheckoutForm = () => {
       setCompletedSteps((prev) => [...new Set([...prev, 3])]);
     } else if (!watchedBillingSame) {
       if (isRestoringRef.current) return;
-      setValue("billingFirstName", "");
-      setValue("billingLastName", "");
-      setValue("billingCompany", "");
-      setValue("billingPhone", "");
-      setValue("billingAddress1", "");
-      setValue("billingAddress2", "");
-      setValue("billingCity", "");
-      setValue("billingZip", "");
+      // setValue("billingFirstName", "");
+      // setValue("billingLastName", "");
+      // setValue("billingCompany", "");
+      // setValue("billingPhone", "");
+      // setValue("billingAddress1", "");
+      // setValue("billingAddress2", "");
+      // setValue("billingCity", "");
+      // setValue("billingZip", "");
       // setCompletedSteps((prev) => prev.filter((s) => s !== 3));
     }
   }, [
@@ -1567,7 +1571,6 @@ const CheckoutForm = () => {
       dispatch(fetchCustomerAddress());
     }
   }, [auth?.isAuthenticated]);
-  console.log(discountAmount, appliedCoupon);
 
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
@@ -1630,20 +1633,6 @@ const CheckoutForm = () => {
                 isCompleted={completedSteps.includes(2)}
                 onEdit={handleEditShipping}
                 onAddressSelect={handleShippingAddressSelect}
-                // shippingInfo={{
-                //   firstName: watch("firstName"),
-                //   lastName: watch("lastName"),
-                //   address: watch("address1"),
-                //   city: watch("city"),
-                //   state: watch("state"),
-                //   country: watch("country"),
-                //   zip: watch("zip"),
-
-                //   company: watch("company"),
-                //   address1: watch("address1"),
-                //   address2: watch("address2"),
-                //   phone: watch("phone"),
-                // }}
                 shippingInfo={shippingInfoMemo}
                 watchedShippingMethod={watchedShippingMethod}
               />
@@ -1670,20 +1659,6 @@ const CheckoutForm = () => {
                 onEdit={handleEditBilling}
                 onAddressSelect={handleBillingAddressSelect}
                 billingInfo={billingInfoMemo}
-              // billingInfo={{
-              //   firstName: watch("billingFirstName"),
-              //   lastName: watch("billingLastName"),
-              //   address: watch("billingAddress1"),
-              //   city: watch("billingCity"),
-              //   state: watch("billingState"),
-              //   country: watch("billingCountry"),
-              //   zip: watch("billingZip"),
-
-              //   company: watch("billingCompany"),
-              //   address1: watch("billingAddress1"),
-              //   address2: watch("billingAddress2"),
-              //   phone: watch("billingPhone"),
-              // }}
               />
             </div>
 
