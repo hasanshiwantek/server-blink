@@ -1642,7 +1642,7 @@ const CheckoutForm = () => {
             <div
               className={`p-6 border-b-[1px]  items-center border-b-[#8b8b8b] ${currentStep >= 4 ? "flex gap-16" : "block"}`}
             >
-              <h2 className="hidden md:flex text-[1.92308rem] font-normal mb-4 text-[#545454]">
+              <h2 className="hidden md:flex text-[25px] font-normal mb-4 text-[#545454]">
                 Billing
               </h2>
               <BillingStep

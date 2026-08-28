@@ -93,14 +93,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         className="px-3 pb-3 flex flex-col flex-1"
         style={robotoCondensedStyle}
       >
-        <Link href={`/brand/${brandSlug || "/"}`}>
+        {brandSlug ? (
+          <Link href={`/brand/${brandSlug}`}>
+            <span
+              className="text-[12px] text-[#7B7B7B] hover:text-[#D42020]"
+              style={robotoCondensedStyle}
+            >
+              {brandName}
+            </span>
+          </Link>
+        ) : (
           <span
-            className="text-[12px] text-[#7B7B7B] hover:text-[#D42020]"
+            className="text-[12px] text-[#7B7B7B]"
             style={robotoCondensedStyle}
           >
-            {brandName}{" "}
+            {brandName}
           </span>
-        </Link>
+        )}
         <Link href={product?.productUrl || "/"} className="inline-block w-fit"
         >
           <p
