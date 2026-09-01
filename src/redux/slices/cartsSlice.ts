@@ -20,6 +20,7 @@ interface CartState {
   items: CartItem[];
   loading: boolean;
   cartLoading: boolean;
+  redirectToCart: string | null;
   error: any;
 }
 
@@ -146,13 +147,14 @@ const saveCartToCheckoutStorage = (items: CartItem[]) => {
     }));
 
     localStorage.setItem(CHECKOUT_STORAGE_KEY, JSON.stringify(checkoutData));
-  } catch (e) {}
+  } catch (e) { }
 };
 
 const initialState: CartState = {
   items: [],
   loading: false,
   cartLoading: false,
+  redirectToCart: "false",
   error: null as string | any,
 };
 
@@ -256,6 +258,7 @@ const cartsSlice = createSlice({
       })
       .addCase(fetchCartList.fulfilled, (state, action) => {
         state.cartLoading = false;
+        state.redirectToCart = action.payload?.data?.length == 0 ? "true" : "false";
         state.items =
           action.payload?.data?.map((item: any) => ({
             ...item.product,
@@ -265,6 +268,7 @@ const cartsSlice = createSlice({
       })
       .addCase(fetchCartList.rejected, (state, action) => {
         state.cartLoading = false;
+        state.redirectToCart = "true";
         state.error = action.error.message || "Failed add cart";
       })
 
