@@ -73,12 +73,17 @@ const ProductMiddle = ({
           </h1>
 
           {/* Brand */}
-          <Link href={`/brand/${product?.brand?.slug}`} className="inline-block w-fit"
+          {product?.brand?.name ? <Link href={`/brand/${product?.brand?.slug}`} className="inline-block w-fit"
           >
             <h2 className="text-[14px] sm:text-[14px] md:text-[14px] text-[#545454] font-normal uppercase hover:text-[#d40511] transition">
-              {product?.brand?.name || "N/A"}
+              {product?.brand?.name || "Unknown Brand"}
             </h2>
-          </Link>
+          </Link> : <span className="inline-block w-fit"
+          >
+            <h2 className="text-[14px] sm:text-[14px] md:text-[14px] text-[#545454] font-normal uppercase  transition">
+              {"Unknown Brand"}
+            </h2>
+          </span>}
         </div>
 
         {/* Price Section */}
@@ -229,7 +234,7 @@ const ProductMiddle = ({
           )}
 
 
-          {currentStockEqualent && <div className='flex items-center gap-1'>
+          {currentStockEqualent && availableForSale && <div className='flex items-center gap-1'>
             <svg className="text-[#d40511] fill-current" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>
             <p className="text-[#d40511] text-[14px]">
               This product is currently out of stock.

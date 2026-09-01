@@ -81,15 +81,15 @@ const GlobalSearchBar: React.FC = () => {
               e.preventDefault();
               const q = searchQuery.trim();
               dispatch(clearSearch());
-             
-                localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
-                window.dispatchEvent(new Event("searchFiltersUpdated"));
-                if (pathname === "/advanced-search") {
-                  window.location.reload()
-                } else {
-                  router.push(`/advanced-search`);
-                }
-              
+
+              localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
+              window.dispatchEvent(new Event("searchFiltersUpdated"));
+              if (pathname === "/advanced-search") {
+                window.location.reload()
+              } else {
+                router.push(`/advanced-search`);
+              }
+
             }
           }}
           className="
@@ -111,15 +111,15 @@ const GlobalSearchBar: React.FC = () => {
               e.preventDefault();
               const q = searchQuery.trim();
               dispatch(clearSearch());
-             
-                localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
-                window.dispatchEvent(new Event("searchFiltersUpdated"));
-                if (pathname === "/advanced-search") {
-                  window.location.reload()
-                } else {
-                  router.push(`/advanced-search`);
-                }
-              
+
+              localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
+              window.dispatchEvent(new Event("searchFiltersUpdated"));
+              if (pathname === "/advanced-search") {
+                window.location.reload()
+              } else {
+                router.push(`/advanced-search`);
+              }
+
             }}
             className="flex items-center justify-center"
           >
@@ -169,14 +169,16 @@ const GlobalSearchBar: React.FC = () => {
                   {/* Product Details - Right Side */}
                   <div className="flex-1 p-4 flex flex-col">
                     {/* Brand */}
-                    <p onMouseDown={(e) => {
+                    {item?.brand?.slug ? <p onMouseDown={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      const url = item?.brand?.slug || `/${item?.sku}`;
+                      const url = item?.brand?.slug;
                       handleSelect(`/brand/${url}`);
                     }} className="text-[1rem] text-[#545454] uppercase hover:text-[#d42020]">
                       {item?.brand?.name || "Brand"}
-                    </p>
+                    </p> : <p className="text-[1rem] text-[#545454] uppercase ">
+                      {"UNKNOWN BRAND"}
+                    </p>}
 
                     {/* SKU */}
                     <p onMouseDown={(e) => {

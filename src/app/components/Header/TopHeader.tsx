@@ -40,7 +40,7 @@ const TopHeader = () => {
   const [query, setQuery] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null); 
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const cartItemCount =
@@ -75,7 +75,7 @@ const TopHeader = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  
+
   // Fetch categories
   useEffect(() => {
     fetchCategories().then((data) => setCategories(data));
@@ -149,17 +149,15 @@ const TopHeader = () => {
   return (
     <>
       <header
-        className={`bg-[#393939] text-white transition-all duration-300 ${
-          isScrolled ? "fixed top-0 left-0 right-0 z-50 shadow-lg" : "relative"
-        }`}
+        className={`bg-[#393939] text-white transition-all duration-300 ${isScrolled ? "fixed top-0 left-0 right-0 z-50 shadow-lg" : "relative"
+          }`}
       >
         <div className="w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto px-4 xl:px-4 2xl:px-2">
           <div className="md:relative flex items-center md:justify-between justify-between gap-4 sm:py-2">
             {/* Left: Promo Text (hidden when scrolled) */}
             <div
-              className={`md:flex hidden items-center whitespace-nowrap space-x-2 md:space-x-3 transition-all duration-300 flex-1  md:pl-20 lg:pl-0 ${
-                isScrolled ? "hidden" : "flex"
-              }`}
+              className={`md:flex hidden items-center whitespace-nowrap space-x-2 md:space-x-3 transition-all duration-300 flex-1  md:pl-20 lg:pl-0 ${isScrolled ? "hidden" : "flex"
+                }`}
             >
               <p className="font-bold text-[14px] roboto-condensed-font ">
                 $10 off on First Order: Code: FIRSTORDER
@@ -167,7 +165,7 @@ const TopHeader = () => {
             </div>
 
             {/* Center: Search Bar (visible when scrolled) */}
-           {!isMobile && window.innerWidth >= 1024 && (
+            {!isMobile && window.innerWidth >= 1024 && (
               <div
                 ref={containerRef}
                 className={`relative flex-1 flex  justify-center transition-all duration-300 
@@ -289,7 +287,7 @@ const TopHeader = () => {
                             {/* Product Details - Right Side */}
                             <div className="flex-1 p-4 flex flex-col">
                               {/* Brand */}
-                              <p
+                              {item?.brand?.slug ? <p
                                 onMouseDown={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
@@ -299,8 +297,12 @@ const TopHeader = () => {
                                 }}
                                 className="text-[1rem] text-[#545454] uppercase hover:text-[#d42020]"
                               >
-                                {item?.brand?.name || "Brand"}
-                              </p>
+                                {item?.brand?.name || "UNKNOWN BRAND"}
+                              </p> : <p
+                                className="text-[1rem] text-[#545454] uppercase "
+                              >
+                                {"UNKNOWN BRAND"}
+                              </p>}
 
                               {/* SKU */}
                               <p
@@ -334,7 +336,7 @@ const TopHeader = () => {
                               <div className="mt-auto pt-3">
                                 {item?.costPrice &&
                                   Number(item?.costPrice) >
-                                    Number(item?.price) && (
+                                  Number(item?.price) && (
                                     <p className="text-[13px] text-gray-500">
                                       Price{" "}
                                       <span className="line-through">
@@ -372,9 +374,9 @@ const TopHeader = () => {
             )}
 
             {/* Right: Login/Signup + Cart */}
-          <div className="flex items-center justify-between whitespace-nowrap flex-1 gap-5">
+            <div className="flex items-center justify-between whitespace-nowrap flex-1 gap-5">
               {/* Hamburger */}
-             <div className="block lg:hidden md:absolute md:left-0 lg:static">
+              <div className="block lg:hidden md:absolute md:left-0 lg:static">
                 <button
                   aria-label="hamburger"
                   onClick={() => setMobileOpen(!mobileOpen)}
@@ -454,7 +456,7 @@ const TopHeader = () => {
                         <div className="relative">
                           <div className="max-h-96 overflow-y-auto  border space-y-1 pb-6">
                             {Object.values(
-                              cart.reduce(
+                              cart?.reduce(
                                 (acc: Record<string, any>, item: any) => {
                                   const key = item?.id;
                                   if (acc[key]) {
@@ -499,7 +501,7 @@ const TopHeader = () => {
                                     {item?.name}
                                   </p>
                                   <p className="text-[#393939] font-bold text-[13px] mt-1">
-                                    {item?.quantity > 1 && (
+                                    {item?.quantity >= 1 && (
                                       <span>{item?.quantity} × </span>
                                     )}
                                     ${item?.price}
