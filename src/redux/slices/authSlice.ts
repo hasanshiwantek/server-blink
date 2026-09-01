@@ -49,7 +49,7 @@ export const loginUser = createAsyncThunk(
 
       return res.data;
     } catch (err: any) {
-     
+
       console.groupEnd();
       return thunkAPI.rejectWithValue(
         err.response?.data?.message || "Login failed"
@@ -162,10 +162,10 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
       })
       .addCase(customerProfile.fulfilled, (state, action) => {
-        
-        const { user, customer, token, expireAt } = action.payload 
-        console.log("action.payload",action.payload);
-        console.log("user, customer, token, expireAt",user, customer, token, expireAt);
+
+        const { user, customer, token, expireAt } = action.payload
+        console.log("action.payload", action.payload);
+        console.log("user, customer, token, expireAt", user, customer, token, expireAt);
         state.loginloading = false;
         state.user = user || customer;
         state.token = token;
