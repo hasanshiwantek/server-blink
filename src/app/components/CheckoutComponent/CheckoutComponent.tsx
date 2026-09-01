@@ -136,7 +136,7 @@ interface CheckoutFormValues {
 const CheckoutForm = () => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state?.carts?.items);
-  const { loading } = useAppSelector((state: RootState) => state?.carts);
+  const { loading, redirectToCart, cartLoading } = useAppSelector((state: RootState) => state?.carts);
   const auth = useAppSelector((state: RootState) => state?.auth);
 
   // ADD COUPON STATE FROM REDUX
@@ -188,22 +188,24 @@ const CheckoutForm = () => {
 
   useEffect(() => {
     if (!loading) {
-      if (cart.length === 0) {
+      if (cart?.length === 0 && redirectToCart === "true") {
         if (skipEmptyCartCheckRef.current) {
           return;
         }
 
         if (!emptyCartWarningShownRef.current) {
           emptyCartWarningShownRef.current = true;
-          toast.error("Please add something");
+          // toast.error("Please add something");
 
-          // router.push("/cart");
+          // if (redirectToCart === "true") {
+          router.push("/cart");
+          // }
         }
       } else {
         emptyCartWarningShownRef.current = false;
       }
     }
-  }, [cart.length, router]);
+  }, [cart?.length, router, redirectToCart]);
 
   const {
     register,
@@ -1233,7 +1235,7 @@ const CheckoutForm = () => {
       // setValue("billingAddress2", "");
       // setValue("billingCity", "");
       // setValue("billingZip", "");
-      // setCompletedSteps((prev) => prev.filter((s) => s !== 3));
+      setCompletedSteps((prev) => prev.filter((s) => s !== 3));
     }
   }, [
     watchedBillingSame,

@@ -25,9 +25,9 @@ const CheckoutForm = () => {
     : null;
   const cart: any = customerOrderDetail?.products
     ? customerOrderDetail.products.map((product: any) => ({
-        ...product,
-        quantity: product.quantity || 1,
-      }))
+      ...product,
+      quantity: product.quantity || 1,
+    }))
     : [];
 
   // ADD COUPON STATE FROM REDUX
@@ -110,8 +110,7 @@ const CheckoutForm = () => {
           <div className="lg:col-span-2 mt-[18px] roboto-font">
             <div className="mt-[1px]">
               <h2 className="text-4xl font-normal text-[#545454] mb-8">
-                Thank You {orderCustomer?.customer?.firstName}{" "}
-                {orderCustomer?.customer?.lastName}!
+                Thank You {orderCustomer?.billingAddress?.name}{" "}
               </h2>
 
               <h6 className="text-lg font-medium mb-6 text-[#545454]">
@@ -130,7 +129,7 @@ const CheckoutForm = () => {
                 </span>{" "}
                 or call us at{" "}
                 <span className="font-semibold text-[#D42020]">
-                  {/* +44 123 456 7890 */}
+                  +1 502-000-0000
                 </span>
                 .
               </p>
