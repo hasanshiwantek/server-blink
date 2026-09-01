@@ -16,42 +16,16 @@ const ProductCard = ({ product }: { product: any }) => {
   const cart = useAppSelector((state: RootState) => state.carts?.items);
   const availableForSale = product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
   const [quantity, setQuantity] = useState(minQty);
-
-  const addtocart = () => {
-    if (availableForSale) {
-      const cartItem = cart.find((item: any) => item.id === product.id);
-
-      const currentQty = cartItem?.quantity || 0;
-      const remaining = maxQty ? maxQty - currentQty : Infinity;
-      if (remaining <= 0) {
-        toast.error(`You have already reached the maximum limit (${maxQty}) for this product.`);
-        return;
-      }
-
-      const quantityToAdd = Math.min(minQty, remaining);
-
-      dispatch(
-        addToCart({
-          ...product,
-          quantity: quantityToAdd,
-          minPurchaseQuantity: minQty,
-          maxPurchaseQuantity: maxQty,
-        })
-      );
-      toast.success(`${product.name} added to cart!`);
-      // router.push("/cart")
-    }
-  };
+  const [selectedImage, setSelectedImage] = useState("");
 
   const images =
     product?.image?.length > 0
       ? product?.image?.map((img: any) => img?.path)
       : [];
 
-  const [selectedImage, setSelectedImage] = useState("");
 
   useEffect(() => {
-    if (images.length > 0) {
+    if (images?.length > 0) {
       setSelectedImage(images[0]);
     }
   }, [images]);
@@ -63,14 +37,6 @@ const ProductCard = ({ product }: { product: any }) => {
       addRecentView({
         id: product.id,
         sku: product.sku,
-        slug: product.slug,
-        productUrl: product.productUrl,
-        brand: product.brand,
-        name: product.name,
-        price: product.price,
-        msrp: product.msrp,
-        image: product.image,
-        purchasabilityStatus: product?.purchasabilityStatus
       })
     );
   }, [product.id]);
@@ -143,7 +109,6 @@ const ProductCard = ({ product }: { product: any }) => {
             quantity={quantity}
             increment={increment}
             decrement={decrement}
-            addtocart={addtocart}
             setQuantity={setQuantity}
           />
         </div>
