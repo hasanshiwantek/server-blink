@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useAppSelector, useAppDispatch } from "@/hooks/useReduxHooks";
 import Link from "next/link";
 import ProductPrice from "../productprice/ProductPrice";
-import { clearRecent } from "@/redux/slices/recentSlice";
+import { clearRecent, fetchRecentProductsByIds } from "@/redux/slices/recentSlice";
 import ProductCard from "../Home/ProductCard";
 
 const RecentViewedProduct = () => {
@@ -13,6 +13,7 @@ const RecentViewedProduct = () => {
 
   // Get recent viewed products from Redux
   const recentProducts = useAppSelector((state: any) => state.recent.items);
+  const products = useAppSelector((state: any) => state.recent.products);
 
   // Clear all recent viewed products after 2 minutes
   useEffect(() => {
@@ -24,9 +25,14 @@ const RecentViewedProduct = () => {
 
     return () => clearTimeout(timer); // cleanup on unmount
   }, [recentProducts, dispatch]);
-
+  useEffect(() => {
+    const ids = recentProducts?.map((p: { id: number }) => p.id);
+    if (ids?.length) {
+      dispatch(fetchRecentProductsByIds(ids));
+    }
+  }, [recentProducts, dispatch]);
   // Handle empty state
-  if (!recentProducts || recentProducts.length === 0) {
+  if (!recentProducts || recentProducts?.length === 0) {
     return (
       <div className="p-4 text-center text-gray-500">
         No recently viewed products.
@@ -36,9 +42,9 @@ const RecentViewedProduct = () => {
 
   return (
     <div className="p-4">
-   
+
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-        {recentProducts.map((product: any, index: number) => (
+        {products?.map((product: any, index: number) => (
           <ProductCard key={index} product={product} />
         ))}
       </div>
