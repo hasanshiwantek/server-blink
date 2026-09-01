@@ -18,11 +18,11 @@ const Navbar: React.FC = () => {
   return (
     <header className="bg-[var(--bg-color)]  sticky top-0 z-50 px-4 sm:px-0">
       <nav className="w-full">
-        <div className="flex items-center justify-between justify-center gap-4 h-20 sm:h-20 lg:h-24 w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-1  2xl:px-2">
+        <div className="flex items-center justify-center sm:justify-between   gap-4 h-20 sm:h-20 lg:h-24 w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-1  2xl:px-2">
           {/* Left: Logo */}
           <div className="flex items-center justify-center flex-shrink-0 md:mt-2 ">
             <Link href={"/"}>
-           <div className="relative w-80 h-14 sm:w-70 sm:h-30 md:w-[320px] md:h-[80px] md:mx-auto md:my-6 lg:w-48 lg:h-20 xl:w-76 xl:h-18 2xl:w-[253.48px] 2xl:h-[48px]">
+              <div className="relative w-80 h-14 sm:w-70 sm:h-30 md:w-[320px] md:h-[80px] md:mx-auto md:my-6 lg:w-48 lg:h-20 xl:w-76 xl:h-18 2xl:w-[253.48px] 2xl:h-[48px]">
                 {logoType == "upload" && (
                   <Image
                     src={logoUrl || navlogo}

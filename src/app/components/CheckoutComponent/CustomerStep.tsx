@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { UseFormRegister, FieldErrors } from "react-hook-form";
-import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import LoginForm from "./LoginForm";
@@ -42,10 +41,11 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
   const [showSignup, setShowSignup] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const cart = useAppSelector((state: RootState) => state?.carts?.items);
   const auth = useAppSelector((state: RootState) => state?.auth);
   const handleSignOut = () => {
     dispatch(logout());
-    window.location.reload()
+    window.location.href = "/auth/login";
   };
 
   useEffect(() => {
@@ -72,7 +72,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
             <button
               type="button"
               onClick={onEdit}
-               className="btn-primary h-[32px] !text-[10px] w-[82px]"
+              className="btn-primary h-[32px] !text-[10px] w-[82px]"
             >
               EDIT
             </button>
@@ -127,7 +127,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
                         className="text-[13px] text-[#545454]"
                       >
                         Subscribe to our newsletter.
-                        
+
                       </label>
                     </div>
                   </div>
@@ -146,7 +146,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
                     type="button"
                     onClick={() => setShowLogin(true)}
                     className="text-[#D42020] roboto-condensed-font"
-                    
+
                   >
                     Sign in now
                   </button>
