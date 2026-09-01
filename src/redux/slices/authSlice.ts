@@ -164,8 +164,6 @@ const authSlice = createSlice({
       .addCase(customerProfile.fulfilled, (state, action) => {
 
         const { user, customer, token, expireAt } = action.payload
-        console.log("action.payload", action.payload);
-        console.log("user, customer, token, expireAt", user, customer, token, expireAt);
         state.loginloading = false;
         state.user = user || customer;
         state.token = token;

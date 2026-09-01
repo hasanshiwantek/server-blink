@@ -3,7 +3,6 @@
 import ReCAPTCHA from "react-google-recaptcha";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import countries from "world-countries";
 import {
   Select,
   SelectTrigger,
@@ -89,7 +88,6 @@ const SignupPage = () => {
       alert("Please verify the captcha.");
       return;
     }
-
     try {
       const payload = {
         userRole: 2,
