@@ -159,7 +159,7 @@ const CartList = () => {
                   </div>
                   <div className="w-[60%] md:w-auto md:col-start-2 md:row-start-1  text-[15px] text-[#545454] xl:w-[63.1%] 2xl:w-[71%] mx-4">
                     <p className="  xl:text-start">
-                      {item?.brand?.name || "N/A"}
+                      {item?.brand?.name || "UNKNOWN BRAND"}
                     </p>
                     <Link href={`${item?.productUrl || "#"}`}>
                       <p className=" text-[#D42020] underline xl:text-start xl:w-[100%] ">
