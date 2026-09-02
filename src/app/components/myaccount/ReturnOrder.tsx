@@ -91,8 +91,20 @@ const ReturnOrder = () => {
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      {orders?.map((order: any) => (
-        <div
+      {orders?.map((order: any) => {
+  const productWithImage = order?.product?.find(
+    (item: any) =>
+      item?.image?.[0]?.path ||
+      item?.images?.[0]?.path
+  );
+
+  const imagePath =
+    productWithImage?.image?.[0]?.path ||
+    productWithImage?.images?.[0]?.path ||
+    "/default-product-image.svg";
+
+  return (
+    <div
           key={order?.id}
           className="border rounded-lg p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-6 w-full bg-white"
         >
@@ -101,10 +113,7 @@ const ReturnOrder = () => {
             {/* Product Image */}
             <div className="w-full max-w-[128px] h-32 relative flex-shrink-0">
               <Image
-                src={
-                order?.product?.[1]?.image?.[0]?.path ||  order?.product?.[0]?.images?.[0]?.path ||
-                  "/default-product-image.svg"
-                }
+               src={imagePath}
                 alt={order?.product?.[0]?.name || "Product Image"}
                 fill
                 className="object-contain border rounded-md"fetchPriority="high"
@@ -172,7 +181,8 @@ const ReturnOrder = () => {
             </button>
           </div>
         </div>
-      ))}
+            );
+    })}
     </div>
   );
 };
