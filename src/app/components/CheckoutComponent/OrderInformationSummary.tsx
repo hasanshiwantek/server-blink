@@ -1,8 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 interface OrderSummaryProps {
   cart: any[];
@@ -33,7 +31,7 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
   onApplyCoupon,
   onRemoveCoupon,
 }) => {
-  const cartItemCount = cart.reduce(
+  const cartItemCount = cart?.reduce(
     (sum, item: any) => sum + (item?.quantity ?? 1),
     0,
   );

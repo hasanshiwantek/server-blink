@@ -13,7 +13,7 @@ import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { customerProfile, logout } from "@/redux/slices/authSlice";
+import { checkAuthToken, customerProfile, logout } from "@/redux/slices/authSlice";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { useSearchParams } from "next/navigation";
 
@@ -55,6 +55,16 @@ const FooterBottom = () => {
     const user = localStorage.getItem("persist:auth");
     const parsedAuth = user ? JSON.parse(user) : null;
     const t = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
+
+    if (t) {
+      dispatch(checkAuthToken()).unwrap().then((res) => {
+      }).catch((err) => {
+        if (err) {
+          dispatch(logout());
+          window.location.href = "/auth/login";
+        }
+      });
+    }
     setToken(t);
   }, []);
   useEffect(() => {
@@ -80,10 +90,10 @@ const FooterBottom = () => {
   //   return () => cancelIdleCallback?.(id);
   // }, [dispatch]);
   useEffect(() => {
-  if (auth?.user?.email) {
-    setEmail(auth.user.email);
-  }
-}, [auth?.user]);
+    if (auth?.user?.email) {
+      setEmail(auth.user.email);
+    }
+  }, [auth?.user]);
   useEffect(() => {
     const callback = () => {
       dispatch(getBlogs({ page: 1, perPage: 5 }));
