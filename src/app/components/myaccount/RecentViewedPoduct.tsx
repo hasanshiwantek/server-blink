@@ -1,10 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Image from "next/image";
 import { useAppSelector, useAppDispatch } from "@/hooks/useReduxHooks";
-import Link from "next/link";
-import ProductPrice from "../productprice/ProductPrice";
 import { clearRecent, fetchRecentProductsByIds } from "@/redux/slices/recentSlice";
 import ProductCard from "../Home/ProductCard";
 

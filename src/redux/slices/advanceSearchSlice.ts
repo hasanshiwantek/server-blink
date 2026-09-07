@@ -28,7 +28,7 @@ interface SearchPayload {
     // perPage?: number;
     // page?: number;
     // sortBy?: string;
-    q: any;
+    q?: any;
     perPage?: number;
     page?: number;
     sortBy?: string;

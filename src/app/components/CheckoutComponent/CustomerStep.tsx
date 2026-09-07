@@ -38,10 +38,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
   emailValue,
 }) => {
   const [showLogin, setShowLogin] = useState(false);
-  const [showSignup, setShowSignup] = useState(false);
   const dispatch = useAppDispatch();
-  const router = useRouter();
-  const cart = useAppSelector((state: RootState) => state?.carts?.items);
   const auth = useAppSelector((state: RootState) => state?.auth);
   const handleSignOut = () => {
     dispatch(logout());
