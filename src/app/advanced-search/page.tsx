@@ -108,7 +108,7 @@ export default function ProductPage({
                                 ]}
                                 activeTab={currentTab}
                                 onTabChange={(index) => {
-                                    if (index == 2) {
+                                    if (index == 1) {
                                         setSearchForm(!searchForm)
                                         return
                                     }
