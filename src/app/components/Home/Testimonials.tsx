@@ -142,7 +142,7 @@ const Testimonials = () => {
   );
 
   const reviewTemplate = (review: Review) => (
-    <div className="text-left p-4 flex flex-col gap-3 w-full max-w-[380px] h-[218px] box-border mx-auto">
+    <div className="text-left p-4 flex flex-col gap-3 w-full  h-[218px] box-border ">
       <div className="mb-2 flex items-center justify-between gap-2">
         <Image
           src={review?.stars || "/default-product-image.svg"}
@@ -270,7 +270,7 @@ const Testimonials = () => {
                 value={reviews}
                 numVisible={visibleItems}
                 numScroll={1}
-                circular
+                circular={reviews.length > visibleItems}
                 autoplayInterval={4000}
                 itemTemplate={reviewTemplate}
                 showIndicators={false}
