@@ -77,18 +77,6 @@ const FooterBottom = () => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   const id = requestIdleCallback?.(() => {
-  //     dispatch(getBlogs({ page: 1, perPage: 5 }));
-  //     dispatch(getWebPages({ page: 1, perPage: 100 }));
-  //     dispatch(fetchCartList());
-  //   }) ?? setTimeout(() => {
-  //     dispatch(getBlogs({ page: 1, perPage: 5 }));
-  //     dispatch(getWebPages({ page: 1, perPage: 100 }));
-  //     dispatch(fetchCartList());
-  //   }, 0);
-  //   return () => cancelIdleCallback?.(id);
-  // }, [dispatch]);
   useEffect(() => {
     if (auth?.user?.email) {
       setEmail(auth.user.email);
