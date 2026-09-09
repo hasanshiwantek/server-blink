@@ -1,6 +1,6 @@
 // /app/api/robots/route.ts
 
-import axiosInstance, { storeId } from "@/lib/axiosInstance";
+import axiosInstance, { siteURL, storeId } from "@/lib/axiosInstance";
 
 export async function GET() {
   try {
@@ -16,7 +16,7 @@ export async function GET() {
     const robotsTxt = res.data?.data?.[0]?.website?.robotsTxt;
 
     if (robotsTxt) {
-      const sitemapUrl = `${process.env.SITE_URL || "https://staging.sparemicro.com"}/sitemap.xml`;
+      const sitemapUrl = `${siteURL}/sitemap.xml`;
       const robotsWithSitemap = `${robotsTxt}`;
 
       return new Response(robotsWithSitemap, {
@@ -28,8 +28,7 @@ export async function GET() {
       });
     } else {
       // Fallback if robotsTxt not found in response
-      const fallback = `User-agent: *\nAllow: /\nSitemap: ${process.env.SITE_URL || "https://staging.sparemicro.com"
-        }/sitemap.xml\n`;
+      const fallback = `User-agent: *\nAllow: /\nSitemap: ${siteURL}/sitemap.xml\n`;
 
       return new Response(fallback, {
         status: 200,
@@ -38,11 +37,10 @@ export async function GET() {
     }
 
   } catch (err: any) {
-  
+
 
     // Fallback on error
-    const fallback = `User-agent: *\nAllow: /\nSitemap: ${process.env.SITE_URL || "https://staging.sparemicro.com"
-      }/sitemap.xml\n`;
+    const fallback = `User-agent: *\nAllow: /\nSitemap: ${siteURL}/sitemap.xml\n`;
 
     return new Response(fallback, {
       status: 200,
