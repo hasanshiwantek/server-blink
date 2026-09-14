@@ -1,13 +1,9 @@
 "use client";
 import React from "react";
-import CartList from "./CartList";
-import OrderSummary from "./OrderSummary";
-import Link from "next/link";
 import { useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
-import BlogSkeleton from "../loader/BlogSkeleton";
-import CartTableSkeleton from "../loader/CartTableSkeleton";
-
+import CartList from "./CartList";
+import OrderSummary from "./OrderSummary";
 const Cart = () => {
   const cartItems = useAppSelector((state: RootState) => state?.carts?.items);
   const cartItemCount =

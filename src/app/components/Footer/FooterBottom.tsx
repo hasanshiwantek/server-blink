@@ -21,7 +21,7 @@ const FooterBottom = () => {
   const searchParams = useSearchParams();
   const paramsToken = searchParams.get("token");
   const auth = useAppSelector((state: RootState) => state?.auth);
-
+  const isDraft = searchParams.get("isDraft") === "true";
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
   const [token, setToken] = useState<string | null>(null);
@@ -125,6 +125,13 @@ const FooterBottom = () => {
 
     login();
   }, [paramsToken, dispatch, router]);
+
+
+  useEffect(() => {
+    if (isDraft && !auth?.isAuthenticated) {
+      window.location.href = "/auth/login";
+    }
+  }, [])
   return (
     <footer className="bg-[#333333] text-[#ffffff] w-full mx-auto roboto-font">
       {/* 🔹 Newsletter Section */}
@@ -391,7 +398,7 @@ const FooterBottom = () => {
               loading="lazy"
               className="object-contain "
             />
-            <Image 
+            <Image
               src="/master.svg"
               alt="Mastercard"
               width={60}
