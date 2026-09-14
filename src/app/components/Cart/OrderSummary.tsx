@@ -57,10 +57,14 @@ const OrderSummary = () => {
     city: "",
     zip: "",
   });
-  const countryList = Country.getAllCountries().map((c) => ({
-    name: c.name,
-    code: c.isoCode,
-  }));
+const countryList = useMemo(
+  () =>
+    Country.getAllCountries().map((c) => ({
+      name: c.name,
+      code: c.isoCode,
+    })),
+  [],
+);
   const stateList = useMemo(() => {
     if (!shippingData.country) return [];
     return State.getStatesOfCountry(shippingData.country).map((s) => ({
@@ -283,7 +287,14 @@ const OrderSummary = () => {
                   <SelectTrigger className="w-full md:w-2/3 border-none outline-none">
                     <SelectValue placeholder="Choose a Country" />
                   </SelectTrigger>
-                  <SelectContent className="w-full md:w-2/3 border-none outline-none">
+                  <SelectContent
+  position="popper"
+  side="bottom"
+  align="start"
+  sideOffset={4}
+
+  className="w-[var(--radix-select-trigger-width)] border-none outline-none p-0"
+>
                     {countryList.map((country) => (
                       <SelectItem key={country.code} value={country.code}>
                         {country.name}
@@ -308,7 +319,14 @@ const OrderSummary = () => {
                     <SelectTrigger className="w-full md:w-2/3 border-none outline-none">
                       <SelectValue placeholder="Choose a State" />
                     </SelectTrigger>
-                    <SelectContent className="w-full md:w-2/3 border-none outline-none">
+                   <SelectContent
+  position="popper"
+  side="bottom"
+  align="start"
+  sideOffset={4}
+  avoidCollisions={false}
+  className="w-[var(--radix-select-trigger-width)] border-none outline-none p-0"
+>
                       {stateList.map((state) => (
                         <SelectItem key={state.code} value={state.code}>
                           {state.name}
