@@ -277,7 +277,7 @@ const FooterBottom = () => {
                 <li key={page.id}>
                   {page?.pageType == "2" ? (
                     <Link
-                      href={page.link}
+                    href={page?.link || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="hover:text-[#D42020]"
