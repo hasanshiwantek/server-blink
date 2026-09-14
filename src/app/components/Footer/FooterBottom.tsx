@@ -391,7 +391,7 @@ const FooterBottom = () => {
               loading="lazy"
               className="object-contain "
             />
-            <Image
+            <Image 
               src="/master.svg"
               alt="Mastercard"
               width={60}
