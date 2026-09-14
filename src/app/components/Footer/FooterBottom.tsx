@@ -127,11 +127,11 @@ const FooterBottom = () => {
   }, [paramsToken, dispatch, router]);
 
 
-  useEffect(() => {
-    if (isDraft && !auth?.isAuthenticated) {
-      window.location.href = "/auth/login";
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (isDraft && !auth?.isAuthenticated) {
+  //     window.location.href = "/auth/login";
+  //   }
+  // }, [])
   return (
     <footer className="bg-[#333333] text-[#ffffff] w-full mx-auto roboto-font">
       {/* 🔹 Newsletter Section */}
