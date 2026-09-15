@@ -90,7 +90,9 @@ const couponSlice = createSlice({
       state.appliedCoupon = null;
       state.discountAmount = 0;
       state.manualDiscount = 0;
+      state.quoteToken = null;
       state.error = null;
+      state.orderId = null;
     },
     clearError: (state) => {
       state.error = null;
