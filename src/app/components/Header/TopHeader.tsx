@@ -1,24 +1,21 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
-import { FaShoppingCart } from "react-icons/fa";
-import { Search, User, Menu, X, ChevronDown, ChevronUp } from "lucide-react";
-import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { RootState } from "@/redux/store";
-import { logout } from "@/redux/slices/authSlice";
-import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
-import MobileSearchBar from "./MobileSearchBar";
 import { fetchCategories } from "@/lib/api/category";
+import { logout } from "@/redux/slices/authSlice";
 import {
   clearSearch,
   globalSearch,
   setSearchQuery,
   setShowSearchDropdown,
 } from "@/redux/slices/homeSlice";
-import { usePathname } from "next/navigation";
+import { RootState } from "@/redux/store";
+import { ChevronDown, ChevronUp, Menu, Search, User, X } from "lucide-react";
 import Image from "next/image";
-import { fetchCartList } from "@/redux/slices/cartsSlice";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { FaShoppingCart } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 interface Category {
   id: number;
@@ -36,8 +33,6 @@ const TopHeader = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-
-  const [query, setQuery] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -74,7 +69,6 @@ const TopHeader = () => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
 
   // Fetch categories
   useEffect(() => {
@@ -149,15 +143,17 @@ const TopHeader = () => {
   return (
     <>
       <header
-        className={`bg-[#393939] text-white transition-all duration-300 ${isScrolled ? "fixed top-0 left-0 right-0 z-50 shadow-lg" : "relative"
-          }`}
+        className={`bg-[#393939] text-white transition-all duration-300 ${
+          isScrolled ? "fixed top-0 left-0 right-0 z-50 shadow-lg" : "relative"
+        }`}
       >
         <div className="w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto px-4 xl:px-4 2xl:px-2">
           <div className="md:relative flex items-center md:justify-between justify-between gap-4 sm:py-2">
             {/* Left: Promo Text (hidden when scrolled) */}
             <div
-              className={`md:flex hidden items-center whitespace-nowrap space-x-2 md:space-x-3 transition-all duration-300 flex-1  md:pl-20 lg:pl-0 ${isScrolled ? "hidden" : "flex"
-                }`}
+              className={`md:flex hidden items-center whitespace-nowrap space-x-2 md:space-x-3 transition-all duration-300 flex-1  md:pl-20 lg:pl-0 ${
+                isScrolled ? "hidden" : "flex"
+              }`}
             >
               <p className="font-bold text-[14px] roboto-condensed-font ">
                 $10 off on First Order: Code: FIRSTORDER
@@ -287,22 +283,24 @@ const TopHeader = () => {
                             {/* Product Details - Right Side */}
                             <div className="flex-1 p-4 flex flex-col">
                               {/* Brand */}
-                              {item?.brand?.slug ? <p
-                                onMouseDown={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  const url =
-                                    item?.brand?.slug || `/${item?.sku}`;
-                                  handleSelect(`/brand/${url}`);
-                                }}
-                                className="text-[1rem] text-[#545454] uppercase hover:text-[#d42020]"
-                              >
-                                {item?.brand?.name || "UNKNOWN BRAND"}
-                              </p> : <p
-                                className="text-[1rem] text-[#545454] uppercase "
-                              >
-                                {"UNKNOWN BRAND"}
-                              </p>}
+                              {item?.brand?.slug ? (
+                                <p
+                                  onMouseDown={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    const url =
+                                      item?.brand?.slug || `/${item?.sku}`;
+                                    handleSelect(`/brand/${url}`);
+                                  }}
+                                  className="text-[1rem] text-[#545454] uppercase hover:text-[#d42020]"
+                                >
+                                  {item?.brand?.name || "UNKNOWN BRAND"}
+                                </p>
+                              ) : (
+                                <p className="text-[1rem] text-[#545454] uppercase ">
+                                  {"UNKNOWN BRAND"}
+                                </p>
+                              )}
 
                               {/* SKU */}
                               <p
@@ -336,7 +334,7 @@ const TopHeader = () => {
                               <div className="mt-auto pt-3">
                                 {item?.costPrice &&
                                   Number(item?.costPrice) >
-                                  Number(item?.price) && (
+                                    Number(item?.price) && (
                                     <p className="text-[13px] text-gray-500">
                                       Price{" "}
                                       <span className="line-through">

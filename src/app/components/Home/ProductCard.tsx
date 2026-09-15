@@ -64,11 +64,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   // safe image src
   const imageSrc =
+    product.image?.find((img) => img?.isPrimary === 1)?.path ||
     product.image?.[0]?.path ||
     product.image?.[1]?.path ||
     "/default-product-image.svg";
+
   const brandSlug =
     typeof product.brand === "object" ? product?.brand?.slug : undefined;
+
   const availableForSale =
     product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
 
@@ -110,8 +113,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             {brandName}
           </span>
         )}
-        <Link href={product?.productUrl || "/"} className="inline-block w-fit"
-        >
+        <Link href={product?.productUrl || "/"} className="inline-block w-fit">
           <p
             className="text-[1rem] text-gray-400 mb-1 hover:text-[#D42020]"
             style={robotoCondensedStyle}
@@ -224,7 +226,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             }}
             disabled={currentStockEqualent}
             // disabled={!availableForSale || cartLoad}
-            className={currentStockEqualent ? "w-full bg-[#CAC9C9] font-bold text-[#393939] border-b-2 border-[#393939] py-1 !cursor-not-allowed rounded text-[14px] mt-auto transition" : "w-full bg-[#CAC9C9] hover:bg-[#D42020] font-bold text-[#393939] border-b-2 border-[#393939] py-1 hover:text-white rounded text-[14px] mt-auto transition"}
+            className={
+              currentStockEqualent
+                ? "w-full bg-[#CAC9C9] font-bold text-[#393939] border-b-2 border-[#393939] py-1 !cursor-not-allowed rounded text-[14px] mt-auto transition"
+                : "w-full bg-[#CAC9C9] hover:bg-[#D42020] font-bold text-[#393939] border-b-2 border-[#393939] py-1 hover:text-white rounded text-[14px] mt-auto transition"
+            }
           >
             {"ADD TO CART"}
           </button>
@@ -244,5 +250,3 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 };
 
 export default ProductCard;
-
-
