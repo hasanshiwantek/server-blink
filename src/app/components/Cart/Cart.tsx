@@ -28,6 +28,7 @@ const Cart = () => {
     if (!shouldLoadQuote || !quoteToken || !auth?.isAuthenticated) return;
     dispatch(fetchLoadSavedQuote(quoteToken)).unwrap().then((res) => {
       const response = res?.data
+      if (auth?.user?.id != response?.customer?.id) return
       const shippingformation = response?.billingInformation
       const billingAddress = response?.billingAddress
       const shippingFormData = {

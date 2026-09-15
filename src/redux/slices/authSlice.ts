@@ -117,7 +117,10 @@ export const checkAuthToken = createAsyncThunk(
     }
   },
 );
-
+const clearAuthStorage = () => {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem("persist:coupon");
+};
 // Slice
 const authSlice = createSlice({
   name: "auth",
@@ -128,6 +131,7 @@ const authSlice = createSlice({
       state.token = null;
       state.expireAt = null;
       state.isAuthenticated = false;
+      clearAuthStorage()
       // localStorage.removeItem("token");
     },
   },
