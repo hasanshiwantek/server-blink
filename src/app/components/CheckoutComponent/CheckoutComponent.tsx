@@ -745,6 +745,7 @@ const CheckoutForm = () => {
           quantity: item.quantity || 1,
         })),
         ...(orderId ? { orderId } : {}),
+        ...(orderId ? { manualDiscount } : {}),
       };
     },
     [
