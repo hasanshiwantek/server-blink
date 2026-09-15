@@ -1,10 +1,10 @@
 "use client";
 
+import { useAppDispatch } from "@/hooks/useReduxHooks";
+import { fetchProductsData } from "@/redux/slices/homeSlice";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import ProductCard from "./ProductCard";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { fetchProductsData } from "@/redux/slices/homeSlice";
 
 // Skeleton loader
 const ProductSkeleton = () => (
@@ -166,47 +166,51 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
     requestAnimationFrame(check);
   };
   useEffect(() => {
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (!isSliderActive) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!isSliderActive) return;
 
-    if (event.key === "ArrowLeft" && canScrollLeft) {
-      event.preventDefault();
-      scrollLeft();
-    }
+      if (event.key === "ArrowLeft" && canScrollLeft) {
+        event.preventDefault();
+        scrollLeft();
+      }
 
-    if (event.key === "ArrowRight" && canScrollRight) {
-      event.preventDefault();
-      scrollRight();
-    }
-  };
+      if (event.key === "ArrowRight" && canScrollRight) {
+        event.preventDefault();
+        scrollRight();
+      }
+    };
 
-  window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
 
-  return () => {
-    window.removeEventListener("keydown", handleKeyDown);
-  };
-}, [isSliderActive, canScrollLeft, canScrollRight]);
-useEffect(() => {
-  const handleOutsideClick = (event: MouseEvent) => {
-    const section = sectionRef.current;
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isSliderActive, canScrollLeft, canScrollRight]);
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      const section = sectionRef.current;
 
-    if (!section) return;
+      if (!section) return;
 
-    if (!section.contains(event.target as Node)) {
-      setIsSliderActive(false);
-    }
-  };
+      if (!section.contains(event.target as Node)) {
+        setIsSliderActive(false);
+      }
+    };
 
-  document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("mousedown", handleOutsideClick);
 
-  return () => {
-    document.removeEventListener("mousedown", handleOutsideClick);
-  };
-}, []);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
 
   if (productsData?.length === 0) return null;
   return (
-    <div className="bg-transparent py-4 rounded relative"   ref={sectionRef}   onMouseDown={() => setIsSliderActive(true)}>
+    <div
+      className="bg-transparent py-4 rounded relative"
+      ref={sectionRef}
+      onMouseDown={() => setIsSliderActive(true)}
+    >
       <div className="flex items-center justify-between mb-4 bg-[#393939] border-b border-gray-400">
         <h2 className="font-bold text-xl text-white p-3 flex-1">{title} </h2>
         {isSlider && (
@@ -277,7 +281,6 @@ useEffect(() => {
               id="featured-products-slider"
               role="region"
               aria-label={`${title} products slider`}
-               
               className="flex gap-4 overflow-x-auto pb-2 scroll-smooth scrollbar-hide"
             >
               {productsData?.slice(0, 8)?.map((product: any) => (
