@@ -1,22 +1,35 @@
 "use client";
-import React from "react";
-import { useAppSelector } from "@/hooks/useReduxHooks";
+import React, { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import CartList from "./CartList";
 import OrderSummary from "./OrderSummary";
+import { fetchLoadSavedQuote } from "@/redux/slices/couponSlice";
 const Cart = () => {
+  const dispatch = useAppDispatch()
+  const searchParams = useSearchParams();
+  const action = searchParams.get("action");
+  const quoteToken = searchParams.get("quoteToken");
+  const shouldLoadQuote = action === "loadSavedQuote" && !!quoteToken;
+  const { cartLoading, loading } = useAppSelector(
+    (state: RootState) => state.carts,
+  );
+  const auth = useAppSelector((state: RootState) => state?.auth);
+  const cartLoad = cartLoading || loading;
   const cartItems = useAppSelector((state: RootState) => state?.carts?.items);
   const cartItemCount =
     cartItems?.reduce(
       (sum: number, item: any) => sum + (item?.quantity ?? 1),
       0,
     ) ?? 0;
-  const { cartLoading, loading } = useAppSelector(
-    (state: RootState) => state.carts,
-  );
 
-  const cartLoad = cartLoading || loading;
-
+  useEffect(() => {
+    if (!shouldLoadQuote || !quoteToken || !auth?.isAuthenticated) return;
+    dispatch(fetchLoadSavedQuote(quoteToken)).unwrap().then((res) => {
+      console.log("res", res);
+    });
+  }, [shouldLoadQuote, quoteToken]);
   return (
     <main className="flex flex-col gap-8 w-full py-1">
       {/* Container: max-width 1170px, centered */}

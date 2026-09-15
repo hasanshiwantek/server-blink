@@ -60,6 +60,22 @@ export const applyCoupon = createAsyncThunk(
   }
 );
 
+export const fetchLoadSavedQuote = createAsyncThunk(
+  "cart/fetchLoadSavedQuote",
+  async (quoteToken: string, thunkAPI) => {
+    try {
+      const res = await axiosInstance.post(`web/cart/load-saved-quote`, {
+        quoteToken,
+      });
+      return res?.data;
+    } catch (err: any) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to load saved quote"
+      );
+    }
+  }
+);
+
 const couponSlice = createSlice({
   name: "coupon",
   initialState,
@@ -86,6 +102,24 @@ const couponSlice = createSlice({
         state.error = null;
       })
       .addCase(applyCoupon.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+
+      .addCase(fetchLoadSavedQuote.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchLoadSavedQuote.fulfilled, (state, action) => {
+        if (action?.payload?.data?.couponCode && Number(action?.payload?.data?.discountAmount)) {
+          state.loading = false;
+          state.appliedCoupon = action?.payload?.data?.couponCode;
+          state.discountAmount = Number(action?.payload?.data?.discountAmount); 
+          state.error = null;
+        }
+      })
+      .addCase(fetchLoadSavedQuote.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

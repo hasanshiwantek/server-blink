@@ -111,7 +111,7 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
             <div className="flex justify-between text-gray-600 text-[13px] mt-1">
               <span>
                 ${Number(discountAmount).toFixed(2)} off the
-                order total ({appliedCoupon.toUpperCase()})
+                order total ({appliedCoupon?.toUpperCase()})
               </span>
             </div>
           </div>

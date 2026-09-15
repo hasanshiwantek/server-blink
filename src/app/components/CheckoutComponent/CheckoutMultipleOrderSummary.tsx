@@ -279,7 +279,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                             </div>
                             {appliedCoupon && (
                                 <div className="flex gap-3 items-center px-4 py-2 rounded">
-                                    <span>${Number(appliedCoupon.discountAmount).toFixed(2)} off the order total ({appliedCoupon.couponCode.toUpperCase()})</span>
+                                    <span>${Number(appliedCoupon.discountAmount).toFixed(2)} off the order total ({appliedCoupon?.couponCode?.toUpperCase()})</span>
                                     <button onClick={onRemoveCoupon} className="font-bold hover:text-red-700">X</button>
                                 </div>
                             )}
@@ -307,7 +307,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                             </div>
                             {discountOpen && (
                                 <div className="flex justify-between text-gray-600 text-[13px] mt-1">
-                                    <span>${Number(appliedCoupon.discountAmount).toFixed(2)} off ({appliedCoupon.couponCode.toUpperCase()})</span>
+                                    <span>${Number(appliedCoupon.discountAmount).toFixed(2)} off ({appliedCoupon?.couponCode?.toUpperCase()})</span>
                                     <span className="font-medium">-${discountAmount.toFixed(2)}</span>
                                 </div>
                             )}

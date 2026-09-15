@@ -137,7 +137,7 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
               <div className="flex gap-3 items-center px-4 py-2 rounded">
                 <span>
                   ${Number(appliedCoupon.discountAmount).toFixed(2)} off the
-                  order total ({appliedCoupon.couponCode.toUpperCase()})
+                  order total ({appliedCoupon?.couponCode?.toUpperCase()})
                 </span>
                 <button
                   onClick={onRemoveCoupon}
@@ -195,11 +195,11 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
             {discountOpen && (
               <div className="flex justify-between text-gray-600 text-[13px] mt-1">
                 <span>
-                  ${Number(appliedCoupon.discountAmount).toFixed(2)} off the
-                  order total ({appliedCoupon.couponCode.toUpperCase()})
+                  ${Number(appliedCoupon?.discountAmount).toFixed(2)} off the
+                  order total ({appliedCoupon?.couponCode?.toUpperCase()})
                 </span>
                 <span className="font-medium">
-                  -${discountAmount.toFixed(2)}
+                  -${discountAmount?.toFixed(2)}
                 </span>
               </div>
             )}

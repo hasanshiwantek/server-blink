@@ -75,6 +75,23 @@ export const orderDetailById = createAsyncThunk(
         }
     }
 )
+
+
+// export const fetchLoadSavedQuote = createAsyncThunk(
+//     "cart/fetchLoadSavedQuote",
+//     async (quoteToken: string, thunkAPI) => {
+//         try {
+//             const res = await axiosInstance.post(`web/cart/load-saved-quote`, {
+//                 quoteToken,
+//             });
+//             return res?.data;
+//         } catch (err: any) {
+//             return thunkAPI.rejectWithValue(
+//                 err.response?.data?.message || "Failed to load saved quote"
+//             );
+//         }
+//     }
+// );
 const initialState = {
     // orders dropdown
     orders: [] as any[],
