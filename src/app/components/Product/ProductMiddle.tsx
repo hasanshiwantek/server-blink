@@ -52,6 +52,8 @@ const ProductMiddle = ({
       }
     : undefined;
   const currentStockEqualent = Number(product?.currentStock) === 0;
+  const allowPurchase = !product?.allowPurchase;
+  const disabledAddToCart = currentStockEqualent || allowPurchase;
 
   const reviewProduct = product
     ? {
@@ -240,7 +242,7 @@ const ProductMiddle = ({
             </div>
           )}
 
-          {currentStockEqualent && availableForSale && (
+          {((currentStockEqualent && availableForSale) || allowPurchase) && (
             <div className="flex items-center gap-1">
               <svg
                 className="text-[#d40511] fill-current"
@@ -252,7 +254,9 @@ const ProductMiddle = ({
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
               </svg>
               <p className="text-[#d40511] text-[14px]">
-                This product is currently out of stock.
+                {allowPurchase
+                  ? "The selected product combination is currently unavailable."
+                  : "This product is currently out of stock."}
               </p>
             </div>
           )}
@@ -297,9 +301,9 @@ const ProductMiddle = ({
                     toast.error(err);
                   });
               }}
-              disabled={currentStockEqualent}
+              disabled={disabledAddToCart}
               className={
-                currentStockEqualent
+                disabledAddToCart
                   ? "w-full! sm:w-[51.7%]! py-3.5! bg-gray-300! text-gray-700! cursor-not-allowed!"
                   : "btn-primary w-full! sm:w-[51.7%]! py-3.5!"
               }
