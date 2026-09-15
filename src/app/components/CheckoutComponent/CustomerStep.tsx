@@ -7,7 +7,6 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import LoginForm from "./LoginForm";
 import { logout } from "@/redux/slices/authSlice";
-import { useRouter } from "next/navigation";
 
 interface CustomerStepProps {
   register: UseFormRegister<any>;

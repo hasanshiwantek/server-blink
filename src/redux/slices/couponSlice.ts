@@ -1,6 +1,7 @@
 // store/slices/couponSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "@/lib/axiosInstance";
+import { RootState } from "../store";
 
 interface Coupon {
   id?: number;
@@ -73,7 +74,14 @@ export const fetchLoadSavedQuote = createAsyncThunk(
       const res = await axiosInstance.post(`web/cart/load-saved-quote`, {
         quoteToken,
       });
-      return res?.data;
+      const state = thunkAPI.getState() as RootState;
+      const currentUserId = state.auth?.user?.id;
+      const userId = res?.data?.data?.customer?.id
+      if (
+        currentUserId == userId
+      ) {
+        return res?.data;
+      }
     } catch (err: any) {
       return thunkAPI.rejectWithValue(
         err.response?.data?.message || "Failed to load saved quote"

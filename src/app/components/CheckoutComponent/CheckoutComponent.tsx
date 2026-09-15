@@ -145,8 +145,8 @@ const CheckoutForm = () => {
   );
   const discountTotal = Number(discountAmount) + Number(manualDiscount)
 
-  const hasRestoredRef = useRef(false); // ✅ Sirf ek baar restore
-  const isRestoringRef = useRef(true); // ✅ Initially true — restore chal raha hai
+  const hasRestoredRef = useRef(false);
+  const isRestoringRef = useRef(true);
 
   const [promoCode, setPromoCode] = useState("");
 
@@ -185,8 +185,9 @@ const CheckoutForm = () => {
   const parsedAuth = auth ? JSON.parse(user) : null;
   const token = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
   const { shippingDetail, saveDetail } = useAppSelector(
-    (state: any) => state.shippingZone,
+    (state: any) => state?.shippingZone,
   );
+  console.log(shippingDetail);
 
   useEffect(() => {
     if (!loading) {
