@@ -3,26 +3,32 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "@/lib/axiosInstance";
 
 interface Coupon {
-  id: number;
-  couponCode: string;
-  discountType: "dollarAmountOrder" | "percentOrder";
-  discountAmount: string;
-  enabled: string;
+  id?: number;
+  couponCode?: string;
+  discountType?: "dollarAmountOrder" | "percentOrder";
+  discountAmount?: string | number;
+  enabled?: string;
   // add other fields as needed
 }
 
 interface CouponState {
   appliedCoupon: Coupon | null;
   discountAmount: number;
+  manualDiscount: number;
   loading: boolean;
+  quoteToken: string | null;
+  orderId: number | null;
   error: string | null;
 }
 
 const initialState: CouponState = {
   appliedCoupon: null,
   discountAmount: 0,
+  manualDiscount: 0,
   loading: false,
   error: null,
+  quoteToken: null,
+  orderId: null
 };
 
 // Async thunk to apply coupon
@@ -83,6 +89,7 @@ const couponSlice = createSlice({
     removeCoupon: (state) => {
       state.appliedCoupon = null;
       state.discountAmount = 0;
+      state.manualDiscount = 0;
       state.error = null;
     },
     clearError: (state) => {
@@ -112,12 +119,31 @@ const couponSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchLoadSavedQuote.fulfilled, (state, action) => {
-        if (action?.payload?.data?.couponCode && Number(action?.payload?.data?.discountAmount)) {
-          state.loading = false;
-          state.appliedCoupon = action?.payload?.data?.couponCode;
-          state.discountAmount = Number(action?.payload?.data?.discountAmount); 
-          state.error = null;
+        state.loading = false;
+        const coupon = {
+          discountAmount: Number(action?.payload?.data?.discountAmount),
+          couponCode: action?.payload?.data?.couponCode
         }
+        let quoteToken: string | null = null;
+        const isDraftUrl = action?.payload?.data?.isDraftUrl
+        const orderId = action?.payload?.data?.id
+        if (isDraftUrl) {
+          try {
+            quoteToken = new URL(isDraftUrl).searchParams.get("quoteToken");
+            state.orderId = orderId;
+          } catch {
+            quoteToken = null;
+          }
+        }
+        if (coupon?.couponCode && Number(action?.payload?.data?.discountAmount)) {
+          state.appliedCoupon = coupon
+          state.discountAmount = Number(action?.payload?.data?.discountAmount);
+        }
+        if (Number(action?.payload?.data?.manualDiscount)) {
+          state.manualDiscount = Number(action?.payload?.data?.manualDiscount);
+        }
+        state.quoteToken = quoteToken;
+        state.error = null;
       })
       .addCase(fetchLoadSavedQuote.rejected, (state, action) => {
         state.loading = false;
