@@ -10,13 +10,14 @@ interface OrderSummaryProps {
   total: number;
   finalTotal: number;
   discountAmount: number;
+  manualDiscount: number;
+  discountTotal: number;
   appliedCoupon: any;
   promoCode: string;
   setPromoCode: (code: string) => void;
   onApplyCoupon: () => void;
   onRemoveCoupon: () => void;
 }
-
 const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
   cart,
   subtotal,
@@ -30,6 +31,8 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
   setPromoCode,
   onApplyCoupon,
   onRemoveCoupon,
+  manualDiscount,
+  discountTotal
 }) => {
   const cartItemCount = cart?.reduce(
     (sum, item: any) => sum + (item?.quantity ?? 1),
@@ -91,7 +94,7 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
         </div>
 
         {/* Discounts */}
-        {appliedCoupon && discountAmount > 0 && (
+        {appliedCoupon && discountTotal > 0 && (
           <div className="mt-2">
             {/* Discounts header with arrow */}
             <div
@@ -103,15 +106,24 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
 
               {/* Discount value */}
               <span className="font-medium">
-                -${discountAmount.toFixed(2)}
+                -${discountTotal.toFixed(2)}
               </span>
             </div>
-
+            {manualDiscount > 0 && (
+              <div className="flex justify-between text-gray-600 text-[13px] mt-1">
+                <span>
+                  Manual Discount
+                </span>
+                <span className="font-medium">
+                  -${manualDiscount?.toFixed(2)}
+                </span>
+              </div>
+            )}
             {/* Expanded details */}
             <div className="flex justify-between text-gray-600 text-[13px] mt-1">
               <span>
                 ${Number(discountAmount).toFixed(2)} off the
-                order total ({appliedCoupon.toUpperCase()})
+                order total ({appliedCoupon?.toUpperCase()})
               </span>
             </div>
           </div>
@@ -138,11 +150,11 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
         </div>
 
         {/* Savings message */}
-        {appliedCoupon && discountAmount > 0 && (
+        {appliedCoupon && discountTotal > 0 && (
           <div className="text-[#333] font-medium text-[13px]  mt-1 self-end">
             You saved{" "}
             <span className="!text-[#2aab3f] ">
-              ${discountAmount.toFixed(2)}
+              ${discountTotal?.toFixed(2)}
             </span>{" "}
             in total!
           </div>

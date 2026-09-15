@@ -16,12 +16,12 @@ import { toast } from "react-toastify";
 import { checkAuthToken, customerProfile, logout } from "@/redux/slices/authSlice";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { useSearchParams } from "next/navigation";
+// import { fetchLoadSavedQuote } from "@/redux/slices/OrderMessage";
 
 const FooterBottom = () => {
   const searchParams = useSearchParams();
   const paramsToken = searchParams.get("token");
   const auth = useAppSelector((state: RootState) => state?.auth);
-
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
   const [token, setToken] = useState<string | null>(null);
@@ -125,6 +125,7 @@ const FooterBottom = () => {
 
     login();
   }, [paramsToken, dispatch, router]);
+
   return (
     <footer className="bg-[#333333] text-[#ffffff] w-full mx-auto roboto-font">
       {/* 🔹 Newsletter Section */}
@@ -277,7 +278,7 @@ const FooterBottom = () => {
                 <li key={page.id}>
                   {page?.pageType == "2" ? (
                     <Link
-                    href={page?.link || "#"}
+                      href={page?.link || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="hover:text-[#D42020]"

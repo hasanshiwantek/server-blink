@@ -57,14 +57,14 @@ const OrderSummary = () => {
     city: "",
     zip: "",
   });
-const countryList = useMemo(
-  () =>
-    Country.getAllCountries().map((c) => ({
-      name: c.name,
-      code: c.isoCode,
-    })),
-  [],
-);
+  const countryList = useMemo(
+    () =>
+      Country.getAllCountries().map((c) => ({
+        name: c.name,
+        code: c.isoCode,
+      })),
+    [],
+  );
   const stateList = useMemo(() => {
     if (!shippingData.country) return [];
     return State.getStatesOfCountry(shippingData.country).map((s) => ({
@@ -288,13 +288,13 @@ const countryList = useMemo(
                     <SelectValue placeholder="Choose a Country" />
                   </SelectTrigger>
                   <SelectContent
-  position="popper"
-  side="bottom"
-  align="start"
-  sideOffset={4}
+                    position="popper"
+                    side="bottom"
+                    align="start"
+                    sideOffset={4}
 
-  className="w-[var(--radix-select-trigger-width)] border-none outline-none p-0"
->
+                    className="w-[var(--radix-select-trigger-width)] border-none outline-none p-0"
+                  >
                     {countryList.map((country) => (
                       <SelectItem key={country.code} value={country.code}>
                         {country.name}
@@ -319,14 +319,14 @@ const countryList = useMemo(
                     <SelectTrigger className="w-full md:w-2/3 border-none outline-none">
                       <SelectValue placeholder="Choose a State" />
                     </SelectTrigger>
-                   <SelectContent
-  position="popper"
-  side="bottom"
-  align="start"
-  sideOffset={4}
-  avoidCollisions={false}
-  className="w-[var(--radix-select-trigger-width)] border-none outline-none p-0"
->
+                    <SelectContent
+                      position="popper"
+                      side="bottom"
+                      align="start"
+                      sideOffset={4}
+                      avoidCollisions={false}
+                      className="w-[var(--radix-select-trigger-width)] border-none outline-none p-0"
+                    >
                       {stateList.map((state) => (
                         <SelectItem key={state.code} value={state.code}>
                           {state.name}
@@ -520,7 +520,7 @@ const countryList = useMemo(
           <div className="flex justify-between py-2">
             <span className="text-[14px] font-bold text-[#393939]">
               Coupon Code:{" "}
-              {appliedCoupon ? appliedCoupon.couponCode.toUpperCase() : ""}
+              {appliedCoupon ? appliedCoupon?.couponCode?.toUpperCase() : ""}
             </span>
 
             {/* If coupon already applied, show it here */}

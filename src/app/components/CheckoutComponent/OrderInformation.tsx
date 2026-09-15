@@ -23,6 +23,7 @@ const CheckoutForm = () => {
   const orderCustomer = customerOrderDetail?.customer
     ? customerOrderDetail
     : null;
+  const discountTotal = Number(orderCustomer?.discountAmount) + Number(orderCustomer?.manualDiscount)
   const cart: any = customerOrderDetail?.products
     ? customerOrderDetail.products.map((product: any) => ({
       ...product,
@@ -66,7 +67,7 @@ const CheckoutForm = () => {
   // Final total after discount
   const finalTotal = useMemo(
     () =>
-      Math.max(totalBeforeDiscount - Number(orderCustomer?.discountAmount), 0),
+      Math.max(totalBeforeDiscount - discountTotal, 0),
     [totalBeforeDiscount, orderCustomer?.discountAmount],
   );
 
@@ -157,6 +158,8 @@ const CheckoutForm = () => {
               finalTotal={finalTotal}
               discountAmount={Number(orderCustomer?.discountAmount)}
               appliedCoupon={orderCustomer?.couponCode}
+              manualDiscount={orderCustomer?.manualDiscount}
+              discountTotal={discountTotal}
               promoCode={promoCode}
               setPromoCode={setPromoCode}
               onApplyCoupon={handleApplyCoupon}

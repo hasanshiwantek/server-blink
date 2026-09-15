@@ -140,9 +140,11 @@ const CheckoutForm = () => {
   const auth = useAppSelector((state: RootState) => state?.auth);
 
   // ADD COUPON STATE FROM REDUX
-  const { appliedCoupon, discountAmount } = useAppSelector(
+  const { appliedCoupon, discountAmount, manualDiscount, orderId } = useAppSelector(
     (state: RootState) => state.coupon,
   );
+  const discountTotal = Number(discountAmount) + Number(manualDiscount)
+
   const hasRestoredRef = useRef(false); // ✅ Sirf ek baar restore
   const isRestoringRef = useRef(true); // ✅ Initially true — restore chal raha hai
 
@@ -395,8 +397,8 @@ const CheckoutForm = () => {
 
   // Final total after discount
   const finalTotal = useMemo(
-    () => Math.max(totalBeforeDiscount - discountAmount, 0),
-    [totalBeforeDiscount, discountAmount],
+    () => Math.max(totalBeforeDiscount - discountTotal, 0),
+    [totalBeforeDiscount, discountTotal],
   );
 
   // ADD COUPON HANDLERS
@@ -703,6 +705,7 @@ const CheckoutForm = () => {
 
       // ✅ Single address — existing logic
       return {
+
         userType: token ? null : "guest",
         deviceType: getDeviceType(),
         ipAddress: ipAddress,
@@ -741,6 +744,8 @@ const CheckoutForm = () => {
           product_id: item.id,
           quantity: item.quantity || 1,
         })),
+        ...(orderId ? { orderId } : {}),
+        ...(orderId ? { manualDiscount } : {}),
       };
     },
     [
@@ -764,7 +769,6 @@ const CheckoutForm = () => {
       );
       const orderData = orderResponse.data?.data || orderResponse.data;
       dispatch(fetchShippingRate({}));
-      // localStorage.removeItem("shippingCost"); // ✅ Clear saved shipping cost after order is placed
       return orderData || null;
     },
     [buildOrderPayload],
@@ -1710,6 +1714,8 @@ const CheckoutForm = () => {
               finalTotal={finalTotal}
               discountAmount={discountAmount}
               appliedCoupon={appliedCoupon}
+              manualDiscount={manualDiscount}
+              discountTotal={discountTotal}
               promoCode={promoCode}
               setPromoCode={setPromoCode}
               onApplyCoupon={handleApplyCoupon}

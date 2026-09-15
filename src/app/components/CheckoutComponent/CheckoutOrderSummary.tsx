@@ -13,6 +13,8 @@ interface OrderSummaryProps {
   finalTotal: number;
   discountAmount: number;
   appliedCoupon: any;
+  manualDiscount: number;
+  discountTotal: number;
   promoCode: string;
   setPromoCode: (code: string) => void;
   onApplyCoupon: () => void;
@@ -28,6 +30,8 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
   finalTotal,
   discountAmount,
   appliedCoupon,
+  manualDiscount,
+  discountTotal,
   promoCode,
   setPromoCode,
   onApplyCoupon,
@@ -41,7 +45,6 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
     (sum, item: any) => sum + (item?.quantity ?? 1),
     0
   );
-  
 
   useEffect(() => {
     if (appliedCoupon && discountAmount > 0) {
@@ -137,7 +140,7 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
               <div className="flex gap-3 items-center px-4 py-2 rounded">
                 <span>
                   ${Number(appliedCoupon.discountAmount).toFixed(2)} off the
-                  order total ({appliedCoupon.couponCode.toUpperCase()})
+                  order total ({appliedCoupon?.couponCode?.toUpperCase()})
                 </span>
                 <button
                   onClick={onRemoveCoupon}
@@ -187,32 +190,45 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
 
               {/* Discount value */}
               <span className="font-medium">
-                -${discountAmount.toFixed(2)}
+                -${discountTotal.toFixed(2)}
               </span>
             </div>
 
             {/* Expanded details */}
+
             {discountOpen && (
-              <div className="flex justify-between text-gray-600 text-[13px] mt-1">
-                <span>
-                  ${Number(appliedCoupon.discountAmount).toFixed(2)} off the
-                  order total ({appliedCoupon.couponCode.toUpperCase()})
-                </span>
-                <span className="font-medium">
-                  -${discountAmount.toFixed(2)}
-                </span>
-              </div>
+              <>
+                {manualDiscount > 0 && (
+                  <div className="flex justify-between text-gray-600 text-[13px] mt-1">
+                    <span>
+                      Manual Discount
+                    </span>
+                    <span className="font-medium">
+                      -${manualDiscount?.toFixed(2)}
+                    </span>
+                  </div>
+                )}
+                <div className="flex justify-between text-gray-600 text-[13px] mt-1">
+                  <span>
+                    ${Number(appliedCoupon?.discountAmount).toFixed(2)} off the
+                    order total ({appliedCoupon?.couponCode?.toUpperCase()})
+                  </span>
+                  <span className="font-medium">
+                    -${discountAmount?.toFixed(2)}
+                  </span>
+                </div>
+              </>
             )}
           </div>
         )}
 
         <div className="flex justify-between text-[13px] text-[#545454] roboto-font" >
           <span>Shipping</span>
-          <span className="font-medium">${shipping.toFixed(2)}</span>
+          <span className="font-medium">${shipping?.toFixed(2)}</span>
         </div>
         <div className="flex justify-between pb-[10px] text-[13px] text-[#545454] roboto-font" >
           <span>Tax</span>
-          <span className="font-medium">${tax.toFixed(2)}</span>
+          <span className="font-medium">${tax?.toFixed(2)}</span>
         </div>
       </div>
 
@@ -224,8 +240,8 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
         </div>
 
         {/* Savings message */}
-        {appliedCoupon && discountAmount > 0 && (
-          <div className="text-[#333] font-medium text-[13px]  mt-1 self-end">You saved <span className="!text-[#2aab3f] ">${discountAmount.toFixed(2)}</span> in total!</div>
+        {appliedCoupon && discountTotal > 0 && (
+          <div className="text-[#333] font-medium text-[13px]  mt-1 self-end">You saved <span className="!text-[#2aab3f] ">${discountTotal?.toFixed(2)}</span> in total!</div>
         )}
       </div>
     </div>
