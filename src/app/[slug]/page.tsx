@@ -7,23 +7,21 @@ import { headers } from "next/headers";
 import { fetchProductBySlugAndUrl, fetchWebPages } from "@/lib/api/products";
 import ProductCard from "../components/Product/ProductCard";
 const CategoriesSidebar = dynamic(
-  () => import("../components/Home/CategoriesSidebar")
+  () => import("../components/Home/CategoriesSidebar"),
 );
 
-const BrandsSidebar = dynamic(
-  () => import("../components/Home/BrandsSidebar")
-);
+const BrandsSidebar = dynamic(() => import("../components/Home/BrandsSidebar"));
 const ProductExtras = dynamic(
-  () => import("../components/Product/ProductExtras")
+  () => import("../components/Product/ProductExtras"),
 );
 const ProductOverview = dynamic(
-  () => import("../components/Product/ProductOverview")
+  () => import("../components/Product/ProductOverview"),
 );
 // const ProductCard = dynamic(
 //   () => import("../components/Product/ProductCard")
 // );
 const DynamicWebPage = dynamic(
-  () => import("../components/Product/DynamicWebPage")
+  () => import("../components/Product/DynamicWebPage"),
 );
 //  Dynamic metadata for SEO
 export async function generateMetadata({
@@ -47,12 +45,12 @@ export async function generateMetadata({
   if (webPages) {
     return {
       title: {
-        absolute: webPages.pageTitle || webPages.pageName,  // ← changed
+        absolute: webPages.pageTitle || webPages.pageName, // ← changed
       },
       description:
-        webPages.metaDescription?.substring(0, 160) ||
-        webPages.pageName,
-      keywords: webPages.metaKeywords || webPages.searchKeywords || webPages.pageName,
+        webPages.metaDescription?.substring(0, 160) || webPages.pageName,
+      keywords:
+        webPages.metaKeywords || webPages.searchKeywords || webPages.pageName,
       alternates: {
         canonical: url,
       },
@@ -71,10 +69,9 @@ export async function generateMetadata({
   }
   return {
     title: {
-      absolute: product.pageTitle || product.name,  // ← changed
+      absolute: product.pageTitle || product.name, // ← changed
     },
-    description:
-      product.metaDescription?.substring(0, 160),
+    description: product.metaDescription?.substring(0, 160),
     keywords:
       product.searchKeywords ||
       `${product.name}, ${product.brand?.name}, Server Blink`,
@@ -138,50 +135,55 @@ export default async function ProductPage({
 
   return (
     <>
-      {webPages ? <DynamicWebPage webPages={webPages} /> : <div>
-        {/* Structured Data (SEO safe) */}
-        {backendSchema && (
-          <Script
-            id="product-jsonld"
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify(backendSchema),
-            }}
-            strategy="afterInteractive"
-          />
-        )}
+      {webPages ? (
+        <DynamicWebPage webPages={webPages} />
+      ) : (
+        <div>
+          {/* Structured Data (SEO safe) */}
+          {backendSchema && (
+            <Script
+              id="product-jsonld"
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify(backendSchema),
+              }}
+              strategy="afterInteractive"
+            />
+          )}
 
-        <main
-          role="main"
-          className="w-full max-w-[1170px] mx-auto px-4 lg:px-6 xl:px-0"
-        >
-          <div className="flex flex-col md:flex-row gap-4 lg:gap-6">
-            {/* Left Sidebar - Fixed 235px on desktop */}
-            <aside className="hidden lg:block md:w-[20%] flex-shrink-0">
-              <CategoriesSidebar activeCategoryId={product?.categoryIds[0]} />
-              <BrandsSidebar activeBrandId={product?.brand?.id} />
-            </aside>
+          <main
+            role="main"
+            className="w-full max-w-[1170px] mx-auto px-4 lg:px-6 xl:px-0"
+          >
+            <div className="flex flex-col md:flex-row gap-4 lg:gap-6">
+              {/* Left Sidebar - Fixed 235px on desktop */}
+              <aside className="hidden lg:block md:w-[20%] flex-shrink-0">
+                <CategoriesSidebar activeCategoryId={product?.categoryIds[0]} />
+                <BrandsSidebar activeBrandId={product?.brand?.id} />
+              </aside>
 
-            {/* Main Product Content - Fixed 912px max on desktop */}
-            <article className="w-full lg:max-w-[78%]">
-              <ProductCard product={product} />
-              <ProductOverview product={product} />
+              {/* Main Product Content - Fixed 912px max on desktop */}
+              <article className="w-full lg:max-w-[78%]">
+                <ProductCard product={product} />
+                <ProductOverview product={product} />
 
-              {/* Client-side component */}
-              {product?.relatedProductsEnabled && <Suspense
-                fallback={
-                  <div className="py-10 text-center text-sm text-gray-500">
-                    Loading...
-                    
-                  </div>
-                }
-              >
-                <ProductExtras product={product} />
-              </Suspense>}
-            </article>
-          </div>
-        </main>
-      </div>}
+                {/* Client-side component */}
+                {product?.relatedProductsEnabled && (
+                  <Suspense
+                    fallback={
+                      <div className="py-10 text-center text-sm text-gray-500">
+                        Loading...
+                      </div>
+                    }
+                  >
+                    <ProductExtras product={product} />
+                  </Suspense>
+                )}
+              </article>
+            </div>
+          </main>
+        </div>
+      )}
     </>
   );
 }

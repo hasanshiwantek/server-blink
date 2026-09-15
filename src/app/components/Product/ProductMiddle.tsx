@@ -1,18 +1,17 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
-import dynamic from "next/dynamic";
-import { ChevronDown, ChevronUp } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import Link from "next/link";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import ProductPrice from "../productprice/ProductPrice";
-import { fetchReviews, fetchStats } from "@/redux/slices/homeSlice";
-import { RootState } from "@/redux/store";
 import { addCart, fetchCartList } from "@/redux/slices/cartsSlice";
-import BulkInquiryModal from "../modal/BulkInquiryModal";
-import AddReviewModal from "../modal/AddReviewModal";
+import { fetchReviews, fetchStats } from "@/redux/slices/homeSlice";
 import { fetchProductReviews } from "@/redux/slices/storeFrontSlice";
+import { RootState } from "@/redux/store";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import AddReviewModal from "../modal/AddReviewModal";
+import BulkInquiryModal from "../modal/BulkInquiryModal";
+import ProductPrice from "../productprice/ProductPrice";
 
 const ProductMiddle = ({
   product,
@@ -38,30 +37,33 @@ const ProductMiddle = ({
     dispatch(fetchStats());
   }, []);
   useEffect(() => {
-    if (!product?.id) return
+    if (!product?.id) return;
     dispatch(fetchProductReviews(product?.id));
   }, [product?.id]);
 
   const bulkProduct = product
     ? {
-      name: product.name,
-      image:
-        product.image?.[1]?.path ||
-        product.image?.[0]?.path ||
-        "/default-product-image.svg",
-      sku: product.sku ?? "",
-    }
+        name: product.name,
+        image:
+          product.image?.[1]?.path ||
+          product.image?.[0]?.path ||
+          "/default-product-image.svg",
+        sku: product.sku ?? "",
+      }
     : undefined;
   const currentStockEqualent = Number(product?.currentStock) === 0;
 
   const reviewProduct = product
     ? {
-      name: product.name ?? "",
-      image: product?.image?.[0]?.path || "/default-product-image.svg",
-      sku: product.sku ?? "",
-      id: product.id,
-    }
+        name: product.name ?? "",
+        image: product?.image?.[0]?.path || "/default-product-image.svg",
+        sku: product.sku ?? "",
+        id: product.id,
+      }
     : undefined;
+
+  const productPrice =
+    parseInt(product?.salePrice) || parseInt(product?.price) || 0;
 
   return (
     <>
@@ -73,17 +75,22 @@ const ProductMiddle = ({
           </h1>
 
           {/* Brand */}
-          {product?.brand?.name ? <Link href={`/brand/${product?.brand?.slug}`} className="inline-block w-fit"
-          >
-            <h2 className="text-[14px] sm:text-[14px] md:text-[14px] text-[#545454] font-normal uppercase hover:text-[#d40511] transition">
-              {product?.brand?.name || "Unknown Brand"}
-            </h2>
-          </Link> : <span className="inline-block w-fit"
-          >
-            <h2 className="text-[14px] sm:text-[14px] md:text-[14px] text-[#545454] font-normal uppercase  transition">
-              {"Unknown Brand"}
-            </h2>
-          </span>}
+          {product?.brand?.name ? (
+            <Link
+              href={`/brand/${product?.brand?.slug}`}
+              className="inline-block w-fit"
+            >
+              <h2 className="text-[14px] sm:text-[14px] md:text-[14px] text-[#545454] font-normal uppercase hover:text-[#d40511] transition">
+                {product?.brand?.name || "Unknown Brand"}
+              </h2>
+            </Link>
+          ) : (
+            <span className="inline-block w-fit">
+              <h2 className="text-[14px] sm:text-[14px] md:text-[14px] text-[#545454] font-normal uppercase  transition">
+                {"Unknown Brand"}
+              </h2>
+            </span>
+          )}
         </div>
 
         {/* Price Section */}
@@ -91,7 +98,7 @@ const ProductMiddle = ({
           <div>
             <div className="flex flex-col">
               <h2
-                className="text-[#545454] flex items-center font-bold !text-[22px]"
+                className="text-[#545454] flex items-center font-bold text-[22px]!"
                 style={{ color: "#545454" }}
               >
                 Call for pricing:
@@ -122,27 +129,27 @@ const ProductMiddle = ({
                       <ProductPrice
                         price={Number(product?.msrp)}
                         inline={true}
-                        className="!text-[16px] text-[#7B7B7B] font-normal !line-through"
+                        className="text-[16px]! text-[#7B7B7B] font-normal line-through!"
                       />
                     </span>
                   </div>
                   <span className="">
                     <ProductPrice
-                      price={Number(product?.price)}
+                      price={productPrice}
                       inline={true}
                       textColor="#545454"
-                      className="text-[#545454] font-bold !text-[22px]"
+                      className="text-[#545454] font-bold text-[22px]!"
                     />
                   </span>
                 </>
               ) : (
-                product?.price && (
+                productPrice && (
                   <span className="">
                     <ProductPrice
-                      price={Number(product?.price)}
+                      price={productPrice}
                       inline={true}
                       textColor="#545454"
-                      className="text-[#545454] font-bold !text-[22px]"
+                      className="text-[#545454] font-bold text-[22px]!"
                     />
                   </span>
                 )
@@ -155,7 +162,7 @@ const ProductMiddle = ({
                     price={Number(product?.retailPrice)}
                     inline={true}
                     textColor="#545454"
-                    className="!text-[13px] sm:!text-[16px]"
+                    className="text-[13px]! sm:text-[16px]!"
                   />
                   )
                 </span>
@@ -233,13 +240,22 @@ const ProductMiddle = ({
             </div>
           )}
 
-
-          {currentStockEqualent && availableForSale && <div className='flex items-center gap-1'>
-            <svg className="text-[#d40511] fill-current" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>
-            <p className="text-[#d40511] text-[14px]">
-              This product is currently out of stock.
-            </p>
-          </div>}
+          {currentStockEqualent && availableForSale && (
+            <div className="flex items-center gap-1">
+              <svg
+                className="text-[#d40511] fill-current"
+                xmlns="http://www.w3.org/2000/svg"
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+              </svg>
+              <p className="text-[#d40511] text-[14px]">
+                This product is currently out of stock.
+              </p>
+            </div>
+          )}
           {/* Add to Cart Button */}
           {availableForSale && (
             <button
@@ -282,7 +298,11 @@ const ProductMiddle = ({
                   });
               }}
               disabled={currentStockEqualent}
-              className={currentStockEqualent ? "!w-full sm:!w-[51.7%] !py-3.5 !bg-gray-300 !text-gray-700 !cursor-not-allowed" : "btn-primary !w-full sm:!w-[51.7%] !py-3.5"}
+              className={
+                currentStockEqualent
+                  ? "w-full! sm:w-[51.7%]! py-3.5! bg-gray-300! text-gray-700! cursor-not-allowed!"
+                  : "btn-primary w-full! sm:w-[51.7%]! py-3.5!"
+              }
             >
               ADD TO CART
             </button>
