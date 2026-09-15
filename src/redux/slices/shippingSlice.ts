@@ -5,8 +5,9 @@ import axiosInstance from "@/lib/axiosInstance";
 export const fetchShippingRates = createAsyncThunk(
     "shippingZone/fetchShippingRates",
     async ({ data }: { data: any }, thunkAPI) => {
+        const { destination } = data;
         try {
-            const res = await axiosInstance.post(`web/checkout/get-shipping-rates`, data);
+            const res = await axiosInstance.post(`web/checkout/get-shipping-rates`, { destination });
             return res.data;
         } catch (err: any) {
             return thunkAPI.rejectWithValue(
@@ -86,6 +87,9 @@ export const removeShippingRate = createAsyncThunk(
         }
     }
 );
+
+
+
 const initialState = {
     shippingRates: [] as any[],
     shippingDetail: null,
@@ -113,7 +117,7 @@ const shippingZoneSlice = createSlice({
             })
             .addCase(fetchShippingRates.fulfilled, (state, action) => {
                 state.ratesLoader = false;
-                state.shippingRates = action.payload?.rates;
+                state.shippingRates = action.payload?.rates?.rates;
             })
             .addCase(fetchShippingRates.rejected, (state, action) => {
                 state.ratesLoader = false;
