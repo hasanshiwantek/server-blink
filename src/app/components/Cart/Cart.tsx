@@ -1,26 +1,67 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
+import { RootState } from "@/redux/store";
 import CartList from "./CartList";
 import OrderSummary from "./OrderSummary";
-import Link from "next/link";
-import { useAppSelector } from "@/hooks/useReduxHooks";
-import { RootState } from "@/redux/store";
-import BlogSkeleton from "../loader/BlogSkeleton";
-import CartTableSkeleton from "../loader/CartTableSkeleton";
-
+import { fetchLoadSavedQuote } from "@/redux/slices/couponSlice";
+import { checkoutFormSave } from "@/redux/slices/shippingSlice";
 const Cart = () => {
+  const dispatch = useAppDispatch()
+  const searchParams = useSearchParams();
+  const action = searchParams.get("action");
+  const quoteToken = searchParams.get("quoteToken");
+  const shouldLoadQuote = action === "loadSavedQuote" && !!quoteToken;
+  const { cartLoading, loading } = useAppSelector(
+    (state: RootState) => state.carts,
+  );
+  const auth = useAppSelector((state: RootState) => state?.auth);
+  const cartLoad = cartLoading || loading;
   const cartItems = useAppSelector((state: RootState) => state?.carts?.items);
   const cartItemCount =
     cartItems?.reduce(
       (sum: number, item: any) => sum + (item?.quantity ?? 1),
       0,
     ) ?? 0;
-  const { cartLoading, loading } = useAppSelector(
-    (state: RootState) => state.carts,
-  );
-
-  const cartLoad = cartLoading || loading;
-
+  useEffect(() => {
+    if (!shouldLoadQuote || !quoteToken || !auth?.isAuthenticated) return;
+    dispatch(fetchLoadSavedQuote(quoteToken)).unwrap().then((res) => {
+      const response = res?.data
+      const shippingformation = response?.billingInformation
+      const billingAddress = response?.billingAddress
+      const shippingFormData = {
+        email: response?.customer?.email,
+        firstName: shippingformation?.firstName,
+        lastName: shippingformation?.lastName,
+        company: shippingformation?.companyName,
+        phone: shippingformation?.phone,
+        address1: shippingformation?.addressLine1,
+        address2: shippingformation?.addressLine2,
+        city: shippingformation?.city,
+        country: shippingformation?.country,
+        state: shippingformation?.state,
+        zip: shippingformation?.zip,
+        shippingMethod: shippingformation?.shippingMethod,
+        orderComment: response?.comments,
+      };
+      const billingFormData = {
+        billingFirstName: billingAddress.firstName || "",
+        billingLastName: billingAddress.lastName || "",
+        billingCompany: billingAddress.companyName || "",
+        billingPhone: billingAddress.phone || "",
+        billingAddress1: billingAddress.addressLine1 || "",
+        billingAddress2: billingAddress.addressLine2 || "",
+        billingCity: billingAddress.city || "",
+        billingCountry: billingAddress.country || "",
+        billingState: billingAddress.state || "",
+        billingZip: billingAddress.zip || "",
+      };
+      dispatch(
+        checkoutFormSave({ data: { shippingFormData, billingFormData } }),
+      );
+    });
+  }, [shouldLoadQuote, quoteToken]);
   return (
     <main className="flex flex-col gap-8 w-full py-1">
       {/* Container: max-width 1170px, centered */}
