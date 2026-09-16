@@ -365,7 +365,7 @@ const CheckoutForm = () => {
       const selected = shippingRates.find(
         (rate: any) => rate.service_type === watchedShippingMethod,
       );
-      return selected ? Number(selected.total_charge) : 0;
+      return selected ? Number(selected.total_charge) : shippingDetail?.rate?.total_charge || 0;
     }
     if (typeof window !== "undefined") {
       const savedCost = Number(shippingDetail?.rate?.total_charge);
@@ -386,6 +386,7 @@ const CheckoutForm = () => {
     cart,
     shippingDetail,
   ]);
+  console.log(watchedShippingMethod);
 
   const tax = 0;
 
