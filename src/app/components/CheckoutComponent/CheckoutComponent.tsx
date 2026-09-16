@@ -386,8 +386,6 @@ const CheckoutForm = () => {
     cart,
     shippingDetail,
   ]);
-  console.log(watchedShippingMethod);
-
   const tax = 0;
 
   // Total before discount
