@@ -64,8 +64,7 @@ const ProductMiddle = ({
       }
     : undefined;
 
-  const productPrice =
-    parseInt(product?.salePrice) || parseInt(product?.price) || 0;
+  const productPrice = Number(product?.price) || 0;
 
   return (
     <>
