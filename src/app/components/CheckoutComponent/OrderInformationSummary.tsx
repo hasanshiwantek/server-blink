@@ -90,11 +90,11 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
       <div className="space-y-3  pt-4 px-6">
         <div className="flex justify-between text-[13px] text-[#545454] roboto-font">
           <span>Subtotal</span>
-          <span className="font-medium">${subtotal.toFixed(2)}</span>
+          <span className="font-medium">${subtotal?.toFixed(2)}</span>
         </div>
 
         {/* Discounts */}
-        {appliedCoupon && discountTotal > 0 && (
+        {appliedCoupon && discountTotal > 0 || manualDiscount > 0 && (
           <div className="mt-2">
             {/* Discounts header with arrow */}
             <div
@@ -120,12 +120,12 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
               </div>
             )}
             {/* Expanded details */}
-            <div className="flex justify-between text-gray-600 text-[13px] mt-1">
+            {appliedCoupon && discountTotal > 0 && <div className="flex justify-between text-gray-600 text-[13px] mt-1">
               <span>
                 ${Number(discountAmount).toFixed(2)} off the
                 order total ({appliedCoupon?.toUpperCase()})
               </span>
-            </div>
+            </div>}
           </div>
         )}
         <div className="flex justify-between text-[13px] text-[#545454] roboto-font">

@@ -7,6 +7,7 @@ import CartList from "./CartList";
 import OrderSummary from "./OrderSummary";
 import { fetchLoadSavedQuote } from "@/redux/slices/couponSlice";
 import { checkoutFormSave } from "@/redux/slices/shippingSlice";
+import { logout } from "@/redux/slices/authSlice";
 const Cart = () => {
   const dispatch = useAppDispatch()
   const searchParams = useSearchParams();
@@ -25,7 +26,7 @@ const Cart = () => {
       0,
     ) ?? 0;
   useEffect(() => {
-    if (!shouldLoadQuote || !quoteToken || !auth?.isAuthenticated) return;
+    if (!shouldLoadQuote || !quoteToken) return;
     dispatch(fetchLoadSavedQuote(quoteToken)).unwrap().then((res) => {
       const response = res?.data
       if (auth?.user?.id != response?.customer?.id) return
@@ -61,7 +62,13 @@ const Cart = () => {
       dispatch(
         checkoutFormSave({ data: { shippingFormData, billingFormData } }),
       );
-    });
+    }).catch((error) => {
+      if (error) {
+        localStorage.removeItem("persist:coupon");
+        dispatch(logout());
+        window.location.href = `/auth/login?action=loadSavedQuote&quoteToken=${quoteToken}`;
+      }
+    });;
   }, [shouldLoadQuote, quoteToken]);
   return (
     <main className="flex flex-col gap-8 w-full py-1">

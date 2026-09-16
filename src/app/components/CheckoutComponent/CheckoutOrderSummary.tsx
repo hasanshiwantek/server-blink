@@ -47,10 +47,10 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
   );
 
   useEffect(() => {
-    if (appliedCoupon && discountAmount > 0) {
+    if (appliedCoupon && discountAmount > 0 || manualDiscount > 0) {
       setDiscountOpen(true);
     }
-  }, [appliedCoupon, discountAmount])
+  }, [appliedCoupon, discountAmount, manualDiscount])
 
   return (
     <div className="bg-white border-[1px] border-[#8b8b8b] rounded-sm shadow-sm py-6 h-fit sticky top-9">
@@ -162,7 +162,7 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
         </div>
 
         {/* Discounts */}
-        {appliedCoupon && discountAmount > 0 && (
+        {appliedCoupon && discountAmount > 0 || manualDiscount > 0 && (
           <div className="mt-2">
             {/* Discounts header with arrow */}
             <div
@@ -190,13 +190,13 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
 
               {/* Discount value */}
               <span className="font-medium">
-                -${discountTotal.toFixed(2)}
+                -${discountTotal?.toFixed(2)}
               </span>
             </div>
 
             {/* Expanded details */}
 
-            {discountOpen && (
+            {discountOpen || manualDiscount > 0 && (
               <>
                 {manualDiscount > 0 && (
                   <div className="flex justify-between text-gray-600 text-[13px] mt-1">
@@ -208,7 +208,7 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
                     </span>
                   </div>
                 )}
-                <div className="flex justify-between text-gray-600 text-[13px] mt-1">
+                {discountOpen && <div className="flex justify-between text-gray-600 text-[13px] mt-1">
                   <span>
                     ${Number(appliedCoupon?.discountAmount).toFixed(2)} off the
                     order total ({appliedCoupon?.couponCode?.toUpperCase()})
@@ -216,7 +216,7 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
                   <span className="font-medium">
                     -${discountAmount?.toFixed(2)}
                   </span>
-                </div>
+                </div>}
               </>
             )}
           </div>
@@ -236,11 +236,11 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
       <div className="flex flex-col mt-4 pt-4 pb-2 px-6 border-t-[1px] border-[#8b8b8b] text-gray-700">
         <div className="flex justify-between items-center text-[15px] text-[#545454] roboto-font" >
           <span>Total <br /> (USD)</span>
-          <span className="font-bold text-[16px]">${finalTotal.toFixed(2)}</span>
+          <span className="font-bold text-[16px]">${finalTotal?.toFixed(2)}</span>
         </div>
 
         {/* Savings message */}
-        {appliedCoupon && discountTotal > 0 && (
+        {appliedCoupon && discountTotal > 0 || manualDiscount > 0 && (
           <div className="text-[#333] font-medium text-[13px]  mt-1 self-end">You saved <span className="!text-[#2aab3f] ">${discountTotal?.toFixed(2)}</span> in total!</div>
         )}
       </div>
