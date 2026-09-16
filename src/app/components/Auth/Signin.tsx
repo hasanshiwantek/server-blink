@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { loginUser } from "@/redux/slices/authSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { RootState } from "@/redux/store";
 import { toast } from "react-toastify";
 import { FiEye, FiEyeOff } from "react-icons/fi"; // add at top
@@ -19,16 +19,19 @@ interface SigninFormValues {
 }
 
 const SigninPage = () => {
+  const searchParams = useSearchParams();
+  const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm<SigninFormValues>();
-  const dispatch = useAppDispatch();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const auth = useAppSelector((state: RootState) => state?.auth);
+  const action = searchParams.get("action");
+  const quoteToken = searchParams.get("quoteToken");
+  const shouldLoadQuote = action === "loadSavedQuote" && !!quoteToken;
   const { loginloading } = useAppSelector((state: RootState) => state?.auth);
   const onSubmit = async (data: SigninFormValues) => {
     try {
@@ -37,7 +40,7 @@ const SigninPage = () => {
         const token = result?.payload?.token
         const fetchCartListInner = async () => {
           const sessionId = localStorage.getItem("sessionId")
-          const res = await fetch(`${baseURL}web/cart/transfer`, {
+          await fetch(`${baseURL}web/cart/transfer`, {
             method: "POST",
             headers: {
               "Authorization": `Bearer ${token}`,
@@ -48,7 +51,11 @@ const SigninPage = () => {
           });
           reset();
           dispatch(fetchCartList());
-          router.push("/my-account/orders");
+          if (shouldLoadQuote || quoteToken) {
+            router.push(`/cart?action=loadSavedQuote&quoteToken=${quoteToken}`)
+          } else {
+            router.push("/my-account/orders");
+          }
         };
         fetchCartListInner()
       } else {
@@ -57,19 +64,19 @@ const SigninPage = () => {
             ? result.payload
             : "Login failed. Please try again.";
         toast.error(errorMessage);
-      
+
       }
     } catch (err: any) {
-      
+
     }
   };
-useEffect(() => {
-  const timer = setTimeout(() => {
-    dispatch(fetchCartList());
-  }, 1000);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      dispatch(fetchCartList());
+    }, 1000);
 
-  return () => clearTimeout(timer); // cleanup
-}, []);
+    return () => clearTimeout(timer); // cleanup
+  }, []);
   return (
     <div className=" ">
       {/* Header/Navigation - Dark gray bar at top */}

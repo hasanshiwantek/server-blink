@@ -81,6 +81,8 @@ const Navbar: React.FC = () => {
                   <Link
                     href="mailto:info@serverblink.uk"
                     aria-label="Email us at info@serverblink.uk"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-[#D42020] text-[15px] hover:underline"
                   >
                     info@serverblink.uk

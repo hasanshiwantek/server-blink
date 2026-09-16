@@ -32,8 +32,11 @@ const OrderSummary = () => {
   const {
     appliedCoupon,
     discountAmount,
+    manualDiscount,
     loading: couponLoading,
   } = useAppSelector((state: RootState) => state.coupon);
+  const discountTotal = Number(discountAmount) + Number(manualDiscount)
+
   const router = useRouter();
 
   const [showCoupon, setShowCoupon] = useState(false);
@@ -99,7 +102,7 @@ const OrderSummary = () => {
   const totalBeforeDiscount = subtotal + shipping;
   const shippingCost = Number(shippingDetail?.rate?.total_charge);
   // Final total after discount
-  const finalTotal = Math.max(totalBeforeDiscount - discountAmount, 0);
+  const finalTotal = Math.max(totalBeforeDiscount - discountTotal, 0);
   const { shippingRates, ratesLoader } = useAppSelector(
     (state) => state.shippingZone,
   );
@@ -541,10 +544,6 @@ const OrderSummary = () => {
           {/* Show applied coupon details */}
           {appliedCoupon && (
             <div className="flex gap-3 items-center rounded">
-              {/* <span className="text-sm">
-                ${Number(appliedCoupon.discountAmount).toFixed(2)} off (
-                {appliedCoupon.couponCode.toUpperCase()})
-              </span> */}
               <button
                 onClick={handleRemoveCoupon}
                 className=" text-[14px] underline text-red-600 hover:text-red-700"
@@ -578,51 +577,24 @@ const OrderSummary = () => {
             </form>
           )}
 
-          {/* Show discount breakdown if applied */}
-          {/* {appliedCoupon && discountAmount > 0 && (
-            <div className="mt-2">
-              <div
-                className="flex justify-between items-center text-gray-700 cursor-pointer select-none py-2"
-                onClick={() => setDiscountOpen((prev) => !prev)}
-              >
-                <span className="flex items-center gap-1 text-[14px]">
-                  Discounts
-                  <svg
-                    className={`w-4 h-4 transition-transform ${
-                      discountOpen ? "rotate-180" : "rotate-0"
-                    }`}
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </span>
-                <span className="text-[14px] text-green-600 font-medium">
-                  -${discountAmount.toFixed(2)}
-                </span>
-              </div>
 
-              {discountOpen && (
-                <div className="flex justify-between text-gray-600 text-sm mt-1 px-4">
-                  <span>
-                    ${Number(appliedCoupon.discountAmount).toFixed(2)} off (
-                    {appliedCoupon.couponCode.toUpperCase()})
-                  </span>
-                  <span className="font-medium text-green-600">
-                    -${discountAmount.toFixed(2)}
-                  </span>
-                </div>
-              )}
+          {manualDiscount > 0 && <>
+            {/* Manual Discount */}
+            <div className="w-full h-[1px] bg-gray-300 my-3"></div>
+
+            {/* Coupon Section */}
+            <div className="flex justify-between py-2">
+              <span className="text-[14px] font-bold text-[#393939]">
+                Manual Discount:
+              </span>
+              <span className="text-[14px] font-medium">
+                -${manualDiscount?.toFixed(2)}
+              </span>
             </div>
-          )} */}
-        </div>
+          </>}
 
+          {/* Show discount breakdown if applied */}
+        </div>
         {/* Divider */}
         <div className="w-full h-[1px] bg-gray-300 my-3"></div>
 
@@ -632,17 +604,11 @@ const OrderSummary = () => {
             Grand total:
           </span>
           <span className="text-[14px] text-[#393939]">
-            ${finalTotal.toFixed(2)}
+            ${finalTotal?.toFixed(2)}
           </span>
         </div>
 
         {/* Savings message */}
-
-        {/* {appliedCoupon && discountAmount > 0 && (
-          <div className="text-sm text-green-600 text-right mt-1">
-            You saved ${discountAmount.toFixed(2)}!
-          </div>
-        )} */}
 
         {/* Buttons */}
         <div className="flex flex-col items-end gap-3 mt-5">
