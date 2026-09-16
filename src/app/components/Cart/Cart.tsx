@@ -65,8 +65,8 @@ const Cart = () => {
     }).catch((error) => {
       if (error) {
         localStorage.removeItem("persist:coupon");
-        dispatch(logout());
         window.location.href = `/auth/login?action=loadSavedQuote&quoteToken=${quoteToken}`;
+        dispatch(logout());
       }
     });;
   }, [shouldLoadQuote, quoteToken]);
