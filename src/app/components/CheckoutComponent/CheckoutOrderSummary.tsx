@@ -240,7 +240,7 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
         </div>
 
         {/* Savings message */}
-        {appliedCoupon && discountTotal > 0 || manualDiscount > 0 && (
+        {appliedCoupon || discountTotal > 0 && (
           <div className="text-[#333] font-medium text-[13px]  mt-1 self-end">You saved <span className="!text-[#2aab3f] ">${discountTotal?.toFixed(2)}</span> in total!</div>
         )}
       </div>
