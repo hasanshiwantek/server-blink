@@ -52,7 +52,7 @@ const SigninPage = () => {
           reset();
           dispatch(fetchCartList());
           if (shouldLoadQuote || quoteToken) {
-            router.push(`/cart?action=loadSavedQuote&quoteToken=${quoteToken}`)
+            window.location.href = `/cart?action=loadSavedQuote&quoteToken=${quoteToken}`
           } else {
             router.push("/my-account/orders");
           }
