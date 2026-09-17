@@ -21,6 +21,7 @@ import { Country, State, City } from "country-state-city";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { baseURL, sitekey, storeId } from "@/lib/axiosInstance";
 import { addCustomerAddress } from "@/redux/slices/myaccountSlice";
+import { countriesWithoutPostalCode } from "@/const/country-level";
 
 interface SignupFormValues {
   firstName: string;
@@ -84,63 +85,7 @@ const SignupPage = () => {
       name: c.name,
     }));
   }, [watchedCountry, watchedState]);
-  const countriesWithoutPostalCode = [
-  "AG", // Antigua and Barbuda
-  "AO", // Angola
-  "BS", // Bahamas
-  "BZ", // Belize
-  "BW", // Botswana
-  "BF", // Burkina Faso
-  "BI", // Burundi
-  "CM", // Cameroon
-  "CF", // Central African Republic
-  "KM", // Comoros
-  "CG", // Republic of the Congo
-  "DJ", // Djibouti
-  "DM", // Dominica
-  "GQ", // Equatorial Guinea
-  "ER", // Eritrea
-  "FJ", // Fiji
-  "GM", // Gambia
-  "GH", // Ghana
-  "GD", // Grenada
-  "GY", // Guyana
-  "HK", // Hong Kong
-  "IE", // Ireland
-  "JM", // Jamaica
-  "KI", // Kiribati
-  "LY", // Libya
-  "MW", // Malawi
-  "ML", // Mali
-  "MR", // Mauritania
-  "MU", // Mauritius
-  "FM", // Micronesia
-  "NA", // Namibia
-  "NR", // Nauru
-  "KP", // North Korea
-  "PW", // Palau
-  "PA", // Panama
-  "QA", // Qatar
-  "RW", // Rwanda
-  "KN", // Saint Kitts and Nevis
-  "LC", // Saint Lucia
-  "WS", // Samoa
-  "ST", // São Tomé and Príncipe
-  "SL", // Sierra Leone
-  "SB", // Solomon Islands
-  "SS", // South Sudan
-  "SR", // Suriname
-  "TZ", // Tanzania
-  "TL", // Timor-Leste
-  "TG", // Togo
-  "TO", // Tonga
-  "TT", // Trinidad and Tobago
-  "TV", // Tuvalu
-  "UG", // Uganda
-  "AE", // United Arab Emirates
-  "VU", // Vanuatu
-  "YE", // Yemen
-];
+
 const hasPostalCode = !countriesWithoutPostalCode.includes(watchedCountry);
   const onSubmit = async (data: SignupFormValues) => {
     if (!captchaToken) {
