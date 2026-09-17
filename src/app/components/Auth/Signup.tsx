@@ -56,6 +56,7 @@ const SignupPage = () => {
     handleSubmit,
     watch,
     reset,
+    clearErrors,
     setValue,
     formState: { errors },
   } = useForm<SignupFormValues>({
@@ -83,6 +84,64 @@ const SignupPage = () => {
       name: c.name,
     }));
   }, [watchedCountry, watchedState]);
+  const countriesWithoutPostalCode = [
+  "AG", // Antigua and Barbuda
+  "AO", // Angola
+  "BS", // Bahamas
+  "BZ", // Belize
+  "BW", // Botswana
+  "BF", // Burkina Faso
+  "BI", // Burundi
+  "CM", // Cameroon
+  "CF", // Central African Republic
+  "KM", // Comoros
+  "CG", // Republic of the Congo
+  "DJ", // Djibouti
+  "DM", // Dominica
+  "GQ", // Equatorial Guinea
+  "ER", // Eritrea
+  "FJ", // Fiji
+  "GM", // Gambia
+  "GH", // Ghana
+  "GD", // Grenada
+  "GY", // Guyana
+  "HK", // Hong Kong
+  "IE", // Ireland
+  "JM", // Jamaica
+  "KI", // Kiribati
+  "LY", // Libya
+  "MW", // Malawi
+  "ML", // Mali
+  "MR", // Mauritania
+  "MU", // Mauritius
+  "FM", // Micronesia
+  "NA", // Namibia
+  "NR", // Nauru
+  "KP", // North Korea
+  "PW", // Palau
+  "PA", // Panama
+  "QA", // Qatar
+  "RW", // Rwanda
+  "KN", // Saint Kitts and Nevis
+  "LC", // Saint Lucia
+  "WS", // Samoa
+  "ST", // São Tomé and Príncipe
+  "SL", // Sierra Leone
+  "SB", // Solomon Islands
+  "SS", // South Sudan
+  "SR", // Suriname
+  "TZ", // Tanzania
+  "TL", // Timor-Leste
+  "TG", // Togo
+  "TO", // Tonga
+  "TT", // Trinidad and Tobago
+  "TV", // Tuvalu
+  "UG", // Uganda
+  "AE", // United Arab Emirates
+  "VU", // Vanuatu
+  "YE", // Yemen
+];
+const hasPostalCode = !countriesWithoutPostalCode.includes(watchedCountry);
   const onSubmit = async (data: SignupFormValues) => {
     if (!captchaToken) {
       alert("Please verify the captcha.");
@@ -424,6 +483,9 @@ const SignupPage = () => {
                 onValueChange={(value) => {
                   setValue("country", value);
                   setValue("state", "");
+                    if (countriesWithoutPostalCode.includes(value)) {
+    clearErrors("zip");
+  }
                 }}
               >
                 <SelectTrigger className="h-[42px] min-h-[42px] w-full max-w-full">
@@ -509,14 +571,24 @@ const SignupPage = () => {
               >
                 Zip/Postcode
               </label>
-              <span className="text-[#545454]">*</span>
+              {hasPostalCode && (
+  <span className="text-[#545454]">*</span>
+)}
             </div>
 
-            <Input
-              id="zip"
-              className="h-[42px] min-h-[42px] w-full max-w-full"
-              {...register("zip", { required: "Zip/Postcode is required" })}
-            />
+         <Input
+  id="zip"
+  className="h-[42px] min-h-[42px] w-full max-w-full"
+  {...register("zip", {
+    validate: (value) => {
+      if (hasPostalCode && !value) {
+        return "Zip/Postcode is required";
+      }
+
+      return true;
+    },
+  })}
+/>
             {errors.zip && (
               <p className="mt-1 text-[14px] text-red-500">
                 {errors.zip.message}

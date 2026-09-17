@@ -30,14 +30,14 @@ import { toast } from "react-toastify";
 const MyAddress = () => {
   const dispatch = useAppDispatch();
   const [errors, setErrors] = useState({
-  firstName: "",
-  lastName: "",
-  addressLine1: "",
-  city: "",
-  state: "",
-  zip: "",
-  country: "",
-});
+    firstName: "",
+    lastName: "",
+    addressLine1: "",
+    city: "",
+    state: "",
+    zip: "",
+    country: "",
+  });
 
   const { address, loading, error, customerAddresses } = useAppSelector(
     (state: RootState) => state.myaccount,
@@ -59,6 +59,66 @@ const MyAddress = () => {
       code: s.isoCode,
     }));
   }, [editData?.country]);
+
+  const countriesWithoutPostalCode = [
+    "AG", // Antigua and Barbuda
+    "AO", // Angola
+    "BS", // Bahamas
+    "BZ", // Belize
+    "BW", // Botswana
+    "BF", // Burkina Faso
+    "BI", // Burundi
+    "CM", // Cameroon
+    "CF", // Central African Republic
+    "KM", // Comoros
+    "CG", // Republic of the Congo
+    "DJ", // Djibouti
+    "DM", // Dominica
+    "GQ", // Equatorial Guinea
+    "ER", // Eritrea
+    "FJ", // Fiji
+    "GM", // Gambia
+    "GH", // Ghana
+    "GD", // Grenada
+    "GY", // Guyana
+    "HK", // Hong Kong
+    "IE", // Ireland
+    "JM", // Jamaica
+    "KI", // Kiribati
+    "LY", // Libya
+    "MW", // Malawi
+    "ML", // Mali
+    "MR", // Mauritania
+    "MU", // Mauritius
+    "FM", // Micronesia
+    "NA", // Namibia
+    "NR", // Nauru
+    "KP", // North Korea
+    "PW", // Palau
+    "PA", // Panama
+    "QA", // Qatar
+    "RW", // Rwanda
+    "KN", // Saint Kitts and Nevis
+    "LC", // Saint Lucia
+    "WS", // Samoa
+    "ST", // São Tomé and Príncipe
+    "SL", // Sierra Leone
+    "SB", // Solomon Islands
+    "SS", // South Sudan
+    "SR", // Suriname
+    "TZ", // Tanzania
+    "TL", // Timor-Leste
+    "TG", // Togo
+    "TO", // Tonga
+    "TT", // Trinidad and Tobago
+    "TV", // Tuvalu
+    "UG", // Uganda
+    "AE", // United Arab Emirates
+    "VU", // Vanuatu
+    "YE", // Yemen
+  ];
+  const hasPostalCode = !countriesWithoutPostalCode.includes(editData?.country);
+
   const handleDelete = async (id: number | string) => {
     const confirmDelete = confirm(
       `Are you sure you want to delete address with ID: ${id}?`,
@@ -89,50 +149,48 @@ const MyAddress = () => {
     setShowModal(true);
   };
 
- const handleUpdate = async () => {
-  const newErrors = {
-    firstName: editData.firstName ? "" : "First Name is required",
-    lastName: editData.lastName ? "" : "Last Name is required",
-    addressLine1: editData.addressLine1
-      ? ""
-      : "Address Line 1 is required",
-    city: editData.city ? "" : "City is required",
-    state: editData.state ? "" : "State is required",
-    zip: editData.zip ? "" : "Zip is required",
-    country: editData.country ? "" : "Country is required",
+  const handleUpdate = async () => {
+    const newErrors = {
+      firstName: editData.firstName ? "" : "First Name is required",
+      lastName: editData.lastName ? "" : "Last Name is required",
+      addressLine1: editData.addressLine1 ? "" : "Address Line 1 is required",
+      city: editData.city ? "" : "City is required",
+      state: editData.state ? "" : "State is required",
+      zip: hasPostalCode && !editData.zip ? "Zip is required" : "",
+      country: editData.country ? "" : "Country is required",
+    };
+
+    setErrors(newErrors);
+
+    if (Object.values(newErrors).some((err) => err !== "")) {
+      return;
+    }
+
+    const payload = {
+      address_line_1: editData.addressLine1,
+      address_line_2: editData.addressLine2,
+      city: editData.city,
+      state: editData.state,
+      zip: editData.zip,
+      country: editData.country,
+      first_name: editData.firstName,
+      last_name: editData.lastName,
+      company_name: editData.companyName,
+      phone_number: editData.phone,
+    };
+
+    try {
+      await dispatch(
+        updateCustomerAddress({
+          id: editData.addressId,
+          data: payload,
+        }),
+      ).unwrap();
+
+      setShowModal(false);
+      dispatch(fetchCustomerAddress());
+    } catch (err) {}
   };
-
-  setErrors(newErrors);
-
-  if (Object.values(newErrors).some((err) => err !== "")) {
-    return;
-  }
-
-  const payload = {
-    address_line_1: editData.addressLine1,
-    address_line_2: editData.addressLine2,
-    city: editData.city,
-    state: editData.state,
-    zip: editData.zip,
-    country: editData.country,
-    first_name: editData.firstName,
-    last_name: editData.lastName,
-    company_name: editData.companyName,
-    phone_number: editData.phone,
-  };
-
-  try {
-    await dispatch(
-      updateCustomerAddress({
-        id: editData.addressId,
-        data: payload,
-      })
-    ).unwrap();
-
-    setShowModal(false);
-    dispatch(fetchCustomerAddress());
-  } catch (err) {}
-};
 
   useEffect(() => {
     dispatch(fetchCustomerAddress());
@@ -160,8 +218,10 @@ const MyAddress = () => {
                 className="!w-full !max-w-full !h-[42px]"
               />
               {errors.firstName && (
-  <p className="text-red-500 text-[12px]  mt-1 ml-2">{errors.firstName}</p>
-)}
+                <p className="text-red-500 text-[12px]  mt-1 ml-2">
+                  {errors.firstName}
+                </p>
+              )}
             </div>
 
             {/* Last Name */}
@@ -179,9 +239,11 @@ const MyAddress = () => {
                 }
                 className="!w-full !max-w-full !h-[42px]"
               />
-                  {errors.lastName && (
-  <p className="text-red-500 text-[12px] mt-1 ml-2">{errors.lastName}</p>
-)}
+              {errors.lastName && (
+                <p className="text-red-500 text-[12px] mt-1 ml-2">
+                  {errors.lastName}
+                </p>
+              )}
             </div>
 
             {/* Company */}
@@ -223,9 +285,11 @@ const MyAddress = () => {
                 }
                 className="!w-full !max-w-full !h-[42px]"
               />
-                  {errors.addressLine1 && (
-  <p className="text-red-500 text-[12px]  mt-1 ml-2">{errors.addressLine1}</p>
-)}
+              {errors.addressLine1 && (
+                <p className="text-red-500 text-[12px]  mt-1 ml-2">
+                  {errors.addressLine1}
+                </p>
+              )}
             </div>
 
             {/* Address Line 2 */}
@@ -256,8 +320,8 @@ const MyAddress = () => {
                 className="!w-full !max-w-full !h-[42px]"
               />
               {errors.city && (
-  <p className="text-red-500 text-[12px]  mt-1">{errors.city}</p>
-)}
+                <p className="text-red-500 text-[12px]  mt-1">{errors.city}</p>
+              )}
             </div>
 
             {/* State */}
@@ -276,52 +340,52 @@ const MyAddress = () => {
                 className="!w-full !max-w-full !h-[42px]"
               /> */}
               {stateList.length > 0 ? (
-                 <>
-                <Select
-                  value={editData.state}
-                  onValueChange={(value) =>
-                    setEditData({
-                      ...editData,
-                      state: value,
-                    })
-                  }
-                >
-                  <SelectTrigger className="!w-full !max-w-full !h-[42px]">
-                    <SelectValue placeholder="Choose a State" />
-                  </SelectTrigger>
+                <>
+                  <Select
+                    value={editData.state}
+                    onValueChange={(value) =>
+                      setEditData({
+                        ...editData,
+                        state: value,
+                      })
+                    }
+                  >
+                    <SelectTrigger className="!w-full !max-w-full !h-[42px]">
+                      <SelectValue placeholder="Choose a State" />
+                    </SelectTrigger>
 
-                  <SelectContent>
-                    {stateList.map((state) => (
-                      <SelectItem key={state.code} value={state.code}>
-                        {state.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                    <SelectContent>
+                      {stateList.map((state) => (
+                        <SelectItem key={state.code} value={state.code}>
+                          {state.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   {errors.state && (
-        <p className="text-red-500 text-[12px]  mt-1">
-          {errors.state}
-        </p>
-      )}
-    </>
+                    <p className="text-red-500 text-[12px]  mt-1">
+                      {errors.state}
+                    </p>
+                  )}
+                </>
               ) : (
                 <>
-                <Input
-                  value={editData.state}
-                  onChange={(e) =>
-                    setEditData({
-                      ...editData,
-                      state: e.target.value,
-                    })
-                  }
-                  className="!w-full !max-w-full !h-[42px]"
-                />
-                    {errors.state && (
-        <p className="text-red-500 text-[12px] mt-1">
-          {errors.state}
-        </p>
-      )}
-    </>
+                  <Input
+                    value={editData.state}
+                    onChange={(e) =>
+                      setEditData({
+                        ...editData,
+                        state: e.target.value,
+                      })
+                    }
+                    className="!w-full !max-w-full !h-[42px]"
+                  />
+                  {errors.state && (
+                    <p className="text-red-500 text-[12px] mt-1">
+                      {errors.state}
+                    </p>
+                  )}
+                </>
               )}
             </div>
 
@@ -331,7 +395,14 @@ const MyAddress = () => {
                 className="text-[14px] text-[#545454] !font-normal  flex md:justify-between"
                 htmlFor="postcode"
               >
-                Zip / Postcode <span className="text-[11px]">*</span>
+                Zip / Postcode 
+            {hasPostalCode ? (
+    <span className="text-[11px]">*</span>
+  ) : (
+    <span className="text-[11px] text-gray-400">
+    
+    </span>
+  )}
               </Label>
               <Input
                 value={editData.zip}
@@ -341,8 +412,8 @@ const MyAddress = () => {
                 className="!w-full !max-w-full !h-[42px]"
               />
               {errors.zip && (
-  <p className="text-red-500 text-[12px] mt-1">{errors.zip}</p>
-)}
+                <p className="text-red-500 text-[12px] mt-1">{errors.zip}</p>
+              )}
             </div>
 
             {/* Country */}
@@ -355,9 +426,21 @@ const MyAddress = () => {
               </Label>
               <Select
                 value={editData.country}
-                onValueChange={(value) =>
-                  setEditData({ ...editData, country: value, state: "" })
-                }
+               onValueChange={(value) => {
+  setEditData({
+    ...editData,
+    country: value,
+    state: "",
+    ...(countriesWithoutPostalCode.includes(value) && { zip: "" }),
+  });
+
+  if (countriesWithoutPostalCode.includes(value)) {
+    setErrors((prev) => ({
+      ...prev,
+      zip: "",
+    }));
+  }
+}}
               >
                 <SelectTrigger className="!w-full !max-w-full !h-[42px]">
                   <SelectValue placeholder="Choose a Country" />
@@ -371,8 +454,10 @@ const MyAddress = () => {
                 </SelectContent>
               </Select>
               {errors.country && (
-  <p className="text-red-500 text-[12px] mt-1">{errors.country}</p>
-)}
+                <p className="text-red-500 text-[12px] mt-1">
+                  {errors.country}
+                </p>
+              )}
             </div>
           </div>
 
