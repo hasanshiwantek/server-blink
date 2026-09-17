@@ -17,6 +17,7 @@ import {
   Controller,
   useWatch,
   UseFormSetValue,
+  UseFormClearErrors,
 } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import {
@@ -36,12 +37,14 @@ import {
 import ShipToSingleAddressModal from "./ShipToSingleAddressModal";
 import { CHECKOUT_STORAGE_KEY } from "./CheckoutComponent";
 import { fetchAccountAddress } from "@/redux/slices/myaccountSlice";
+import { countriesWithoutPostalCode } from "@/const/country-level";
 
 interface ShippingStepProps {
   register: UseFormRegister<any>;
   errors: FieldErrors;
   control: any;
   setValue: UseFormSetValue<any>;
+  clearErrors: UseFormClearErrors<any>;
   onContinue: () => void;
   countryList: Array<{ name: string; code: string }>;
   stateList: Array<{ name: string; code: string }>;
@@ -127,6 +130,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   errors,
   control,
   setValue,
+  clearErrors,
   onContinue,
   countryList,
   stateList,
@@ -167,6 +171,8 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   );
   const { saveDetail } = useAppSelector((state) => state.shippingZone);
 
+
+
   const userAddresses = Array.isArray(customerAddresses)
     ? customerAddresses?.map((item: any) => ({
       id: item.id,
@@ -205,6 +211,8 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
     return rate || null;
   };
 
+  const hasPostalCode = !countriesWithoutPostalCode.includes(country);
+
   const isShippingComplete = useMemo(() => {
     return !!(
       firstName?.trim() &&
@@ -220,11 +228,10 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
     if (!city?.trim() && !country?.trim() && !zip?.trim() && !state?.trim())
       return;
     if (
-      city?.trim() &&
       country?.trim() &&
-      zip?.trim() &&
       state?.trim() &&
-      cart?.length
+      cart?.length &&
+      (!hasPostalCode || zip?.trim())
     ) {
       const pkg = calculatePackage(cart);
       const timer = setTimeout(() => {
@@ -235,7 +242,9 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
               destination: {
                 country_code: country?.trim(),
                 state: state?.trim(),
-                postal_code: zip?.trim(),
+                ...(zip?.trim() && {
+                  postal_code: zip.trim(),
+                }),
                 ...(city?.trim() && { city: city.trim() }),
               },
               package: pkg,
@@ -733,6 +742,9 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                         onValueChange={(val) => {
                           field.onChange(val);
                           setValue("state", ""); //
+                          if (countriesWithoutPostalCode.includes(val)) {
+                            clearErrors("zip");
+                          }
                         }}
                         value={field.value}
                       >
@@ -827,7 +839,13 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                       htmlFor="zip"
                       className="mb-2 flex items-baseline justify-between gap-2 text-[13px] text-[#545454]"
                     >
-                      <span> Postal Code</span>
+                      <span>Postal Code</span>
+
+                      {!hasPostalCode && (
+                        <span className="shrink-0 text-gray-400">
+                          (Optional)
+                        </span>
+                      )}
                     </label>
                     <Input
                       id="zip"
@@ -835,7 +853,12 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                       className={`w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none ${errors.zip ? "border-red-500" : ""
                         }`}
                       {...register("zip", {
-                        required: "Postal code is required",
+                        validate: (value) => {
+                          if (hasPostalCode && !value) {
+                            return "Postal code is required";
+                          }
+                          return true;
+                        },
                       })}
                     />
                     {errors.zip && (
@@ -980,11 +1003,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                             .then(() => {
                               dispatch(fetchShippingRate({}));
                             });
-                          // localStorage.setItem("shippingCost", cost);
-                          // localStorage.setItem(
-                          //   "shippingData",
-                          //   JSON.stringify(shippingData),
-                          // );
                         }}
                         className="mt-1"
                         disabled={!isShippingComplete}

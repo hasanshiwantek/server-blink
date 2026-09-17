@@ -13,7 +13,6 @@ import {
   increaseQty,
   removeFromCart,
   clearCart,
-  restoreCart,
 } from "@/redux/slices/cartSlice";
 import { applyCoupon, removeCoupon } from "@/redux/slices/couponSlice"; // ADD THIS
 import axiosInstance, { baseURL, stripePublishableKey } from "@/lib/axiosInstance";
@@ -66,6 +65,7 @@ import {
   fetchCustomerAddress,
 } from "@/redux/slices/myaccountSlice";
 import { fetchCartList, removeProducts } from "@/redux/slices/cartsSlice";
+import { subscribeNewsletter } from "@/redux/slices/contactSlice";
 
 export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
 function splitName(fullName: string) {
@@ -216,6 +216,7 @@ const CheckoutForm = () => {
     control,
     trigger,
     getValues,
+    clearErrors,
     setError,
     formState: { errors },
   } = useForm<CheckoutFormValues>({
@@ -813,7 +814,6 @@ const CheckoutForm = () => {
         dispatch(resetShippingRates()); // ✅ ADD
         dispatch(setIsMultiAddress(false));
         dispatch(fetchCartList());
-        localStorage.removeItem(CHECKOUT_STORAGE_KEY);
         router.push(`/checkout/order-information/${orderNumber}`);
       } catch (err: any) {
         event.complete("fail");
@@ -1152,7 +1152,10 @@ const CheckoutForm = () => {
           );
         }
       }
-
+      if (data?.newsletter) {
+        const email = data?.email
+        dispatch(subscribeNewsletter({ email: email.trim() }))
+      }
       dispatch(
         removeProducts({
           product_ids: productIds,
@@ -1167,8 +1170,7 @@ const CheckoutForm = () => {
       dispatch(resetShippingRates());
       dispatch(setIsMultiAddress(false));
       dispatch(fetchCartList());
-      localStorage.removeItem(CHECKOUT_STORAGE_KEY);
-      router.push(`/checkout/order-information/${orderNumber}`);
+      window.location.href = `/checkout/order-information/${orderNumber}`
     } catch (err: any) {
       const errorMessage =
         err.response?.data?.message ||
@@ -1599,6 +1601,7 @@ const CheckoutForm = () => {
                 control={control}
                 setValue={setValue}
                 onContinue={handleContinueToBilling}
+                clearErrors={clearErrors}
                 countryList={countryList}
                 stateList={stateList}
                 cityList={cityList}

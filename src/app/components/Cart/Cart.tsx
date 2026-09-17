@@ -6,7 +6,7 @@ import { RootState } from "@/redux/store";
 import CartList from "./CartList";
 import OrderSummary from "./OrderSummary";
 import { fetchLoadSavedQuote, removeCoupon } from "@/redux/slices/couponSlice";
-import { checkoutFormSave } from "@/redux/slices/shippingSlice";
+import { addShippingCost, checkoutFormSave } from "@/redux/slices/shippingSlice";
 import { logout } from "@/redux/slices/authSlice";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
 const Cart = () => {
@@ -28,8 +28,11 @@ const Cart = () => {
     ) ?? 0;
   useEffect(() => {
     if (!shouldLoadQuote || !quoteToken) return;
-    dispatch(fetchLoadSavedQuote(quoteToken)).unwrap().then((res) => {
+    dispatch(fetchLoadSavedQuote(quoteToken)).unwrap().then(async (res) => {
       const response = res?.data
+
+      console.log("response", response);
+
       if (auth?.user?.id != response?.customer?.id) return
       const shippingformation = response?.billingInformation
       const billingAddress = response?.billingAddress
@@ -60,10 +63,28 @@ const Cart = () => {
         billingState: billingAddress.state || "",
         billingZip: billingAddress.zip || "",
       };
+
+
       dispatch(
         checkoutFormSave({ data: { shippingFormData, billingFormData } }),
       );
-      dispatch(fetchCartList());
+      await dispatch(fetchCartList());
+      if (cartItems?.length > 0) {
+        const shippingMethod = response?.shippingMethod
+        const shippingPayload: any = {
+          city: shippingformation?.city,
+          country: shippingformation?.country,
+          state: shippingformation?.state,
+          zip: shippingformation?.zip,
+          cartId: cartItems.map((item) => item.cartItemId),
+          rate: {
+            service_type: shippingMethod?.service_type,
+            method_type: shippingMethod?.method_type,
+            total_charge: shippingMethod?.cost,
+          },
+        };
+        dispatch(addShippingCost(shippingPayload))
+      }
     }).catch((error) => {
       if (error) {
         dispatch(removeCoupon())
