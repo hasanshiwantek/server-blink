@@ -2,6 +2,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "@/lib/axiosInstance";
 import { CHECKOUT_STORAGE_KEY } from "@/app/components/CheckoutComponent/CheckoutComponent";
+import { RootState } from "../store";
 export interface CartItem {
   productId: any;
   quantity: number;
@@ -58,7 +59,11 @@ export const fetchCartList = createAsyncThunk(
   "cart/fetchCartList",
   async (_, thunkAPI) => {
     try {
-      const res = await axiosInstance.get(`web/cart/list`);
+
+      const state = thunkAPI.getState() as RootState;
+      const quoteToken = state?.coupon?.quoteToken
+
+      const res = await axiosInstance.get(`web/cart/list?${quoteToken}`);
       return res.data;
     } catch (err: any) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
