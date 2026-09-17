@@ -217,10 +217,9 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   }, [firstName, lastName, address1, city, country, zip]);
 
   useEffect(() => {
-    if (!city?.trim() && !country?.trim() && !zip?.trim() && !state?.trim())
+    if (!country?.trim() && !zip?.trim() && !state?.trim())
       return;
     if (
-      city?.trim() &&
       country?.trim() &&
       zip?.trim() &&
       state?.trim() &&
