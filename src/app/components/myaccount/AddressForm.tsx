@@ -6,7 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { addCustomerAddress, updatecustomer } from "@/redux/slices/myaccountSlice";
+import {
+  addCustomerAddress,
+  updatecustomer,
+} from "@/redux/slices/myaccountSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import {
@@ -39,10 +42,11 @@ const AddressForm = () => {
     control,
     setValue,
     watch,
+    clearErrors,
     formState: { errors },
     reset,
   } = useForm<AddressFormValues>({
-      shouldUnregister: true,
+    shouldUnregister: true,
   });
   const { loading, error } = useAppSelector(
     (state: RootState) => state.myaccount,
@@ -64,9 +68,66 @@ const AddressForm = () => {
       code: s.isoCode,
     }));
   }, [selectedCountry]);
+  const countriesWithoutPostalCode = [
+    "AG", // Antigua and Barbuda
+    "AO", // Angola
+    "BS", // Bahamas
+    "BZ", // Belize
+    "BW", // Botswana
+    "BF", // Burkina Faso
+    "BI", // Burundi
+    "CM", // Cameroon
+    "CF", // Central African Republic
+    "KM", // Comoros
+    "CG", // Republic of the Congo
+    "DJ", // Djibouti
+    "DM", // Dominica
+    "GQ", // Equatorial Guinea
+    "ER", // Eritrea
+    "FJ", // Fiji
+    "GM", // Gambia
+    "GH", // Ghana
+    "GD", // Grenada
+    "GY", // Guyana
+    "HK", // Hong Kong
+    "IE", // Ireland
+    "JM", // Jamaica
+    "KI", // Kiribati
+    "LY", // Libya
+    "MW", // Malawi
+    "ML", // Mali
+    "MR", // Mauritania
+    "MU", // Mauritius
+    "FM", // Micronesia
+    "NA", // Namibia
+    "NR", // Nauru
+    "KP", // North Korea
+    "PW", // Palau
+    "PA", // Panama
+    "QA", // Qatar
+    "RW", // Rwanda
+    "KN", // Saint Kitts and Nevis
+    "LC", // Saint Lucia
+    "WS", // Samoa
+    "ST", // São Tomé and Príncipe
+    "SL", // Sierra Leone
+    "SB", // Solomon Islands
+    "SS", // South Sudan
+    "SR", // Suriname
+    "TZ", // Tanzania
+    "TL", // Timor-Leste
+    "TG", // Togo
+    "TO", // Tonga
+    "TT", // Trinidad and Tobago
+    "TV", // Tuvalu
+    "UG", // Uganda
+    "AE", // United Arab Emirates
+    "VU", // Vanuatu
+    "YE", // Yemen
+  ];
+  const hasPostalCode = !countriesWithoutPostalCode.includes(selectedCountry);
 
   const onSubmit = async (data: AddressFormValues) => {
-      
     try {
       // Only addresses in payload
       const mergedData = {
@@ -80,10 +141,10 @@ const AddressForm = () => {
         state: data.state,
         zip: data.postcode,
         country: data.country,
-      }
+      };
 
       const result = await dispatch(
-        addCustomerAddress({ id: auth?.user?.id, data: mergedData })
+        addCustomerAddress({ id: auth?.user?.id, data: mergedData }),
       );
 
       if (addCustomerAddress.fulfilled.match(result)) {
@@ -92,23 +153,16 @@ const AddressForm = () => {
       } else {
         const errorMessage =
           result.error?.message || "Add address failed. Please try again.";
-       
       }
-    } catch (error) {
-    
-    }
+    } catch (error) {}
   };
-  
+
   const inputClass =
     "w-full! h-[42px] text-[#545454] font-normal! max-w-full! py-[10px] px-[14px] border border-[#cac9c9] rounded-none";
 
   return (
     <div className="max-w-full mx-auto p-8 rounded-lg">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-5 roboto-font"
-      
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 roboto-font">
         {/* Row 0: First Name & Last Name */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -242,13 +296,15 @@ const AddressForm = () => {
               name="country"
               control={control}
               rules={{ required: "Country is required" }}
-             
               render={({ field }) => (
                 <Select
                   value={field.value}
                   onValueChange={(value) => {
                     field.onChange(value);
                     setValue("state", "");
+                    if (countriesWithoutPostalCode.includes(value)) {
+                      clearErrors("postcode");
+                    }
                   }}
                 >
                   <SelectTrigger className={`${inputClass} h-[44px]!`}>
@@ -286,13 +342,8 @@ const AddressForm = () => {
                 name="state"
                 control={control}
                 rules={{ required: "State/Province is required" }}
-          
                 render={({ field }) => (
-                  
-                  <Select
-                    value={field.value}
-                    onValueChange={field.onChange}
-                  >
+                  <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger className={`${inputClass} h-[44px]!`}>
                       <SelectValue placeholder="Choose a State" />
                     </SelectTrigger>
@@ -321,15 +372,26 @@ const AddressForm = () => {
           </div>
           <div>
             <Label
-              className="text-[14px] text-[#545454] font-normal!  flex md:justify-between"
+              className="text-[14px] text-[#545454] font-normal! flex md:justify-between"
               htmlFor="postcode"
             >
-              Zip / Postcode <span className="text-[11px]">*</span>
+              Zip / Postcode
+              {hasPostalCode ? (
+                <span className="text-[11px]">*</span>
+              ) : (
+                <span className="text-[11px] text-gray-400"></span>
+              )}
             </Label>
             <Input
               id="postcode"
               {...register("postcode", {
-                required: "Zip/Postcode is required",
+                validate: (value) => {
+                  if (hasPostalCode && !value) {
+                    return "Zip/Postcode is required";
+                  }
+
+                  return true;
+                },
               })}
               className={inputClass}
             />
@@ -340,10 +402,7 @@ const AddressForm = () => {
         </div>
 
         {/* Buttons */}
-        <div
-          className="flex flex-col md:flex-row gap-4 mt-12 roboto-condensed-only-font "
-         
-        >
+        <div className="flex flex-col md:flex-row gap-4 mt-12 roboto-condensed-only-font ">
           <Button
             type="submit"
             className="w-full md:w-[16%] p-7! text-2xl rounded-none border-b-2 border-black bg-[#D42020] text-white font-bold"

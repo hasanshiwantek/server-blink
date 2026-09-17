@@ -17,6 +17,7 @@ import {
   Controller,
   useWatch,
   UseFormSetValue,
+    UseFormClearErrors,
 } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import {
@@ -42,6 +43,7 @@ interface ShippingStepProps {
   errors: FieldErrors;
   control: any;
   setValue: UseFormSetValue<any>;
+  clearErrors: UseFormClearErrors<any>;
   onContinue: () => void;
   countryList: Array<{ name: string; code: string }>;
   stateList: Array<{ name: string; code: string }>;
@@ -127,6 +129,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   errors,
   control,
   setValue,
+  clearErrors,
   onContinue,
   countryList,
   stateList,
@@ -167,6 +170,8 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   );
   const { saveDetail } = useAppSelector((state) => state.shippingZone);
 
+
+
   const userAddresses = Array.isArray(customerAddresses)
     ? customerAddresses?.map((item: any) => ({
       id: item.id,
@@ -204,6 +209,65 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
     );
     return rate || null;
   };
+  /////zip required logic here
+   const countriesWithoutPostalCode = [
+  "AG", // Antigua and Barbuda
+  "AO", // Angola
+  "BS", // Bahamas
+  "BZ", // Belize
+  "BW", // Botswana
+  "BF", // Burkina Faso
+  "BI", // Burundi
+  "CM", // Cameroon
+  "CF", // Central African Republic
+  "KM", // Comoros
+  "CG", // Republic of the Congo
+  "DJ", // Djibouti
+  "DM", // Dominica
+  "GQ", // Equatorial Guinea
+  "ER", // Eritrea
+  "FJ", // Fiji
+  "GM", // Gambia
+  "GH", // Ghana
+  "GD", // Grenada
+  "GY", // Guyana
+  "HK", // Hong Kong
+  "IE", // Ireland
+  "JM", // Jamaica
+  "KI", // Kiribati
+  "LY", // Libya
+  "MW", // Malawi
+  "ML", // Mali
+  "MR", // Mauritania
+  "MU", // Mauritius
+  "FM", // Micronesia
+  "NA", // Namibia
+  "NR", // Nauru
+  "KP", // North Korea
+  "PW", // Palau
+  "PA", // Panama
+  "QA", // Qatar
+  "RW", // Rwanda
+  "KN", // Saint Kitts and Nevis
+  "LC", // Saint Lucia
+  "WS", // Samoa
+  "ST", // São Tomé and Príncipe
+  "SL", // Sierra Leone
+  "SB", // Solomon Islands
+  "SS", // South Sudan
+  "SR", // Suriname
+  "TZ", // Tanzania
+  "TL", // Timor-Leste
+  "TG", // Togo
+  "TO", // Tonga
+  "TT", // Trinidad and Tobago
+  "TV", // Tuvalu
+  "UG", // Uganda
+  "AE", // United Arab Emirates
+  "VU", // Vanuatu
+  "YE", // Yemen
+];
+const hasPostalCode = !countriesWithoutPostalCode.includes(country);
 
   const isShippingComplete = useMemo(() => {
     return !!(
@@ -217,15 +281,14 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   }, [firstName, lastName, address1, city, country, zip]);
 
   useEffect(() => {
-    if (!city?.trim() && !country?.trim() && !zip?.trim() && !state?.trim())
+    if (!country?.trim() && !zip?.trim() && !state?.trim())
       return;
-    if (
-      city?.trim() &&
-      country?.trim() &&
-      zip?.trim() &&
-      state?.trim() &&
-      cart?.length
-    ) {
+   if (
+  country?.trim() &&
+  state?.trim() &&
+  cart?.length &&
+  (!hasPostalCode || zip?.trim())
+) {
       const pkg = calculatePackage(cart);
       const timer = setTimeout(() => {
         dispatch(resetShippingRates());
@@ -235,7 +298,9 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
               destination: {
                 country_code: country?.trim(),
                 state: state?.trim(),
-                postal_code: zip?.trim(),
+                ...(zip?.trim() && {
+  postal_code: zip.trim(),
+}),
                 ...(city?.trim() && { city: city.trim() }),
               },
               package: pkg,
@@ -733,6 +798,9 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                         onValueChange={(val) => {
                           field.onChange(val);
                           setValue("state", ""); //
+                          if (countriesWithoutPostalCode.includes(val)) {
+    clearErrors("zip");
+  }
                         }}
                         value={field.value}
                       >
@@ -823,20 +891,31 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                   </div>
 
                   <div className="flex flex-col">
-                    <label
-                      htmlFor="zip"
-                      className="mb-2 flex items-baseline justify-between gap-2 text-[13px] text-[#545454]"
-                    >
-                      <span> Postal Code</span>
-                    </label>
+                   <label
+  htmlFor="zip"
+  className="mb-2 flex items-baseline justify-between gap-2 text-[13px] text-[#545454]"
+>
+  <span>Postal Code</span>
+
+  {!hasPostalCode && (
+    <span className="shrink-0 text-gray-400">
+      (Optional)
+    </span>
+  )}
+</label>
                     <Input
                       id="zip"
                       type="text"
                       className={`w-full max-w-full! h-[44px] border border-[#cac9c9] rounded-none ${errors.zip ? "border-red-500" : ""
                         }`}
-                      {...register("zip", {
-                        required: "Postal code is required",
-                      })}
+                     {...register("zip", {
+  validate: (value) => {
+    if (hasPostalCode && !value) {
+      return "Postal code is required";
+    }
+    return true;
+  },
+})}
                     />
                     {errors.zip && (
                       <p className="text-sm text-red-500 mt-1">

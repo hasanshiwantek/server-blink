@@ -27,7 +27,6 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import countries from "world-countries";
 import { Country, State, City } from "country-state-city";
 import { useForm } from "react-hook-form";
 import { loadStripe } from "@stripe/stripe-js";
@@ -187,7 +186,6 @@ const CheckoutForm = () => {
   const { shippingDetail, saveDetail } = useAppSelector(
     (state: any) => state?.shippingZone,
   );
-  console.log(shippingDetail);
 
   useEffect(() => {
     if (!loading) {
@@ -218,6 +216,7 @@ const CheckoutForm = () => {
     control,
     trigger,
     getValues,
+      clearErrors, 
     setError,
     formState: { errors },
   } = useForm<CheckoutFormValues>({
@@ -365,7 +364,7 @@ const CheckoutForm = () => {
       const selected = shippingRates.find(
         (rate: any) => rate.service_type === watchedShippingMethod,
       );
-      return selected ? Number(selected.total_charge) : 0;
+      return selected ? Number(selected.total_charge) : shippingDetail?.rate?.total_charge || 0;
     }
     if (typeof window !== "undefined") {
       const savedCost = Number(shippingDetail?.rate?.total_charge);
@@ -386,7 +385,6 @@ const CheckoutForm = () => {
     cart,
     shippingDetail,
   ]);
-
   const tax = 0;
 
   // Total before discount
@@ -606,35 +604,6 @@ const CheckoutForm = () => {
     return "Server Blink (Desktop)";
   };
 
-  // const buildOrderPayload = useCallback(
-  //   (data: CheckoutFormValues & { paymentIntentId?: string | null }) => ({
-  //     userType: token ? null : "guest",
-  //     deviceType: getDeviceType(),
-  //     firstName: data.firstName,
-  //     lastName: data.lastName,
-  //     companyName: data.company || "",
-  //     email: data.email,
-  //     phone: data.phone || "",
-  //     addressLine1: data.address1,
-  //     addressLine2: data.address2 || "",
-  //     city: data.city,
-  //     state: data.state || "",
-  //     zip: data.zip,
-  //     country: data.country,
-  //     paymentMethod: data.paymentMethod,
-  //     shippingMethod: data.shippingMethod,
-  //     discountAmount: discountAmount ? finalTotal : 0,
-  //     shippingCost: shipping,
-  //     comments: data.orderComment || "",
-  //     paymentIntentId: data.paymentIntentId ?? "",
-  //     products: cart.map((item) => ({
-  //       product_id: item.id,
-  //       quantity: item.quantity || 1,
-  //     })),
-  //   }),
-  //   [cart, shipping]
-  // );
-
   const buildOrderPayload = useCallback(
     (data: CheckoutFormValues & { paymentIntentId?: string | null }) => {
       // ✅ Multi address mode
@@ -685,10 +654,10 @@ const CheckoutForm = () => {
               state: dest.address?.state || "",
               zip: dest.address?.zip || "",
               country: dest.address?.country || "",
-              shippingMethod: dest.selectedShippingMethod,
+              shippingMethod: dest.selectedShippingMethod || shippingDetail?.rate?.method_type,
               shippingData: shippingRates.find(
                 (item) => item?.service_type == dest.selectedShippingMethod,
-              ),
+              ) || shippingDetail?.rate?.service_type,
               shippingCost: selectedRate
                 ? Number(selectedRate.total_charge)
                 : 0,
@@ -729,10 +698,10 @@ const CheckoutForm = () => {
             : data.paymentMethod == "apple_pay"
               ? "Apple Pay"
               : "Google Pay",
-        shippingMethod: data.shippingMethod,
+        shippingMethod: data.shippingMethod || shippingDetail?.rate?.method_type,
         shippingData: shippingRates.find(
-          (item) => item?.service_type == data.shippingMethod,
-        ),
+          (item) => item?.service_type == data.shippingMethod
+        ) || shippingDetail?.rate?.service_type,
         discountAmount: discountAmount,
         couponCode: appliedCoupon?.couponCode,
         shippingCost: shipping,
@@ -1270,7 +1239,6 @@ const CheckoutForm = () => {
           const billing = apiData.billing_form_data;
 
           if (
-            shipping.city &&
             shipping.country &&
             shipping.zip &&
             shipping.state &&
@@ -1283,7 +1251,7 @@ const CheckoutForm = () => {
                     country_code: shipping.country,
                     state: shipping.state,
                     postal_code: shipping.zip,
-                    city: shipping.city,
+                    ...(shipping.city && { city: shipping.city }),
                   },
                   package: calculatePackage(cart),
                 },
@@ -1632,6 +1600,7 @@ const CheckoutForm = () => {
                 control={control}
                 setValue={setValue}
                 onContinue={handleContinueToBilling}
+                 clearErrors={clearErrors}
                 countryList={countryList}
                 stateList={stateList}
                 cityList={cityList}

@@ -16,7 +16,6 @@ import { toast } from "react-toastify";
 import { checkAuthToken, customerProfile, logout } from "@/redux/slices/authSlice";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { useSearchParams } from "next/navigation";
-// import { fetchLoadSavedQuote } from "@/redux/slices/OrderMessage";
 
 const FooterBottom = () => {
   const searchParams = useSearchParams();

@@ -17,6 +17,7 @@ import {
   fetchCartList,
   updateCart,
 } from "@/redux/slices/cartsSlice";
+import { removeShippingRate, resetShippingRates } from "@/redux/slices/shippingSlice";
 const CartList = () => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state.carts?.items);
@@ -31,8 +32,8 @@ const CartList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<any | null>(null);
   function removeLocalShipping() {
-    localStorage.removeItem("shippingCost");
-    localStorage.removeItem("shippingData");
+    dispatch(removeShippingRate());
+    dispatch(resetShippingRates());
   }
   const handleChange = (
     id: string,

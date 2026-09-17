@@ -5,9 +5,10 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import CartList from "./CartList";
 import OrderSummary from "./OrderSummary";
-import { fetchLoadSavedQuote } from "@/redux/slices/couponSlice";
+import { fetchLoadSavedQuote, removeCoupon } from "@/redux/slices/couponSlice";
 import { checkoutFormSave } from "@/redux/slices/shippingSlice";
 import { logout } from "@/redux/slices/authSlice";
+import { fetchCartList } from "@/redux/slices/cartsSlice";
 const Cart = () => {
   const dispatch = useAppDispatch()
   const searchParams = useSearchParams();
@@ -62,14 +63,17 @@ const Cart = () => {
       dispatch(
         checkoutFormSave({ data: { shippingFormData, billingFormData } }),
       );
+      dispatch(fetchCartList());
     }).catch((error) => {
       if (error) {
-        localStorage.removeItem("persist:coupon");
+        dispatch(removeCoupon())
         dispatch(logout());
         window.location.href = `/auth/login?action=loadSavedQuote&quoteToken=${quoteToken}`;
       }
-    });;
+    });
   }, [shouldLoadQuote, quoteToken]);
+
+
   return (
     <main className="flex flex-col gap-8 w-full py-1">
       {/* Container: max-width 1170px, centered */}
