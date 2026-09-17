@@ -216,6 +216,7 @@ const CheckoutForm = () => {
     control,
     trigger,
     getValues,
+      clearErrors, 
     setError,
     formState: { errors },
   } = useForm<CheckoutFormValues>({
@@ -1599,6 +1600,7 @@ const CheckoutForm = () => {
                 control={control}
                 setValue={setValue}
                 onContinue={handleContinueToBilling}
+                 clearErrors={clearErrors}
                 countryList={countryList}
                 stateList={stateList}
                 cityList={cityList}
