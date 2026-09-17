@@ -8,6 +8,7 @@ import OrderSummary from "./OrderSummary";
 import { fetchLoadSavedQuote, removeCoupon } from "@/redux/slices/couponSlice";
 import { checkoutFormSave } from "@/redux/slices/shippingSlice";
 import { logout } from "@/redux/slices/authSlice";
+import { fetchCartList } from "@/redux/slices/cartsSlice";
 const Cart = () => {
   const dispatch = useAppDispatch()
   const searchParams = useSearchParams();
@@ -62,6 +63,7 @@ const Cart = () => {
       dispatch(
         checkoutFormSave({ data: { shippingFormData, billingFormData } }),
       );
+      dispatch(fetchCartList());
     }).catch((error) => {
       if (error) {
         dispatch(removeCoupon())
