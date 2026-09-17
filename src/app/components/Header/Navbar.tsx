@@ -13,7 +13,7 @@ const Navbar: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchLogos());
-  }, []);
+  }, [dispatch]);
 
   return (
     <header className="bg-[var(--bg-color)]  sticky top-0 z-50 px-4 sm:px-0">
