@@ -173,7 +173,7 @@ const ProductOverview = ({ product }: { product: any }) => {
 
                             <p className="mt-0.5 text-[13px] text-[#888]">
                               Posted by{" "}
-                              {review?.user_name ||
+                              {review?.name ||
                                 review?.author ||
                                 review?.email?.split("@")[0] ||
                                 "Customer"}{" "}

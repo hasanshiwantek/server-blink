@@ -39,6 +39,7 @@ const AddressForm = () => {
     control,
     setValue,
     watch,
+     clearErrors,
     formState: { errors },
     reset,
   } = useForm<AddressFormValues>({
@@ -64,6 +65,64 @@ const AddressForm = () => {
       code: s.isoCode,
     }));
   }, [selectedCountry]);
+   const countriesWithoutPostalCode = [
+  "AG", // Antigua and Barbuda
+  "AO", // Angola
+  "BS", // Bahamas
+  "BZ", // Belize
+  "BW", // Botswana
+  "BF", // Burkina Faso
+  "BI", // Burundi
+  "CM", // Cameroon
+  "CF", // Central African Republic
+  "KM", // Comoros
+  "CG", // Republic of the Congo
+  "DJ", // Djibouti
+  "DM", // Dominica
+  "GQ", // Equatorial Guinea
+  "ER", // Eritrea
+  "FJ", // Fiji
+  "GM", // Gambia
+  "GH", // Ghana
+  "GD", // Grenada
+  "GY", // Guyana
+  "HK", // Hong Kong
+  "IE", // Ireland
+  "JM", // Jamaica
+  "KI", // Kiribati
+  "LY", // Libya
+  "MW", // Malawi
+  "ML", // Mali
+  "MR", // Mauritania
+  "MU", // Mauritius
+  "FM", // Micronesia
+  "NA", // Namibia
+  "NR", // Nauru
+  "KP", // North Korea
+  "PW", // Palau
+  "PA", // Panama
+  "QA", // Qatar
+  "RW", // Rwanda
+  "KN", // Saint Kitts and Nevis
+  "LC", // Saint Lucia
+  "WS", // Samoa
+  "ST", // São Tomé and Príncipe
+  "SL", // Sierra Leone
+  "SB", // Solomon Islands
+  "SS", // South Sudan
+  "SR", // Suriname
+  "TZ", // Tanzania
+  "TL", // Timor-Leste
+  "TG", // Togo
+  "TO", // Tonga
+  "TT", // Trinidad and Tobago
+  "TV", // Tuvalu
+  "UG", // Uganda
+  "AE", // United Arab Emirates
+  "VU", // Vanuatu
+  "YE", // Yemen
+];
+const hasPostalCode = !countriesWithoutPostalCode.includes(selectedCountry);
 
   const onSubmit = async (data: AddressFormValues) => {
       
@@ -249,6 +308,9 @@ const AddressForm = () => {
                   onValueChange={(value) => {
                     field.onChange(value);
                     setValue("state", "");
+                    if (countriesWithoutPostalCode.includes(value)) {
+    clearErrors("postcode");
+  }
                   }}
                 >
                   <SelectTrigger className={`${inputClass} !h-[44px]`}>
@@ -320,17 +382,31 @@ const AddressForm = () => {
             )}
           </div>
           <div>
-            <Label
-              className="text-[14px] text-[#545454] !font-normal  flex md:justify-between"
-              htmlFor="postcode"
-            >
-              Zip / Postcode <span className="text-[11px]">*</span>
-            </Label>
+           <Label
+  className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+  htmlFor="postcode"
+>
+  Zip / Postcode
+
+  {hasPostalCode ? (
+    <span className="text-[11px]">*</span>
+  ) : (
+    <span className="text-[11px] text-gray-400">
+    
+    </span>
+  )}
+</Label>
             <Input
               id="postcode"
-              {...register("postcode", {
-                required: "Zip/Postcode is required",
-              })}
+            {...register("postcode", {
+  validate: (value) => {
+    if (hasPostalCode && !value) {
+      return "Zip/Postcode is required";
+    }
+
+    return true;
+  },
+})}
               className={inputClass}
             />
             {errors.postcode && (
