@@ -143,10 +143,10 @@ const SignupPage = () => {
 ];
 const hasPostalCode = !countriesWithoutPostalCode.includes(watchedCountry);
   const onSubmit = async (data: SignupFormValues) => {
-    // if (!captchaToken) {
-    //   alert("Please verify the captcha.");
-    //   return;
-    // }
+    if (!captchaToken) {
+      alert("Please verify the captcha.");
+      return;
+    }
     try {
       const payload = {
         userRole: 2,
