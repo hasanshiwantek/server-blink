@@ -63,7 +63,7 @@ export const fetchCartList = createAsyncThunk(
       const state = thunkAPI.getState() as RootState;
       const quoteToken = state?.coupon?.quoteToken
 
-      const res = await axiosInstance.get(`web/cart/list?${quoteToken}`);
+      const res = await axiosInstance.get(`web/cart/list?quoteToken=${quoteToken}`);
       return res.data;
     } catch (err: any) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
