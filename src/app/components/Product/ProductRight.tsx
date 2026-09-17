@@ -27,7 +27,7 @@ const ProductRight: React.FC<ProductRightProps> = ({ product }) => {
         <div className="border border-gray-300 rounded-lg w-full pb-4">
           <div className="bg-[#F15939]  py-[2.2rem] 2xl:py-[2.7rem] text-center"></div>
           <div className="flex justify-center -mt-9 2xl:-mt-11">
-            <div className="border-2 border-[#121e4d] 2xl:w-[6rem] 2xl:h-[6rem] xl:w-[5rem] xl:h-[5rem] lg:w-[3.7rem] lg:h-[3.7rem] h-[5rem] w-[5rem] rounded-full -ml-3 overflow-hidden">
+            <div className="border-2 border-[#121e4d] 2xl:w-24 2xl:h-24 xl:w-20 xl:h-20 lg:w-[3.7rem] lg:h-[3.7rem] h-20 w-20 rounded-full -ml-3 overflow-hidden">
               <Image
                 src={supportIcon1}
                 alt="Support 1"
@@ -39,7 +39,7 @@ const ProductRight: React.FC<ProductRightProps> = ({ product }) => {
                 decoding="async"fetchPriority="high"
               />
             </div>
-            <div className="border-2 border-[#121e4d] 2xl:w-[6rem] 2xl:h-[6rem] xl:w-[5rem] xl:h-[5rem] lg:w-[3.7rem] lg:h-[3.7rem] h-[5rem] w-[5rem] rounded-full -ml-3 overflow-hidden">
+            <div className="border-2 border-[#121e4d] 2xl:w-24 2xl:h-24 xl:w-20 xl:h-20 lg:w-[3.7rem] lg:h-[3.7rem] h-20 w-20 rounded-full -ml-3 overflow-hidden">
               <Image
                 src={supportIcon1}
                 alt="Support 1"
@@ -51,7 +51,7 @@ const ProductRight: React.FC<ProductRightProps> = ({ product }) => {
                 decoding="async"
               />
             </div>
-            <div className="border-2 border-[#121e4d] 2xl:w-[6rem] 2xl:h-[6rem] xl:w-[5rem] xl:h-[5rem] lg:w-[3.7rem] lg:h-[3.7rem] h-[5rem] w-[5rem] rounded-full -ml-3 overflow-hidden">
+            <div className="border-2 border-[#121e4d] 2xl:w-24 2xl:h-24 xl:w-20 xl:h-20 lg:w-[3.7rem] lg:h-[3.7rem] h-20 w-20 rounded-full -ml-3 overflow-hidden">
               <Image
                 src={supportIcon2}
                 alt="Support 2"
@@ -63,7 +63,7 @@ const ProductRight: React.FC<ProductRightProps> = ({ product }) => {
                 decoding="async"fetchPriority="high"
               />
             </div>
-            <div className="border-2 border-[#121e4d] 2xl:w-[6rem] 2xl:h-[6rem] xl:w-[5rem] xl:h-[5rem] lg:w-[3.7rem] lg:h-[3.7rem] h-[5rem] w-[5rem] rounded-full -ml-3 overflow-hidden">
+            <div className="border-2 border-[#121e4d] 2xl:w-24 2xl:h-24 xl:w-20 xl:h-20 lg:w-[3.7rem] lg:h-[3.7rem] h-20 w-20 rounded-full -ml-3 overflow-hidden">
               <Image
                 src={supportIcon3}
                 alt="Support 3"

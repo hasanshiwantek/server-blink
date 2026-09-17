@@ -80,10 +80,10 @@ useEffect(() => {
       {!showSuccess ? (
         <div>
           <div className="mb-8">
-            <h1 className="text-[28px] text-[#545454] mb-4 !font-normal roboto-only-font ">
+            <h1 className="text-[28px] text-[#545454] mb-4 font-normal! roboto-only-font ">
               Contact Form
             </h1>
-            <h2 className="text-[28px] text-[#545454]  !font-normal roboto-only-font ">
+            <h2 className="text-[28px] text-[#545454]  font-normal! roboto-only-font ">
               Server Blink, LLC
             </h2>
           </div>
@@ -292,8 +292,8 @@ useEffect(() => {
           </form>
         </div>
       ) : (
-        <div className="!mb-0">
-          <h1 className="text-[28px] text-[#545454] !font-normal roboto-only-font  ">
+        <div className="mb-0!">
+          <h1 className="text-[28px] text-[#545454] font-normal! roboto-only-font  ">
             Contact Form
           </h1>
           <p className="sm:text-[14px] text-[1rem] text-[#545454] font-normal roboto-font">

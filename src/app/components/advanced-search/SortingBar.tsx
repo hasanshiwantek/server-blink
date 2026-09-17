@@ -57,7 +57,7 @@ export default function SortingBar({
             aria-label="Toggle Grid view"
             onClick={() => setView("grid")}
             className={`w-[35px] h-[35px] flex items-center justify-center border transition-colors ${view === "grid"
-              ? "bg-[var(--primary-color)] text-white  shadow-md"
+              ? "bg-(--primary-color) text-white  shadow-md"
               : "bg-white text-gray-600 border-gray-300 hover:bg-gray-100"
               }`}
           >
@@ -88,7 +88,7 @@ export default function SortingBar({
             aria-label="Toggle List view"
             onClick={() => setView("list")}
             className={`w-[35px] h-[35px] flex items-center justify-center border transition-colors ${view === "list"
-              ? "bg-[var(--primary-color)] text-white  shadow-md"
+              ? "bg-(--primary-color) text-white  shadow-md"
               : "bg-white text-gray-600 border-gray-300 hover:bg-gray-100"
               }`}
           >

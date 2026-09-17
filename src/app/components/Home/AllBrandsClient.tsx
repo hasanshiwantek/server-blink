@@ -45,7 +45,7 @@ const AllBrandsClient = ({ brands }: AllBrandsClientProps) => {
   );
 
   return (
-    <div className="w-full bg-[var(--bg-color)] pb-10">
+    <div className="w-full bg-(--bg-color) pb-10">
       <div className="mx-auto w-full max-w-[1170px] px-3 py-5 sm:px-4 md:px-0">
         <nav className="mb-3">
           <div className="hidden md:flex flex-wrap items-center gap-2 text-sm roboto-sans-font">
@@ -66,7 +66,7 @@ const AllBrandsClient = ({ brands }: AllBrandsClientProps) => {
         ) : (
           <>
             <div
-  className="grid w-full gap-x-2 gap-y-4 sm:gap-x-3 max-md:grid-cols-2 md:justify-start md:gap-x-3 md:[grid-template-columns:repeat(auto-fill,226px)]"
+  className="grid w-full gap-x-2 gap-y-4 sm:gap-x-3 max-md:grid-cols-2 md:justify-start md:gap-x-3 md:grid-cols-[repeat(auto-fill,226px)]"
 >
   {pageItems.map((brand) => (
     <div key={brand.id} className="min-w-0 w-full md:w-[226px]">
@@ -122,7 +122,7 @@ const AllBrandsClient = ({ brands }: AllBrandsClientProps) => {
                   disabled={page >= totalPages}
                   onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
                   className={cn(
-                    "inline-flex h-10 w-auto  items-center justify-center border !px-4 py-2.5 text-sm font-medium",
+                    "inline-flex h-10 w-auto  items-center justify-center border px-4! py-2.5 text-sm font-medium",
                     "border-gray-300 bg-white text-[#545454] text-[12px] roboto-font  hover:border-gray-400",
                     "disabled:cursor-not-allowed disabled:opacity-50"
                   )}

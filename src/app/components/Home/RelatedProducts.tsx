@@ -98,7 +98,7 @@ const RelatedProduct = ({ products }: { products: RelatedProductItem[] }) => {
                   href={`/${product?.sku}`}
                   className="relative inline-block cursor-pointer group"
                 >
-                  <p className="h6-18-px-medium line-clamp-2 min-h-[3rem]">
+                  <p className="h6-18-px-medium line-clamp-2 min-h-12">
                     {product?.name}
                   </p>
 
@@ -106,7 +106,7 @@ const RelatedProduct = ({ products }: { products: RelatedProductItem[] }) => {
                 </Link>
 
                 {/* Brand + Availability + Price (reserve space) */}
-                <div className="flex flex-col justify-between min-h-[4.5rem] mt-2">
+                <div className="flex flex-col justify-between min-h-18 mt-2">
                   <h3 className="h7-16-px-regular line-clamp-1">
                     {product?.brand?.name} | {product?.availabilityText}
                   </h3>
@@ -128,7 +128,7 @@ const RelatedProduct = ({ products }: { products: RelatedProductItem[] }) => {
                       dispatch(addToCart(product));
                       toast.success(`${product?.name} added to cart!`);
                     }}
-                    className="btn-primary xl:!text-2xl 2xl:!text-[22px] 2xl:!font-medium 
+                    className="btn-primary xl:text-2xl! 2xl:text-[22px]! 2xl:font-medium! 
                                w-full sm:w-[48%] md:w-[45%] lg:w-[50%] xl:w-[45%]
                                2xl:w-[173.875px] 2xl:h-[50px] whitespace-nowrap"
                   >
@@ -141,7 +141,7 @@ const RelatedProduct = ({ products }: { products: RelatedProductItem[] }) => {
                       setSelectedProduct(product);
                       setIsModalOpen(true);
                     }}
-                    className="xl:!text-2xl 2xl:!text-[22px] 2xl:!font-medium 
+                    className="xl:text-2xl! 2xl:text-[22px]! 2xl:font-medium! 
                                w-full sm:w-[48%] md:w-[45%] lg:w-[50%] xl:w-[45%]
                                2xl:w-[173.875px] 2xl:h-[50px] mr-2
                                text-[#4A4A4A] bg-white border border-[#4A4A4A] 

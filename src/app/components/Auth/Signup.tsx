@@ -176,7 +176,7 @@ const SignupPage = () => {
 
       {/* Main Content */}
       <div className="pt-0 pb-[8px] md:py-8 md:pb-16 md:px-6 xl:px-0 w-full xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-7xl mx-auto">
-        <h1 className="h1-lg !font-light text-[28px] mb-2">New Account</h1>
+        <h1 className="h1-lg font-light! text-[28px] mb-2">New Account</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Two Column Grid */}

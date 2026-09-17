@@ -147,7 +147,7 @@ const MyAddress = () => {
             {/* First Name */}
             <div>
               <Label
-                className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+                className="text-[14px] text-[#545454] font-normal! flex md:justify-between"
                 htmlFor="firstName"
               >
                 First Name <span className="text-[11px]">*</span>
@@ -157,7 +157,7 @@ const MyAddress = () => {
                 onChange={(e) =>
                   setEditData({ ...editData, firstName: e.target.value })
                 }
-                className="!w-full !max-w-full !h-[42px]"
+                className="w-full! max-w-full! h-[42px]!"
               />
               {errors.firstName && (
   <p className="text-red-500 text-[12px]  mt-1 ml-2">{errors.firstName}</p>
@@ -167,7 +167,7 @@ const MyAddress = () => {
             {/* Last Name */}
             <div>
               <Label
-                className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+                className="text-[14px] text-[#545454] font-normal! flex md:justify-between"
                 htmlFor="lastName"
               >
                 Last Name <span className="text-[11px]">*</span>
@@ -177,7 +177,7 @@ const MyAddress = () => {
                 onChange={(e) =>
                   setEditData({ ...editData, lastName: e.target.value })
                 }
-                className="!w-full !max-w-full !h-[42px]"
+                className="w-full! max-w-full! h-[42px]!"
               />
                   {errors.lastName && (
   <p className="text-red-500 text-[12px] mt-1 ml-2">{errors.lastName}</p>
@@ -192,7 +192,7 @@ const MyAddress = () => {
                 onChange={(e) =>
                   setEditData({ ...editData, companyName: e.target.value })
                 }
-                className="!w-full !max-w-full !h-[42px]"
+                className="w-full! max-w-full! h-[42px]!"
               />
             </div>
 
@@ -204,14 +204,14 @@ const MyAddress = () => {
                 onChange={(e) =>
                   setEditData({ ...editData, phone: e.target.value })
                 }
-                className="!w-full !max-w-full !h-[42px]"
+                className="w-full! max-w-full! h-[42px]!"
               />
             </div>
 
             {/* Address Line 1 */}
             <div>
               <Label
-                className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+                className="text-[14px] text-[#545454] font-normal! flex md:justify-between"
                 htmlFor="address1"
               >
                 Address Line 1 <span className="text-[11px]">*</span>
@@ -221,7 +221,7 @@ const MyAddress = () => {
                 onChange={(e) =>
                   setEditData({ ...editData, addressLine1: e.target.value })
                 }
-                className="!w-full !max-w-full !h-[42px]"
+                className="w-full! max-w-full! h-[42px]!"
               />
                   {errors.addressLine1 && (
   <p className="text-red-500 text-[12px]  mt-1 ml-2">{errors.addressLine1}</p>
@@ -236,14 +236,14 @@ const MyAddress = () => {
                 onChange={(e) =>
                   setEditData({ ...editData, addressLine2: e.target.value })
                 }
-                className="!w-full !max-w-full !h-[42px]"
+                className="w-full! max-w-full! h-[42px]!"
               />
             </div>
 
             {/* City */}
             <div>
               <Label
-                className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+                className="text-[14px] text-[#545454] font-normal! flex md:justify-between"
                 htmlFor="suburb"
               >
                 Suburb / City <span className="text-[11px]">*</span>
@@ -253,7 +253,7 @@ const MyAddress = () => {
                 onChange={(e) =>
                   setEditData({ ...editData, city: e.target.value })
                 }
-                className="!w-full !max-w-full !h-[42px]"
+                className="w-full! max-w-full! h-[42px]!"
               />
               {errors.city && (
   <p className="text-red-500 text-[12px]  mt-1">{errors.city}</p>
@@ -263,7 +263,7 @@ const MyAddress = () => {
             {/* State */}
             <div>
               <Label
-                className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+                className="text-[14px] text-[#545454] font-normal! flex md:justify-between"
                 htmlFor="state"
               >
                 State <span className="text-[11px]">*</span>
@@ -273,7 +273,7 @@ const MyAddress = () => {
                 onChange={(e) =>
                   setEditData({ ...editData, state: e.target.value })
                 }
-                className="!w-full !max-w-full !h-[42px]"
+                className="w-full! max-w-full! h-[42px]!"
               /> */}
               {stateList.length > 0 ? (
                  <>
@@ -286,7 +286,7 @@ const MyAddress = () => {
                     })
                   }
                 >
-                  <SelectTrigger className="!w-full !max-w-full !h-[42px]">
+                  <SelectTrigger className="w-full! max-w-full! h-[42px]!">
                     <SelectValue placeholder="Choose a State" />
                   </SelectTrigger>
 
@@ -314,7 +314,7 @@ const MyAddress = () => {
                       state: e.target.value,
                     })
                   }
-                  className="!w-full !max-w-full !h-[42px]"
+                  className="w-full! max-w-full! h-[42px]!"
                 />
                     {errors.state && (
         <p className="text-red-500 text-[12px] mt-1">
@@ -328,7 +328,7 @@ const MyAddress = () => {
             {/* Zip */}
             <div>
               <Label
-                className="text-[14px] text-[#545454] !font-normal  flex md:justify-between"
+                className="text-[14px] text-[#545454] font-normal!  flex md:justify-between"
                 htmlFor="postcode"
               >
                 Zip / Postcode <span className="text-[11px]">*</span>
@@ -338,7 +338,7 @@ const MyAddress = () => {
                 onChange={(e) =>
                   setEditData({ ...editData, zip: e.target.value })
                 }
-                className="!w-full !max-w-full !h-[42px]"
+                className="w-full! max-w-full! h-[42px]!"
               />
               {errors.zip && (
   <p className="text-red-500 text-[12px] mt-1">{errors.zip}</p>
@@ -348,7 +348,7 @@ const MyAddress = () => {
             {/* Country */}
             <div>
               <Label
-                className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+                className="text-[14px] text-[#545454] font-normal! flex md:justify-between"
                 htmlFor="country"
               >
                 Country <span className="text-[11px]">*</span>
@@ -359,7 +359,7 @@ const MyAddress = () => {
                   setEditData({ ...editData, country: value, state: "" })
                 }
               >
-                <SelectTrigger className="!w-full !max-w-full !h-[42px]">
+                <SelectTrigger className="w-full! max-w-full! h-[42px]!">
                   <SelectValue placeholder="Choose a Country" />
                 </SelectTrigger>
                 <SelectContent>
@@ -380,13 +380,13 @@ const MyAddress = () => {
             <Button
               onClick={handleUpdate}
               disabled={loading}
-              className="w-full md:w-[16%] !p-7 text-2xl border-b-2 rounded-none border-black bg-[#D42020] text-white font-bold"
+              className="w-full md:w-[16%] p-7! text-2xl border-b-2 rounded-none border-black bg-[#D42020] text-white font-bold"
             >
               {loading ? "UPDATING..." : "UPDATING ADDRESS"}
             </Button>
             <Button
               onClick={() => setShowModal(false)}
-              className="w-full md:w-36 !p-7 text-2xl border-b-2 rounded-none border-black bg-[#D42020] font-bold text-white transition"
+              className="w-full md:w-36 p-7! text-2xl border-b-2 rounded-none border-black bg-[#D42020] font-bold text-white transition"
             >
               CANCEL
             </Button>

@@ -97,9 +97,9 @@ const GlobalSearchBar: React.FC = () => {
                   h-10 sm:h-12 lg:h-14 xl:h-[32px]
                  pl-4 pr-12
             bg-white text-gray-800
-            focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]
+            focus:outline-none focus:ring-2 focus:ring-(--primary-color)
             text-sm sm:text-base
-            h6-medium-color border-1 border-[#cac9c9]
+            h6-medium-color border border-[#cac9c9]
             "
 
         />
@@ -131,7 +131,7 @@ const GlobalSearchBar: React.FC = () => {
       {/* Dropdown Results */}
 
       {showSearchDropdown && searchQuery.trim().length > 1 && (
-        <div className="absolute top-full left-1/2 -translate-x-1/2 w-[585px] mt-1 bg-[#f2f2f2] shadow-xl overflow-hidden z-[9999] max-h-[520px] overflow-y-auto border border-gray-300">
+        <div className="absolute top-full left-1/2 -translate-x-1/2 w-[585px] mt-1 bg-[#f2f2f2] shadow-xl overflow-hidden z-9999 max-h-[520px] overflow-y-auto border border-gray-300">
 
           {loading && <div className="p-6 text-gray-500 text-center">Searching...</div>}
 
@@ -151,7 +151,7 @@ const GlobalSearchBar: React.FC = () => {
               >
                 <div className="flex">
                   {/* Product Image - Left Side */}
-                  <div className="w-[160px] min-h-[140px] flex-shrink-0 bg-white border-r border-gray-200 p-3 flex items-center justify-center">
+                  <div className="w-[160px] min-h-[140px] shrink-0 bg-white border-r border-gray-200 p-3 flex items-center justify-center">
                     <Image
                       src={item?.image?.[0]?.path || "/default-product-image.svg"}
                       alt={item?.name || "product"}
@@ -225,7 +225,7 @@ const GlobalSearchBar: React.FC = () => {
                         handleSelect(url);
                       }}
                       // className="mt-4 w-full bg-[#cccccc] hover:bg-[#bbbbbb] text-[#333] font-bold text-[14px] uppercase py-3 tracking-widest transition-all active:bg-gray-400 btn-pri"
-                      className="font-bold text-[14px] font-roboto-condensed leading-4 uppercase font-robot border-b-[4px] border-b-[#393939] bg-[#cac9c9] text-[#393939] rounded-none hover:bg-[#b81818] hover:border-b-[#6b0107] hover:text-white px-[2.28571rem] py-[0.85714rem] my-0"
+                      className="font-bold text-[14px] font-roboto-condensed leading-4 uppercase font-robot border-b-4 border-b-[#393939] bg-[#cac9c9] text-[#393939] rounded-none hover:bg-[#b81818] hover:border-b-[#6b0107] hover:text-white px-[2.28571rem] py-[0.85714rem] my-0"
                     >
                       VIEW DETAILS
                     </button>

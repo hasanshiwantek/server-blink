@@ -87,7 +87,7 @@ const Cart = () => {
               /
             </span>{" "}
             <span
-              className="!text-[#D42020] text-[11px] sans-font"
+              className="text-[#D42020]! text-[11px] sans-font"
               itemProp="name"
             >
               Your Cart

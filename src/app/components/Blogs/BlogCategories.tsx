@@ -51,7 +51,7 @@ const BlogCategories = ({
         >
           /
         </span>{" "}
-        <span className="!text-[#D42020] text-[11px]" itemProp="name">
+        <span className="text-[#D42020]! text-[11px]" itemProp="name">
           Blog
         </span>
       </h2>
@@ -98,7 +98,7 @@ const BlogCategories = ({
                   <div
                     className="
         absolute inset-0 
-        bg-gradient-to-t from-black/80 via-black/40 to-transparent
+        bg-linear-to-t from-black/80 via-black/40 to-transparent
       "
                   ></div>
                 </div>
@@ -119,7 +119,7 @@ const BlogCategories = ({
                     <h3
                       className="
           h3-secondary 
-          !text-white !font-normal line-clamp-1
+          text-white! font-normal! line-clamp-1
           group-hover/title:text-[#F15939] 
           leading-tight
           transition-colors duration-300

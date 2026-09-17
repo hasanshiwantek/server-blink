@@ -37,7 +37,7 @@ export const CategoryItem = ({
     <div>
       <div
         className={`w-full px-3 py-1 flex items-center justify-between transition-colors text-[13px] lg:text-[15px] font-normal
-            ${isActive ? "text-[#d40511]" : "text-[#545454] hover:text-[var(--primary-color)]"}`}
+            ${isActive ? "text-[#d40511]" : "text-[#545454] hover:text-(--primary-color)"}`}
         style={{ paddingLeft: `${level * 12 + 8}px`, paddingRight: "8px" }}
 
       >
@@ -51,7 +51,7 @@ export const CategoryItem = ({
               e.stopPropagation(); // link navigation ko stop kare
               e.preventDefault();  // optional
               toggle(category.id);
-            }} className="p-1 flex-shrink-0"
+            }} className="p-1 shrink-0"
             aria-label={isOpen ? `Collapse ${category.name}` : `Expand ${category.name}`}
             aria-expanded={isOpen}
             aria-controls={`subcategory-${category.id}`}

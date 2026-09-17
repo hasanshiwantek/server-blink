@@ -40,7 +40,7 @@ const RecentPost = () => {
               w-full
               md:w-[34.5%] md:h-[55px]
               2xl:w-[35.6%] 2xl:h-[55px]
-              relative overflow-hidden  flex-shrink-0 m-auto
+              relative overflow-hidden  shrink-0 m-auto
             "
                 >
                   {blog?.thumbnail && (<Image
@@ -62,7 +62,7 @@ const RecentPost = () => {
                   <h3 className="text-xl group-hover:text-[#F15939] transition-colors duration-200 line-clamp-2">
                     {blog.title}
                   </h3>
-                  <p className="!text-[#D42020] group-hover:text-[#F15939] transition-colors duration-200 line-clamp-2 text-sm">
+                  <p className="text-[#D42020]! group-hover:text-[#F15939] transition-colors duration-200 line-clamp-2 text-sm">
                     {new Date(blog.createdAt).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",

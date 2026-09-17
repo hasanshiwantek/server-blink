@@ -85,7 +85,7 @@ const Messages = () => {
             </div>
             <div className="relative">
               <select
-                className={`w-full h-[42px] bg-[#fff] border px-3 pr-10  text-[14px] appearance-none cursor-pointer focus:outline-none focus:ring-1 ${
+                className={`w-full h-[42px] bg-white border px-3 pr-10  text-[14px] appearance-none cursor-pointer focus:outline-none focus:ring-1 ${
                   errors.order_id ? "" : "border-[#cccccc]"
                 }`}
                 {...register("order_id", { required: true })}
@@ -123,7 +123,7 @@ const Messages = () => {
             </div>
             <input
               type="text"
-              className={`w-full h-[42px] bg-[#fff] border px-3 text-[14px] text-[#333333] focus:outline-none focus:ring-1 focus:ring-[#cc0000] focus:border-[#cc0000] ${
+              className={`w-full h-[42px] bg-white border px-3 text-[14px] text-[#333333] focus:outline-none focus:ring-1 focus:ring-[#cc0000] focus:border-[#cc0000] ${
                 errors.subject ? "border-[#cc0000]" : "border-[#cccccc]"
               }`}
               {...register("subject", { required: true })}
@@ -138,7 +138,7 @@ const Messages = () => {
             </div>
             <textarea
               rows={7}
-              className={`w-full bg-[#fff] border px-3 py-2 text-[14px] text-[#333333] focus:outline-none focus:ring-1 focus:ring-[#cc0000] focus:border-[#cc0000] resize-y ${
+              className={`w-full bg-white border px-3 py-2 text-[14px] text-[#333333] focus:outline-none focus:ring-1 focus:ring-[#cc0000] focus:border-[#cc0000] resize-y ${
                 errors.message ? "border-[#cc0000]" : "border-[#cccccc]"
               }`}
               {...register("message", { required: true })}
@@ -157,7 +157,7 @@ const Messages = () => {
             <Button
               type="button"
               onClick={handleClear}
-              className="btn-primary h-[42px] w-full  !mt-4 sm:!mt-0  sm:w-auto "
+              className="btn-primary h-[42px] w-full  mt-4! sm:mt-0!  sm:w-auto "
             >
               Clear
             </Button>

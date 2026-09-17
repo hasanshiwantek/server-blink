@@ -36,11 +36,11 @@ const Page = () => {
         {/* Sidebar (Sticky) */}
         <div className="w-full lg:w-[28%] xl:w-[23.6%] 2xl:w-[412px]">
           <div className="border rounded-xl sticky top-8">
-            <div className="bg-[#F5F6FA] p-[1.25rem] border-b rounded-t-xl">
+            <div className="bg-[#F5F6FA] p-5 border-b rounded-t-xl">
               <h2 className="h3-secondary">Services</h2>
             </div>
 
-            <div className="p-[1.25rem] overflow-y-auto max-h-[80vh]">
+            <div className="p-5 overflow-y-auto max-h-[80vh]">
               <ul className="space-y-5 2xl:space-y-10 h5-regular">
                 <li>
                   <Link

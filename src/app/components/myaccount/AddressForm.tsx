@@ -100,7 +100,7 @@ const AddressForm = () => {
   };
   
   const inputClass =
-    "!w-full h-[42px] text-[#545454] !font-normal !max-w-full py-[10px] px-[14px] border border-[#cac9c9] rounded-none";
+    "w-full! h-[42px] text-[#545454] font-normal! max-w-full! py-[10px] px-[14px] border border-[#cac9c9] rounded-none";
 
   return (
     <div className="max-w-full mx-auto p-8 rounded-lg">
@@ -113,7 +113,7 @@ const AddressForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <Label
-              className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+              className="text-[14px] text-[#545454] font-normal! flex md:justify-between"
               htmlFor="firstName"
             >
               First Name <span className="text-[11px]">*</span>
@@ -129,7 +129,7 @@ const AddressForm = () => {
           </div>
           <div>
             <Label
-              className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+              className="text-[14px] text-[#545454] font-normal! flex md:justify-between"
               htmlFor="lastName"
             >
               Last Name <span className="text-[11px]">*</span>
@@ -149,7 +149,7 @@ const AddressForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <Label
-              className="text-[14px] text-[#545454] !font-normal  flex md:justify-between"
+              className="text-[14px] text-[#545454] font-normal!  flex md:justify-between"
               htmlFor="companyName"
             >
               Company Name
@@ -162,7 +162,7 @@ const AddressForm = () => {
           </div>
           <div>
             <Label
-              className="text-[14px] text-[#545454]  !font-normal flex md:justify-between"
+              className="text-[14px] text-[#545454]  font-normal! flex md:justify-between"
               htmlFor="phone"
             >
               Phone Number{" "}
@@ -182,7 +182,7 @@ const AddressForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <Label
-              className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+              className="text-[14px] text-[#545454] font-normal! flex md:justify-between"
               htmlFor="address1"
             >
               Address Line 1 <span className="text-[11px]">*</span>
@@ -200,7 +200,7 @@ const AddressForm = () => {
           </div>
           <div>
             <Label
-              className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+              className="text-[14px] text-[#545454] font-normal! flex md:justify-between"
               htmlFor="address2"
             >
               Address Line 2
@@ -217,7 +217,7 @@ const AddressForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label
-              className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+              className="text-[14px] text-[#545454] font-normal! flex md:justify-between"
               htmlFor="suburb"
             >
               Suburb / City <span className="text-[11px]">*</span>
@@ -233,7 +233,7 @@ const AddressForm = () => {
           </div>
           <div>
             <Label
-              className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+              className="text-[14px] text-[#545454] font-normal! flex md:justify-between"
               htmlFor="country"
             >
               Country <span className="text-[11px]">*</span>
@@ -251,7 +251,7 @@ const AddressForm = () => {
                     setValue("state", "");
                   }}
                 >
-                  <SelectTrigger className={`${inputClass} !h-[44px]`}>
+                  <SelectTrigger className={`${inputClass} h-[44px]!`}>
                     <SelectValue placeholder="Choose a Country" />
                   </SelectTrigger>
 
@@ -276,7 +276,7 @@ const AddressForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label
-              className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+              className="text-[14px] text-[#545454] font-normal! flex md:justify-between"
               htmlFor="state"
             >
               State <span className="text-[11px]">*</span>
@@ -293,7 +293,7 @@ const AddressForm = () => {
                     value={field.value}
                     onValueChange={field.onChange}
                   >
-                    <SelectTrigger className={`${inputClass} !h-[44px]`}>
+                    <SelectTrigger className={`${inputClass} h-[44px]!`}>
                       <SelectValue placeholder="Choose a State" />
                     </SelectTrigger>
 
@@ -321,7 +321,7 @@ const AddressForm = () => {
           </div>
           <div>
             <Label
-              className="text-[14px] text-[#545454] !font-normal  flex md:justify-between"
+              className="text-[14px] text-[#545454] font-normal!  flex md:justify-between"
               htmlFor="postcode"
             >
               Zip / Postcode <span className="text-[11px]">*</span>
@@ -346,14 +346,14 @@ const AddressForm = () => {
         >
           <Button
             type="submit"
-            className="w-full md:w-[16%] !p-7 text-2xl rounded-none border-b-2 border-black bg-[#D42020] text-white font-bold"
+            className="w-full md:w-[16%] p-7! text-2xl rounded-none border-b-2 border-black bg-[#D42020] text-white font-bold"
           >
             {loading ? "Saving..." : "SAVE ADDRESS"}
           </Button>
           <Button
             onClick={() => router.back()}
             type="button"
-            className="w-full md:w-36 !p-7 text-2xl border-b-2 border-black rounded-none bg-[#D42020] font-bold text-white transition"
+            className="w-full md:w-36 p-7! text-2xl border-b-2 border-black rounded-none bg-[#D42020] font-bold text-white transition"
           >
             CANCEL
           </Button>

@@ -162,7 +162,7 @@ const CartList = () => {
                       {item?.brand?.name || "UNKNOWN BRAND"}
                     </p>
                     <Link href={`${item?.productUrl || "#"}`}>
-                      <p className=" text-[#D42020] underline xl:text-start xl:w-[100%] ">
+                      <p className=" text-[#D42020] underline xl:text-start xl:w-full ">
                         {item.name}
                       </p>
                     </Link>
@@ -346,7 +346,7 @@ const CartList = () => {
               </div>
 
               {/* line grey */}
-              <div className="w-[97%] mx-auto h-[1px] bg-gray-300"></div>
+              <div className="w-[97%] mx-auto h-px bg-gray-300"></div>
             </div>
           );
         })

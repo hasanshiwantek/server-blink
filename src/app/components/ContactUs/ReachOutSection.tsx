@@ -20,14 +20,14 @@ export default function ReachOutSection() {
           <div className="flex flex-col gap-4 w-full xl:border-r border-gray-200">
             {/* Email - with Phone icon */}
             <div className="flex items-center justify-start gap-5 py-8 md:py-10 xl:py-12 border-b border-gray-200 px-4 md:px-6">
-              <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-100 border rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-100 border rounded-full flex items-center justify-center shrink-0">
                 <Phone className="w-6 h-6 md:w-8 md:h-8 text-gray-600" />
               </div>
               <div>
-                <p className="h6-medium !text-[#AEAEAE] mb-1">Email:</p>
+                <p className="h6-medium text-[#AEAEAE]! mb-1">Email:</p>
                 <Link
                   href="mailto:orders@newtownspares.com"
-                  className="h4-medium !text-[#2A2A2A] hover:text-[#F15939] transition-colors break-words"
+                  className="h4-medium text-[#2A2A2A]! hover:text-[#F15939] transition-colors wrap-break-word"
                 >
                   orders@newtownspares.com
                 </Link>
@@ -36,14 +36,14 @@ export default function ReachOutSection() {
 
             {/* Phone - with Mail icon */}
             <div className="flex items-center justify-start gap-5 py-8 md:py-12 xl:py-14 border-b border-gray-200 px-4 md:px-6">
-              <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-100 border rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-100 border rounded-full flex items-center justify-center shrink-0">
                 <Mail className="w-6 h-6 md:w-8 md:h-8 text-gray-600" />
               </div>
               <div>
-                <p className="h6-medium !text-[#AEAEAE] mb-1">Call us:</p>
+                <p className="h6-medium text-[#AEAEAE]! mb-1">Call us:</p>
                 <Link
                   href="tel:+12096516864"
-                  className="h4-medium !text-[#2A2A2A] hover:text-[#F15939] transition-colors"
+                  className="h4-medium text-[#2A2A2A]! hover:text-[#F15939] transition-colors"
                 >
                   (209) 651-6864
                 </Link>
@@ -52,25 +52,25 @@ export default function ReachOutSection() {
 
             {/* Address - with MapPin icon */}
             <div className="flex items-start justify-start gap-5 py-8 md:py-12 xl:py-14 px-4 md:px-6">
-              <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-100 border rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-100 border rounded-full flex items-center justify-center shrink-0">
                 <MapPin className="w-6 h-6 md:w-8 md:h-8 text-gray-600" />
               </div>
               <div className="space-y-4">
                 <div>
-                  <p className="h6-medium !text-[#AEAEAE] mb-1">
+                  <p className="h6-medium text-[#AEAEAE]! mb-1">
                     Corporate Mailing Address:
                   </p>
-                  <p className="h4-medium !text-[#2A2A2A]">
+                  <p className="h4-medium text-[#2A2A2A]!">
                     1032 E Brandon Blvd, Suite 1124,
                     <br />
                     Brandon, FL 33511
                   </p>
                 </div>
                 <div>
-                  <p className="h6-medium !text-[#AEAEAE] mb-1">
+                  <p className="h6-medium text-[#AEAEAE]! mb-1">
                     California Address:
                   </p>
-                  <p className="h4-medium !text-[#2A2A2A]">
+                  <p className="h4-medium text-[#2A2A2A]!">
                     440 N Barranca Ave Covina,
                     <br />
                     CA 91723

@@ -41,8 +41,8 @@ const AboutBrandSection = () => {
         {/* Header Section */}
         <div className="text-center mb-16">
           <h2 className="h1-lg mb-4 leading-tight">
-            Trusted By <span className="!text-[#f15939]">Individuals</span>
-            <br />& <span className="!text-[#f15939]">Industry</span> Leaders
+            Trusted By <span className="text-[#f15939]!">Individuals</span>
+            <br />& <span className="text-[#f15939]!">Industry</span> Leaders
           </h2>
           <p className="h3-24px-regular max-w-6xl mx-auto mt-4">
             We interact with and listen to global customers to create the

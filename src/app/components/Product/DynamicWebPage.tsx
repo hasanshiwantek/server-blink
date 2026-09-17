@@ -24,7 +24,7 @@ const DynamicWebPage = ({ webPages }: { webPages: any }) => {
                             >
                                 Home
                             </Link> {" "} <span className="mt-2 mx-3 text-gray-400 text-[11px]" aria-hidden="true">/</span> {" "} <span
-                                className="!text-[#D42020] text-[11px]"
+                                className="text-[#D42020]! text-[11px]"
                                 itemProp="name"
                             >
                                     {webPages?.pageName}
@@ -45,7 +45,7 @@ const DynamicWebPage = ({ webPages }: { webPages: any }) => {
                [&_iframe]:max-w-full [&_iframe]:aspect-video [&_iframe]:mx-auto
                [&_table]:w-full [&_table]:overflow-x-auto [&_table]:border-collapse
                [&_td]:border [&_th]:border [&_td]:p-2 [&_th]:p-2
-               break-words"
+               wrap-break-word"
                                 dangerouslySetInnerHTML={{
                                     __html: decodedHtml || "",
                                 }}

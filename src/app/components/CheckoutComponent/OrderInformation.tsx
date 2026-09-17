@@ -109,7 +109,7 @@ const CheckoutForm = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start ">
           {/* LEFT SIDE */}
           <div className="lg:col-span-2 mt-[18px] roboto-font">
-            <div className="mt-[1px]">
+            <div className="mt-px">
               <h2 className="text-4xl font-normal text-[#545454] mb-8">
                 Thank You {orderCustomer?.billingAddress?.name}{" "}
               </h2>
@@ -140,7 +140,7 @@ const CheckoutForm = () => {
               <button
                 type="button"
                 onClick={() => router.push("/")}
-                className="btn-primary !px-6 !py-3 h-[44px] !text-lg"
+                className="btn-primary px-6! py-3! h-[44px] text-lg!"
               >
                 Continue Shopping
               </button>

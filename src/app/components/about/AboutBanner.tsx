@@ -26,7 +26,7 @@ const AboutBanner = () => {
          
         />
         {/* Overlay for better text readability */}
-        {/* <div className="absolute inset-0 bg-gradient-to-r from-[#0a1a3a]/80 via-[#0a1a3a]/60 to-transparent"></div> */}
+        {/* <div className="absolute inset-0 bg-linear-to-r from-[#0a1a3a]/80 via-[#0a1a3a]/60 to-transparent"></div> */}
       </div>
 
       {/* Content Container */}
@@ -50,7 +50,7 @@ const AboutBanner = () => {
           </p>
           <button
             type="button"
-            className=" w-full 2xl:w-[15.6%] xl:w-[24.6%] md:w-[25.6%] sm:w-[30.6%]         px-6 py-3 rounded-full h4-medium !text-white bg-[#F15939] border border-transparent hover:!border-[#F15939] hover:!bg-white hover:!text-[#F15939] whitespace-nowrap"
+            className=" w-full 2xl:w-[15.6%] xl:w-[24.6%] md:w-[25.6%] sm:w-[30.6%]         px-6 py-3 rounded-full h4-medium text-white! bg-[#F15939] border border-transparent hover:border-[#F15939]! hover:bg-white! hover:text-[#F15939]! whitespace-nowrap"
           >
             Company Boucher
           </button>

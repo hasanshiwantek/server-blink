@@ -38,8 +38,8 @@ const BrandsSidebar: React.FC<BrandsSidebarProps> = ({ activeBrandId }) => {
               <button
                 className={`w-full px-3 py-1 text-left text-[13px] lg:text-[14px]  font-normal flex items-center gap-3 transition-colors roboto-condensed-only-font
                   ${brand.id === activeBrandId
-                    ? "text-[var(--primary-color)]"
-                    : "text-[#545454] hover:text-[var(--primary-color)]"
+                    ? "text-(--primary-color)"
+                    : "text-[#545454] hover:text-(--primary-color)"
                   }`}
               >
                 <span>{brand.name}</span>
@@ -58,7 +58,7 @@ const BrandsSidebar: React.FC<BrandsSidebarProps> = ({ activeBrandId }) => {
 
         {data?.length > 9 && <>
           <Link href="/brands"
-            className="w-full px-3 py-1 text-left text-[15px] font-normal flex items-center gap-3 transition-colors text-[#545454] hover:text-[var(--primary-color)]"
+            className="w-full px-3 py-1 text-left text-[15px] font-normal flex items-center gap-3 transition-colors text-[#545454] hover:text-(--primary-color)"
           >
             <span>View all brands</span>
           </Link>

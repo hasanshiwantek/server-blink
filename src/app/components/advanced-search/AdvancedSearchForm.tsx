@@ -82,7 +82,7 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
     }, []);
     return (
         <div className="py-6">
-            <h3 className="text-[15px] text-[#545454] !font-normal mb-4">Advanced Search</h3>
+            <h3 className="text-[15px] text-[#545454] font-normal! mb-4">Advanced Search</h3>
 
             {/* Search Keyword + Categories Row */}
             <div className="flex flex-col md:flex-row gap-6">
@@ -97,7 +97,7 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
                         value={keyword}
                         required
                         onChange={(e) => setKeyword(e.target.value)}
-                        className="w-full border border-gray-300 rounded px-3 py-2 text-[1rem] focus:outline-none focus:border-gray-500 bg-white h-[3rem]"
+                        className="w-full border border-gray-300 rounded px-3 py-2 text-[1rem] focus:outline-none focus:border-gray-500 bg-white h-12"
                         placeholder=""
                     />
 
@@ -107,7 +107,7 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
                             value={selectedBrand}
                             onChange={(e) => setSelectedBrand(e.target.value)}
                             className="w-full border border-gray-300 rounded px-3 
-    !pr-10 py-2  text-[1rem] focus:outline-none focus:border-gray-500 bg-white h-[42px]"
+    pr-10! py-2  text-[1rem] focus:outline-none focus:border-gray-500 bg-white h-[42px]"
                         >
                             <option value="">No Preference</option>
                             {brands?.map(({ brand }: any) => (
@@ -201,13 +201,13 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
             <div className="mt-6 flex gap-4 justify-center md:justify-start">
                 <button
                     onClick={handleSearch}
-                    className="btn-primary h-[36px] !p-3 !rounded-none w-[40%] md:w-[30%] max-w-[9rem]"
+                    className="btn-primary h-[36px] p-3! rounded-none! w-[40%] md:w-[30%] max-w-36"
                 >
                     Search
                 </button>
                 <button
                     onClick={handleReset}
-                    className="btn-primary h-[36px] !p-3 !rounded-none w-[40%] md:w-[30%] max-w-[9rem]"
+                    className="btn-primary h-[36px] p-3! rounded-none! w-[40%] md:w-[30%] max-w-36"
                 >
                     Reset
                 </button>

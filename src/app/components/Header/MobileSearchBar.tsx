@@ -96,9 +96,9 @@ const MobileSearchBar: React.FC = () => {
             onChange={(e) => setQuery(e.target.value)}
             type="text"
             placeholder="Search products..."
-            className="w-full px-4 py-3 pr-10  rounded-full text-[var(--font-color)] border border- focus:outline-none focus:ring-2 focus:ring-[var(--bg-color)] text-sm sm:text-base mt-4"
+            className="w-full px-4 py-3 pr-10  rounded-full text-(--font-color) border border- focus:outline-none focus:ring-2 focus:ring-(--bg-color) text-sm sm:text-base mt-4"
           />
-          <Search className="absolute right-3 top-[60%] -translate-y-1/2 w-5 h-5 text-[var(--font-color)] cursor-pointer" />
+          <Search className="absolute right-3 top-[60%] -translate-y-1/2 w-5 h-5 text-(--font-color) cursor-pointer" />
         </div>
       </div>
 
@@ -118,12 +118,12 @@ const MobileSearchBar: React.FC = () => {
                 onClick={() => handleSelect(item.url)}
                 className="
             flex items-start gap-4 p-4 border-b border-gray/50
-            hover:bg-[var(--primary-color)] hover:text-white
+            hover:bg-(--primary-color) hover:text-white
             transition-colors cursor-pointer
           "
               >
                 {/* Product Info */}
-                <div className="flex flex-col flex-grow overflow-hidden">
+                <div className="flex flex-col grow overflow-hidden">
                   <p className="text-sm font-semibold truncate">
                     {item?.brand || "Brand"} |{" "}
                     <span>SKU: {item?.sku || "N/A"}</span>

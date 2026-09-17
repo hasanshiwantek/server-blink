@@ -33,7 +33,7 @@ const OurLatestBlogs = () => {
         
         {/* Heading + Search */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 md:gap-0">
-          <h1 className="h1-secondary !text-[#4A4A4A] uppercase tracking-wide text-center md:text-left">
+          <h1 className="h1-secondary text-[#4A4A4A]! uppercase tracking-wide text-center md:text-left">
             Our Latest Blogs
           </h1>
 
@@ -41,7 +41,7 @@ const OurLatestBlogs = () => {
             <Input
               type="text"
               placeholder="Search..."
-              className="!max-w-full h-full flex-1 border border-gray-300"
+              className="max-w-full! h-full flex-1 border border-gray-300"
             />
             <button className="bg-[#F15939] text-white hover:bg-[#d94d30] transition flex items-center justify-center w-[60px] sm:w-[70px] md:w-[80px] h-full">
               <svg

@@ -89,7 +89,7 @@ const SigninPage = () => {
             Home
           </Link>
           <span className="text-gray-400">/</span>
-          <span className="text-[var(--primary-color)] text-[11px]">Login</span>
+          <span className="text-(--primary-color) text-[11px]">Login</span>
         </div>
       </div>
 
@@ -176,7 +176,7 @@ const SigninPage = () => {
 
           {/* Right Column - New Customer Card */}
           <div className="bg-[#cac9c9] p-8 rounded-xs -mt-9">
-            <h2 className="h2-medium !text-[20px]  mb-6">New Customer?</h2>
+            <h2 className="h2-medium text-[20px]!  mb-6">New Customer?</h2>
             <p className="text-[14px] text-[#545454] mb-4">
               Create an account with us and you'll be able to:
             </p>

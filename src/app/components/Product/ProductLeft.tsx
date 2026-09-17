@@ -128,7 +128,7 @@ const ProductLeft = ({
     <div className="product-left flex w-full md:w-[70%] flex-col px-10 md:px-0  lg:w-[50%]">
       <div className="flex flex-col items-center gap-8">
         {/* Main Image — opens lightbox on click */}
-        <div className="flex h-auto w-full items-center justify-center rounded-2xl border-1 border-[#8b8b8b] bg-white p-4 aspect-square lg:h-[455px] lg:w-[76.7%]">
+        <div className="flex h-auto w-full items-center justify-center rounded-2xl border border-[#8b8b8b] bg-white p-4 aspect-square lg:h-[455px] lg:w-[76.7%]">
           <button
             type="button"
             onClick={() => {
@@ -155,11 +155,11 @@ const ProductLeft = ({
 
         <Dialog open={lightboxOpen} onOpenChange={handleOpenChange}>
           <DialogPortal>
-            <DialogOverlay className="z-[100] bg-black/75" />
+            <DialogOverlay className="z-100 bg-black/75" />
             <DialogPrimitive.Content
               aria-describedby={undefined}
               className={cn(
-                "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-[101] flex flex-col border-0 bg-transparent p-0 shadow-none outline-none",
+                "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-101 flex flex-col border-0 bg-transparent p-0 shadow-none outline-none",
               )}
             >
               <DialogPrimitive.Title className="sr-only">
@@ -167,7 +167,7 @@ const ProductLeft = ({
               </DialogPrimitive.Title>
 
               {/* Top-right: zoom + close */}
-              <div className="pointer-events-auto absolute right-4 top-4 z-[110] flex gap-2 sm:right-6 sm:top-6">
+              <div className="pointer-events-auto absolute right-4 top-4 z-110 flex gap-2 sm:right-6 sm:top-6">
                 <button
                   type="button"
                   onClick={() => setZoomed((z) => !z)}
@@ -197,7 +197,7 @@ const ProductLeft = ({
                       e.stopPropagation();
                       goPrev();
                     }}
-                    className="pointer-events-auto absolute left-2 top-1/2 z-[110] -translate-y-1/2 rounded-sm p-2 text-neutral-400 transition hover:text-white sm:left-4 md:left-8"
+                    className="pointer-events-auto absolute left-2 top-1/2 z-110 -translate-y-1/2 rounded-sm p-2 text-neutral-400 transition hover:text-white sm:left-4 md:left-8"
                     aria-label="Previous image"
                   >
                     <ChevronLeft
@@ -211,7 +211,7 @@ const ProductLeft = ({
                       e.stopPropagation();
                       goNext();
                     }}
-                    className="pointer-events-auto absolute right-2 top-1/2 z-[110] -translate-y-1/2 rounded-sm p-2 text-neutral-400 transition hover:text-white sm:right-4 md:right-8"
+                    className="pointer-events-auto absolute right-2 top-1/2 z-110 -translate-y-1/2 rounded-sm p-2 text-neutral-400 transition hover:text-white sm:right-4 md:right-8"
                     aria-label="Next image"
                   >
                     <ChevronRight
@@ -284,7 +284,7 @@ const ProductLeft = ({
                       badge.border && "border-r-2 border-[#545454]",
                     )}
                   >
-                    <div className="flex h-[60px] w-[60px] flex-shrink-0 items-center justify-center sm:h-[75px] sm:w-[75px] md:h-[90px] md:w-[90px]">
+                    <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center sm:h-[75px] sm:w-[75px] md:h-[90px] md:w-[90px]">
                       <Image
                         src={badge.src}
                         alt={badge.alt}

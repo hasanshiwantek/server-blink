@@ -7,7 +7,7 @@ const BlogHeader = ({ blogPost }: { blogPost: any }) => {
     <section className="w-full">
       {/* Blog Title + Meta */}
       {/* Blog Image */}
-      <div className="w-full relative h-[30rem] lg:w-[72.8%] md:h-[548px] mx-auto">
+      <div className="w-full relative h-120 lg:w-[72.8%] md:h-[548px] mx-auto">
         <Image
           src={blogPost?.thumbnail || "/default-product-image.svg"}
           alt={blogPost?.title}

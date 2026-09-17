@@ -22,7 +22,7 @@ export function DataTable<T>({
   return (
     <div className="rounded-md border">
       <Table>
-        <TableHeader className="!bg-[#F5F5F5]">
+        <TableHeader className="bg-[#F5F5F5]!">
           <TableRow>
             {headers.map((header, i) => (
               <TableHead key={i}>{header}</TableHead>

@@ -58,7 +58,7 @@ const Breadcrumb = ({ items }: BreadcrumbProps) => {
             >
               {index === items.length - 1 ? (
                 <span
-                  className="!text-[#D42020] text-[11px]"
+                  className="text-[#D42020]! text-[11px]"
                   itemProp="name"
                 >
                   {item.name}

@@ -40,8 +40,8 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
   );
 
   return (
-    <div className="bg-white border-[1px] border-[#8b8b8b] rounded-sm shadow-sm py-6 h-fit sticky top-9">
-      <div className="flex items-center justify-between mb-6 px-6 border-b-[1px] border-[#8b8b8b]">
+    <div className="bg-white border border-[#8b8b8b] rounded-sm shadow-sm py-6 h-fit sticky top-9">
+      <div className="flex items-center justify-between mb-6 px-6 border-b border-[#8b8b8b]">
         <h2 className="text-xl font-normal text-[#544545] p-4">
           Order Summary
         </h2>
@@ -52,13 +52,13 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
       </div>
 
       {/* Cart Items */}
-      <div className="space-y-4 max-h-[400px] overflow-y-auto px-6 border-b-[1px] border-[#8b8b8b]">
+      <div className="space-y-4 max-h-[400px] overflow-y-auto px-6 border-b border-[#8b8b8b]">
         {cart.map((item) => (
           <div
             key={item.id}
             className="flex items-start gap-4 pb-4 border-b last:border-b-0"
           >
-            <div className="relative w-20 h-25 flex-shrink-0">
+            <div className="relative w-20 h-25 shrink-0">
               <Image
                 src={item.image?.[0]?.path || "/checkouticon/orderimg.png"}
                 alt={item.name}
@@ -139,7 +139,7 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
       </div>
 
       {/* Total */}
-      <div className="flex flex-col mt-4 pt-4 pb-2 px-6 border-t-[1px] border-[#8b8b8b] text-gray-700">
+      <div className="flex flex-col mt-4 pt-4 pb-2 px-6 border-t border-[#8b8b8b] text-gray-700">
         <div className="flex justify-between items-center text-[15px] text-[#545454] roboto-font">
           <span>
             Total <br /> (USD)
@@ -153,7 +153,7 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
         {appliedCoupon && discountTotal > 0 && (
           <div className="text-[#333] font-medium text-[13px]  mt-1 self-end">
             You saved{" "}
-            <span className="!text-[#2aab3f] ">
+            <span className="text-[#2aab3f]! ">
               ${discountTotal?.toFixed(2)}
             </span>{" "}
             in total!

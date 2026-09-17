@@ -50,8 +50,8 @@ const GridCard = () => {
             className="
               w-full sm:w-[30%] md:w-[25%] lg:w-[35%]
               xl:w-[36.5%] xl:h-[100.3%] 
-              2xl:w-[40.6%] 2xl:h-[100%]
-              relative overflow-hidden  flex-shrink-0
+              2xl:w-[40.6%] 2xl:h-full
+              relative overflow-hidden  shrink-0
             "
           >
             <Image
@@ -72,7 +72,7 @@ const GridCard = () => {
               text-left py-3 sm:py-2
             "
           >
-            <p className="h6-18-px-regular  !text-[#F15939]">
+            <p className="h6-18-px-regular  text-[#F15939]!">
               By {blog.author}
             </p>
             <h3 className="h5-regular group-hover:text-[#F15939] transition-colors duration-200">

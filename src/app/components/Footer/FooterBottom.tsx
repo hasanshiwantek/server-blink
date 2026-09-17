@@ -129,7 +129,7 @@ const FooterBottom = () => {
   return (
     <footer className="bg-[#333333] text-[#ffffff] w-full mx-auto roboto-font">
       {/* 🔹 Newsletter Section */}
-      <section className="bg-[#cac9c9] flex justify-center items-center h-auto min-h-[3rem]">
+      <section className="bg-[#cac9c9] flex justify-center items-center h-auto min-h-12">
         <div
           className="
        w-full xl:max-w-[1170px] 2xl:max-w-[1170px] mx-auto px-4 xl:px-4 2xl:px-2
@@ -171,7 +171,7 @@ const FooterBottom = () => {
             <button
               type="submit"
               disabled={newsletterLoading}
-              className="btn-primary h-[32px] !px-4 !py-1 !rounded-sm w-[120px]"
+              className="btn-primary h-[32px] px-4! py-1! rounded-sm! w-[120px]"
             >
               {newsletterLoading ? "LOADING.." : "JOIN"}
             </button>

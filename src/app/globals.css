@@ -1,27 +1,8 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
 /* @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Condensed:wght@400;700&display=swap'); */
 @custom-variant dark (&:is(.dark *));
-
-
-
-
-body>div:has(iframe[src*="recaptcha/api2/bframe"]) {
-  pointer-events: auto !important;
-}
-
-/* globals.css or app/globals.css */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  /* IE and Edge */
-  scrollbar-width: none;
-  /* Firefox */
-}
-
 
 @theme inline {
   --color-background: var(--background);
@@ -75,6 +56,22 @@ body>div:has(iframe[src*="recaptcha/api2/bframe"]) {
   /* 1920px → Figma big screen */
   --breakpoint-3xl: 2560px;
   /* 2560px → ultra-wide */
+}
+
+body>div:has(iframe[src*="recaptcha/api2/bframe"]) {
+  pointer-events: auto !important;
+}
+
+/* globals.css or app/globals.css */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 /* my fonts */

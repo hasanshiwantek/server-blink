@@ -69,7 +69,7 @@ const ResetPassword = () => {
     };
 
     return (
-        <div className="w-full bg-[var(--bg-color)] py-10 lg:py-14">
+        <div className="w-full bg-(--bg-color) py-10 lg:py-14">
             <div className=" w-full md:w-[80%] max-w-full lg:max-w-[1170px] mx-0 lg:mx-auto lg:px-[0%] px-[7%]">
                 <div className="flex w-full justify-center">
                     {/* 585px column: page par center, andar text left (image jaisa) */}

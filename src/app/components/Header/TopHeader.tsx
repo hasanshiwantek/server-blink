@@ -235,7 +235,7 @@ const TopHeader = () => {
                   </button>
                 </form>
                 {showSearchDropdown && searchQuery.trim().length > 1 && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-[585px] mt-1 bg-[#f2f2f2] shadow-xl overflow-hidden z-[9999] max-h-[520px] overflow-y-auto border border-gray-300">
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-[585px] mt-1 bg-[#f2f2f2] shadow-xl overflow-hidden z-9999 max-h-[520px] overflow-y-auto border border-gray-300">
                     {loading && (
                       <div className="p-6 text-gray-500 text-center">
                         Searching...
@@ -260,7 +260,7 @@ const TopHeader = () => {
                         >
                           <div className="flex">
                             {/* Product Image - Left Side */}
-                            <div className="w-[160px] min-h-[140px] flex-shrink-0 bg-white border-r border-gray-200 p-3 flex items-center justify-center">
+                            <div className="w-[160px] min-h-[140px] shrink-0 bg-white border-r border-gray-200 p-3 flex items-center justify-center">
                               <Image
                                 src={
                                   item?.image?.[0]?.path ||
@@ -358,7 +358,7 @@ const TopHeader = () => {
                                   handleSelect(url);
                                 }}
                                 // className="mt-4 w-full bg-[#cccccc] hover:bg-[#bbbbbb] text-[#333] font-bold text-[14px] uppercase py-3 tracking-widest transition-all active:bg-gray-400 btn-pri"
-                                className="font-bold text-[14px] font-roboto-condensed leading-4 uppercase font-robot border-b-[4px] border-b-[#393939] bg-[#cac9c9] text-[#393939] rounded-none hover:bg-[#b81818] hover:border-b-[#6b0107] hover:text-white px-[2.28571rem] py-[0.85714rem] my-0"
+                                className="font-bold text-[14px] font-roboto-condensed leading-4 uppercase font-robot border-b-4 border-b-[#393939] bg-[#cac9c9] text-[#393939] rounded-none hover:bg-[#b81818] hover:border-b-[#6b0107] hover:text-white px-[2.28571rem] py-[0.85714rem] my-0"
                               >
                                 VIEW DETAILS
                               </button>
@@ -429,7 +429,7 @@ const TopHeader = () => {
               <div className="relative sm:flex hidden" ref={dropdownRef}>
                 <div className="relative w-[40px]">
                   <div
-                    className="absolute z-[9999] -top-6 -bottom-7 right-0 left-0 bg-[#d42020] hover:bg-[#860d09] border-0 border-b-[3px] border-b-[#860109] transition cursor-pointer flex items-center justify-center"
+                    className="absolute z-9999 -top-6 -bottom-7 right-0 left-0 bg-[#d42020] hover:bg-[#860d09] border-0 border-b-[3px] border-b-[#860109] transition cursor-pointer flex items-center justify-center"
                     onClick={() => setIsOpen((prev) => !prev)}
                   >
                     <FaShoppingCart className="w-7 h-7 text-white" />
@@ -442,7 +442,7 @@ const TopHeader = () => {
 
                   {isOpen && (
                     <div
-                      className={`absolute right-0 top-7 w-96 shadow-2xl border border-gray-200 z-[9999] ${cart.length === 0 ? "bg-[#ffffff]" : "bg-[#eaeaea]"}`}
+                      className={`absolute right-0 top-7 w-96 shadow-2xl border border-gray-200 z-9999 ${cart.length === 0 ? "bg-[#ffffff]" : "bg-[#eaeaea]"}`}
                     >
                       {cart.length === 0 ? (
                         <div className="p-12 text-center">
@@ -476,7 +476,7 @@ const TopHeader = () => {
                                 onClick={() => setIsOpen(false)}
                                 className=" px-2 flex gap-3 items-center cursor-pointer border-b border-gray-300 pb-1 last:border-b-0"
                               >
-                                <div className="w-16 h-16 flex-shrink-0 border border-gray-100 rounded-none">
+                                <div className="w-16 h-16 shrink-0 border border-gray-100 rounded-none">
                                   <Image
                                     src={
                                       item?.image?.[0]?.path ||
@@ -495,7 +495,7 @@ const TopHeader = () => {
                                       {item?.brand?.name}
                                     </p>
                                   )}
-                                  <p className="text-[13px] font-light text-[#d42020] leading-snug whitespace-pre-line break-words">
+                                  <p className="text-[13px] font-light text-[#d42020] leading-snug whitespace-pre-line wrap-break-word">
                                     {item?.name}
                                   </p>
                                   <p className="text-[#393939] font-bold text-[13px] mt-1">
@@ -511,13 +511,13 @@ const TopHeader = () => {
 
                           <div className="flex gap-2 p-4 pt-6">
                             <button
-                              className="flex-1 font-[var(--font-roboto-condensed)] font-bold bg-[#d42020] hover:bg-[#b81818] text-white text-[1rem] py-2.5 px-4 border-0 border-b-[3px] border-b-[#860109] transition uppercase tracking-wide"
+                              className="flex-1 font-(--font-roboto-condensed) font-bold bg-[#d42020] hover:bg-[#b81818] text-white text-[1rem] py-2.5 px-4 border-0 border-b-[3px] border-b-[#860109] transition uppercase tracking-wide"
                               onClick={() => handleSelect("/checkout")}
                             >
                               Check Out Now
                             </button>
                             <button
-                              className="flex-1 font-[var(--font-roboto-condensed)] font-bold bg-[#d42020] hover:bg-[#b81818] text-white text-[1rem] py-2.5 px-4 border-0 border-b-[3px] border-b-[#860109] transition uppercase tracking-wide"
+                              className="flex-1 font-(--font-roboto-condensed) font-bold bg-[#d42020] hover:bg-[#b81818] text-white text-[1rem] py-2.5 px-4 border-0 border-b-[3px] border-b-[#860109] transition uppercase tracking-wide"
                               onClick={() => {
                                 handleSelect("/cart");
                               }}
@@ -531,7 +531,7 @@ const TopHeader = () => {
                   )}
                 </div>
               </div>
-              <div className="relative top-[3px] z-[999] sm:hidden flex">
+              <div className="relative top-[3px] z-999 sm:hidden flex">
                 <Link href="/cart" className="transition block">
                   <div className="bg-[#d42020] p-2 rounded hover:bg-red-700 transition">
                     <FaShoppingCart className="w-7 h-7 text-white" />

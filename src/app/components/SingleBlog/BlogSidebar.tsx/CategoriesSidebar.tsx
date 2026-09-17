@@ -28,7 +28,7 @@ const CategoriesSidebar = () => {
         <Input
           type="text"
           placeholder="Search..."
-          className="!max-w-full h-full flex-1 border border-gray-300"
+          className="max-w-full! h-full flex-1 border border-gray-300"
         />
         <button className="bg-[#F15939] text-white hover:bg-[#d94d30] transition flex items-center justify-center w-[60px] sm:w-[70px] md:w-[80px] h-full">
           <svg

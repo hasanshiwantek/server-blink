@@ -220,7 +220,7 @@ export default function ProductList({
                  max-h-[240px] overflow-y-auto custom-scrollbar"
           >
             <div
-              className="custom-description custom-description-style prose prose-sm max-w-none break-words"
+              className="custom-description custom-description-style prose prose-sm max-w-none wrap-break-word"
               dangerouslySetInnerHTML={{ __html: contentHtml }}
             />
           </div>

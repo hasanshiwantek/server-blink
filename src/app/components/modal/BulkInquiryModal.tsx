@@ -91,7 +91,7 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="!max-w-[65rem] w-full max-h-[100vh] overflow-y-auto p-0 rounded-lg shadow-sm !z-[9999]">
+      <DialogContent className="max-w-260! w-full max-h-screen overflow-y-auto p-0 rounded-lg shadow-sm z-9999!">
         {/* Header with Close */}
 
         <div className="flex flex-col md:flex-row">
@@ -174,7 +174,7 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
                 className="w-full px-4 py-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#F15939] resize-none"
               />
               {/* ✅ ReCAPTCHA */}
-              <div className="relative z-[99999]">
+              <div className="relative z-99999">
                 <ReCAPTCHA
                   ref={recaptchaRef}
                   sitekey={sitekey}

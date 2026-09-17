@@ -17,7 +17,7 @@ const BlogSkeleton = ({ count = 3 }) => {
           <div className="absolute inset-0 bg-gray-300" />
 
           {/* Dark gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent"></div>
+          <div className="absolute inset-0 bg-linear-to-t from-black/40 via-black/20 to-transparent"></div>
 
           {/* Text Content Skeleton */}
           <div className="absolute inset-0 flex flex-col justify-end p-5 md:p-6">

@@ -64,9 +64,9 @@ const SocialResponsibilitySection = () => {
                   fetchPriority="high"
                 />
               </div>
-              <div className="p-6 flex flex-col  flex-grow ">
+              <div className="p-6 flex flex-col  grow ">
                 <h3 className="h3-24px-medium   mb-2 ">{card.title}</h3>
-                <p className="h6-18-px-regular  flex-grow">
+                <p className="h6-18-px-regular  grow">
                   {card.description}
                 </p>
               </div>

@@ -88,7 +88,7 @@ const Banner = ({ carousels, settings }: any) => {
                   <button
                     type="button"
                     onClick={() => router.push(slide?.link)}
-                    className="inline-flex items-center justify-center rounded bg-[var(--primary-color)] border-0 border-b-[3px] border-b-[#860109] box-border h-[30px] px-5 text-[18px] font-bold uppercase tracking-wide text-white shadow-md transition-colors duration-200"
+                    className="inline-flex items-center justify-center rounded bg-(--primary-color) border-0 border-b-[3px] border-b-[#860109] box-border h-[30px] px-5 text-[18px] font-bold uppercase tracking-wide text-white shadow-md transition-colors duration-200"
                     style={robotoCondensedStyle}
                   >
                     {slide.buttonText}
@@ -96,7 +96,7 @@ const Banner = ({ carousels, settings }: any) => {
                 </div>
 
                 {/* sm+: overlay on image (absolute so it stacks over full-bleed image) */}
-                <div className="absolute inset-0 z-[1] hidden items-center px-6 sm:flex md:px-12 lg:px-16">
+                <div className="absolute inset-0 z-1 hidden items-center px-6 sm:flex md:px-12 lg:px-16">
                   <div className="max-w-2xl text-left text-white">
                     <h1
                       className="h1-bold mb-3 drop-shadow-2xl md:mb-4 md:leading-tight"
@@ -121,7 +121,7 @@ const Banner = ({ carousels, settings }: any) => {
                   </div>
                 </div>
 
-                <div className="pointer-events-none absolute bottom-0 left-0 right-0 hidden h-20 bg-gradient-to-t from-black/40 to-transparent sm:block" />
+                <div className="pointer-events-none absolute bottom-0 left-0 right-0 hidden h-20 bg-linear-to-t from-black/40 to-transparent sm:block" />
               </div>
             </CarouselItem>
           ))}

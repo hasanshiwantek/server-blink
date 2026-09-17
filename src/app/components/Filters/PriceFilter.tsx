@@ -58,7 +58,7 @@ export default function PriceFilter({ filters, setFilters }: Props) {
       </div>
 
       <button
-        className="!w-full !py-1.5 !rounded h5-20px-regular btn-outline-primary"
+        className="w-full! py-1.5! rounded! h5-20px-regular btn-outline-primary"
         onClick={handleConfirm}
       >
         Confirm

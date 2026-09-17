@@ -1599,7 +1599,7 @@ const CheckoutForm = () => {
             {/* STEP 1: Customer */}
             {/* STEP 1: Customer */}
             <div
-              className={`p-6 border-b-[1px]  items-center border-b-[#8b8b8b] ${currentStep >= 2 ? "flex gap-10" : "block"}`}
+              className={`p-6 border-b  items-center border-b-[#8b8b8b] ${currentStep >= 2 ? "flex gap-10" : "block"}`}
             >
               <h2
                 className={`hidden md:flex text-[1.92308rem] font-normal mb-4 text-[#545454] `}
@@ -1621,7 +1621,7 @@ const CheckoutForm = () => {
 
             {/* STEP 2: Shipping */}
             <div
-              className={`p-6 border-b-[1px]  items-center border-b-[#8b8b8b] ${currentStep >= 3 ? "flex gap-10" : "block"}`}
+              className={`p-6 border-b  items-center border-b-[#8b8b8b] ${currentStep >= 3 ? "flex gap-10" : "block"}`}
             >
               <h2 className="hidden md:flex text-[25px] font-normal mt-6 mb-6 text-[#545454]">
                 Shipping
@@ -1646,7 +1646,7 @@ const CheckoutForm = () => {
 
             {/* STEP 3: Billing */}
             <div
-              className={`p-6 border-b-[1px]  items-center border-b-[#8b8b8b] ${currentStep >= 4 ? "flex gap-16" : "block"}`}
+              className={`p-6 border-b  items-center border-b-[#8b8b8b] ${currentStep >= 4 ? "flex gap-16" : "block"}`}
             >
               <h2 className="hidden md:flex text-[25px] font-normal mb-4 text-[#545454]">
                 Billing
@@ -1670,7 +1670,7 @@ const CheckoutForm = () => {
 
             {/* STEP 4: Payment */}
             {cart?.length > 0 && (
-              <div className="p-6  border-b-[1px] border-b-[#8b8b8b]">
+              <div className="p-6  border-b border-b-[#8b8b8b]">
                 <h2 className="text-[1.92308rem] font-normal mb-4 text-[#545454]">
                   Payment
                 </h2>
@@ -1755,14 +1755,14 @@ const CheckoutForm = () => {
             <Button
               variant="outline"
               onClick={() => setIsDialogOpen(false)}
-              className="!p-4 !text-lg"
+              className="p-4! text-lg!"
             >
               Cancel
             </Button>
             <Button
               variant="destructive"
               onClick={confirmDelete}
-              className="!p-4 !text-lg"
+              className="p-4! text-lg!"
             >
               Confirm
             </Button>

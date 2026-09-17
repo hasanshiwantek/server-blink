@@ -24,7 +24,7 @@ export default function BrandFilter({
               }
               className={`
                 w-full text-left px-3 py-1 text-[15px] font-normal transition-colors flex items-center 
-                ${isActive ? "text-[#D42020] font-medium" : "text-[#545454] hover:text-[var(--primary-color)]"}
+                ${isActive ? "text-[#D42020] font-medium" : "text-[#545454] hover:text-(--primary-color)"}
               `}
             >
               {b.brand.name}
@@ -34,7 +34,7 @@ export default function BrandFilter({
       })}
       {brands?.length > 9 && <>
         <Link href="/brands"
-          className="w-full px-3 py-1 text-left text-[15px] font-normal flex items-center gap-3 transition-colors text-[#545454] hover:text-[var(--primary-color)]"
+          className="w-full px-3 py-1 text-left text-[15px] font-normal flex items-center gap-3 transition-colors text-[#545454] hover:text-(--primary-color)"
         >
           <span>View all brands</span>
         </Link> </>}

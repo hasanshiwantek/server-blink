@@ -48,7 +48,7 @@ export default function CategoryFilter({
     flex items-center justify-between text-[15px] transition-colors bg-white hover:bg-[#f9f9f9]
     ${isActive
                   ? "text-[#D42020] font-medium"   // ✅ ACTIVE
-                  : "text-[#545454] hover:text-[var(--primary-color)]"
+                  : "text-[#545454] hover:text-(--primary-color)"
                 }
   `}
               style={{ paddingLeft: `${level * 12 + 12}px` }}

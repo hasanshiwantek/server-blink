@@ -162,10 +162,10 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                 open={showSingleAddressModal}
                 onClose={() => setShowSingleAddressModal(false)}
             />}
-            <div className="bg-white border-[1px] border-[#8b8b8b] rounded-sm shadow-sm py-6 h-fit sticky top-9">
+            <div className="bg-white border border-[#8b8b8b] rounded-sm shadow-sm py-6 h-fit sticky top-9">
 
                 {/* Header */}
-                <div className="flex items-center justify-between mb-6 px-6 border-b-[1px] border-[#8b8b8b]">
+                <div className="flex items-center justify-between mb-6 px-6 border-b border-[#8b8b8b]">
                     <h2 className="text-xl font-normal text-[#545454] p-4 roboto-font">
                         Order Summary
                     </h2>
@@ -185,7 +185,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                 </div>
 
                 {/* Cart Items */}
-                <div className="border-b-[1px] border-[#8b8b8b]">
+                <div className="border-b border-[#8b8b8b]">
                     <div className="space-y-0 px-6">
                         {visibleItems.map((item) => {
                             const primaryImage = item.image?.[0]?.url || item.image?.[0]?.path || "/checkouticon/orderimg.png";
@@ -193,7 +193,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
 
                             return (
                                 <div key={item.id} className="flex items-start gap-3 pb-4 border-b last:border-b-0">
-                                    <div className="relative w-20 h-25 flex-shrink-0">
+                                    <div className="relative w-20 h-25 shrink-0">
 
                                         <Image
                                             src={item.image?.[0]?.path || "/checkouticon/orderimg.png"}
@@ -207,7 +207,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                                     <div className="flex-1 min-w-0">
                                         {/* ✅ Destination label OR unallocated badge */}
                                         {/* {item.destLabel ? (
-                                        <p className="text-xs text-[var(--primary-color)] font-medium mb-0.5">
+                                        <p className="text-xs text-(--primary-color) font-medium mb-0.5">
                                             {item.destLabel}
                                         </p>
                                     ) : isMultiAddress ? (
@@ -220,7 +220,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                                         </p>
                                         {/* <p className="text-xs text-gray-500">${item.price.toFixed(2)}</p> */}
                                     </div>
-                                    <div className="text-sm font-semibold text-[#545454] flex-shrink-0 roboto-font" >
+                                    <div className="text-sm font-semibold text-[#545454] shrink-0 roboto-font" >
                                         ${lineTotal.toFixed(2)}
                                     </div>
                                 </div>
@@ -236,7 +236,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                             <button
                                 type="button"
                                 onClick={() => setShowAllItems((prev) => !prev)}
-                                className=" flex items-center justify-end gap-2 py-3 p-2 text-sm font-bold text-white bg-[var(--primary-color)] hover:opacity-90 uppercase"
+                                className=" flex items-center justify-end gap-2 py-3 p-2 text-sm font-bold text-white bg-(--primary-color) hover:opacity-90 uppercase"
                             >
                                 {showAllItems ? (
                                     <>
@@ -259,7 +259,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                 </div>
 
                 {/* Promo */}
-                {!isOrderInfo && <div className="mb-6 border-b-[1px] px-6 border-[#8b8b8b] py-4">
+                {!isOrderInfo && <div className="mb-6 border-b px-6 border-[#8b8b8b] py-4">
                     <button type="button" className="text-[13px] text-[#D42020]" onClick={() => setShowPromo((prev) => !prev)}>
                         Promo/Gift Certificate
                     </button>
@@ -269,11 +269,11 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                                 <input
                                     type="text"
                                     placeholder="Enter code"
-                                    className="w-full border border-gray-300 rounded px-4 py-3.5 focus:outline-none focus:ring-1 focus:ring-[var(--primary-color)]"
+                                    className="w-full border border-gray-300 rounded px-4 py-3.5 focus:outline-none focus:ring-1 focus:ring-(--primary-color)"
                                     value={promoCode}
                                     onChange={(e) => setPromoCode(e.target.value)}
                                 />
-                                <button type="button" className="bg-[var(--primary-color)] text-white px-4 py-1 rounded-none border-b-2 border-black text-2xl" onClick={onApplyCoupon}>
+                                <button type="button" className="bg-(--primary-color) text-white px-4 py-1 rounded-none border-b-2 border-black text-2xl" onClick={onApplyCoupon}>
                                     Apply
                                 </button>
                             </div>
@@ -325,13 +325,13 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                 </div>
 
                 {/* Total */}
-                <div className="flex flex-col mt-4 pt-4 px-6 border-t-[1px] border-[#8b8b8b] text-gray-700">
+                <div className="flex flex-col mt-4 pt-4 px-6 border-t border-[#8b8b8b] text-gray-700">
                     <div className="flex justify-between items-center text-[15px] text-[#545454] roboto-font" >
                         <span>Total <br /> (USD)</span>
                         <span>${finalTotal.toFixed(2)}</span>
                     </div>
                     {appliedCoupon && discountAmount > 0 && (
-                        <div className="text-[#333] font-medium text-[13px] mt-1 self-end">You saved <span className="!text-[#2aab3f] ">${discountAmount.toFixed(2)}</span> in total!</div>
+                        <div className="text-[#333] font-medium text-[13px] mt-1 self-end">You saved <span className="text-[#2aab3f]! ">${discountAmount.toFixed(2)}</span> in total!</div>
                     )}
                 </div>
             </div>

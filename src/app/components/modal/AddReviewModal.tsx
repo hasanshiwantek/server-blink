@@ -105,7 +105,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="!max-w-[70rem]  w-full max-h-[90vh] overflow-y-auto p-0 rounded-none shadow-sm bg-[#eaeaea] ">
+            <DialogContent className="max-w-280!  w-full max-h-[90vh] overflow-y-auto p-0 rounded-none shadow-sm bg-[#eaeaea] ">
                 {/* ✅ Sticky Header */}
                 <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-[#ddd] bg-[#eaeaea]">
                     <DialogTitle className="text-[18px] font-light text-[#545454]  w-full flex justify-center">
@@ -163,7 +163,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
                                         value={formData.rating}
                                         onChange={handleChange}
                                         required
-                                        className="w-full h-[3rem] rounded-none px-3 border border-[#ccc] bg-white text-[14px] text-[#333] appearance-none focus:outline-none focus:border-[#F15939]"
+                                        className="w-full h-12 rounded-none px-3 border border-[#ccc] bg-white text-[14px] text-[#333] appearance-none focus:outline-none focus:border-[#F15939]"
                                     >
                                         <option value="">Select Rating</option>
                                         <option value="1">1 star (worst)</option>
@@ -189,7 +189,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
-                                    className="w-full h-[3rem] rounded-none !max-w-full px-4 py-3 border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#F15939]"
+                                    className="w-full h-12 rounded-none max-w-full! px-4 py-3 border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#F15939]"
                                 />
                             </div>
 
@@ -208,7 +208,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
                                     value={formData.email}
                                     onChange={handleChange}
                                     required
-                                    className="w-full h-[3rem] rounded-none !max-w-full px-4 py-3 border border-gray-300 bg-white  focus:outline-none focus:ring-2 focus:ring-[#F15939]"
+                                    className="w-full h-12 rounded-none max-w-full! px-4 py-3 border border-gray-300 bg-white  focus:outline-none focus:ring-2 focus:ring-[#F15939]"
                                 />
                             </div>
                             <div>
@@ -227,7 +227,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
                                     value={formData.subject}
                                     onChange={handleChange}
                                     required
-                                    className="w-full h-[3rem] rounded-none !max-w-full px-4 py-3 border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#F15939]"
+                                    className="w-full h-12 rounded-none max-w-full! px-4 py-3 border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#F15939]"
                                 />
                             </div>
 

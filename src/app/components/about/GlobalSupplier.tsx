@@ -10,7 +10,7 @@ const GlobalSupplier = () => {
           <div className="flex-1">
             <h2 className="h1-lg">
               A Global Leading{" "}
-              <span className="!text-[#F15939]">IT Supplier</span>
+              <span className="text-[#F15939]!">IT Supplier</span>
               <br />
               Empowering Enterprise
               <br />
@@ -18,7 +18,7 @@ const GlobalSupplier = () => {
             </h2>
           </div>
           <div className="flex-1 lg:pl-12 ">
-            <p className="h3-24px-regular !leading-normal ">
+            <p className="h3-24px-regular leading-normal! ">
               With a robust supply chain and ICT expertise, our sales team and
               500+ global partners create a comprehensive ICT ecosystem,
               empowering 18,000+ customers' businesses to succeed
@@ -55,7 +55,7 @@ const GlobalSupplier = () => {
 
             {/* Description Card */}
             <div className="bg-white p-8">
-              <p className="h3-24px-regular !leading-normal mb-6">
+              <p className="h3-24px-regular leading-normal! mb-6">
                 Premium Quality:To make sure that our inventory meets the
                 highest quality standards for which we check our products
                 periodically so that you don't face any technical difficulty
@@ -64,7 +64,7 @@ const GlobalSupplier = () => {
               <Link href={"/products"}>
               <button
                 type="button"
-                className="  md:[w-60%] xl:[w-80%] 2xl:[w-70%] lg:[w-80%] w-full      px-6 py-3 rounded-full h4-medium !text-white bg-[#F15939] border border-transparent hover:!border-[#F15939] hover:!bg-white hover:!text-[#F15939] whitespace-nowrap"
+                className="  md:[w-60%] xl:[w-80%] 2xl:[w-70%] lg:[w-80%] w-full      px-6 py-3 rounded-full h4-medium text-white! bg-[#F15939] border border-transparent hover:border-[#F15939]! hover:bg-white! hover:text-[#F15939]! whitespace-nowrap"
                 >
                 Shop Now
               </button>

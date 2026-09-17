@@ -229,7 +229,7 @@ const OrderSummary = () => {
             <span className="text-[14px]">${subtotal.toFixed(2)}</span>
           </div>
           {/* Divider */}
-          <div className="w-full h-[1px] bg-gray-300 my-3"></div>
+          <div className="w-full h-px bg-gray-300 my-3"></div>
           {/* Header */}
           <div className="flex justify-between py-2">
             <span className="text-[14px] font-bold text-[#393939]">
@@ -296,7 +296,7 @@ const OrderSummary = () => {
                     align="start"
                     sideOffset={4}
 
-                    className="w-[var(--radix-select-trigger-width)] border-none outline-none p-0"
+                    className="w-(--radix-select-trigger-width) border-none outline-none p-0"
                   >
                     {countryList.map((country) => (
                       <SelectItem key={country.code} value={country.code}>
@@ -328,7 +328,7 @@ const OrderSummary = () => {
                       align="start"
                       sideOffset={4}
                       avoidCollisions={false}
-                      className="w-[var(--radix-select-trigger-width)] border-none outline-none p-0"
+                      className="w-(--radix-select-trigger-width) border-none outline-none p-0"
                     >
                       {stateList.map((state) => (
                         <SelectItem key={state.code} value={state.code}>
@@ -397,7 +397,7 @@ const OrderSummary = () => {
                         key={i}
                         className="flex items-start gap-3 border rounded p-4 animate-pulse"
                       >
-                        <div className="w-4 h-4 mt-1 bg-gray-200 rounded-full flex-shrink-0" />
+                        <div className="w-4 h-4 mt-1 bg-gray-200 rounded-full shrink-0" />
                         <div className="flex-1 space-y-2">
                           <div className="h-4 bg-gray-200 rounded w-3/4" />
                           <div className="h-5 bg-gray-200 rounded w-16" />
@@ -431,7 +431,7 @@ const OrderSummary = () => {
                                   : rate.display_name}
                               </span>
                             </div>
-                            <div className=" font-bold flex-shrink-0">
+                            <div className=" font-bold shrink-0">
                               {rate.total_charge === 0
                                 ? "Free"
                                 : `$${Number(rate.total_charge).toFixed(2)}`}
@@ -517,7 +517,7 @@ const OrderSummary = () => {
           )}
 
           {/* Divider */}
-          <div className="w-full h-[1px] bg-gray-300 my-3"></div>
+          <div className="w-full h-px bg-gray-300 my-3"></div>
 
           {/* Coupon Section */}
           <div className="flex justify-between py-2">
@@ -563,7 +563,7 @@ const OrderSummary = () => {
                 placeholder="Enter your coupon code"
                 value={couponCode}
                 onChange={(e) => setCouponCode(e.target.value)}
-                className="!max-w-full"
+                className="max-w-full!"
                 disabled={couponLoading}
               />
 
@@ -580,7 +580,7 @@ const OrderSummary = () => {
 
           {manualDiscount > 0 && <>
             {/* Manual Discount */}
-            <div className="w-full h-[1px] bg-gray-300 my-3"></div>
+            <div className="w-full h-px bg-gray-300 my-3"></div>
 
             {/* Coupon Section */}
             <div className="flex justify-between py-2">
@@ -596,7 +596,7 @@ const OrderSummary = () => {
           {/* Show discount breakdown if applied */}
         </div>
         {/* Divider */}
-        <div className="w-full h-[1px] bg-gray-300 my-3"></div>
+        <div className="w-full h-px bg-gray-300 my-3"></div>
 
         {/* Total */}
         <div className="flex justify-between items-center py-2">

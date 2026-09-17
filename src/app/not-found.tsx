@@ -23,11 +23,11 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-gray-50 px-4 py-16">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-50 via-white to-gray-50 px-4 py-16">
       <div className="max-w-4xl w-full text-center">
         {/* 404 Number with Animation */}
         <div className="mb-8 relative">
-          <h1 className="text-[120px] md:text-[180px] lg:text-[220px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#f15939] via-[#e84949] to-[#f15939] animate-pulse">
+          <h1 className="text-[120px] md:text-[180px] lg:text-[220px] font-bold text-transparent bg-clip-text bg-linear-to-r from-[#f15939] via-[#e84949] to-[#f15939] animate-pulse">
             404
           </h1>
           <div className="absolute inset-0 flex items-center justify-center">
@@ -48,7 +48,7 @@ export default function NotFound() {
           {/* Illustration or Icon */}
           <div className="mb-12 flex justify-center">
             <div className="relative">
-              <div className="w-48 h-48 md:w-64 md:h-64 rounded-full bg-gradient-to-br from-[#f15939]/10 to-[#e84949]/5 flex items-center justify-center">
+              <div className="w-48 h-48 md:w-64 md:h-64 rounded-full bg-linear-to-br from-[#f15939]/10 to-[#e84949]/5 flex items-center justify-center">
                 <svg
                   className="w-24 h-24 md:w-32 md:h-32 text-[#f15939]"
                   fill="none"
@@ -71,13 +71,13 @@ export default function NotFound() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
             <Link
               href="/"
-              className="btn-primary !px-8 !py-4 !text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              className="btn-primary px-8! py-4! text-lg! font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
               Go to Homepage
             </Link>
             <Link
               href="/products"
-              className="btn-outline-primary !px-8 !py-4 !text-lg font-semibold rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+              className="btn-outline-primary px-8! py-4! text-lg! font-semibold rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105"
             >
               Browse Products
             </Link>

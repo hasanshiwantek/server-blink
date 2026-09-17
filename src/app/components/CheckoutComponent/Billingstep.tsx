@@ -111,7 +111,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
         <button
           type="button"
           onClick={onEdit}
-          className="btn-primary h-[30px] !text-[12px] w-[82px]"
+          className="btn-primary h-[30px] text-[12px]! w-[82px]"
         >
           EDIT
         </button>
@@ -234,7 +234,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
               <Input
                 id="billingFirstName"
                 type="text"
-                className={`w-full !max-w-full h-[40px] ${errors.billingFirstName ? "border-red-500" : ""
+                className={`w-full max-w-full! h-[40px] ${errors.billingFirstName ? "border-red-500" : ""
                   }`}
                 {...register("billingFirstName", {
                   required: "First name is required",
@@ -261,7 +261,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
               <Input
                 id="billingLastName"
                 type="text"
-                className={`w-full !max-w-full h-[40px] ${errors.billingLastName ? "border-red-500" : ""
+                className={`w-full max-w-full! h-[40px] ${errors.billingLastName ? "border-red-500" : ""
                   }`}
                 {...register("billingLastName", {
                   required: "Last name is required",
@@ -287,7 +287,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
             <Input
               id="billingCompany"
               type="text"
-              className="w-full !max-w-full h-[40px]"
+              className="w-full max-w-full! h-[40px]"
               {...register("billingCompany")}
 
             />
@@ -304,7 +304,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
             <Input
               id="billingPhone"
               type="text"
-              className="w-full !max-w-full h-[40px]"
+              className="w-full max-w-full! h-[40px]"
               {...register("billingPhone")}
 
             />
@@ -323,7 +323,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
             <Input
               id="billingAddress1"
               type="text"
-              className={`w-full !max-w-full h-[40px] ${errors.billingAddress1 ? "border-red-500" : ""
+              className={`w-full max-w-full! h-[40px] ${errors.billingAddress1 ? "border-red-500" : ""
                 }`}
               {...register("billingAddress1", {
                 required: "Address is required",
@@ -348,7 +348,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
             <Input
               id="billingAddress2"
               type="text"
-              className="w-full !max-w-full h-[40px]"
+              className="w-full max-w-full! h-[40px]"
               {...register("billingAddress2")}
               onChange={(e) => {
                 register("billingAddress2").onChange(e);
@@ -369,7 +369,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
             <Input
               id="billingCity"
               type="text"
-              className={`w-full !max-w-full h-[40px] ${errors.billingCity ? "border-red-500" : ""
+              className={`w-full max-w-full! h-[40px] ${errors.billingCity ? "border-red-500" : ""
                 }`}
               {...register("billingCity", {
                 required: "City is required",
@@ -405,7 +405,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
                   setValue("state", "");
                 }} value={field.value}>
                   <SelectTrigger
-                    className={`w-full !max-w-full h-[40px] ${errors.billingCountry ? "border-red-500" : ""
+                    className={`w-full max-w-full! h-[40px] ${errors.billingCountry ? "border-red-500" : ""
                       }`}
                   >
                     <SelectValue placeholder="Select country" />
@@ -440,7 +440,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
               {/* <Input
             id="billingState"
             type="text"
-            className="w-full !max-w-full h-[40px]"
+            className="w-full max-w-full! h-[40px]"
             {...register("billingState")}
           /> */}
               {stateList.length > 0 ? <Controller
@@ -454,7 +454,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
                     setValue("billingZip", "");
                   }} value={field.value}>
                     <SelectTrigger
-                      className={`w-full !max-w-full h-[40px] ${errors.state ? "border-red-500" : ""
+                      className={`w-full max-w-full! h-[40px] ${errors.state ? "border-red-500" : ""
                         }`}
                     >
                       <SelectValue placeholder="Select state/province" />
@@ -471,7 +471,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
               /> : <Input
                 id="billingState"
                 type="text"
-                className="w-full !max-w-full h-[40px]"
+                className="w-full max-w-full! h-[40px]"
                 {...register("billingState")}
 
               />}
@@ -490,7 +490,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
               <Input
                 id="billingZip"
                 type="text"
-                className={`w-full !max-w-full h-[40px] ${errors.billingZip ? "border-red-500" : ""
+                className={`w-full max-w-full! h-[40px] ${errors.billingZip ? "border-red-500" : ""
                   }`}
                 {...register("billingZip", {
                   required: "Postal code is required",

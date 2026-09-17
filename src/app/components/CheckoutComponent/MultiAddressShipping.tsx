@@ -452,11 +452,11 @@ const AllocateModal: React.FC<{
                       width={64}
                       height={64}
                       alt={item.name}
-                      className="w-12 h-12 object-contain border rounded flex-shrink-0"
+                      className="w-12 h-12 object-contain border rounded shrink-0"
                       fetchPriority="high"
                     />
                   ) : (
-                    <div className="w-12 h-12 bg-gray-100 rounded flex-shrink-0" />
+                    <div className="w-12 h-12 bg-gray-100 rounded shrink-0" />
                   )}
                   <span className="text-[16px] text-gray-700 line-clamp-3">
                     {item.name}
@@ -752,7 +752,7 @@ const MultiAddressShipping = ({
       {/* Allocation status */}
       {unallocatedCount > 0 ? (
         <div className="flex items-center gap-2 bg-white border border-gray-200 rounded p-3 text-[16px] text-gray-700">
-          <Info size={16} className="text-gray-500 flex-shrink-0" />
+          <Info size={16} className="text-gray-500 shrink-0" />
           <span>
             {unallocatedCount} item{unallocatedCount > 1 ? "s" : ""} left to
             allocate
@@ -761,7 +761,7 @@ const MultiAddressShipping = ({
       ) : (
         <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded p-3 text-[16px] text-green-700">
           <svg
-            className="w-5 h-5 text-green-500 flex-shrink-0"
+            className="w-5 h-5 text-green-500 shrink-0"
             fill="none"
             stroke="currentColor"
             strokeWidth={2.5}
@@ -813,7 +813,7 @@ const MultiAddressShipping = ({
                   <button
                     type="button"
                     onClick={() => openAddressModal(dest.id, dest.address!)}
-                    className="text-gray-400 hover:text-gray-600 flex-shrink-0 mt-0.5"
+                    className="text-gray-400 hover:text-gray-600 shrink-0 mt-0.5"
                   >
                     <Pencil size={13} />
                   </button>
@@ -981,7 +981,7 @@ const MultiAddressShipping = ({
           type="button"
           disabled={!lastDestComplete}
           onClick={handleAddDestination}
-          className="bg-[var(--primary-color)] text-white text-[16px] font-medium px-3 py-2 uppercase hover:opacity-90"
+          className="bg-(--primary-color) text-white text-[16px] font-medium px-3 py-2 uppercase hover:opacity-90"
         >
           ADD NEW DESTINATION
         </button>
@@ -1016,7 +1016,7 @@ const MultiAddressShipping = ({
           }
         }}
         disabled={!canContinue}
-        className={`px-6 py-2 text-[16px] font-medium uppercase ${canContinue ? "bg-[var(--primary-color)] text-white cursor-pointer hover:opacity-90" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}
+        className={`px-6 py-2 text-[16px] font-medium uppercase ${canContinue ? "bg-(--primary-color) text-white cursor-pointer hover:opacity-90" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}
       >
         CONTINUE
       </button>

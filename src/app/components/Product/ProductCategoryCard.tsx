@@ -89,20 +89,20 @@ export default function ProductCategoryCard({ product }: { product: Product }) {
                 <ProductPrice
                   price={Number(product.msrp)}
                   inline={true}
-                  className="line-through !text-[15px] !font-normal"
+                  className="line-through text-[15px]! font-normal!"
                 />
               </p>
               <ProductPrice
                 price={Number(product.price)}
                 inline={false}
-                className="font-bold !text-[#545454] !text-3xl"
+                className="font-bold text-[#545454]! text-3xl!"
               />
             </div>
           ) : (
             <ProductPrice
               price={Number(product.price)}
               inline={false}
-              className="font-bold !text-[#545454] !text-3xl"
+              className="font-bold text-[#545454]! text-3xl!"
             />
           )}
         </div> : <div className="flex flex-wrap items-center gap-2 mt-2">

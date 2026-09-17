@@ -46,7 +46,7 @@ const CategoryTile = ({
       {/* Semi-transparent black text band (center, like reference) */}
       <div className="absolute inset-x-0 bottom-4 z-20 bg-black/50 flex items-center justify-center px-6 py-7">
         <p
-          className="text-white text-2xl md:text-3xl !font-light drop-shadow-2xl text-center uppercase tracking-wide m-0"
+          className="text-white text-2xl md:text-3xl font-light! drop-shadow-2xl text-center uppercase tracking-wide m-0"
         >
           {category.name}
         </p>

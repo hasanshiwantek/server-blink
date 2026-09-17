@@ -64,7 +64,7 @@ export default function ProductPage({
             >
                 <div className="flex flex-col md:flex-row gap-4 lg:gap-6">
                     {/* Left Sidebar - Fixed 235px on desktop */}
-                    <aside className="hidden lg:block md:w-[20%] flex-shrink-0">
+                    <aside className="hidden lg:block md:w-[20%] shrink-0">
                         <CategoriesSidebar />
                         <BrandsSidebar />
                     </aside>
@@ -85,7 +85,7 @@ export default function ProductPage({
                                     </span>
                                     <span
                                         className={`text-[11px] 
-                   !text-[#D42020]
+                   text-[#D42020]!
                     `}
                                         itemProp="name"
                                     >
@@ -95,7 +95,7 @@ export default function ProductPage({
                             </h2>
                         </div>
                         <div>
-                            {productCount ? <h1 className="text-[28px] !font-normal text-[#545454]">
+                            {productCount ? <h1 className="text-[28px] font-normal! text-[#545454]">
                                 {productCount || 0} results for {query}
                             </h1> : <></>}
                         </div>

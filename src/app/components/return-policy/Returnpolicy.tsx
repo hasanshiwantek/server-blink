@@ -20,12 +20,12 @@ const Returnpolicy = () => {
         {/* Content */}
         <div className="lg:col-span-12">
               <h2 className=""><span
-                  className="text-[11px] !text-[#D42020]"
+                  className="text-[11px] text-[#D42020]!"
                   itemProp="name"
                 >
                   Home
                 </span> {" "} <span className="mt-2 mx-3 text-gray-400 text-[11px]" aria-hidden="true">/</span> {" "} <span
-                  className="!text-[#D42020] text-[11px]"
+                  className="text-[#D42020]! text-[11px]"
                   itemProp="name"
                 >
                  Return & Refund Policy

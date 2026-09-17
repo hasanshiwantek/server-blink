@@ -403,7 +403,7 @@ const ReturnItemsModal: React.FC<ReturnItemsModalProps> = ({
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full md:w-auto btn-primary !px-6 md:!px-8 !py-3 md:!py-5 font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full md:w-auto btn-primary px-6! md:px-8! py-3! md:py-5! font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {submitting ? (
                       <>

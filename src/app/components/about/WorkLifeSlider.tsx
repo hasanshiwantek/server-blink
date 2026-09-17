@@ -59,7 +59,7 @@ const WorkLifeSlider = () => {
       <div className="w-full mx-auto px-4">
         {/* Text Above Slider */}
         <div className="flex justify-center items-center mx-auto">
-          <h2 className="h1-lg !text-[#FFFFFF] 2xl:w-[40%] text-center">
+          <h2 className="h1-lg text-[#FFFFFF]! 2xl:w-[40%] text-center">
             Work-Life Harmony, Happiness & Customer Commitment
           </h2>
         </div>

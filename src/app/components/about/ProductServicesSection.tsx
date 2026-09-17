@@ -16,7 +16,7 @@ const ProductServicesSection = () => {
     <section className="w-full bg-white">
       <div className="py-16 md:px-[7%] lg:px-[5.2%] xl:px-[5.2%] 2xl:px-[5.2%] px-[7%] space-y-12">
         <div className="text-center space-y-4">
-          <span className="inline-flex h5-regular items-center justify-center px-4 py-1 rounded-full border border-[#E3E3E3] bg-[#00000005] h6-medium !text-[#2A2A2A]">
+          <span className="inline-flex h5-regular items-center justify-center px-4 py-1 rounded-full border border-[#E3E3E3] bg-[#00000005] h6-medium text-[#2A2A2A]!">
             Product & Services
           </span>
           <div className="space-y-4">

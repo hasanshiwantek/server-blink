@@ -38,7 +38,7 @@ export default function ProductTabs({ tabs = [], activeTab: controlledActive, on
           <button
             onClick={() => handleClick(index)}
             className={`uppercase tracking-wide transition-colors ${activeIndex === index
-              ? "text-[#d42020] border-b-1 border-[#d42020] "
+              ? "text-[#d42020] border-b border-[#d42020] "
               : "text-[#393939]  hover:text-[#393939]"
               }`}
           >

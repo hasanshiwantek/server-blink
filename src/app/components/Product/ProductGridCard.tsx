@@ -88,7 +88,7 @@ export default function ProductGridCard({ product }: { product: Product }) {
       <ProductPrice
         price={Number(price)}
         inline={true}
-        className="h6-18-px-medium !text-[#191919]"
+        className="h6-18-px-medium text-[#191919]!"
       />
     </div>
   </div>
@@ -107,7 +107,7 @@ export default function ProductGridCard({ product }: { product: Product }) {
                           dispatch(addToCart(product));
                           toast.success(`${product?.name} added to cart!`);
                         }}
-    className="btn-primary xl:!text-2xl 2xl:!text-[22px] 2xl:!font-medium 
+    className="btn-primary xl:text-2xl! 2xl:text-[22px]! 2xl:font-medium! 
                w-full sm:w-[48%] md:w-[45%] lg:w-[50%] xl:w-[45%]
                2xl:w-[173.875px] 2xl:h-[50px] whitespace-nowrap cursor-default"
   >
@@ -119,7 +119,7 @@ export default function ProductGridCard({ product }: { product: Product }) {
                       setSelectedProduct(product);
                       setIsModalOpen(true);
                     }}
-    className="xl:!text-2xl 2xl:!text-[22px] 2xl:!font-medium 
+    className="xl:text-2xl! 2xl:text-[22px]! 2xl:font-medium! 
                w-full sm:w-[48%] md:w-[45%] lg:w-[50%] xl:w-[45%]
                2xl:w-[173.875px] 2xl:h-[50px]
                text-[#4A4A4A] bg-white border border-[#4A4A4A] 

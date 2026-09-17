@@ -57,7 +57,7 @@ const MyAccountTabs = () => {
 </div>
 
 {/* Optional: Current Tab as Heading */}
-<div className="text-[28px] mb-8 pl-2 text-[#545454] !font-normal roboto-font">
+<div className="text-[28px] mb-8 pl-2 text-[#545454] font-normal! roboto-font">
   {getActiveTab()}
 </div>
 

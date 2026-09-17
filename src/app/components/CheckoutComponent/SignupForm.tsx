@@ -159,7 +159,7 @@ const SignupForm = ({ onCancel }: SignupFormProps) => {
       </div>
 
       {/* Password Full Width */}
-      <div className="!w-full block">
+      <div className="w-full! block">
         <label className="block text-[14px] text-[#545454] mb-2">
           Password
         </label>
@@ -182,7 +182,7 @@ const SignupForm = ({ onCancel }: SignupFormProps) => {
         <button
           type="button"
           onClick={onSubmit}
-          className="btn-primary w-full sm:w-auto !mt-[9px] !mb-[15px] sm:!mb-0 sm:!mt-0"
+          className="btn-primary w-full sm:w-auto mt-[9px]! mb-[15px]! sm:mb-0! sm:mt-0!"
         >
           CREATE ACCOUNT
         </button>

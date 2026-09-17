@@ -89,8 +89,8 @@ export const DayTabs: React.FC<DayTabsProps> = ({
             className={cn(
               "rounded-md p-6 text-lg border",
               d.value === day
-                ? "bg-[var(--primary-color)] text-white"
-                : "bg-slate-100 text-gray-800 hover:bg-white hover:text-[var(--primary-color)] hover:border"
+                ? "bg-(--primary-color) text-white"
+                : "bg-slate-100 text-gray-800 hover:bg-white hover:text-(--primary-color) hover:border"
             )}
           >
             {d.label}

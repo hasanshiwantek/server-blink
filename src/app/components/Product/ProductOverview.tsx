@@ -37,7 +37,7 @@ const ProductOverview = ({ product }: { product: any }) => {
   return (
     <section
       className={
-        "py-10 xl:px-0 2xl:px-0 w-[100%] lg:w-full max-w-[1170px] mx-auto px-0 " +
+        "py-10 xl:px-0 2xl:px-0 w-full lg:w-full max-w-[1170px] mx-auto px-0 " +
         (product?.relatedProductsEnabled ? "border-b-2 border-[#545454]" : "")
       }
       aria-labelledby="product-overview-heading"
@@ -70,7 +70,7 @@ const ProductOverview = ({ product }: { product: any }) => {
             <h3 className="text-[20px] bg-[#F2F2F2] px-5 text-[#545454] py-2 font-bold">
               PRODUCT DESCRIPTION
             </h3>
-            <div className="w-[97%] mx-auto h-[1px] bg-[#545454]"></div>
+            <div className="w-[97%] mx-auto h-px bg-[#545454]"></div>
 
             <section className="border" aria-labelledby="product-details-heading">
               <div
@@ -81,13 +81,13 @@ const ProductOverview = ({ product }: { product: any }) => {
                   text-[#545454]
                   prose
                   max-w-none
-                  break-words
-                  [&_*]:max-w-full
+                  wrap-break-word
+                  **:max-w-full
                   [&_img]:max-w-full
                   [&_img]:h-auto
                   [&_table]:w-full
                   [&_pre]:whitespace-pre-wrap
-                  [&_pre]:break-words
+                  [&_pre]:wrap-break-word
                 "
                 dangerouslySetInnerHTML={{
                   __html: decodedHtml || "No description available for this product.",
@@ -99,7 +99,7 @@ const ProductOverview = ({ product }: { product: any }) => {
                   <h3 className="text-[20px] bg-[#F2F2F2] px-5 text-[#545454] py-2 font-bold">
                     PRODUCT DETAILS
                   </h3>
-                  <div className="w-[97%] mx-auto h-[1px] bg-[#545454]"></div>
+                  <div className="w-[97%] mx-auto h-px bg-[#545454]"></div>
 
                   <dl className="py-3 px-6 bg-[#F2F2F2]">
                     {customFields
@@ -112,9 +112,9 @@ const ProductOverview = ({ product }: { product: any }) => {
                           key={key}
                           className={`
                             !grid 
-                            grid-cols-1 sm:!grid-cols-[200px_1fr]
-                            !items-start sm:!items-center
-                            !px-2 !py-1
+                            grid-cols-1 sm:grid-cols-[200px_1fr]!
+                            items-start! sm:items-center!
+                            px-2! py-1!
                             ${index % 2 === 1 ? "" : "bg-gray-50"}
                           `}
                         >
@@ -180,7 +180,7 @@ const ProductOverview = ({ product }: { product: any }) => {
                               on {formatReviewDate(review?.created_at)}
                             </p>
 
-                            <p className="mt-2 text-[14px] leading-6 text-[#444] break-words">
+                            <p className="mt-2 text-[14px] leading-6 text-[#444] wrap-break-word">
                               {review?.comment || ""}
                             </p>
                           </li>

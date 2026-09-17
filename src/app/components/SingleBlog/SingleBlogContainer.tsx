@@ -91,7 +91,7 @@ const SingleBlogContainer = ({ singleBlog }: SingleBlogContainerProps) => {
            <span className="mt-2 mx-3 text-gray-400 text-[11px]" aria-hidden="true">/</span>
           
           <span itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-            <span className="!text-[#D42020] text-[11px]" itemProp="name">{singleBlog?.title}</span>
+            <span className="text-[#D42020]! text-[11px]" itemProp="name">{singleBlog?.title}</span>
             <meta itemProp="position" content="3" />
           </span>
         </nav>

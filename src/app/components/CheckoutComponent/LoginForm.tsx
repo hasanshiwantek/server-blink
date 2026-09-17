@@ -175,7 +175,7 @@ const LoginForm = ({ onCancel }: LoginFormProps) => {
                 <button
                   type="button"
                   onClick={onSubmit}
-                  className="btn-primary w-full sm:w-auto !mb-[15px] sm:!mb-0"
+                  className="btn-primary w-full sm:w-auto mb-[15px]! sm:mb-0!"
                 >
                   {loginloading ? "Loading..." : "SiGN IN"}
                 </button>

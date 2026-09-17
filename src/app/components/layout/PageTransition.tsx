@@ -18,7 +18,7 @@ export default function PageTransition({
       <motion.div
         key={pathname}
         className="
-    flex-grow
+    grow
     max-w-[1170px]
     lg:max-w-full lg:mx-0 py-10 px-4 sm:px-0
   "

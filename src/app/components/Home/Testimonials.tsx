@@ -195,7 +195,7 @@ const Testimonials = () => {
             {stats?.status || "Excellent"}
           </h3>
           {/* Reserve exact space with correct star aspect ratio (~512:96) */}
-          <div className="w-44 aspect-[512/96]">
+          <div className="w-44 aspect-512/96">
             <Image
               src="https://cdn.trustpilot.net/brand-assets/4.1.0/stars/stars-4.5.svg"
               alt="Reviews"
@@ -240,12 +240,12 @@ const Testimonials = () => {
             </div>
           ) : reviewsError ? (
             <div className="flex flex-col items-center justify-center gap-4 bg-white border rounded-md p-8 text-center w-full max-w-full overflow-hidden">
-              <p className="h5-regular text-red-600 break-words w-full">
+              <p className="h5-regular text-red-600 wrap-break-word w-full">
                 {reviewsError}
               </p>
               <button
                 onClick={() => dispatch(fetchReviews())}
-                className="btn-outline-primary !px-6 !py-3 !text-base"
+                className="btn-outline-primary px-6! py-3! text-base!"
                 type="button"
               >
                 Retry

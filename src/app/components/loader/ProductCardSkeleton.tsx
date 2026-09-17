@@ -41,7 +41,7 @@ const ProductCardSkeleton = () => {
           <div className="product-left flex flex-col w-[80%] lg:w-[50%]">
             <div className="flex flex-col gap-4">
               {/* Main Image Skeleton */}
-              <div className="border-1 border-[#8b8b8b] rounded-2xl flex items-center justify-center bg-white p-4 w-full h-auto aspect-square lg:w-[90%] lg:h-[455px]">
+              <div className="border border-[#8b8b8b] rounded-2xl flex items-center justify-center bg-white p-4 w-full h-auto aspect-square lg:w-[90%] lg:h-[455px]">
                 <Skeleton className="w-full h-full" />
               </div>
 
@@ -50,7 +50,7 @@ const ProductCardSkeleton = () => {
                 {Array.from({ length: 4 }).map((_, index) => (
                   <Skeleton
                     key={index}
-                    className="flex-shrink-0 w-20 h-20 rounded-md"
+                    className="shrink-0 w-20 h-20 rounded-md"
                   />
                 ))}
               </div>

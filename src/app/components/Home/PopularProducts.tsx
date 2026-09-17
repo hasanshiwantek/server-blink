@@ -71,7 +71,7 @@ const PopularProducts = () => {
                 onClick={() => setActiveTab(brandName)}
                 className={`inline-block py-3 px-4 h4-medium  transition-colors duration-200 ${
                   brandName === activeTab
-                    ? "!text-[var(--primary-color)] border-b-2 border-[var(--primary-color)]"
+                    ? "text-(--primary-color)! border-b-2 border-(--primary-color)"
                     : "text-gray-500 hover:text-gray-700 hover:border-b-2 hover:border-gray-300"
                 }`}
                 // style={{ minWidth: "80px" }}
@@ -142,17 +142,17 @@ const PopularProducts = () => {
                     href={`/${product?.sku}`}
                     className="relative inline-block cursor-pointer group"
                   >
-                    <p className="h6-18-px-medium line-clamp-2 min-h-[3rem]">
+                    <p className="h6-18-px-medium line-clamp-2 min-h-12">
                       {product.name}
                     </p>
                   </Link>
 
                   {/* Brand + Availability + Price */}
-                  <div className="flex flex-col justify-between min-h-[4.5rem] mt-2">
+                  <div className="flex flex-col justify-between min-h-18 mt-2">
                     <Link href={`/brand/${product.brand?.slug}`}>
                       <h3 className="h7-16-px-regular line-clamp-1">
                         {product.brand?.name} |{" "}
-                        <span className="!text-[#219653]">
+                        <span className="text-[#219653]!">
                           {product.availabilityText || "In Stock"}
                         </span>
                       </h3>
@@ -178,7 +178,7 @@ const PopularProducts = () => {
                         dispatch(addToCart(product));
                         toast.success(`${product.name} added to cart!`);
                       }}
-                      className="btn-primary xl:!text-2xl 2xl:!text-[22px] 2xl:!font-medium 
+                      className="btn-primary xl:text-2xl! 2xl:text-[22px]! 2xl:font-medium! 
                                  w-full sm:w-[48%] md:w-[45%] lg:w-[50%] xl:w-[45%]
                                  2xl:w-[173.875px] 2xl:h-[50px] whitespace-nowrap"
                     >
@@ -186,7 +186,7 @@ const PopularProducts = () => {
                     </button>
 
                     <button
-                      className="xl:!text-2xl 2xl:!text-[22px] 2xl:!font-medium 
+                      className="xl:text-2xl! 2xl:text-[22px]! 2xl:font-medium! 
                                  w-full sm:w-[48%] md:w-[45%] lg:w-[50%] xl:w-[45%]
                                  2xl:w-[173.875px] 2xl:h-[50px] mr-2
                                  text-[#4A4A4A] bg-white border border-[#4A4A4A] 
@@ -210,7 +210,7 @@ const PopularProducts = () => {
         {/* Explore More Button */}
         <div className="mt-16 text-center">
           <Link href={"/products"}>
-            <button className="bg-white border-2 border-[#2A2A2A]  !text-[#2A2A2A] h4-regular font-semibold py-3 px-8 rounded-full hover:border-gray-400 hover:shadow-sm transition-colors duration-150  2xl:px-[30px] 2xl:py-[20.5px]">
+            <button className="bg-white border-2 border-[#2A2A2A]  text-[#2A2A2A]! h4-regular font-semibold py-3 px-8 rounded-full hover:border-gray-400 hover:shadow-sm transition-colors duration-150  2xl:px-[30px] 2xl:py-[20.5px]">
               Explore more products
             </button>
           </Link>

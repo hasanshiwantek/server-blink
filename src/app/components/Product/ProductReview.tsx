@@ -81,7 +81,7 @@ const ProductReview = () => {
                 })}
               </span>
             </p>
-            <p className="h6-regular !text-muted-foreground mb-4">
+            <p className="h6-regular text-muted-foreground! mb-4">
               from {stats?.count || "134"} reviews
             </p>
           </div>
@@ -106,7 +106,7 @@ const ProductReview = () => {
             ))}
           </ul>
 
-          <button className="!mt-6 btn-outline-primary !text-[18px] !font-medium !px-10 !py-4 mx-auto">
+          <button className="mt-6! btn-outline-primary text-[18px]! font-medium! px-10! py-4! mx-auto">
             Write a review
           </button>
         </aside>
@@ -139,7 +139,7 @@ const ProductReview = () => {
               <p className="h5-regular text-red-600">{reviewsError}</p>
               <Button
                 variant="outline"
-                className="!px-6 !py-3 !text-base"
+                className="px-6! py-3! text-base!"
                 onClick={() => dispatch(fetchReviews())}
               >
                 Retry
@@ -207,7 +207,7 @@ const ProductReview = () => {
             !reviewsLoading &&
             !reviewsError &&
             reviews.length > displayedReviews.length && (
-              <div className="absolute bottom-0 left-0 right-0 h-96 pointer-events-none bg-gradient-to-t from-white to-transparent rounded-b-lg z-10" />
+              <div className="absolute bottom-0 left-0 right-0 h-96 pointer-events-none bg-linear-to-t from-white to-transparent rounded-b-lg z-10" />
             )}
         </div>
       </div>

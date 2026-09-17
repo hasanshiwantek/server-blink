@@ -146,8 +146,8 @@ const JourneyTimeline = () => {
       <div className=" mx-auto">
         {/* Header */}
         <div className="text-left mb-16 sm:mb-24">
-          <h1 className="h1-lg !text-[#FFFFFF]">Journey Of Excellence</h1>
-          <p className="h1-lg !text-[#FFFFFF]">
+          <h1 className="h1-lg text-[#FFFFFF]!">Journey Of Excellence</h1>
+          <p className="h1-lg text-[#FFFFFF]!">
             Shaping <span className="text-[#F15939]">The Future</span> Of
             Customer Success
           </p>
@@ -200,13 +200,13 @@ const JourneyTimeline = () => {
                   <div
                     className={`bg-[#212121] border-3 ${index === 0 ? "border-[#F15939]" : "border-[#444444]"} rounded-lg p-6 sm:p-8 mb-4`}
                   >
-                    <h3 className="h2-medium !text-[#FFFFFF] mb-4">
+                    <h3 className="h2-medium text-[#FFFFFF]! mb-4">
                       {milestone.title}
                     </h3>
-                    <p className="h5-regular !text-[#FFFFFF] leading-relaxed mb-6">
+                    <p className="h5-regular text-[#FFFFFF]! leading-relaxed mb-6">
                       {milestone.description}
                     </p>
-                    <div className="text-6xl sm:text-8xl text-right opacity-30 font-bold !text-[#FFFFFF]">
+                    <div className="text-6xl sm:text-8xl text-right opacity-30 font-bold text-[#FFFFFF]!">
                       {milestone.year}
                     </div>
                   </div>
@@ -215,7 +215,7 @@ const JourneyTimeline = () => {
                     alt={milestone.title}
                     width={400}
                     height={300}
-                    className="w-full h-[240px] sm:h-[300px] object-cover rounded-lg !border-2 !border-white"
+                    className="w-full h-[240px] sm:h-[300px] object-cover rounded-lg border-2! border-white!"
                     style={{ border: "2px solid white" }}
                     priority
                   />
@@ -237,13 +237,13 @@ const JourneyTimeline = () => {
                         }}
                         className={`bg-[#212121] border-3 ${index === 0 ? "border-[#F15939]" : "border-[#444444]"} rounded-lg p-8 lg:w-[85.4%] xl:w-[85.4%] 2xl:w-[85.4%] h-[400px] relative z-10`}
                       >
-                        <h3 className="h2-medium !text-[#FFFFFF] mb-4 w-full lg:max-w-[80%] xl:max-w-[80%] 2xl:max-w-2xl">
+                        <h3 className="h2-medium text-[#FFFFFF]! mb-4 w-full lg:max-w-[80%] xl:max-w-[80%] 2xl:max-w-2xl">
                           {milestone.title}
                         </h3>
-                        <p className="h5-regular !text-[#FFFFFF] leading-relaxed mb-6 w-full lg:max-w-[80%] xl:max-w-[80%] 2xl:max-w-[80%]">
+                        <p className="h5-regular text-[#FFFFFF]! leading-relaxed mb-6 w-full lg:max-w-[80%] xl:max-w-[80%] 2xl:max-w-[80%]">
                           {milestone.description}
                         </p>
-                        <div className="text-8xl text-right opacity-30 font-bold !text-[#FFFFFF]">
+                        <div className="text-8xl text-right opacity-30 font-bold text-[#FFFFFF]!">
                           {milestone.year}
                         </div>
                       </div>
@@ -252,7 +252,7 @@ const JourneyTimeline = () => {
                         alt={milestone.title}
                         width={256}
                         height={306}
-                        className="absolute top-0 lg:-right-[160px] xl:-right-[160px] 2xl:-right-[220px] translate-x-4 w-64 h-[306px] object-cover rounded-lg !border-2 !border-white -translate-y-1/2 lg:w-[59.8%] xl:w-[59.8%] 2xl:w-[59.8%] z-20"
+                        className="absolute top-0 lg:right-[-160px] xl:right-[-160px] 2xl:right-[-220px] translate-x-4 w-64 h-[306px] object-cover rounded-lg border-2! border-white! -translate-y-1/2 lg:w-[59.8%] xl:w-[59.8%] 2xl:w-[59.8%] z-20"
                         style={{ border: "2px solid white" }}
                         priority
                       />
@@ -268,13 +268,13 @@ const JourneyTimeline = () => {
                         }}
                         className="bg-[#212121] border-3 border-[#444444] rounded-lg p-8 lg:w-[85.4%] xl:w-[85.4%] 2xl:w-[85.4%] h-[400px] relative z-10"
                       >
-                        <h3 className="h2-medium !text-[#FFFFFF] mb-4 w-full lg:max-w-[80%] xl:max-w-[80%] 2xl:max-w-2xl">
+                        <h3 className="h2-medium text-[#FFFFFF]! mb-4 w-full lg:max-w-[80%] xl:max-w-[80%] 2xl:max-w-2xl">
                           {milestone.title}
                         </h3>
-                        <p className="h5-regular !text-[#FFFFFF] leading-relaxed mb-6 w-full lg:max-w-[80%] xl:max-w-[80%] 2xl:max-w-[80%]">
+                        <p className="h5-regular text-[#FFFFFF]! leading-relaxed mb-6 w-full lg:max-w-[80%] xl:max-w-[80%] 2xl:max-w-[80%]">
                           {milestone.description}
                         </p>
-                        <div className="text-8xl text-right opacity-30 font-bold !text-[#FFFFFF]">
+                        <div className="text-8xl text-right opacity-30 font-bold text-[#FFFFFF]!">
                           {milestone.year}
                         </div>
                       </div>
@@ -283,7 +283,7 @@ const JourneyTimeline = () => {
                         alt={milestone.title}
                         width={256}
                         height={306}
-                        className="absolute top-0 lg:-right-[140px] xl:-right-[160px] 2xl:-right-[220px] translate-x-4 w-64 h-[306px] object-cover rounded-lg !border-2 !border-white -translate-y-1/2 lg:w-[59.8%] xl:w-[59.8%] 2xl:w-[59.8%] z-20"
+                        className="absolute top-0 lg:right-[-140px] xl:right-[-160px] 2xl:right-[-220px] translate-x-4 w-64 h-[306px] object-cover rounded-lg border-2! border-white! -translate-y-1/2 lg:w-[59.8%] xl:w-[59.8%] 2xl:w-[59.8%] z-20"
                         style={{ border: "2px solid white" }}
                         priority
                       />
