@@ -27,7 +27,6 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import countries from "world-countries";
 import { Country, State, City } from "country-state-city";
 import { useForm } from "react-hook-form";
 import { loadStripe } from "@stripe/stripe-js";
@@ -187,7 +186,6 @@ const CheckoutForm = () => {
   const { shippingDetail, saveDetail } = useAppSelector(
     (state: any) => state?.shippingZone,
   );
-  console.log(shippingDetail);
 
   useEffect(() => {
     if (!loading) {
@@ -1240,7 +1238,6 @@ const CheckoutForm = () => {
           const billing = apiData.billing_form_data;
 
           if (
-            shipping.city &&
             shipping.country &&
             shipping.zip &&
             shipping.state &&
@@ -1253,7 +1250,7 @@ const CheckoutForm = () => {
                     country_code: shipping.country,
                     state: shipping.state,
                     postal_code: shipping.zip,
-                    city: shipping.city,
+                    ...(shipping.city && { city: shipping.city }),
                   },
                   package: calculatePackage(cart),
                 },
