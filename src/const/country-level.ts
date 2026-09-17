@@ -144,41 +144,97 @@ export const countryZipPatterns: Record<string, { pattern: RegExp; example: stri
   TT: { pattern: /^\d{6}$/, example: "100101" },
   BB: { pattern: /^BB\d{5}$/, example: "BB11000" },
 };
-
+export const countriesWithoutPostalCode = [
+  "AG", // Antigua and Barbuda
+  "AO", // Angola
+  "BS", // Bahamas
+  "BZ", // Belize
+  "BW", // Botswana
+  "BF", // Burkina Faso
+  "BI", // Burundi
+  "CM", // Cameroon
+  "CF", // Central African Republic
+  "KM", // Comoros
+  "CG", // Republic of the Congo
+  "DJ", // Djibouti
+  "DM", // Dominica
+  "GQ", // Equatorial Guinea
+  "ER", // Eritrea
+  "FJ", // Fiji
+  "GM", // Gambia
+  "GH", // Ghana
+  "GD", // Grenada
+  "GY", // Guyana
+  "HK", // Hong Kong
+  "IE", // Ireland
+  "JM", // Jamaica
+  "KI", // Kiribati
+  "LY", // Libya
+  "MW", // Malawi
+  "ML", // Mali
+  "MR", // Mauritania
+  "MU", // Mauritius
+  "FM", // Micronesia
+  "NA", // Namibia
+  "NR", // Nauru
+  "KP", // North Korea
+  "PW", // Palau
+  "PA", // Panama
+  "QA", // Qatar
+  "RW", // Rwanda
+  "KN", // Saint Kitts and Nevis
+  "LC", // Saint Lucia
+  "WS", // Samoa
+  "ST", // São Tomé and Príncipe
+  "SL", // Sierra Leone
+  "SB", // Solomon Islands
+  "SS", // South Sudan
+  "SR", // Suriname
+  "TZ", // Tanzania
+  "TL", // Timor-Leste
+  "TG", // Togo
+  "TO", // Tonga
+  "TT", // Trinidad and Tobago
+  "TV", // Tuvalu
+  "UG", // Uganda
+  "AE", // United Arab Emirates
+  "VU", // Vanuatu
+  "YE", // Yemen
+];
 // State-level overrides (only where state differs from country pattern)
 export const zipPatterns: Record<string, { pattern: RegExp; example: string }> = {
   // USA — all same 5-digit
   ...Object.fromEntries(
-    ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN",
-     "IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV",
-     "NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN",
-     "TX","UT","VT","VA","WA","WV","WI","WY","DC"].map(s => [
-      s, { pattern: /^\d{5}(-\d{4})?$/, example: "12345" }
-    ])
+    ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN",
+      "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV",
+      "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN",
+      "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "DC"].map(s => [
+        s, { pattern: /^\d{5}(-\d{4})?$/, example: "12345" }
+      ])
   ),
   // Canada provinces
   ...Object.fromEntries(
-    ["AB","BC","MB","NB","NL","NS","NT","NU","ON","PE","QC","SK","YT"].map(s => [
+    ["AB", "BC", "MB", "NB", "NL", "NS", "NT", "NU", "ON", "PE", "QC", "SK", "YT"].map(s => [
       s, { pattern: /^[A-Z]\d[A-Z] ?\d[A-Z]\d$/i, example: "A1A 1A1" }
     ])
   ),
   // Australia states
   ...Object.fromEntries(
-    ["NSW","VIC","QLD","WA","SA","TAS","ACT","NT"].map(s => [
+    ["NSW", "VIC", "QLD", "WA", "SA", "TAS", "ACT", "NT"].map(s => [
       s, { pattern: /^\d{4}$/, example: "2000" }
     ])
   ),
   // India states — all 6 digits
   ...Object.fromEntries(
-    ["AN","AP","AR","AS","BR","CG","CH","DD","DL","DN","GA","GJ","HP","HR",
-     "JH","JK","KA","KL","LA","LD","MH","ML","MN","MP","MZ","NL","OD","PB",
-     "PY","RJ","SK","TG","TN","TR","UP","UT","WB"].map(s => [
-      s, { pattern: /^\d{6}$/, example: "110001" }
-    ])
+    ["AN", "AP", "AR", "AS", "BR", "CG", "CH", "DD", "DL", "DN", "GA", "GJ", "HP", "HR",
+      "JH", "JK", "KA", "KL", "LA", "LD", "MH", "ML", "MN", "MP", "MZ", "NL", "OD", "PB",
+      "PY", "RJ", "SK", "TG", "TN", "TR", "UP", "UT", "WB"].map(s => [
+        s, { pattern: /^\d{6}$/, example: "110001" }
+      ])
   ),
   // Pakistan provinces
   ...Object.fromEntries(
-    ["PB","SD","KP","BA","GB","AJ"].map(s => [
+    ["PB", "SD", "KP", "BA", "GB", "AJ"].map(s => [
       s, { pattern: /^\d{5}$/, example: "75500" }
     ])
   ),
