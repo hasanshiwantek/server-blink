@@ -1630,6 +1630,7 @@ const CheckoutForm = () => {
                 countryList={countryList}
                 stateList={billingStateList}
                 cityList={billingCityList}
+                 clearErrors={clearErrors}
                 isActive={currentStep === 3}
                 isCompleted={completedSteps.includes(3)}
                 onEdit={handleEditBilling}

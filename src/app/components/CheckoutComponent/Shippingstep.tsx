@@ -125,6 +125,7 @@ export function calculatePackage(products: any[]) {
     package_value: orderTotal,
   };
 }
+
 const ShippingStep: React.FC<ShippingStepProps> = ({
   register,
   errors,
