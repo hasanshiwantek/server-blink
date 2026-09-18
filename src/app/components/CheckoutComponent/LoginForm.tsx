@@ -12,6 +12,7 @@ import Link from "next/link";
 import SignupForm from "./SignupForm";
 import { baseURL, storeId } from "@/lib/axiosInstance";
 import { errorMessage } from "@/utils/message";
+import { getSessionId } from "@/utils/storage";
 
 interface SigninFormValues {
   email: string;
@@ -45,7 +46,7 @@ const LoginForm = ({ onCancel }: LoginFormProps) => {
       if (loginUser.fulfilled.match(result)) {
         const token = result?.payload?.token
         const fetchCartListInner = async () => {
-          const sessionId = localStorage.getItem("sessionId")
+          const sessionId = getSessionId()
           const res = await fetch(`${baseURL}web/cart/transfer`, {
             method: "POST",
             headers: {
