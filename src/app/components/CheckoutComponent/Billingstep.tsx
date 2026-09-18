@@ -13,6 +13,7 @@ import { UseFormRegister, FieldErrors, Control, Controller, UseFormSetValue ,use
 import { useAppSelector, useAppDispatch } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import { checkoutFormSave } from "@/redux/slices/shippingSlice";
+import { countriesWithoutPostalCode } from "@/const/country-level";
 interface BillingStepProps {
   register: UseFormRegister<any>;
   errors: FieldErrors;
@@ -92,63 +93,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
   control,
   name: "billingCountry",
 });
-   const countriesWithoutPostalCode = [
-  "AG", // Antigua and Barbuda
-  "AO", // Angola
-  "BS", // Bahamas
-  "BZ", // Belize
-  "BW", // Botswana
-  "BF", // Burkina Faso
-  "BI", // Burundi
-  "CM", // Cameroon
-  "CF", // Central African Republic
-  "KM", // Comoros
-  "CG", // Republic of the Congo
-  "DJ", // Djibouti
-  "DM", // Dominica
-  "GQ", // Equatorial Guinea
-  "ER", // Eritrea
-  "FJ", // Fiji
-  "GM", // Gambia
-  "GH", // Ghana
-  "GD", // Grenada
-  "GY", // Guyana
-  "HK", // Hong Kong
-  "IE", // Ireland
-  "JM", // Jamaica
-  "KI", // Kiribati
-  "LY", // Libya
-  "MW", // Malawi
-  "ML", // Mali
-  "MR", // Mauritania
-  "MU", // Mauritius
-  "FM", // Micronesia
-  "NA", // Namibia
-  "NR", // Nauru
-  "KP", // North Korea
-  "PW", // Palau
-  "PA", // Panama
-  "QA", // Qatar
-  "RW", // Rwanda
-  "KN", // Saint Kitts and Nevis
-  "LC", // Saint Lucia
-  "WS", // Samoa
-  "ST", // São Tomé and Príncipe
-  "SL", // Sierra Leone
-  "SB", // Solomon Islands
-  "SS", // South Sudan
-  "SR", // Suriname
-  "TZ", // Tanzania
-  "TL", // Timor-Leste
-  "TG", // Togo
-  "TO", // Tonga
-  "TT", // Trinidad and Tobago
-  "TV", // Tuvalu
-  "UG", // Uganda
-  "AE", // United Arab Emirates
-  "VU", // Vanuatu
-  "YE", // Yemen
-];
+ 
 const hasPostalCode = !countriesWithoutPostalCode.includes(billingCountry);
 
   useEffect(() => {
@@ -163,7 +108,10 @@ const hasPostalCode = !countriesWithoutPostalCode.includes(billingCountry);
     billingInfo?.firstName &&
     billingInfo?.city &&
     billingInfo?.country &&
-    billingInfo?.zip && billingInfo?.state) {
+     (!countriesWithoutPostalCode.includes(billingInfo.country)
+    ? billingInfo?.zip
+    : true)
+    && billingInfo?.state) {
     // Show completed state with billing info and edit button
     return (
       <div className="flex items-start justify-between w-full">
@@ -173,7 +121,7 @@ const hasPostalCode = !countriesWithoutPostalCode.includes(billingCountry);
           </p>
           <p className=" text-[#545454] text-[13px]">{billingInfo?.company} {billingInfo?.phone}</p>
           <p className=" text-[#545454] text-[13px]">{billingInfo?.address1} {billingInfo?.address2 ? ` / ${billingInfo.address2}` : ""}</p>
-          <p className="text-[13px] text-[#545454]">{billingInfo?.city}, {billingInfo?.state} {billingInfo?.zip} {billingInfo?.country ? ` / ${billingInfo.country}` : ""} </p>
+          <p className="text-[13px] text-[#545454]">{billingInfo?.city}, {billingInfo?.state}  {billingInfo?.zip ? ` ${billingInfo.zip}` : ""} {billingInfo?.country ? ` / ${billingInfo.country}` : ""} </p>
         </div>
         <button
           type="button"

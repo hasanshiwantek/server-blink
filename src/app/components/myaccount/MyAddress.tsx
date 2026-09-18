@@ -22,10 +22,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import countries from "world-countries";
 import { Country, State } from "country-state-city";
 import { useMemo } from "react";
-import { toast } from "react-toastify";
+import { countriesWithoutPostalCode } from "@/const/country-level";
 
 const MyAddress = () => {
   const dispatch = useAppDispatch();
@@ -60,63 +59,6 @@ const MyAddress = () => {
     }));
   }, [editData?.country]);
 
-  const countriesWithoutPostalCode = [
-    "AG", // Antigua and Barbuda
-    "AO", // Angola
-    "BS", // Bahamas
-    "BZ", // Belize
-    "BW", // Botswana
-    "BF", // Burkina Faso
-    "BI", // Burundi
-    "CM", // Cameroon
-    "CF", // Central African Republic
-    "KM", // Comoros
-    "CG", // Republic of the Congo
-    "DJ", // Djibouti
-    "DM", // Dominica
-    "GQ", // Equatorial Guinea
-    "ER", // Eritrea
-    "FJ", // Fiji
-    "GM", // Gambia
-    "GH", // Ghana
-    "GD", // Grenada
-    "GY", // Guyana
-    "HK", // Hong Kong
-    "IE", // Ireland
-    "JM", // Jamaica
-    "KI", // Kiribati
-    "LY", // Libya
-    "MW", // Malawi
-    "ML", // Mali
-    "MR", // Mauritania
-    "MU", // Mauritius
-    "FM", // Micronesia
-    "NA", // Namibia
-    "NR", // Nauru
-    "KP", // North Korea
-    "PW", // Palau
-    "PA", // Panama
-    "QA", // Qatar
-    "RW", // Rwanda
-    "KN", // Saint Kitts and Nevis
-    "LC", // Saint Lucia
-    "WS", // Samoa
-    "ST", // São Tomé and Príncipe
-    "SL", // Sierra Leone
-    "SB", // Solomon Islands
-    "SS", // South Sudan
-    "SR", // Suriname
-    "TZ", // Tanzania
-    "TL", // Timor-Leste
-    "TG", // Togo
-    "TO", // Tonga
-    "TT", // Trinidad and Tobago
-    "TV", // Tuvalu
-    "UG", // Uganda
-    "AE", // United Arab Emirates
-    "VU", // Vanuatu
-    "YE", // Yemen
-  ];
   const hasPostalCode = !countriesWithoutPostalCode.includes(editData?.country);
 
   const handleDelete = async (id: number | string) => {
@@ -127,7 +69,7 @@ const MyAddress = () => {
       try {
         await dispatch(deletecustomeraddress({ id })).unwrap();
         dispatch(fetchCustomerAddress());
-      } catch (err) {}
+      } catch (err) { }
     }
   };
 
@@ -189,7 +131,7 @@ const MyAddress = () => {
 
       setShowModal(false);
       dispatch(fetchCustomerAddress());
-    } catch (err) {}
+    } catch (err) { }
   };
 
   useEffect(() => {
@@ -395,14 +337,14 @@ const MyAddress = () => {
                 className="text-[14px] text-[#545454] !font-normal  flex md:justify-between"
                 htmlFor="postcode"
               >
-                Zip / Postcode 
-            {hasPostalCode ? (
-    <span className="text-[11px]">*</span>
-  ) : (
-    <span className="text-[11px] text-gray-400">
-    
-    </span>
-  )}
+                Zip / Postcode
+                {hasPostalCode ? (
+                  <span className="text-[11px]">*</span>
+                ) : (
+                  <span className="text-[11px] text-gray-400">
+
+                  </span>
+                )}
               </Label>
               <Input
                 value={editData.zip}
@@ -426,21 +368,21 @@ const MyAddress = () => {
               </Label>
               <Select
                 value={editData.country}
-               onValueChange={(value) => {
-  setEditData({
-    ...editData,
-    country: value,
-    state: "",
-    ...(countriesWithoutPostalCode.includes(value) && { zip: "" }),
-  });
+                onValueChange={(value) => {
+                  setEditData({
+                    ...editData,
+                    country: value,
+                    state: "",
+                    ...(countriesWithoutPostalCode.includes(value) && { zip: "" }),
+                  });
 
-  if (countriesWithoutPostalCode.includes(value)) {
-    setErrors((prev) => ({
-      ...prev,
-      zip: "",
-    }));
-  }
-}}
+                  if (countriesWithoutPostalCode.includes(value)) {
+                    setErrors((prev) => ({
+                      ...prev,
+                      zip: "",
+                    }));
+                  }
+                }}
               >
                 <SelectTrigger className="!w-full !max-w-full !h-[42px]">
                   <SelectValue placeholder="Choose a Country" />

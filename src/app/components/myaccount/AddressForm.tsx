@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import countries from "world-countries";
 import { Country, State, City } from "country-state-city";
+import { countriesWithoutPostalCode } from "@/const/country-level";
 
 interface AddressFormValues {
   firstName: string;
@@ -39,11 +40,11 @@ const AddressForm = () => {
     control,
     setValue,
     watch,
-     clearErrors,
+    clearErrors,
     formState: { errors },
     reset,
   } = useForm<AddressFormValues>({
-      shouldUnregister: true,
+    shouldUnregister: true,
   });
   const { loading, error } = useAppSelector(
     (state: RootState) => state.myaccount,
@@ -65,67 +66,11 @@ const AddressForm = () => {
       code: s.isoCode,
     }));
   }, [selectedCountry]);
-   const countriesWithoutPostalCode = [
-  "AG", // Antigua and Barbuda
-  "AO", // Angola
-  "BS", // Bahamas
-  "BZ", // Belize
-  "BW", // Botswana
-  "BF", // Burkina Faso
-  "BI", // Burundi
-  "CM", // Cameroon
-  "CF", // Central African Republic
-  "KM", // Comoros
-  "CG", // Republic of the Congo
-  "DJ", // Djibouti
-  "DM", // Dominica
-  "GQ", // Equatorial Guinea
-  "ER", // Eritrea
-  "FJ", // Fiji
-  "GM", // Gambia
-  "GH", // Ghana
-  "GD", // Grenada
-  "GY", // Guyana
-  "HK", // Hong Kong
-  "IE", // Ireland
-  "JM", // Jamaica
-  "KI", // Kiribati
-  "LY", // Libya
-  "MW", // Malawi
-  "ML", // Mali
-  "MR", // Mauritania
-  "MU", // Mauritius
-  "FM", // Micronesia
-  "NA", // Namibia
-  "NR", // Nauru
-  "KP", // North Korea
-  "PW", // Palau
-  "PA", // Panama
-  "QA", // Qatar
-  "RW", // Rwanda
-  "KN", // Saint Kitts and Nevis
-  "LC", // Saint Lucia
-  "WS", // Samoa
-  "ST", // São Tomé and Príncipe
-  "SL", // Sierra Leone
-  "SB", // Solomon Islands
-  "SS", // South Sudan
-  "SR", // Suriname
-  "TZ", // Tanzania
-  "TL", // Timor-Leste
-  "TG", // Togo
-  "TO", // Tonga
-  "TT", // Trinidad and Tobago
-  "TV", // Tuvalu
-  "UG", // Uganda
-  "AE", // United Arab Emirates
-  "VU", // Vanuatu
-  "YE", // Yemen
-];
-const hasPostalCode = !countriesWithoutPostalCode.includes(selectedCountry);
+
+  const hasPostalCode = !countriesWithoutPostalCode.includes(selectedCountry);
 
   const onSubmit = async (data: AddressFormValues) => {
-      
+
     try {
       // Only addresses in payload
       const mergedData = {
@@ -151,13 +96,13 @@ const hasPostalCode = !countriesWithoutPostalCode.includes(selectedCountry);
       } else {
         const errorMessage =
           result.error?.message || "Add address failed. Please try again.";
-       
+
       }
     } catch (error) {
-    
+
     }
   };
-  
+
   const inputClass =
     "!w-full h-[42px] text-[#545454] !font-normal !max-w-full py-[10px] px-[14px] border border-[#cac9c9] rounded-none";
 
@@ -166,7 +111,7 @@ const hasPostalCode = !countriesWithoutPostalCode.includes(selectedCountry);
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-5 roboto-font"
-      
+
       >
         {/* Row 0: First Name & Last Name */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -301,7 +246,7 @@ const hasPostalCode = !countriesWithoutPostalCode.includes(selectedCountry);
               name="country"
               control={control}
               rules={{ required: "Country is required" }}
-             
+
               render={({ field }) => (
                 <Select
                   value={field.value}
@@ -309,8 +254,8 @@ const hasPostalCode = !countriesWithoutPostalCode.includes(selectedCountry);
                     field.onChange(value);
                     setValue("state", "");
                     if (countriesWithoutPostalCode.includes(value)) {
-    clearErrors("postcode");
-  }
+                      clearErrors("postcode");
+                    }
                   }}
                 >
                   <SelectTrigger className={`${inputClass} !h-[44px]`}>
@@ -348,9 +293,9 @@ const hasPostalCode = !countriesWithoutPostalCode.includes(selectedCountry);
                 name="state"
                 control={control}
                 rules={{ required: "State/Province is required" }}
-          
+
                 render={({ field }) => (
-                  
+
                   <Select
                     value={field.value}
                     onValueChange={field.onChange}
@@ -382,31 +327,31 @@ const hasPostalCode = !countriesWithoutPostalCode.includes(selectedCountry);
             )}
           </div>
           <div>
-           <Label
-  className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
-  htmlFor="postcode"
->
-  Zip / Postcode
+            <Label
+              className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
+              htmlFor="postcode"
+            >
+              Zip / Postcode
 
-  {hasPostalCode ? (
-    <span className="text-[11px]">*</span>
-  ) : (
-    <span className="text-[11px] text-gray-400">
-    
-    </span>
-  )}
-</Label>
+              {hasPostalCode ? (
+                <span className="text-[11px]">*</span>
+              ) : (
+                <span className="text-[11px] text-gray-400">
+
+                </span>
+              )}
+            </Label>
             <Input
               id="postcode"
-            {...register("postcode", {
-  validate: (value) => {
-    if (hasPostalCode && !value) {
-      return "Zip/Postcode is required";
-    }
+              {...register("postcode", {
+                validate: (value) => {
+                  if (hasPostalCode && !value) {
+                    return "Zip/Postcode is required";
+                  }
 
-    return true;
-  },
-})}
+                  return true;
+                },
+              })}
               className={inputClass}
             />
             {errors.postcode && (
@@ -418,7 +363,7 @@ const hasPostalCode = !countriesWithoutPostalCode.includes(selectedCountry);
         {/* Buttons */}
         <div
           className="flex flex-col md:flex-row gap-4 mt-12 roboto-condensed-only-font "
-         
+
         >
           <Button
             type="submit"

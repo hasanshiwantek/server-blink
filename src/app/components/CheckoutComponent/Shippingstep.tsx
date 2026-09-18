@@ -17,7 +17,7 @@ import {
   Controller,
   useWatch,
   UseFormSetValue,
-    UseFormClearErrors,
+  UseFormClearErrors,
 } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import {
@@ -37,6 +37,7 @@ import {
 import ShipToSingleAddressModal from "./ShipToSingleAddressModal";
 import { CHECKOUT_STORAGE_KEY } from "./CheckoutComponent";
 import { fetchAccountAddress } from "@/redux/slices/myaccountSlice";
+import { countriesWithoutPostalCode } from "@/const/country-level";
 
 interface ShippingStepProps {
   register: UseFormRegister<any>;
@@ -124,6 +125,7 @@ export function calculatePackage(products: any[]) {
     package_value: orderTotal,
   };
 }
+
 const ShippingStep: React.FC<ShippingStepProps> = ({
   register,
   errors,
@@ -209,65 +211,8 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
     );
     return rate || null;
   };
-  /////zip required logic here
-   const countriesWithoutPostalCode = [
-  "AG", // Antigua and Barbuda
-  "AO", // Angola
-  "BS", // Bahamas
-  "BZ", // Belize
-  "BW", // Botswana
-  "BF", // Burkina Faso
-  "BI", // Burundi
-  "CM", // Cameroon
-  "CF", // Central African Republic
-  "KM", // Comoros
-  "CG", // Republic of the Congo
-  "DJ", // Djibouti
-  "DM", // Dominica
-  "GQ", // Equatorial Guinea
-  "ER", // Eritrea
-  "FJ", // Fiji
-  "GM", // Gambia
-  "GH", // Ghana
-  "GD", // Grenada
-  "GY", // Guyana
-  "HK", // Hong Kong
-  "IE", // Ireland
-  "JM", // Jamaica
-  "KI", // Kiribati
-  "LY", // Libya
-  "MW", // Malawi
-  "ML", // Mali
-  "MR", // Mauritania
-  "MU", // Mauritius
-  "FM", // Micronesia
-  "NA", // Namibia
-  "NR", // Nauru
-  "KP", // North Korea
-  "PW", // Palau
-  "PA", // Panama
-  "QA", // Qatar
-  "RW", // Rwanda
-  "KN", // Saint Kitts and Nevis
-  "LC", // Saint Lucia
-  "WS", // Samoa
-  "ST", // São Tomé and Príncipe
-  "SL", // Sierra Leone
-  "SB", // Solomon Islands
-  "SS", // South Sudan
-  "SR", // Suriname
-  "TZ", // Tanzania
-  "TL", // Timor-Leste
-  "TG", // Togo
-  "TO", // Tonga
-  "TT", // Trinidad and Tobago
-  "TV", // Tuvalu
-  "UG", // Uganda
-  "AE", // United Arab Emirates
-  "VU", // Vanuatu
-  "YE", // Yemen
-];
-const hasPostalCode = !countriesWithoutPostalCode.includes(country);
+
+  const hasPostalCode = !countriesWithoutPostalCode.includes(country);
 
   const isShippingComplete = useMemo(() => {
     return !!(
@@ -281,14 +226,14 @@ const hasPostalCode = !countriesWithoutPostalCode.includes(country);
   }, [firstName, lastName, address1, city, country, zip]);
 
   useEffect(() => {
-    if (!country?.trim() && !zip?.trim() && !state?.trim())
+    if (!city?.trim() && !country?.trim() && !zip?.trim() && !state?.trim())
       return;
-   if (
-  country?.trim() &&
-  state?.trim() &&
-  cart?.length &&
-  (!hasPostalCode || zip?.trim())
-) {
+    if (
+      country?.trim() &&
+      state?.trim() &&
+      cart?.length &&
+      (!hasPostalCode || zip?.trim())
+    ) {
       const pkg = calculatePackage(cart);
       const timer = setTimeout(() => {
         dispatch(resetShippingRates());
@@ -299,8 +244,8 @@ const hasPostalCode = !countriesWithoutPostalCode.includes(country);
                 country_code: country?.trim(),
                 state: state?.trim(),
                 ...(zip?.trim() && {
-  postal_code: zip.trim(),
-}),
+                  postal_code: zip.trim(),
+                }),
                 ...(city?.trim() && { city: city.trim() }),
               },
               package: pkg,
@@ -799,8 +744,8 @@ const hasPostalCode = !countriesWithoutPostalCode.includes(country);
                           field.onChange(val);
                           setValue("state", ""); //
                           if (countriesWithoutPostalCode.includes(val)) {
-    clearErrors("zip");
-  }
+                            clearErrors("zip");
+                          }
                         }}
                         value={field.value}
                       >
@@ -891,31 +836,31 @@ const hasPostalCode = !countriesWithoutPostalCode.includes(country);
                   </div>
 
                   <div className="flex flex-col">
-                   <label
-  htmlFor="zip"
-  className="mb-2 flex items-baseline justify-between gap-2 text-[13px] text-[#545454]"
->
-  <span>Postal Code</span>
+                    <label
+                      htmlFor="zip"
+                      className="mb-2 flex items-baseline justify-between gap-2 text-[13px] text-[#545454]"
+                    >
+                      <span>Postal Code</span>
 
-  {!hasPostalCode && (
-    <span className="shrink-0 text-gray-400">
-      (Optional)
-    </span>
-  )}
-</label>
+                      {!hasPostalCode && (
+                        <span className="shrink-0 text-gray-400">
+                          (Optional)
+                        </span>
+                      )}
+                    </label>
                     <Input
                       id="zip"
                       type="text"
                       className={`w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none ${errors.zip ? "border-red-500" : ""
                         }`}
-                     {...register("zip", {
-  validate: (value) => {
-    if (hasPostalCode && !value) {
-      return "Postal code is required";
-    }
-    return true;
-  },
-})}
+                      {...register("zip", {
+                        validate: (value) => {
+                          if (hasPostalCode && !value) {
+                            return "Postal code is required";
+                          }
+                          return true;
+                        },
+                      })}
                     />
                     {errors.zip && (
                       <p className="text-sm text-red-500 mt-1">
@@ -1059,11 +1004,6 @@ const hasPostalCode = !countriesWithoutPostalCode.includes(country);
                             .then(() => {
                               dispatch(fetchShippingRate({}));
                             });
-                          // localStorage.setItem("shippingCost", cost);
-                          // localStorage.setItem(
-                          //   "shippingData",
-                          //   JSON.stringify(shippingData),
-                          // );
                         }}
                         className="mt-1"
                         disabled={!isShippingComplete}
