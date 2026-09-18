@@ -88,7 +88,7 @@ const FAQSection = () => {
                   >
                     <div className="flex items-center gap-4 flex-1">
                       {/* Number Circle */}
-                      <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+                      <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center shrink-0">
                         <span className="h3-regular text-[#666666]">{faq.id}</span>
                       </div>
                       
@@ -99,7 +99,7 @@ const FAQSection = () => {
                     </div>
                     
                     {/* Custom Icon (X for open, + for closed) */}
-                    <div className="flex-shrink-0 relative w-5 h-5">
+                    <div className="shrink-0 relative w-5 h-5">
                       <X className="w-5 h-5 text-[#F15939] absolute inset-0 opacity-0 group-data-[state=open]:opacity-100 transition-opacity" />
                       <Plus className="w-5 h-5 text-[#F15939] absolute inset-0 opacity-100 group-data-[state=open]:opacity-0 transition-opacity" />
                     </div>

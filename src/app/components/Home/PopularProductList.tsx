@@ -171,7 +171,7 @@ const PopularProductList: React.FC<FeaturedProductsProps> = ({
                                     key={i}
                                     className={
                                         isSlider
-                                            ? "flex-shrink-0 w-full sm:w-1/2 md:w-1/3 lg:w-1/4"
+                                            ? "shrink-0 w-full sm:w-1/2 md:w-1/3 lg:w-1/4"
                                             : ""
                                     }
                                 >
@@ -195,7 +195,7 @@ const PopularProductList: React.FC<FeaturedProductsProps> = ({
                             {productsData.map((product: any) => (
                                 <div
                                     key={product.id}
-                                    className="flex-shrink-0 w-1/2 md:w-1/3 lg:w-1/4"
+                                    className="shrink-0 w-1/2 md:w-1/3 lg:w-1/4"
                                 >
                                     <ProductCard product={product} />
                                 </div>

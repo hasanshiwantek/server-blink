@@ -58,7 +58,7 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
             key={item.id}
             className="flex items-start gap-4 pb-4 border-b last:border-b-0"
           >
-            <div className="relative w-20 h-25 flex-shrink-0">
+            <div className="relative w-20 h-25 shrink-0">
               <Image
                 src={item.image?.[0]?.path || "/checkouticon/orderimg.png"}
                 alt={item.name}
@@ -153,7 +153,7 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
         {appliedCoupon || discountTotal > 0 && (
           <div className="text-[#333] font-medium text-[13px]  mt-1 self-end">
             You saved{" "}
-            <span className="!text-[#2aab3f] ">
+            <span className="text-[#2aab3f]!">
               ${discountTotal?.toFixed(2)}
             </span>{" "}
             in total!

@@ -60,7 +60,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
             <button
               type="button"
               onClick={handleSignOut}
-              className="btn-primary h-[30px] !text-[10px] w-[96px]"
+              className="btn-primary h-[30px] text-[10px]! w-[96px]"
             >
               SIGN OUT
             </button>
@@ -68,7 +68,7 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
             <button
               type="button"
               onClick={onEdit}
-              className="btn-primary h-[32px] !text-[10px] w-[82px]"
+              className="btn-primary h-[32px] text-[10px]! w-[82px]"
             >
               EDIT
             </button>

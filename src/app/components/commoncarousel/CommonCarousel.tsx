@@ -243,7 +243,7 @@ const CommonCarousel: React.FC<CommonCarouselProps> = ({
         {loopItems.map((item, index) => (
           <div
             key={`${item.slug}-${index}`}
-            className="flex-shrink-0 w-1/2 sm:w-1/3 md:w-1/4 flex justify-center"
+            className="shrink-0 w-1/2 sm:w-1/3 md:w-1/4 flex justify-center"
           >
             <Card className="border-none shadow-none flex justify-center items-center bg-transparent">
               <CardContent className="flex items-center justify-center p-6 w-[100.2%] md:w-[139.2%] h-[13.34rem] bg-[#FFFFFF] rounded-2xl">

@@ -1,48 +1,34 @@
 "use client";
-import React, {
-  useState,
-  useCallback,
-  useMemo,
-  useEffect,
-  useRef,
-} from "react";
-import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { RootState } from "@/redux/store";
-import {
-  decreaseQty,
-  increaseQty,
-  removeFromCart,
-  clearCart,
-} from "@/redux/slices/cartSlice";
-import { applyCoupon, removeCoupon } from "@/redux/slices/couponSlice"; // ADD THIS
-import axiosInstance, { baseURL, stripePublishableKey } from "@/lib/axiosInstance";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Country, State, City } from "country-state-city";
-import { useForm } from "react-hook-form";
-import { loadStripe } from "@stripe/stripe-js";
-import type { PaymentRequest as StripePaymentRequest } from "@stripe/stripe-js";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
+import axiosInstance, {
+  baseURL,
+  stripePublishableKey,
+} from "@/lib/axiosInstance";
 import {
-  Elements,
-  CardNumberElement,
-  PaymentRequestButtonElement,
-  useStripe,
-  useElements,
-} from "@stripe/react-stripe-js";
-import { useRouter } from "next/navigation";
-import { setLastOrder } from "@/redux/slices/orderslice";
+  clearCart,
+  decreaseQty,
+  increaseQty,
+  removeFromCart,
+} from "@/redux/slices/cartSlice";
+import {
+  applyCoupon,
+  fetchMyCouponUsage,
+  removeCoupon,
+} from "@/redux/slices/couponSlice"; // ADD THIS
 import {
   resetMultiAddress,
-  restoreMultiAddress,
   setIsMultiAddress,
 } from "@/redux/slices/multiAddressSlice";
+import { setLastOrder } from "@/redux/slices/orderslice";
 import {
   checkoutFormSave,
   fetchShippingRate,
@@ -51,21 +37,34 @@ import {
   removeShippingRate,
   resetShippingRates,
 } from "@/redux/slices/shippingSlice";
+import { RootState } from "@/redux/store";
+import {
+  CardNumberElement,
+  Elements,
+  PaymentRequestButtonElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
+import type { PaymentRequest as StripePaymentRequest } from "@stripe/stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { City, Country, State } from "country-state-city";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 // Import step components
-import CustomerStep from "./CustomerStep";
-import ShippingStep from "./Shippingstep";
-import BillingStep from "./Billingstep";
-import PaymentStep from "./Paymentstep";
-import CheckoutOrderSummary from "./CheckoutOrderSummary";
-import CheckoutMultipleOrderSummary from "./CheckoutMultipleOrderSummary";
-import { calculatePackage } from "./Shippingstep";
+import { fetchCartList, removeProducts } from "@/redux/slices/cartsSlice";
+import { subscribeNewsletter } from "@/redux/slices/contactSlice";
 import {
   addCustomerAddress,
   fetchCustomerAddress,
 } from "@/redux/slices/myaccountSlice";
-import { fetchCartList, removeProducts } from "@/redux/slices/cartsSlice";
-import { subscribeNewsletter } from "@/redux/slices/contactSlice";
 import { errorMessage, infoMessage, successMessage } from "@/utils/message";
+import BillingStep from "./Billingstep";
+import CheckoutMultipleOrderSummary from "./CheckoutMultipleOrderSummary";
+import CheckoutOrderSummary from "./CheckoutOrderSummary";
+import CustomerStep from "./CustomerStep";
+import PaymentStep from "./Paymentstep";
+import ShippingStep, { calculatePackage } from "./Shippingstep";
 
 export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
 function splitName(fullName: string) {
@@ -77,9 +76,7 @@ function splitName(fullName: string) {
   };
 }
 // Stripe publishable key
-const stripePromise = loadStripe(
-  stripePublishableKey,
-);
+const stripePromise = loadStripe(stripePublishableKey);
 
 // Pre-compute country list at module level
 // const countryList = countries
@@ -135,14 +132,15 @@ interface CheckoutFormValues {
 const CheckoutForm = () => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state?.carts?.items);
-  const { loading, redirectToCart, cartLoading } = useAppSelector((state: RootState) => state?.carts);
+  const { loading, redirectToCart, cartLoading } = useAppSelector(
+    (state: RootState) => state?.carts,
+  );
   const auth = useAppSelector((state: RootState) => state?.auth);
 
   // ADD COUPON STATE FROM REDUX
-  const { appliedCoupon, discountAmount, manualDiscount, orderId } = useAppSelector(
-    (state: RootState) => state.coupon,
-  );
-  const discountTotal = Number(discountAmount) + Number(manualDiscount)
+  const { appliedCoupon, discountAmount, manualDiscount, orderId } =
+    useAppSelector((state: RootState) => state.coupon);
+  const discountTotal = Number(discountAmount) + Number(manualDiscount);
 
   const hasRestoredRef = useRef(false);
   const isRestoringRef = useRef(true);
@@ -364,7 +362,9 @@ const CheckoutForm = () => {
       const selected = shippingRates.find(
         (rate: any) => rate.service_type === watchedShippingMethod,
       );
-      return selected ? Number(selected.total_charge) : shippingDetail?.rate?.total_charge || 0;
+      return selected
+        ? Number(selected.total_charge)
+        : shippingDetail?.rate?.total_charge || 0;
     }
     if (typeof window !== "undefined") {
       const savedCost = Number(shippingDetail?.rate?.total_charge);
@@ -408,8 +408,13 @@ const CheckoutForm = () => {
 
     try {
       await dispatch(
-        applyCoupon({ couponCode: promoCode, total: totalBeforeDiscount }),
+        applyCoupon({
+          couponCode: promoCode,
+          total: totalBeforeDiscount,
+          productIds: cart.map((item) => item.id),
+        }),
       ).unwrap();
+      await dispatch(fetchMyCouponUsage());
       successMessage("Promo code applied successfully!");
       setPromoCode("");
     } catch (err: any) {
@@ -654,10 +659,13 @@ const CheckoutForm = () => {
               state: dest.address?.state || "",
               zip: dest.address?.zip || "",
               country: dest.address?.country || "",
-              shippingMethod: dest.selectedShippingMethod || shippingDetail?.rate?.method_type,
-              shippingData: shippingRates.find(
-                (item) => item?.service_type == dest.selectedShippingMethod,
-              ) || shippingDetail?.rate?.service_type,
+              shippingMethod:
+                dest.selectedShippingMethod ||
+                shippingDetail?.rate?.method_type,
+              shippingData:
+                shippingRates.find(
+                  (item) => item?.service_type == dest.selectedShippingMethod,
+                ) || shippingDetail?.rate?.service_type,
               shippingCost: selectedRate
                 ? Number(selectedRate.total_charge)
                 : 0,
@@ -674,7 +682,6 @@ const CheckoutForm = () => {
 
       // ✅ Single address — existing logic
       return {
-
         userType: token ? null : "guest",
         deviceType: getDeviceType(),
         ipAddress: ipAddress,
@@ -698,10 +705,12 @@ const CheckoutForm = () => {
             : data.paymentMethod == "apple_pay"
               ? "Apple Pay"
               : "Google Pay",
-        shippingMethod: data.shippingMethod || shippingDetail?.rate?.method_type,
-        shippingData: shippingRates.find(
-          (item) => item?.service_type == data.shippingMethod
-        ) || shippingDetail?.rate?.service_type,
+        shippingMethod:
+          data.shippingMethod || shippingDetail?.rate?.method_type,
+        shippingData:
+          shippingRates.find(
+            (item) => item?.service_type == data.shippingMethod,
+          ) || shippingDetail?.rate?.service_type,
         discountAmount: discountAmount,
         couponCode: appliedCoupon?.couponCode,
         shippingCost: shipping,
@@ -959,7 +968,7 @@ const CheckoutForm = () => {
 
     setTimeout(() => {
       setValue("billingSame", false);
-    }, 100)
+    }, 100);
   };
 
   const handleEditPayment = () => {
@@ -1153,8 +1162,8 @@ const CheckoutForm = () => {
         }
       }
       if (data?.newsletter) {
-        const email = data?.email
-        dispatch(subscribeNewsletter({ email: email.trim() }))
+        const email = data?.email;
+        dispatch(subscribeNewsletter({ email: email.trim() }));
       }
       dispatch(
         removeProducts({
@@ -1170,7 +1179,7 @@ const CheckoutForm = () => {
       dispatch(resetShippingRates());
       dispatch(setIsMultiAddress(false));
       dispatch(fetchCartList());
-      window.location.href = `/checkout/order-information/${orderNumber}`
+      window.location.href = `/checkout/order-information/${orderNumber}`;
     } catch (err: any) {
       const message =
         err.response?.data?.message ||
@@ -1407,29 +1416,29 @@ const CheckoutForm = () => {
       // billingSame false → actual billing values use karo (sirf agar filled hain)
       const billingFormData = watchedValues.billingSame
         ? {
-          billingFirstName: watchedValues.firstName || "",
-          billingLastName: watchedValues.lastName || "",
-          billingCompany: watchedValues.company || "",
-          billingPhone: watchedValues.phone || "",
-          billingAddress1: watchedValues.address1 || "",
-          billingAddress2: watchedValues.address2 || "",
-          billingCity: watchedValues.city || "",
-          billingCountry: watchedValues.country || "",
-          billingState: watchedValues.state || "",
-          billingZip: watchedValues.zip || "",
-        }
+            billingFirstName: watchedValues.firstName || "",
+            billingLastName: watchedValues.lastName || "",
+            billingCompany: watchedValues.company || "",
+            billingPhone: watchedValues.phone || "",
+            billingAddress1: watchedValues.address1 || "",
+            billingAddress2: watchedValues.address2 || "",
+            billingCity: watchedValues.city || "",
+            billingCountry: watchedValues.country || "",
+            billingState: watchedValues.state || "",
+            billingZip: watchedValues.zip || "",
+          }
         : {
-          billingFirstName: watchedValues.billingFirstName || "",
-          billingLastName: watchedValues.billingLastName || "",
-          billingCompany: watchedValues.billingCompany || "",
-          billingPhone: watchedValues.billingPhone || "",
-          billingAddress1: watchedValues.billingAddress1 || "",
-          billingAddress2: watchedValues.billingAddress2 || "",
-          billingCity: watchedValues.billingCity || "",
-          billingCountry: watchedValues.billingCountry || "",
-          billingState: watchedValues.billingState || "",
-          billingZip: watchedValues.billingZip || "",
-        };
+            billingFirstName: watchedValues.billingFirstName || "",
+            billingLastName: watchedValues.billingLastName || "",
+            billingCompany: watchedValues.billingCompany || "",
+            billingPhone: watchedValues.billingPhone || "",
+            billingAddress1: watchedValues.billingAddress1 || "",
+            billingAddress2: watchedValues.billingAddress2 || "",
+            billingCity: watchedValues.billingCity || "",
+            billingCountry: watchedValues.billingCountry || "",
+            billingState: watchedValues.billingState || "",
+            billingZip: watchedValues.billingZip || "",
+          };
 
       dispatch(
         checkoutFormSave({ data: { shippingFormData, billingFormData } }),
@@ -1542,6 +1551,10 @@ const CheckoutForm = () => {
   }, []);
 
   useEffect(() => {
+    dispatch(fetchMyCouponUsage());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (auth?.isAuthenticated) {
       dispatch(fetchCustomerAddress());
     }
@@ -1630,7 +1643,7 @@ const CheckoutForm = () => {
                 countryList={countryList}
                 stateList={billingStateList}
                 cityList={billingCityList}
-                 clearErrors={clearErrors}
+                clearErrors={clearErrors}
                 isActive={currentStep === 3}
                 isCompleted={completedSteps.includes(3)}
                 onEdit={handleEditBilling}

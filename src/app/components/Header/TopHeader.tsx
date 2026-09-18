@@ -260,7 +260,7 @@ const TopHeader = () => {
                         >
                           <div className="flex">
                             {/* Product Image - Left Side */}
-                            <div className="w-[160px] min-h-[140px] flex-shrink-0 bg-white border-r border-gray-200 p-3 flex items-center justify-center">
+                            <div className="w-[160px] min-h-[140px] shrink-0 bg-white border-r border-gray-200 p-3 flex items-center justify-center">
                               <Image
                                 src={
                                   item?.image?.[0]?.path ||
@@ -476,7 +476,7 @@ const TopHeader = () => {
                                 onClick={() => setIsOpen(false)}
                                 className=" px-2 flex gap-3 items-center cursor-pointer border-b border-gray-300 pb-1 last:border-b-0"
                               >
-                                <div className="w-16 h-16 flex-shrink-0 border border-gray-100 rounded-none">
+                                <div className="w-16 h-16 shrink-0 border border-gray-100 rounded-none">
                                   <Image
                                     src={
                                       item?.image?.[0]?.path ||

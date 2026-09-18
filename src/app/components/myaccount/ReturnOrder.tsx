@@ -45,7 +45,7 @@ const ReturnOrder = () => {
             className="border rounded-lg p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-6 w-full bg-white animate-pulse"
           >
             <div className="flex flex-col md:flex-row items-center md:items-center gap-4 md:w-[65%] w-full">
-              <div className="w-full max-w-[128px] h-32 bg-gray-300 rounded-md flex-shrink-0"></div>
+              <div className="w-full max-w-[128px] h-32 bg-gray-300 rounded-md shrink-0"></div>
               <div className="flex flex-col justify-center w-full gap-2">
                 <div className="h-4 bg-gray-300 rounded w-1/3"></div>
                 <div className="h-4 bg-gray-300 rounded w-2/3"></div>
@@ -111,7 +111,7 @@ const ReturnOrder = () => {
           {/* Left Side: Product Info */}
           <div className="flex flex-col md:flex-row items-center md:items-center gap-4 md:w-[65%] w-full">
             {/* Product Image */}
-            <div className="w-full max-w-[128px] h-32 relative flex-shrink-0">
+            <div className="w-full max-w-[128px] h-32 relative shrink-0">
               <Image
                src={imagePath}
                 alt={order?.product?.[0]?.name || "Product Image"}
