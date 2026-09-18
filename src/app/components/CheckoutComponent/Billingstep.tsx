@@ -9,7 +9,7 @@ import {
   SelectItem,
   SelectContent,
 } from "@/components/ui/select";
-import { UseFormRegister, FieldErrors, Control, Controller, UseFormSetValue } from "react-hook-form";
+import { UseFormRegister, FieldErrors, Control, Controller, UseFormSetValue ,useWatch,  UseFormClearErrors,} from "react-hook-form";
 import { useAppSelector, useAppDispatch } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import { checkoutFormSave } from "@/redux/slices/shippingSlice";
@@ -18,6 +18,7 @@ interface BillingStepProps {
   errors: FieldErrors;
   control: any;
   setValue: UseFormSetValue<any>;
+    clearErrors: UseFormClearErrors<any>;
   onContinue: () => void;
   countryList: Array<{ name: string; code: string }>;
   stateList: Array<{ name: string; code: string }>;
@@ -52,6 +53,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
   cityList,
   isActive,
   isCompleted,
+    clearErrors,
   onEdit,
   billingInfo,
   onAddressSelect,
@@ -84,6 +86,71 @@ const BillingStep: React.FC<BillingStepProps> = ({
     createdAt: item.created_at,
     updatedAt: item.updated_at,
   }));
+
+  /////zip required logic here
+  const billingCountry = useWatch({
+  control,
+  name: "billingCountry",
+});
+   const countriesWithoutPostalCode = [
+  "AG", // Antigua and Barbuda
+  "AO", // Angola
+  "BS", // Bahamas
+  "BZ", // Belize
+  "BW", // Botswana
+  "BF", // Burkina Faso
+  "BI", // Burundi
+  "CM", // Cameroon
+  "CF", // Central African Republic
+  "KM", // Comoros
+  "CG", // Republic of the Congo
+  "DJ", // Djibouti
+  "DM", // Dominica
+  "GQ", // Equatorial Guinea
+  "ER", // Eritrea
+  "FJ", // Fiji
+  "GM", // Gambia
+  "GH", // Ghana
+  "GD", // Grenada
+  "GY", // Guyana
+  "HK", // Hong Kong
+  "IE", // Ireland
+  "JM", // Jamaica
+  "KI", // Kiribati
+  "LY", // Libya
+  "MW", // Malawi
+  "ML", // Mali
+  "MR", // Mauritania
+  "MU", // Mauritius
+  "FM", // Micronesia
+  "NA", // Namibia
+  "NR", // Nauru
+  "KP", // North Korea
+  "PW", // Palau
+  "PA", // Panama
+  "QA", // Qatar
+  "RW", // Rwanda
+  "KN", // Saint Kitts and Nevis
+  "LC", // Saint Lucia
+  "WS", // Samoa
+  "ST", // São Tomé and Príncipe
+  "SL", // Sierra Leone
+  "SB", // Solomon Islands
+  "SS", // South Sudan
+  "SR", // Suriname
+  "TZ", // Tanzania
+  "TL", // Timor-Leste
+  "TG", // Togo
+  "TO", // Tonga
+  "TT", // Trinidad and Tobago
+  "TV", // Tuvalu
+  "UG", // Uganda
+  "AE", // United Arab Emirates
+  "VU", // Vanuatu
+  "YE", // Yemen
+];
+const hasPostalCode = !countriesWithoutPostalCode.includes(billingCountry);
+
   useEffect(() => {
     // Guest user ya jiska koi saved address nahi — direct form dikhao
     // if (!auth?.isAuthenticated) {
@@ -142,7 +209,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
                 {(selectedLabel.companyName || selectedLabel.phone) && (
                   <p className="uppercase">
                     {selectedLabel.companyName} {selectedLabel.phone}
-                  </p>
+                  </p> 
                 )}
                 <p className="uppercase">
                   {selectedLabel.addressLine1}
@@ -400,10 +467,17 @@ const BillingStep: React.FC<BillingStepProps> = ({
               control={control}
               rules={{ required: "Country is required" }}
               render={({ field }) => (
-                <Select onValueChange={(val) => {
-                  field.onChange(val);
-                  setValue("state", "");
-                }} value={field.value}>
+                <Select
+              onValueChange={(val) => {
+    field.onChange(val);
+    setValue("billingState", "");
+
+    if (countriesWithoutPostalCode.includes(val)) {
+      clearErrors("billingZip");
+      setValue("billingZip", "");
+    }
+  }}
+                value={field.value}>
                   <SelectTrigger
                     className={`w-full !max-w-full h-[40px] ${errors.billingCountry ? "border-red-500" : ""
                       }`}
@@ -481,20 +555,32 @@ const BillingStep: React.FC<BillingStepProps> = ({
               <label
                 htmlFor="billingZip"
                 className={cn(
-                  "mb-2 text-base",
+                  "mb-2  flex items-baseline justify-between gap-2 text-base",
                   errors.billingZip ? "text-red-500" : "text-gray-700"
                 )}
               >
-                Postal Code
+               <span>Postal Code</span>
+
+  {!hasPostalCode && (
+    <span className="shrink-0 text-gray-400">
+      (Optional)
+    </span>
+  )}
               </label>
               <Input
                 id="billingZip"
                 type="text"
                 className={`w-full !max-w-full h-[40px] ${errors.billingZip ? "border-red-500" : ""
                   }`}
-                {...register("billingZip", {
-                  required: "Postal code is required",
-                })}
+               {...register("billingZip", {
+  validate: (value) => {
+    if (hasPostalCode && !value?.trim()) {
+      return "Postal code is required";
+    }
+
+    return true;
+  },
+})}
 
               />
               {errors.billingZip && (
