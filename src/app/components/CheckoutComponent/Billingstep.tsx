@@ -9,15 +9,17 @@ import {
   SelectItem,
   SelectContent,
 } from "@/components/ui/select";
-import { UseFormRegister, FieldErrors, Control, Controller, UseFormSetValue } from "react-hook-form";
+import { UseFormRegister, FieldErrors, Control, Controller, UseFormSetValue ,useWatch,  UseFormClearErrors,} from "react-hook-form";
 import { useAppSelector, useAppDispatch } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import { checkoutFormSave } from "@/redux/slices/shippingSlice";
+import { countriesWithoutPostalCode } from "@/const/country-level";
 interface BillingStepProps {
   register: UseFormRegister<any>;
   errors: FieldErrors;
   control: any;
   setValue: UseFormSetValue<any>;
+    clearErrors: UseFormClearErrors<any>;
   onContinue: () => void;
   countryList: Array<{ name: string; code: string }>;
   stateList: Array<{ name: string; code: string }>;
@@ -52,6 +54,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
   cityList,
   isActive,
   isCompleted,
+    clearErrors,
   onEdit,
   billingInfo,
   onAddressSelect,
@@ -84,6 +87,15 @@ const BillingStep: React.FC<BillingStepProps> = ({
     createdAt: item.created_at,
     updatedAt: item.updated_at,
   }));
+
+  /////zip required logic here
+  const billingCountry = useWatch({
+  control,
+  name: "billingCountry",
+});
+ 
+const hasPostalCode = !countriesWithoutPostalCode.includes(billingCountry);
+
   useEffect(() => {
     // Guest user ya jiska koi saved address nahi — direct form dikhao
     // if (!auth?.isAuthenticated) {
@@ -96,7 +108,10 @@ const BillingStep: React.FC<BillingStepProps> = ({
     billingInfo?.firstName &&
     billingInfo?.city &&
     billingInfo?.country &&
-    billingInfo?.zip && billingInfo?.state) {
+     (!countriesWithoutPostalCode.includes(billingInfo.country)
+    ? billingInfo?.zip
+    : true)
+    && billingInfo?.state) {
     // Show completed state with billing info and edit button
     return (
       <div className="flex items-start justify-between w-full">
@@ -106,7 +121,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
           </p>
           <p className=" text-[#545454] text-[13px]">{billingInfo?.company} {billingInfo?.phone}</p>
           <p className=" text-[#545454] text-[13px]">{billingInfo?.address1} {billingInfo?.address2 ? ` / ${billingInfo.address2}` : ""}</p>
-          <p className="text-[13px] text-[#545454]">{billingInfo?.city}, {billingInfo?.state} {billingInfo?.zip} {billingInfo?.country ? ` / ${billingInfo.country}` : ""} </p>
+          <p className="text-[13px] text-[#545454]">{billingInfo?.city}, {billingInfo?.state}  {billingInfo?.zip ? ` ${billingInfo.zip}` : ""} {billingInfo?.country ? ` / ${billingInfo.country}` : ""} </p>
         </div>
         <button
           type="button"
@@ -142,7 +157,7 @@ const BillingStep: React.FC<BillingStepProps> = ({
                 {(selectedLabel.companyName || selectedLabel.phone) && (
                   <p className="uppercase">
                     {selectedLabel.companyName} {selectedLabel.phone}
-                  </p>
+                  </p> 
                 )}
                 <p className="uppercase">
                   {selectedLabel.addressLine1}
@@ -400,10 +415,17 @@ const BillingStep: React.FC<BillingStepProps> = ({
               control={control}
               rules={{ required: "Country is required" }}
               render={({ field }) => (
-                <Select onValueChange={(val) => {
-                  field.onChange(val);
-                  setValue("state", "");
-                }} value={field.value}>
+                <Select
+              onValueChange={(val) => {
+    field.onChange(val);
+    setValue("billingState", "");
+
+    if (countriesWithoutPostalCode.includes(val)) {
+      clearErrors("billingZip");
+      setValue("billingZip", "");
+    }
+  }}
+                value={field.value}>
                   <SelectTrigger
                     className={`w-full !max-w-full h-[40px] ${errors.billingCountry ? "border-red-500" : ""
                       }`}
@@ -481,20 +503,32 @@ const BillingStep: React.FC<BillingStepProps> = ({
               <label
                 htmlFor="billingZip"
                 className={cn(
-                  "mb-2 text-base",
+                  "mb-2  flex items-baseline justify-between gap-2 text-base",
                   errors.billingZip ? "text-red-500" : "text-gray-700"
                 )}
               >
-                Postal Code
+               <span>Postal Code</span>
+
+  {!hasPostalCode && (
+    <span className="shrink-0 text-gray-400">
+      (Optional)
+    </span>
+  )}
               </label>
               <Input
                 id="billingZip"
                 type="text"
                 className={`w-full !max-w-full h-[40px] ${errors.billingZip ? "border-red-500" : ""
                   }`}
-                {...register("billingZip", {
-                  required: "Postal code is required",
-                })}
+               {...register("billingZip", {
+  validate: (value) => {
+    if (hasPostalCode && !value?.trim()) {
+      return "Postal code is required";
+    }
+
+    return true;
+  },
+})}
 
               />
               {errors.billingZip && (
