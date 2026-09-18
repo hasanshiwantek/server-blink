@@ -158,7 +158,7 @@ const CheckoutForm = () => {
               finalTotal={finalTotal}
               discountAmount={Number(orderCustomer?.discountAmount)}
               appliedCoupon={orderCustomer?.couponCode}
-              manualDiscount={orderCustomer?.manualDiscount}
+              manualDiscount={Number(orderCustomer?.manualDiscount)}
               discountTotal={discountTotal}
               promoCode={promoCode}
               setPromoCode={setPromoCode}

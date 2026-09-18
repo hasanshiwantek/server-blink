@@ -13,6 +13,7 @@ import NoResults from "../components/advanced-search/NoResults";
 import { useAppSelector } from "@/hooks/useReduxHooks";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { getFromStorage } from "@/utils/storage";
 
 export default function ProductPage({
     params,
@@ -29,9 +30,9 @@ export default function ProductPage({
     const [brand, setBrand] = useState([]);
 
     useEffect(() => {
-        const stored = localStorage.getItem("advancedSearchFilters");
+        const stored = getFromStorage("advancedSearchFilters");
         if (stored) {
-            const parsed = JSON.parse(stored);
+            const parsed = stored
             setQuery(parsed.q || "");
         }
     }, []);

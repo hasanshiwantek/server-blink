@@ -8,10 +8,10 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 import AddReviewModal from "../modal/AddReviewModal";
 import BulkInquiryModal from "../modal/BulkInquiryModal";
 import ProductPrice from "../productprice/ProductPrice";
+import { errorMessage } from "@/utils/message";
 
 const ProductMiddle = ({
   product,
@@ -221,10 +221,10 @@ const ProductMiddle = ({
                     // Blur pe range enforce karo
                     if (!num || num < minQty) {
                       setQuantity(minQty);
-                      toast.error(`Minimum quantity is ${minQty}`);
+                      errorMessage(`Minimum quantity is ${minQty}`);
                     } else if (maxQty && num > maxQty) {
                       setQuantity(maxQty);
-                      toast.error(`Maximum quantity is ${maxQty}`);
+                      errorMessage(`Maximum quantity is ${maxQty}`);
                     }
                   }}
                   className="w-12 sm:w-14 h-9 sm:h-8 text-center border-x border-[#ddd] text-[15px] sm:text-[16px] font-semibold text-[#545454] outline-none bg-white"
@@ -273,7 +273,7 @@ const ProductMiddle = ({
                   : quantity;
 
                 if (remainingQty <= 0) {
-                  toast.error(
+                  errorMessage(
                     `Cannot add more than ${product?.maxPurchaseQuantity} units of ${product.name} to cart.`,
                   );
                   return;
@@ -297,7 +297,7 @@ const ProductMiddle = ({
                     router.push("/cart");
                   })
                   .catch((err) => {
-                    toast.error(err);
+                    errorMessage(err);
                   });
               }}
               disabled={disabledAddToCart}

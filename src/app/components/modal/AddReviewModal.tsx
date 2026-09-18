@@ -14,9 +14,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { addReview, } from "@/redux/slices/homeSlice";
 import { Label } from "@/components/ui/label";
-import { toast } from "react-toastify";
 import { sitekey } from "@/lib/axiosInstance";
 import { RootState } from "@/redux/store";
+import { errorMessage, successMessage } from "@/utils/message";
 
 
 interface AddReviewModalProps {
@@ -62,7 +62,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
         e.preventDefault();
         // ✅ Captcha check
         if (!captchaToken) {
-            toast.error("Please verify the captcha.");
+            errorMessage("Please verify the captcha.");
             return;
         }
 
@@ -78,7 +78,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
 
             if (addReview.fulfilled.match(result)) {
                 onClose();
-                toast.success("Review submitted successfully!");
+                successMessage("Review submitted successfully!");
             } else {
 
             }

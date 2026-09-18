@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import ProductLeft from "./ProductLeft";
 import ProductMiddle from "./ProductMiddle";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { toast } from "react-toastify";
 import { addToCart } from "@/redux/slices/cartSlice";
 import { addRecentView } from "@/redux/slices/recentSlice";
 import Link from "next/link";

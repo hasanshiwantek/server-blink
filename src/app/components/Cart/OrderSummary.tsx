@@ -462,11 +462,6 @@ const OrderSummary = () => {
                         const cost = selectedRate
                           ? Number(selectedRate.total_charge).toFixed(2)
                           : "0";
-                        // localStorage.setItem("shippingCost", cost);
-                        // localStorage.setItem(
-                        //   "shippingData",
-                        //   JSON.stringify(shippingData),
-                        // );
 
                         const shippingPayload: any = {
                           country: shippingData.country,

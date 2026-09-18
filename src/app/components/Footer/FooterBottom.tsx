@@ -12,11 +12,11 @@ import {
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
 import { checkAuthToken, customerProfile, logout } from "@/redux/slices/authSlice";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { useSearchParams } from "next/navigation";
-// import { fetchLoadSavedQuote } from "@/redux/slices/OrderMessage";
+import { successMessage } from "@/utils/message";
+import { getPersistedAuth, getSessionId, setInStorage } from "@/utils/storage";
 
 const FooterBottom = () => {
   const searchParams = useSearchParams();
@@ -47,33 +47,29 @@ const FooterBottom = () => {
       return;
     } else {
       dispatch(logout());
-      toast.success("Logged out successfully!");
+      successMessage("Logged out successfully!");
       router.replace("/auth/login");
     }
   };
   useEffect(() => {
-    const user = localStorage.getItem("persist:auth");
-    const parsedAuth = user ? JSON.parse(user) : null;
-    const t = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
-
-    if (t) {
-      dispatch(checkAuthToken()).unwrap().then((res) => {
-      }).catch((err) => {
-        if (err) {
-          dispatch(logout());
-          window.location.href = "/auth/login";
-        }
+    const auth = getPersistedAuth();
+    const t = auth?.token || null;
+    setToken(t)
+    if (!t) return;
+    dispatch(checkAuthToken())
+      .unwrap()
+      .catch(() => {
+        dispatch(logout());
+        window.location.href = "/auth/login";
       });
-    }
-    setToken(t);
   }, []);
   useEffect(() => {
-    const existingSession = localStorage.getItem("sessionId");
+    const existingSession = getSessionId()
     if (existingSession) {
       dispatch(visitorSession({ sessionId: existingSession }));
     } else {
       const randomString = Math.random().toString(36).substring(2, 15);
-      localStorage.setItem("sessionId", randomString);
+      setInStorage("sessionId", randomString);
     }
   }, []);
 
@@ -113,7 +109,7 @@ const FooterBottom = () => {
         token: JSON.stringify(paramsToken),
       };
 
-      localStorage.setItem("persist:auth", JSON.stringify(auth));
+      setInStorage("persist:auth", JSON.stringify(auth));
 
       const result = await dispatch(customerProfile());
 

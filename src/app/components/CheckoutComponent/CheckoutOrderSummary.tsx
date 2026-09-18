@@ -142,8 +142,8 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
               {appliedCoupon && (
                 <div className="flex gap-3 items-center px-4 py-2 rounded">
                   <span>
-                    ${Number(discountAmount).toFixed(2)} off the
-                    order total ({appliedCoupon?.couponCode?.toUpperCase()})
+                    ${Number(discountAmount).toFixed(2)} off the order total (
+                    {appliedCoupon?.couponCode?.toUpperCase()})
                   </span>
                   <button
                     onClick={onRemoveCoupon}
@@ -211,9 +211,8 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
                   {appliedCoupon && discountAmount > 0 && (
                     <div className="flex justify-between mt-1">
                       <span>
-                        ${Number(discountAmount).toFixed(2)} off the order total ({
-                          appliedCoupon?.couponCode?.toUpperCase()
-                        })
+                        ${Number(discountAmount).toFixed(2)} off the order total
+                        ({appliedCoupon?.couponCode?.toUpperCase()})
                       </span>
                       <span>-${discountAmount?.toFixed(2)}</span>
                     </div>
@@ -246,16 +245,15 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
         </div>
 
         {/* Savings message */}
-        {(appliedCoupon && discountTotal > 0) ||
-          (manualDiscount > 0 && (
-            <div className="text-[#333] font-medium text-[13px]  mt-1 self-end">
-              You saved{" "}
-              <span className="!text-[#2aab3f] ">
-                ${discountTotal?.toFixed(2)}
-              </span>{" "}
-              in total!
-            </div>
-          ))}
+        {appliedCoupon && discountTotal > 0 && (
+          <div className="text-[#333] font-medium text-[13px]  mt-1 self-end">
+            You saved{" "}
+            <span className="!text-[#2aab3f] ">
+              ${discountTotal?.toFixed(2)}
+            </span>{" "}
+            in total!
+          </div>
+        )}
       </div>
     </div>
   );

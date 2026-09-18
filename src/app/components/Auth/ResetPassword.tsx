@@ -1,20 +1,12 @@
 "use client";
-
 import { useState } from "react";
 import Link from "next/link";
+import axiosInstance from "@/lib/axiosInstance";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { toast } from "react-toastify";
-import axiosInstance from "@/lib/axiosInstance";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
 import { useSearchParams } from "next/navigation";
+import { errorMessage } from "@/utils/message";
 
 interface ResetPasswordValues {
     password: string;
@@ -42,7 +34,7 @@ const ResetPassword = () => {
                 email: email,
                 password: data.password,
                 token: token,
-                password_confirmation:data?.password_confirmation
+                password_confirmation: data?.password_confirmation
             });
             const body = res?.data as {
                 status?: boolean | string;
@@ -56,13 +48,13 @@ const ResetPassword = () => {
                 router.push("/auth/login");
                 reset();
             } else {
-                toast.error(body?.message || "Something went wrong. Please try again.");
+                errorMessage(body?.message || "Something went wrong. Please try again.");
             }
         } catch (err: any) {
             const msg =
                 err?.response?.data?.message ||
                 "Unable to send reset email. Please try again later.";
-            toast.error(typeof msg === "string" ? msg : "Request failed");
+            errorMessage(typeof msg === "string" ? msg : "Request failed");
         } finally {
             setLoading(false);
         }

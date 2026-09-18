@@ -1,7 +1,7 @@
 "use client";
+import { errorMessage, successMessage } from "@/utils/message";
 import GooglePayButton from "@google-pay/button-react";
 import { loadStripe } from "@stripe/stripe-js";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -16,7 +16,7 @@ interface Props {
   onSuccess?: (paymentIntent: any) => void;
 }
 
-export default function GPayButton({ amount,totalWeight,
+export default function GPayButton({ amount, totalWeight,
   itemCount, onSuccess }: Props) {
   const router = useRouter();
   const [shippingRates, setShippingRates] = useState<any[]>([]);
@@ -84,14 +84,14 @@ export default function GPayButton({ amount,totalWeight,
       }}
 
       onPaymentDataChanged={async (paymentData: any) => {
-       
+
         try {
           const trigger = paymentData.callbackTrigger;
 
           if (trigger === "INITIALIZE" || trigger === "SHIPPING_ADDRESS") {
             const address = paymentData.shippingAddress;
 
-            
+
 
             const response = await fetch(
               "https://backend.sparemicro.com/api/web/checkout/get-shipping-rates",
@@ -118,10 +118,10 @@ export default function GPayButton({ amount,totalWeight,
             );
 
             const data = await response.json();
-           
+
 
             if (!data.success || !data.rates?.length) {
-              
+
               return {
                 error: {
                   reason: "SHIPPING_ADDRESS_UNSERVICEABLE",
@@ -139,7 +139,7 @@ export default function GPayButton({ amount,totalWeight,
               description: `$${Number(rate.total_charge).toFixed(2)}`,
             }));
 
-          
+
             const defaultRate = data.rates[0];
 
             setSelectedShippingRate(defaultRate);
@@ -190,7 +190,7 @@ export default function GPayButton({ amount,totalWeight,
 
           return {};
         } catch (error) {
-         
+
 
           return {
             error: {
@@ -238,11 +238,11 @@ export default function GPayButton({ amount,totalWeight,
           const data = await res.json();
 
           if (data.error) {
-            toast.error(data.error);
+            errorMessage(data.error);
             return;
           }
 
-          toast.success("Payment successful!");
+          successMessage("Payment successful!");
 
           onSuccess?.(data);
 
@@ -250,14 +250,14 @@ export default function GPayButton({ amount,totalWeight,
             `/order-confirmation?payment_intent=${data.paymentIntentId}`
           );
         } catch (err) {
-         
-          toast.error("Something went wrong");
+
+          errorMessage("Something went wrong");
         }
       }}
 
       onError={(err) => {
-       
-        toast.error("Google Pay error");
+
+        errorMessage("Google Pay error");
       }}
     />
   );

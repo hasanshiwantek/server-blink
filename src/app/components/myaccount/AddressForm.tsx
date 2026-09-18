@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import countries from "world-countries";
 import { Country, State, City } from "country-state-city";
+import { countriesWithoutPostalCode } from "@/const/country-level";
 
 interface AddressFormValues {
   firstName: string;
@@ -39,10 +40,11 @@ const AddressForm = () => {
     control,
     setValue,
     watch,
+    clearErrors,
     formState: { errors },
     reset,
   } = useForm<AddressFormValues>({
-      shouldUnregister: true,
+    shouldUnregister: true,
   });
   const { loading, error } = useAppSelector(
     (state: RootState) => state.myaccount,
@@ -65,8 +67,10 @@ const AddressForm = () => {
     }));
   }, [selectedCountry]);
 
+  const hasPostalCode = !countriesWithoutPostalCode.includes(selectedCountry);
+
   const onSubmit = async (data: AddressFormValues) => {
-      
+
     try {
       // Only addresses in payload
       const mergedData = {
@@ -92,13 +96,13 @@ const AddressForm = () => {
       } else {
         const errorMessage =
           result.error?.message || "Add address failed. Please try again.";
-       
+
       }
     } catch (error) {
-    
+
     }
   };
-  
+
   const inputClass =
     "!w-full h-[42px] text-[#545454] !font-normal !max-w-full py-[10px] px-[14px] border border-[#cac9c9] rounded-none";
 
@@ -107,7 +111,7 @@ const AddressForm = () => {
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-5 roboto-font"
-      
+
       >
         {/* Row 0: First Name & Last Name */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -242,13 +246,16 @@ const AddressForm = () => {
               name="country"
               control={control}
               rules={{ required: "Country is required" }}
-             
+
               render={({ field }) => (
                 <Select
                   value={field.value}
                   onValueChange={(value) => {
                     field.onChange(value);
                     setValue("state", "");
+                    if (countriesWithoutPostalCode.includes(value)) {
+                      clearErrors("postcode");
+                    }
                   }}
                 >
                   <SelectTrigger className={`${inputClass} !h-[44px]`}>
@@ -286,9 +293,9 @@ const AddressForm = () => {
                 name="state"
                 control={control}
                 rules={{ required: "State/Province is required" }}
-          
+
                 render={({ field }) => (
-                  
+
                   <Select
                     value={field.value}
                     onValueChange={field.onChange}
@@ -321,15 +328,29 @@ const AddressForm = () => {
           </div>
           <div>
             <Label
-              className="text-[14px] text-[#545454] !font-normal  flex md:justify-between"
+              className="text-[14px] text-[#545454] !font-normal flex md:justify-between"
               htmlFor="postcode"
             >
-              Zip / Postcode <span className="text-[11px]">*</span>
+              Zip / Postcode
+
+              {hasPostalCode ? (
+                <span className="text-[11px]">*</span>
+              ) : (
+                <span className="text-[11px] text-gray-400">
+
+                </span>
+              )}
             </Label>
             <Input
               id="postcode"
               {...register("postcode", {
-                required: "Zip/Postcode is required",
+                validate: (value) => {
+                  if (hasPostalCode && !value) {
+                    return "Zip/Postcode is required";
+                  }
+
+                  return true;
+                },
               })}
               className={inputClass}
             />
@@ -342,7 +363,7 @@ const AddressForm = () => {
         {/* Buttons */}
         <div
           className="flex flex-col md:flex-row gap-4 mt-12 roboto-condensed-only-font "
-         
+
         >
           <Button
             type="submit"

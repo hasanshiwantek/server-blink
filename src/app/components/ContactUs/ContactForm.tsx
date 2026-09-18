@@ -9,9 +9,8 @@ import { X } from "lucide-react";
 import { contactRequests } from "@/redux/slices/contactSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { sitekey } from "@/lib/axiosInstance";
-import { toast } from "react-toastify";
-import { customerProfile } from "@/redux/slices/authSlice";
 import { RootState } from "@/redux/store";
+import { errorMessage } from "@/utils/message";
 type ContactFormData = {
   full_name: string;
   phone_number: string;
@@ -27,7 +26,7 @@ const ContactForm = () => {
   const {
     register,
     handleSubmit,
-     setValue,
+    setValue,
     formState: { errors },
     reset,
   } = useForm<ContactFormData>();
@@ -36,21 +35,21 @@ const ContactForm = () => {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const { isAuthenticated, user } = useAppSelector(
-  (state: RootState) => state.auth
-);
+    (state: RootState) => state.auth
+  );
 
 
-useEffect(() => {
-  if (!user) return;
+  useEffect(() => {
+    if (!user) return;
 
-  setValue("full_name", `${user.firstName} ${user.lastName}`);
-  setValue("email", user.email);
-  setValue("phone_number", user.phone);
-}, [user, setValue]);
+    setValue("full_name", `${user.firstName} ${user.lastName}`);
+    setValue("email", user.email);
+    setValue("phone_number", user.phone);
+  }, [user, setValue]);
 
   const onSubmit = (data: ContactFormData) => {
     if (!captchaToken) {
-      toast("Please verify the captcha.");
+      errorMessage("Please verify the captcha.");
       return;
     }
     // You can also log it in a more formatted way

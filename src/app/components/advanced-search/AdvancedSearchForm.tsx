@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import CategoryTree from "./CategoryTree";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import { getFromStorage, removeFromStorage, setInStorage } from "@/utils/storage";
 interface AdvancedSearchFormProps {
     initialKeyword?: string;
     onSearch?: (filters: any) => void;
@@ -13,9 +14,7 @@ interface AdvancedSearchFormProps {
 export default function AdvancedSearchForm({ initialKeyword = "", onSearch, categories, brands }: AdvancedSearchFormProps & { categories: any[], brands: any[] }) {
     const router = useRouter();
     const [keyword, setKeyword] = useState(initialKeyword);
-
     const [selectedCategories, setSelectedCategories] = useState<Set<string>>(new Set());
-
     const [selectedBrand, setSelectedBrand] = useState("");
     const [priceFrom, setPriceFrom] = useState("");
     const [priceTo, setPriceTo] = useState("");
@@ -49,24 +48,22 @@ export default function AdvancedSearchForm({ initialKeyword = "", onSearch, cate
             search_subcategories: autoSearchSub,
         };
 
-        localStorage.setItem("advancedSearchFilters", JSON.stringify(searchFilters));
+        setInStorage("advancedSearchFilters", searchFilters);
         router.push(`/advanced-search`);
         window.location.reload()
         onSearch?.(searchFilters);
     };
     const handleReset = () => {
         if (!keyword) return;
-        localStorage.removeItem("advancedSearchFilters");
+        removeFromStorage("advancedSearchFilters");
         router.push(`/advanced-search`);
         window.location.reload()
     };
 
     useEffect(() => {
-        const stored = localStorage.getItem("advancedSearchFilters");
+        const stored = getFromStorage("advancedSearchFilters");
         if (!stored) return;
-
-        const parsed = JSON.parse(stored);
-
+        const parsed = stored
         setKeyword(parsed.q || "");
         const cats = parsed.categories;
         const catsSet: any = cats

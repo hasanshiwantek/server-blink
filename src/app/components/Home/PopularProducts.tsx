@@ -6,10 +6,10 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { fetchPopularProducts } from "@/redux/slices/homeSlice";
 import { addToCart } from "@/redux/slices/cartSlice";
 import PopularProductSkeleton from "../loader/PopularProductSkeleton";
-import { toast } from "sonner";
 import dynamic from "next/dynamic";
 import BulkInquiryModal from "../modal/BulkInquiryModal";
 import ProductPrice from "../productprice/ProductPrice";
+import { successMessage } from "@/utils/message";
 
 // Dynamically import motion.div and AnimatePresence (client only)
 const MotionDiv = dynamic(
@@ -176,7 +176,7 @@ const PopularProducts = () => {
                     <button
                       onClick={() => {
                         dispatch(addToCart(product));
-                        toast.success(`${product.name} added to cart!`);
+                        successMessage(`${product.name} added to cart!`);
                       }}
                       className="btn-primary xl:!text-2xl 2xl:!text-[22px] 2xl:!font-medium 
                                  w-full sm:w-[48%] md:w-[45%] lg:w-[50%] xl:w-[45%]

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance, { baseURL, storeId } from "@/lib/axiosInstance";
+import { removeFromStorage } from "@/utils/storage";
 
 export interface RegisterPayload {
   firstName: string;
@@ -118,8 +119,7 @@ export const checkAuthToken = createAsyncThunk(
   },
 );
 const clearAuthStorage = () => {
-  if (typeof window === "undefined") return;
-  localStorage.removeItem("persist:coupon");
+  removeFromStorage("persist:coupon");
 };
 // Slice
 const authSlice = createSlice({
@@ -127,11 +127,11 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logout: (state) => {
+      clearAuthStorage()
       state.user = null;
       state.token = null;
       state.expireAt = null;
       state.isAuthenticated = false;
-      clearAuthStorage()
       // localStorage.removeItem("token");
     },
   },
