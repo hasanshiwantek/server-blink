@@ -9,13 +9,13 @@ import {
   setShowSearchDropdown,
 } from "@/redux/slices/homeSlice";
 import { RootState } from "@/redux/store";
+import { successMessage } from "@/utils/message";
 import { ChevronDown, ChevronUp, Menu, Search, User, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
-import { toast } from "react-toastify";
 
 interface Category {
   id: number;
@@ -51,7 +51,7 @@ const TopHeader = () => {
       return;
     } else {
       dispatch(logout());
-      toast.success("Logged out successfully!");
+      successMessage("Logged out successfully!");
       router.replace("/auth/login");
     }
   };

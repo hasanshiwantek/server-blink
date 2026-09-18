@@ -12,10 +12,10 @@ import {
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
 import { checkAuthToken, customerProfile, logout } from "@/redux/slices/authSlice";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { useSearchParams } from "next/navigation";
+import { successMessage } from "@/utils/message";
 
 const FooterBottom = () => {
   const searchParams = useSearchParams();
@@ -46,7 +46,7 @@ const FooterBottom = () => {
       return;
     } else {
       dispatch(logout());
-      toast.success("Logged out successfully!");
+      successMessage("Logged out successfully!");
       router.replace("/auth/login");
     }
   };

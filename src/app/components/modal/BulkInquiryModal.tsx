@@ -13,8 +13,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/hooks/useReduxHooks";
 import { bulkInquiry } from "@/redux/slices/homeSlice";
-import { toast } from "react-toastify";
 import { sitekey } from "@/lib/axiosInstance";
+import { errorMessage, successMessage } from "@/utils/message";
 interface BulkInquiryModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -66,7 +66,7 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
 
     // ✅ Captcha check
     if (!captchaToken) {
-      toast.error("Please verify the captcha.");
+      errorMessage("Please verify the captcha.");
       return;
     }
     setLoading(true)
@@ -78,7 +78,7 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
     try {
       if (bulkInquiry.fulfilled.match(result)) {
         onClose();
-        toast.success("Bulk inquiry submitted successfully!");
+        successMessage("Bulk inquiry submitted successfully!");
       } else {
        
       }

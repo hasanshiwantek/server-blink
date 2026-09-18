@@ -3,11 +3,11 @@
 import React from "react";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { RootState } from "@/redux/store";
 import { addCart, fetchCartList } from "@/redux/slices/cartsSlice";
+import { errorMessage } from "@/utils/message";
 interface Brand {
   id: number;
   name: string;
@@ -196,7 +196,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 const currentQty = cartItem?.quantity || 0;
                 const remaining = maxQty ? maxQty - currentQty : Infinity;
                 if (remaining <= 0) {
-                  toast.error(
+                  errorMessage(
                     `You have already reached the maximum limit (${maxQty}) for this product.`,
                   );
                   return;
@@ -220,7 +220,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                     router.push("/cart");
                   })
                   .catch((err) => {
-                    toast.error(err);
+                    errorMessage(err);
                   });
               }
             }}

@@ -22,6 +22,7 @@ import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { baseURL, sitekey, storeId } from "@/lib/axiosInstance";
 import { addCustomerAddress } from "@/redux/slices/myaccountSlice";
 import { countriesWithoutPostalCode } from "@/const/country-level";
+import { getFromStorage } from "@/utils/storage";
 
 interface SignupFormValues {
   firstName: string;
@@ -86,7 +87,7 @@ const SignupPage = () => {
     }));
   }, [watchedCountry, watchedState]);
 
-const hasPostalCode = !countriesWithoutPostalCode.includes(watchedCountry);
+  const hasPostalCode = !countriesWithoutPostalCode.includes(watchedCountry);
   const onSubmit = async (data: SignupFormValues) => {
     if (!captchaToken) {
       alert("Please verify the captcha.");
@@ -102,7 +103,7 @@ const hasPostalCode = !countriesWithoutPostalCode.includes(watchedCountry);
       if (registerUser.fulfilled.match(result)) {
         const token = result?.payload?.token;
         const fetchCartListInner = async () => {
-          const sessionId = localStorage.getItem("sessionId");
+          const sessionId = getFromStorage("sessionId");
           const res = await fetch(`${baseURL}web/cart/transfer`, {
             method: "POST",
             headers: {
@@ -428,9 +429,9 @@ const hasPostalCode = !countriesWithoutPostalCode.includes(watchedCountry);
                 onValueChange={(value) => {
                   setValue("country", value);
                   setValue("state", "");
-                    if (countriesWithoutPostalCode.includes(value)) {
-    clearErrors("zip");
-  }
+                  if (countriesWithoutPostalCode.includes(value)) {
+                    clearErrors("zip");
+                  }
                 }}
               >
                 <SelectTrigger className="h-[42px] min-h-[42px] w-full max-w-full">
@@ -517,23 +518,23 @@ const hasPostalCode = !countriesWithoutPostalCode.includes(watchedCountry);
                 Zip/Postcode
               </label>
               {hasPostalCode && (
-  <span className="text-[#545454]">*</span>
-)}
+                <span className="text-[#545454]">*</span>
+              )}
             </div>
 
-         <Input
-  id="zip"
-  className="h-[42px] min-h-[42px] w-full max-w-full"
-  {...register("zip", {
-    validate: (value) => {
-      if (hasPostalCode && !value) {
-        return "Zip/Postcode is required";
-      }
+            <Input
+              id="zip"
+              className="h-[42px] min-h-[42px] w-full max-w-full"
+              {...register("zip", {
+                validate: (value) => {
+                  if (hasPostalCode && !value) {
+                    return "Zip/Postcode is required";
+                  }
 
-      return true;
-    },
-  })}
-/>
+                  return true;
+                },
+              })}
+            />
             {errors.zip && (
               <p className="mt-1 text-[14px] text-red-500">
                 {errors.zip.message}

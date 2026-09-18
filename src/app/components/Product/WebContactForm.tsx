@@ -10,7 +10,7 @@ import { X } from "lucide-react";
 import { contactRequests } from "@/redux/slices/contactSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { sitekey } from "@/lib/axiosInstance";
-import { toast } from "react-toastify";
+import { errorMessage } from "@/utils/message";
 
 type WebContactFormData = {
     full_name: string;
@@ -44,8 +44,8 @@ const WebContactForm = ({ showTheseFields }: { showTheseFields: string[] }) => {
     const showField = (id: string) => showTheseFields?.includes(id);
 
     const onSubmit = (data: WebContactFormData) => {
-          if (!captchaToken && showField("spamProtection")) {
-            toast.error("Please verify the captcha.");
+        if (!captchaToken && showField("spamProtection")) {
+            errorMessage("Please verify the captcha.");
             return;
         }
         dispatch(contactRequests(data)).unwrap().then(() => {
@@ -149,7 +149,7 @@ const WebContactForm = ({ showTheseFields }: { showTheseFields: string[] }) => {
                 {/* Spam Protection */}
                 {showField("spamProtection") && (
                     <div>
-  <ReCAPTCHA
+                        <ReCAPTCHA
                             sitekey={sitekey}
                             onChange={(token: any) => {
                                 setCaptchaToken(token);
