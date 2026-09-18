@@ -31,8 +31,6 @@ const Cart = () => {
     dispatch(fetchLoadSavedQuote(quoteToken)).unwrap().then(async (res) => {
       const response = res?.data
 
-      console.log("response", response);
-
       if (auth?.user?.id != response?.customer?.id) return
       const shippingformation = response?.billingInformation
       const billingAddress = response?.billingAddress
@@ -63,28 +61,29 @@ const Cart = () => {
         billingState: billingAddress.state || "",
         billingZip: billingAddress.zip || "",
       };
-
-
       dispatch(
         checkoutFormSave({ data: { shippingFormData, billingFormData } }),
       );
-      await dispatch(fetchCartList());
-      if (cartItems?.length > 0) {
-        const shippingMethod = response?.shippingMethod
-        const shippingPayload: any = {
-          city: shippingformation?.city,
-          country: shippingformation?.country,
-          state: shippingformation?.state,
-          zip: shippingformation?.zip,
-          cartId: cartItems.map((item) => item.cartItemId),
-          rate: {
-            service_type: shippingMethod?.service_type,
-            method_type: shippingMethod?.method_type,
-            total_charge: shippingMethod?.cost,
-          },
-        };
-        dispatch(addShippingCost(shippingPayload))
-      }
+      await dispatch(fetchCartList()).unwrap().then((res) => {
+        const carts = res?.data
+        if (carts?.length > 0) {
+          const shippingMethod = response?.shippingMethod
+          const shippingPayload: any = {
+            city: shippingformation?.city,
+            country: shippingformation?.country,
+            state: shippingformation?.state,
+            zip: shippingformation?.zip,
+            cartId: carts.map((item: any) => item.id),
+            rate: {
+              service_type: shippingMethod?.service_type,
+              method_type: shippingMethod?.method_type,
+              total_charge: shippingMethod?.cost,
+            },
+          };
+          dispatch(addShippingCost(shippingPayload))
+        }
+      });
+
     }).catch((error) => {
       if (error) {
         dispatch(removeCoupon())
