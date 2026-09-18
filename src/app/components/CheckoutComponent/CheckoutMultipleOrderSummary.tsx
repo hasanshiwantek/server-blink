@@ -334,8 +334,8 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                 {appliedCoupon && (
                   <div className="flex gap-3 items-center px-4 py-2 rounded">
                     <span>
-                      ${Number(discountAmount).toFixed(2)} off the
-                      order total ({appliedCoupon?.couponCode?.toUpperCase()})
+                      ${Number(discountAmount).toFixed(2)} off the order total (
+                      {appliedCoupon?.couponCode?.toUpperCase()})
                     </span>
                     <button
                       onClick={onRemoveCoupon}
@@ -378,7 +378,9 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
                     />
                   </svg>
                 </span>
-                <span className="font-medium">-${discountAmount.toFixed(2)}</span>
+                <span className="font-medium">
+                  -${discountAmount.toFixed(2)}
+                </span>
               </div>
 
               <div
@@ -426,7 +428,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
           {appliedCoupon && discountAmount > 0 && (
             <div className="text-[#333] font-medium text-[13px] mt-1 self-end">
               You saved{" "}
-              <span className="!text-[#2aab3f] ">
+              <span className="text-[#2aab3f]!">
                 ${discountAmount.toFixed(2)}
               </span>{" "}
               in total!
