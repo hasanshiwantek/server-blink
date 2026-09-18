@@ -22,7 +22,7 @@ import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { baseURL, sitekey, storeId } from "@/lib/axiosInstance";
 import { addCustomerAddress } from "@/redux/slices/myaccountSlice";
 import { countriesWithoutPostalCode } from "@/const/country-level";
-import { getFromStorage } from "@/utils/storage";
+import { getSessionId } from "@/utils/storage";
 
 interface SignupFormValues {
   firstName: string;
@@ -103,7 +103,7 @@ const SignupPage = () => {
       if (registerUser.fulfilled.match(result)) {
         const token = result?.payload?.token;
         const fetchCartListInner = async () => {
-          const sessionId = getFromStorage("sessionId");
+          const sessionId = getSessionId()
           const res = await fetch(`${baseURL}web/cart/transfer`, {
             method: "POST",
             headers: {

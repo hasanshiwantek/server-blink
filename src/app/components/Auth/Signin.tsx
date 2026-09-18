@@ -11,7 +11,7 @@ import { FiEye, FiEyeOff } from "react-icons/fi"; // add at top
 import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { baseURL, storeId } from "@/lib/axiosInstance";
 import { errorMessage } from "@/utils/message";
-import { getFromStorage } from "@/utils/storage";
+import { getSessionId } from "@/utils/storage";
 interface SigninFormValues {
   email: string;
   password: string;
@@ -38,7 +38,7 @@ const SigninPage = () => {
       if (loginUser.fulfilled.match(result)) {
         const token = result?.payload?.token
         const fetchCartListInner = async () => {
-          const sessionId = getFromStorage("sessionId")
+          const sessionId = getSessionId()
           await fetch(`${baseURL}web/cart/transfer`, {
             method: "POST",
             headers: {
