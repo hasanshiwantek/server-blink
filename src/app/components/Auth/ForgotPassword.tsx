@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { toast } from "react-toastify";
 import axiosInstance from "@/lib/axiosInstance";
 import {
   Dialog,
@@ -14,6 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { errorMessage } from "@/utils/message";
 
 interface ForgotPasswordValues {
   email: string;
@@ -52,13 +52,13 @@ const ForgotPassword = () => {
         setSuccessOpen(true);
         reset();
       } else {
-        toast.error(body?.message || "Something went wrong. Please try again.");
+        errorMessage(body?.message || "Something went wrong. Please try again.");
       }
     } catch (err: any) {
       const msg =
         err?.response?.data?.message ||
         "Unable to send reset email. Please try again later.";
-      toast.error(typeof msg === "string" ? msg : "Request failed");
+      errorMessage(typeof msg === "string" ? msg : "Request failed");
     } finally {
       setLoading(false);
     }
@@ -118,7 +118,7 @@ const ForgotPassword = () => {
                     type="submit"
                     disabled={loading}
                     aria-busy={loading}
-                   className="btn-primary inline-flex h-12 sm: min-w-[200px] shrink-0 items-center justify-center px-5 text-sm font-bold uppercase sm: min-w-[220px] sm:px-6 disabled:opacity-70"
+                    className="btn-primary inline-flex h-12 sm: min-w-[200px] shrink-0 items-center justify-center px-5 text-sm font-bold uppercase sm: min-w-[220px] sm:px-6 disabled:opacity-70"
                   >
                     {loading ? (
                       <>

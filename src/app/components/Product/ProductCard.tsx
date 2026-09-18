@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import ProductLeft from "./ProductLeft";
 import ProductMiddle from "./ProductMiddle";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { toast } from "react-toastify";
 import { addToCart } from "@/redux/slices/cartSlice";
 import { addRecentView } from "@/redux/slices/recentSlice";
 import Link from "next/link";
@@ -63,7 +62,7 @@ const ProductCard = ({ product }: { product: any }) => {
           className="hidden md:flex items-center justify-center lg:justify-normal space-x-2 text-[12px] text-[#393939] lg:mb-7 sm:mb-7 mb-7 flex-wrap"
         >
           <h2>
-            <Link href={"/"} className="text-[12px] hover:!text-[#D42020] roboto-sans-font" itemProp="name " >
+            <Link href={"/"} className="text-[12px] hover:text-[#D42020]! roboto-sans-font" itemProp="name " >
               Home
             </Link>
 
@@ -77,7 +76,7 @@ const ProductCard = ({ product }: { product: any }) => {
                 </span>
 
                 <Link href={`/category/${cat?.slug}`}
-                  className={`text-[11px]   hover:!text-[#D42020] roboto-sans-font`}
+                  className={`text-[11px]   hover:text-[#D42020]! roboto-sans-font`}
 
                   itemProp="name"
                 >
@@ -91,7 +90,7 @@ const ProductCard = ({ product }: { product: any }) => {
             >
               /
             </span>
-            <Link href={product?.productUrl} className="text-[12px] !text-[#D42020] roboto-sans-font" itemProp="name" >
+            <Link href={product?.productUrl} className="text-[12px] text-[#D42020]! roboto-sans-font" itemProp="name" >
               {product?.name}
             </Link>
 

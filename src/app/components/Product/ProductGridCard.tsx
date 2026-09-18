@@ -1,12 +1,12 @@
 // components/Product/ProductGridCard.tsx
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import ProductPrice from "../productprice/ProductPrice";
 import { useAppDispatch } from "@/hooks/useReduxHooks";
 import { addToCart } from "@/redux/slices/cartSlice";
-import { toast } from "sonner";
-import { useState } from "react";
 import BulkInquiryModal from "../modal/BulkInquiryModal";
+import { successMessage } from "@/utils/message";
 
 interface Product {
   id: number;
@@ -105,7 +105,7 @@ export default function ProductGridCard({ product }: { product: Product }) {
   <button
      onClick={() => {
                           dispatch(addToCart(product));
-                          toast.success(`${product?.name} added to cart!`);
+                          successMessage(`${product?.name} added to cart!`);
                         }}
     className="btn-primary xl:!text-2xl 2xl:!text-[22px] 2xl:!font-medium 
                w-full sm:w-[48%] md:w-[45%] lg:w-[50%] xl:w-[45%]

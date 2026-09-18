@@ -1,10 +1,5 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import React, { useMemo, useCallback, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { RootState } from "@/redux/store";
 import {
   Select,
   SelectContent,
@@ -12,19 +7,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import countries from "world-countries";
-import { applyCoupon, removeCoupon } from "@/redux/slices/couponSlice";
-import { Country, State, City } from "country-state-city";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import {
+  applyCoupon,
+  fetchMyCouponUsage,
+  removeCoupon,
+} from "@/redux/slices/couponSlice";
+import {
+  addShippingCost,
   checkoutFormSave,
   fetchShippingRate,
   fetchShippingRates,
   getCheckoutForm,
   resetShippingRates,
 } from "@/redux/slices/shippingSlice";
+import { RootState } from "@/redux/store";
+import { Country, State } from "country-state-city";
+import { useRouter } from "next/navigation";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { calculatePackage } from "../CheckoutComponent/Shippingstep";
-import Image from "next/image";
-import { addShippingCost } from "@/redux/slices/shippingSlice";
 
 const OrderSummary = () => {
   const dispatch = useAppDispatch();
@@ -32,8 +34,11 @@ const OrderSummary = () => {
   const {
     appliedCoupon,
     discountAmount,
+    manualDiscount,
     loading: couponLoading,
   } = useAppSelector((state: RootState) => state.coupon);
+  const discountTotal = Number(discountAmount) + Number(manualDiscount);
+
   const router = useRouter();
 
   const [showCoupon, setShowCoupon] = useState(false);
@@ -57,14 +62,14 @@ const OrderSummary = () => {
     city: "",
     zip: "",
   });
-const countryList = useMemo(
-  () =>
-    Country.getAllCountries().map((c) => ({
-      name: c.name,
-      code: c.isoCode,
-    })),
-  [],
-);
+  const countryList = useMemo(
+    () =>
+      Country.getAllCountries().map((c) => ({
+        name: c.name,
+        code: c.isoCode,
+      })),
+    [],
+  );
   const stateList = useMemo(() => {
     if (!shippingData.country) return [];
     return State.getStatesOfCountry(shippingData.country).map((s) => ({
@@ -99,11 +104,11 @@ const countryList = useMemo(
   const totalBeforeDiscount = subtotal + shipping;
   const shippingCost = Number(shippingDetail?.rate?.total_charge);
   // Final total after discount
-  const finalTotal = Math.max(totalBeforeDiscount - discountAmount, 0);
+  const finalTotal = Math.max(totalBeforeDiscount - discountTotal, 0);
   const { shippingRates, ratesLoader } = useAppSelector(
     (state) => state.shippingZone,
   );
-  const handleShippingSubmit = (e: React.FormEvent) => {
+  const handleShippingSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     const pkg = calculatePackage(cart);
@@ -130,7 +135,7 @@ const countryList = useMemo(
       });
   };
 
-  const handleCouponSubmit = async (e: React.FormEvent) => {
+  const handleCouponSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!couponCode.trim()) {
@@ -140,8 +145,13 @@ const countryList = useMemo(
 
     try {
       await dispatch(
-        applyCoupon({ couponCode, total: totalBeforeDiscount }),
+        applyCoupon({
+          couponCode,
+          total: totalBeforeDiscount,
+          productIds: cart.map((item) => item.id),
+        }),
       ).unwrap();
+      await dispatch(fetchMyCouponUsage());
       toast.success("Coupon applied successfully!");
       setCouponCode("");
       setShowCoupon(false); // Close coupon form after success
@@ -209,7 +219,8 @@ const countryList = useMemo(
 
   useEffect(() => {
     dispatch(getCheckoutForm());
-  }, []);
+    dispatch(fetchMyCouponUsage());
+  }, [dispatch]);
 
   return (
     <div className="border rounded-lg 2xl:w-full">
@@ -288,13 +299,12 @@ const countryList = useMemo(
                     <SelectValue placeholder="Choose a Country" />
                   </SelectTrigger>
                   <SelectContent
-  position="popper"
-  side="bottom"
-  align="start"
-  sideOffset={4}
-
-  className="w-[var(--radix-select-trigger-width)] border-none outline-none p-0"
->
+                    position="popper"
+                    side="bottom"
+                    align="start"
+                    sideOffset={4}
+                    className="w-[var(--radix-select-trigger-width)] border-none outline-none p-0"
+                  >
                     {countryList.map((country) => (
                       <SelectItem key={country.code} value={country.code}>
                         {country.name}
@@ -319,14 +329,14 @@ const countryList = useMemo(
                     <SelectTrigger className="w-full md:w-2/3 border-none outline-none">
                       <SelectValue placeholder="Choose a State" />
                     </SelectTrigger>
-                   <SelectContent
-  position="popper"
-  side="bottom"
-  align="start"
-  sideOffset={4}
-  avoidCollisions={false}
-  className="w-[var(--radix-select-trigger-width)] border-none outline-none p-0"
->
+                    <SelectContent
+                      position="popper"
+                      side="bottom"
+                      align="start"
+                      sideOffset={4}
+                      avoidCollisions={false}
+                      className="w-[var(--radix-select-trigger-width)] border-none outline-none p-0"
+                    >
                       {stateList.map((state) => (
                         <SelectItem key={state.code} value={state.code}>
                           {state.name}
@@ -390,53 +400,53 @@ const countryList = useMemo(
                 <div>
                   {ratesLoader
                     ? Array.from({ length: 2 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="flex items-start gap-3 border rounded p-4 animate-pulse"
-                      >
-                        <div className="w-4 h-4 mt-1 bg-gray-200 rounded-full flex-shrink-0" />
-                        <div className="flex-1 space-y-2">
-                          <div className="h-4 bg-gray-200 rounded w-3/4" />
-                          <div className="h-5 bg-gray-200 rounded w-16" />
-                        </div>
-                      </div>
-                    ))
-                    : shippingRates?.map((rate, i) => {
-                      return (
-                        <label
-                          key={`${rate.method_id}-${rate.service_type}`}
-                          className={`flex items-start gap-3  p-4 transition-colors cursor-pointer ${selectedShippingMethod === rate.service_type ? "" : ""}`}
+                        <div
+                          key={i}
+                          className="flex items-start gap-3 border rounded p-4 animate-pulse"
                         >
-                          <input
-                            type="radio"
-                            name="shippingMethod"
-                            value={rate.service_type}
-                            checked={
-                              selectedShippingMethod === rate.service_type
-                            }
-                            onChange={(e) =>
-                              setSelectedShippingMethod(e.target.value)
-                            }
-                            className="mt-1"
-                          />
-                          <div className="min-w-0 flex-1 flex items-center justify-between gap-3 text-[#545454] text-[14px] ">
-                            <div className="flex items-center gap-2 font-normal">
-                              {rate.is_fedex && <span>FedEx</span>}
-                              <span className="">
-                                {rate.is_fedex
-                                  ? `(${rate.service_name})`
-                                  : rate.display_name}
-                              </span>
-                            </div>
-                            <div className=" font-bold flex-shrink-0">
-                              {rate.total_charge === 0
-                                ? "Free"
-                                : `$${Number(rate.total_charge).toFixed(2)}`}
-                            </div>
+                          <div className="w-4 h-4 mt-1 bg-gray-200 rounded-full shrink-0" />
+                          <div className="flex-1 space-y-2">
+                            <div className="h-4 bg-gray-200 rounded w-3/4" />
+                            <div className="h-5 bg-gray-200 rounded w-16" />
                           </div>
-                        </label>
-                      );
-                    })}
+                        </div>
+                      ))
+                    : shippingRates?.map((rate, i) => {
+                        return (
+                          <label
+                            key={`${rate.method_id}-${rate.service_type}`}
+                            className={`flex items-start gap-3  p-4 transition-colors cursor-pointer ${selectedShippingMethod === rate.service_type ? "" : ""}`}
+                          >
+                            <input
+                              type="radio"
+                              name="shippingMethod"
+                              value={rate.service_type}
+                              checked={
+                                selectedShippingMethod === rate.service_type
+                              }
+                              onChange={(e) =>
+                                setSelectedShippingMethod(e.target.value)
+                              }
+                              className="mt-1"
+                            />
+                            <div className="min-w-0 flex-1 flex items-center justify-between gap-3 text-[#545454] text-[14px] ">
+                              <div className="flex items-center gap-2 font-normal">
+                                {rate.is_fedex && <span>FedEx</span>}
+                                <span className="">
+                                  {rate.is_fedex
+                                    ? `(${rate.service_name})`
+                                    : rate.display_name}
+                                </span>
+                              </div>
+                              <div className=" font-bold shrink-0">
+                                {rate.total_charge === 0
+                                  ? "Free"
+                                  : `$${Number(rate.total_charge).toFixed(2)}`}
+                              </div>
+                            </div>
+                          </label>
+                        );
+                      })}
                   <div className="flex justify-end mt-1.5 mb-1.5">
                     <button
                       type="button"
@@ -452,11 +462,6 @@ const countryList = useMemo(
                         const cost = selectedRate
                           ? Number(selectedRate.total_charge).toFixed(2)
                           : "0";
-                        // localStorage.setItem("shippingCost", cost);
-                        // localStorage.setItem(
-                        //   "shippingData",
-                        //   JSON.stringify(shippingData),
-                        // );
 
                         const shippingPayload: any = {
                           country: shippingData.country,
@@ -501,7 +506,7 @@ const countryList = useMemo(
                       }}
                       disabled={shippingCostLoading}
                       className="w-full md:w-[55%] text-[18px] btn-primary"
-                    // className="w-full md:w-[65%] p-2 border-b border-black  bg-[#D42020] text-white text-[14px] font-bold"
+                      // className="w-full md:w-[65%] p-2 border-b border-black  bg-[#D42020] text-white text-[14px] font-bold"
                     >
                       {shippingCostLoading
                         ? "Loading..."
@@ -520,7 +525,7 @@ const countryList = useMemo(
           <div className="flex justify-between py-2">
             <span className="text-[14px] font-bold text-[#393939]">
               Coupon Code:{" "}
-              {appliedCoupon ? appliedCoupon.couponCode.toUpperCase() : ""}
+              {appliedCoupon ? appliedCoupon?.couponCode?.toUpperCase() : ""}
             </span>
 
             {/* If coupon already applied, show it here */}
@@ -541,10 +546,6 @@ const countryList = useMemo(
           {/* Show applied coupon details */}
           {appliedCoupon && (
             <div className="flex gap-3 items-center rounded">
-              {/* <span className="text-sm">
-                ${Number(appliedCoupon.discountAmount).toFixed(2)} off (
-                {appliedCoupon.couponCode.toUpperCase()})
-              </span> */}
               <button
                 onClick={handleRemoveCoupon}
                 className=" text-[14px] underline text-red-600 hover:text-red-700"
@@ -578,51 +579,25 @@ const countryList = useMemo(
             </form>
           )}
 
-          {/* Show discount breakdown if applied */}
-          {/* {appliedCoupon && discountAmount > 0 && (
-            <div className="mt-2">
-              <div
-                className="flex justify-between items-center text-gray-700 cursor-pointer select-none py-2"
-                onClick={() => setDiscountOpen((prev) => !prev)}
-              >
-                <span className="flex items-center gap-1 text-[14px]">
-                  Discounts
-                  <svg
-                    className={`w-4 h-4 transition-transform ${
-                      discountOpen ? "rotate-180" : "rotate-0"
-                    }`}
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
+          {manualDiscount > 0 && (
+            <>
+              {/* Manual Discount */}
+              <div className="w-full h-[1px] bg-gray-300 my-3"></div>
+
+              {/* Coupon Section */}
+              <div className="flex justify-between py-2">
+                <span className="text-[14px] font-bold text-[#393939]">
+                  Manual Discount:
                 </span>
-                <span className="text-[14px] text-green-600 font-medium">
-                  -${discountAmount.toFixed(2)}
+                <span className="text-[14px] font-medium">
+                  -${manualDiscount?.toFixed(2)}
                 </span>
               </div>
+            </>
+          )}
 
-              {discountOpen && (
-                <div className="flex justify-between text-gray-600 text-sm mt-1 px-4">
-                  <span>
-                    ${Number(appliedCoupon.discountAmount).toFixed(2)} off (
-                    {appliedCoupon.couponCode.toUpperCase()})
-                  </span>
-                  <span className="font-medium text-green-600">
-                    -${discountAmount.toFixed(2)}
-                  </span>
-                </div>
-              )}
-            </div>
-          )} */}
+          {/* Show discount breakdown if applied */}
         </div>
-
         {/* Divider */}
         <div className="w-full h-[1px] bg-gray-300 my-3"></div>
 
@@ -632,17 +607,11 @@ const countryList = useMemo(
             Grand total:
           </span>
           <span className="text-[14px] text-[#393939]">
-            ${finalTotal.toFixed(2)}
+            ${finalTotal?.toFixed(2)}
           </span>
         </div>
 
         {/* Savings message */}
-
-        {/* {appliedCoupon && discountAmount > 0 && (
-          <div className="text-sm text-green-600 text-right mt-1">
-            You saved ${discountAmount.toFixed(2)}!
-          </div>
-        )} */}
 
         {/* Buttons */}
         <div className="flex flex-col items-end gap-3 mt-5">

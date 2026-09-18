@@ -13,6 +13,7 @@ import NoResults from "../components/advanced-search/NoResults";
 import { useAppSelector } from "@/hooks/useReduxHooks";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { getFromStorage } from "@/utils/storage";
 
 export default function ProductPage({
     params,
@@ -29,9 +30,9 @@ export default function ProductPage({
     const [brand, setBrand] = useState([]);
 
     useEffect(() => {
-        const stored = localStorage.getItem("advancedSearchFilters");
+        const stored = getFromStorage("advancedSearchFilters");
         if (stored) {
-            const parsed = JSON.parse(stored);
+            const parsed = stored
             setQuery(parsed.q || "");
         }
     }, []);
@@ -64,7 +65,7 @@ export default function ProductPage({
             >
                 <div className="flex flex-col md:flex-row gap-4 lg:gap-6">
                     {/* Left Sidebar - Fixed 235px on desktop */}
-                    <aside className="hidden lg:block md:w-[20%] flex-shrink-0">
+                    <aside className="hidden lg:block md:w-[20%] shrink-0">
                         <CategoriesSidebar />
                         <BrandsSidebar />
                     </aside>

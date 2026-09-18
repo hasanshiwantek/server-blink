@@ -1,13 +1,13 @@
 "use client";
 
-import React from "react";
-import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { toast } from "sonner";
+import { addCart, fetchCartList } from "@/redux/slices/cartsSlice";
+import { RootState } from "@/redux/store";
+import { errorMessage } from "@/utils/message";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { RootState } from "@/redux/store";
-import { addCart, fetchCartList } from "@/redux/slices/cartsSlice";
+import React from "react";
 interface Brand {
   id: number;
   name: string;
@@ -22,7 +22,7 @@ interface Product {
   name: string | { name?: string }; // sometimes object, sometimes string
   price: number | string;
   msrp?: number;
-  image?: { path?: string }[]; // image array from API
+  image?: { path?: string; isPrimary?: number }[]; // image array from API
   slug: string;
   productUrl?: string; // URL for product page
   maxPurchaseQuantity?: number; // optional max quantity
@@ -64,11 +64,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   // safe image src
   const imageSrc =
+    product.image?.find((img) => img?.isPrimary === 1)?.path ||
     product.image?.[0]?.path ||
     product.image?.[1]?.path ||
     "/default-product-image.svg";
+
   const brandSlug =
     typeof product.brand === "object" ? product?.brand?.slug : undefined;
+
   const availableForSale =
     product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
 
@@ -110,8 +113,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             {brandName}
           </span>
         )}
-        <Link href={product?.productUrl || "/"} className="inline-block w-fit"
-        >
+        <Link href={product?.productUrl || "/"} className="inline-block w-fit">
           <p
             className="text-[1rem] text-gray-400 mb-1 hover:text-[#D42020]"
             style={robotoCondensedStyle}
@@ -133,7 +135,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <div className="flex flex-col items-start gap-2 mb-2">
             <>
               <span className="text-gray-400 text-[1rem]">
-                <span className="line-through !font-normal"></span>
+                <span className="line-through font-normal!"></span>
               </span>
 
               {/* New Price */}
@@ -163,7 +165,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 {/* Old Price */}
                 <span className="text-[#545454] text-[1rem]">
                   Price $
-                  <span className="line-through !font-normal">
+                  <span className="line-through font-normal!">
                     {Number(product.msrp).toFixed(2)}
                   </span>
                 </span>
@@ -175,7 +177,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               </>
             ) : (
               <span className="text-[16px] font-bold">
-                ${Number(product.price)}
+                ${Number(product.price).toFixed(2)}
               </span>
             )}
           </div>
@@ -194,7 +196,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 const currentQty = cartItem?.quantity || 0;
                 const remaining = maxQty ? maxQty - currentQty : Infinity;
                 if (remaining <= 0) {
-                  toast.error(
+                  errorMessage(
                     `You have already reached the maximum limit (${maxQty}) for this product.`,
                   );
                   return;
@@ -218,13 +220,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                     router.push("/cart");
                   })
                   .catch((err) => {
-                    toast.error(err);
+                    errorMessage(err);
                   });
               }
             }}
             disabled={currentStockEqualent}
             // disabled={!availableForSale || cartLoad}
-            className={currentStockEqualent ? "w-full bg-[#CAC9C9] font-bold text-[#393939] border-b-2 border-[#393939] py-1 !cursor-not-allowed rounded text-[14px] mt-auto transition" : "w-full bg-[#CAC9C9] hover:bg-[#D42020] font-bold text-[#393939] border-b-2 border-[#393939] py-1 hover:text-white rounded text-[14px] mt-auto transition"}
+            className={
+              currentStockEqualent
+                ? "w-full bg-[#CAC9C9] font-bold text-[#393939] border-b-2 border-[#393939] py-1 cursor-not-allowed! rounded text-[14px] mt-auto transition"
+                : "w-full bg-[#CAC9C9] hover:bg-[#D42020] font-bold text-[#393939] border-b-2 border-[#393939] py-1 hover:text-white rounded text-[14px] mt-auto transition"
+            }
           >
             {"ADD TO CART"}
           </button>
@@ -244,5 +250,3 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 };
 
 export default ProductCard;
-
-

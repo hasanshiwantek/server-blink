@@ -59,22 +59,22 @@ export default function CategoryTree({ categories, selectedCategories, setSelect
                     {hasChildren ? (
                         <button
                             onClick={() => toggleExpand(cat.id)}
-                            className="w-[12px] h-[12px] border border-gray-400 bg-white text-[11px] leading-none flex items-center justify-center flex-shrink-0 mr-1 z-10 relative"
+                            className="w-[12px] h-[12px] border border-gray-400 bg-white text-[11px] leading-none flex items-center justify-center shrink-0 mr-1 z-10 relative"
                         >
                             {isExpanded ? "−" : "+"}
                         </button>
                     ) : (
-                        <span className="w-[18px] h-[18px] flex-shrink-0 mr-1" />
+                        <span className="w-[18px] h-[18px] shrink-0 mr-1" />
                     )}
 
                     <input
                         type="checkbox"
                         checked={selectedCategories.has(cat.id)}
                         onChange={() => toggleCategory(cat.id)}
-                        className="mr-1 text-[#545454] bg-[#545454]  flex-shrink-0"
+                        className="mr-1 text-[#545454] bg-[#545454]  shrink-0"
                     />
 
-                    <svg className="w-4 h-4 mr-1 flex-shrink-0" viewBox="0 0 16 16" fill="none">
+                    <svg className="w-4 h-4 mr-1 shrink-0" viewBox="0 0 16 16" fill="none">
                         <path d="M1 3.5C1 2.67 1.67 2 2.5 2H6l1.5 1.5H13.5C14.33 3.5 15 4.17 15 5V12.5C15 13.33 14.33 14 13.5 14H2.5C1.67 14 1 13.33 1 12.5V3.5Z" fill="#E8C95A" stroke="#C4A83A" strokeWidth="0.5" />
                         <path d="M1 5.5H15V12.5C15 13.33 14.33 14 13.5 14H2.5C1.67 14 1 13.33 1 12.5V5.5Z" fill="#F5DFA0" stroke="#C4A83A" strokeWidth="0.5" />
                     </svg>

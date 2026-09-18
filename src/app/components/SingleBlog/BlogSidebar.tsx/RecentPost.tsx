@@ -40,7 +40,7 @@ const RecentPost = () => {
               w-full
               md:w-[34.5%] md:h-[55px]
               2xl:w-[35.6%] 2xl:h-[55px]
-              relative overflow-hidden  flex-shrink-0 m-auto
+              relative overflow-hidden  shrink-0 m-auto
             "
                 >
                   {blog?.thumbnail && (<Image

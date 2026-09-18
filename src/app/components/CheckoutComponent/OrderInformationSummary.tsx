@@ -10,13 +10,14 @@ interface OrderSummaryProps {
   total: number;
   finalTotal: number;
   discountAmount: number;
+  manualDiscount: number;
+  discountTotal: number;
   appliedCoupon: any;
   promoCode: string;
   setPromoCode: (code: string) => void;
   onApplyCoupon: () => void;
   onRemoveCoupon: () => void;
 }
-
 const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
   cart,
   subtotal,
@@ -30,6 +31,8 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
   setPromoCode,
   onApplyCoupon,
   onRemoveCoupon,
+  manualDiscount,
+  discountTotal
 }) => {
   const cartItemCount = cart?.reduce(
     (sum, item: any) => sum + (item?.quantity ?? 1),
@@ -55,7 +58,7 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
             key={item.id}
             className="flex items-start gap-4 pb-4 border-b last:border-b-0"
           >
-            <div className="relative w-20 h-25 flex-shrink-0">
+            <div className="relative w-20 h-25 shrink-0">
               <Image
                 src={item.image?.[0]?.path || "/checkouticon/orderimg.png"}
                 alt={item.name}
@@ -87,11 +90,11 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
       <div className="space-y-3  pt-4 px-6">
         <div className="flex justify-between text-[13px] text-[#545454] roboto-font">
           <span>Subtotal</span>
-          <span className="font-medium">${subtotal.toFixed(2)}</span>
+          <span className="font-medium">${subtotal?.toFixed(2)}</span>
         </div>
 
         {/* Discounts */}
-        {appliedCoupon && discountAmount > 0 && (
+        {appliedCoupon && discountTotal > 0 || manualDiscount > 0 && (
           <div className="mt-2">
             {/* Discounts header with arrow */}
             <div
@@ -103,17 +106,26 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
 
               {/* Discount value */}
               <span className="font-medium">
-                -${discountAmount.toFixed(2)}
+                -${discountTotal?.toFixed(2)}
               </span>
             </div>
-
+            {manualDiscount > 0 && (
+              <div className="flex justify-between text-gray-600 text-[13px] mt-1">
+                <span>
+                  Manual Discount
+                </span>
+                <span className="font-medium">
+                  -${manualDiscount?.toFixed(2)}
+                </span>
+              </div>
+            )}
             {/* Expanded details */}
-            <div className="flex justify-between text-gray-600 text-[13px] mt-1">
+            {appliedCoupon && discountTotal > 0 && <div className="flex justify-between text-gray-600 text-[13px] mt-1">
               <span>
                 ${Number(discountAmount).toFixed(2)} off the
-                order total ({appliedCoupon.toUpperCase()})
+                order total ({appliedCoupon?.toUpperCase()})
               </span>
-            </div>
+            </div>}
           </div>
         )}
         <div className="flex justify-between text-[13px] text-[#545454] roboto-font">
@@ -133,16 +145,16 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
             Total <br /> (USD)
           </span>
           <span className="font-bold text-[16px]">
-            ${finalTotal.toFixed(2)}
+            ${finalTotal?.toFixed(2)}
           </span>
         </div>
 
         {/* Savings message */}
-        {appliedCoupon && discountAmount > 0 && (
+        {appliedCoupon || discountTotal > 0 && (
           <div className="text-[#333] font-medium text-[13px]  mt-1 self-end">
             You saved{" "}
-            <span className="!text-[#2aab3f] ">
-              ${discountAmount.toFixed(2)}
+            <span className="text-[#2aab3f]!">
+              ${discountTotal?.toFixed(2)}
             </span>{" "}
             in total!
           </div>

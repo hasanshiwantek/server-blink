@@ -284,7 +284,7 @@ const ProductLeft = ({
                       badge.border && "border-r-2 border-[#545454]",
                     )}
                   >
-                    <div className="flex h-[60px] w-[60px] flex-shrink-0 items-center justify-center sm:h-[75px] sm:w-[75px] md:h-[90px] md:w-[90px]">
+                    <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center sm:h-[75px] sm:w-[75px] md:h-[90px] md:w-[90px]">
                       <Image
                         src={badge.src}
                         alt={badge.alt}

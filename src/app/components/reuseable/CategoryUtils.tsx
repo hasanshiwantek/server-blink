@@ -51,7 +51,7 @@ export const CategoryItem = ({
               e.stopPropagation(); // link navigation ko stop kare
               e.preventDefault();  // optional
               toggle(category.id);
-            }} className="p-1 flex-shrink-0"
+            }} className="p-1 shrink-0"
             aria-label={isOpen ? `Collapse ${category.name}` : `Expand ${category.name}`}
             aria-expanded={isOpen}
             aria-controls={`subcategory-${category.id}`}

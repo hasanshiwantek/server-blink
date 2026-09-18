@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { ShoppingCart } from "lucide-react";
 import { addToCart } from "@/redux/slices/cartSlice";
-import { toast } from "sonner"
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import BulkInquiryModal from "../modal/BulkInquiryModal";
 import { useEffect, useState } from "react";

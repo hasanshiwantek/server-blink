@@ -1,34 +1,36 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { loginUser } from "@/redux/slices/authSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { RootState } from "@/redux/store";
-import { toast } from "react-toastify";
 import { FiEye, FiEyeOff } from "react-icons/fi"; // add at top
-import { cartTransfer, fetchCartList } from "@/redux/slices/cartsSlice";
+import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { baseURL, storeId } from "@/lib/axiosInstance";
+import { errorMessage } from "@/utils/message";
+import { getSessionId } from "@/utils/storage";
 interface SigninFormValues {
   email: string;
   password: string;
 }
 
 const SigninPage = () => {
+  const searchParams = useSearchParams();
+  const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm<SigninFormValues>();
-  const dispatch = useAppDispatch();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const auth = useAppSelector((state: RootState) => state?.auth);
+  const action = searchParams.get("action");
+  const quoteToken = searchParams.get("quoteToken");
+  const shouldLoadQuote = action === "loadSavedQuote" && !!quoteToken;
   const { loginloading } = useAppSelector((state: RootState) => state?.auth);
   const onSubmit = async (data: SigninFormValues) => {
     try {
@@ -36,8 +38,8 @@ const SigninPage = () => {
       if (loginUser.fulfilled.match(result)) {
         const token = result?.payload?.token
         const fetchCartListInner = async () => {
-          const sessionId = localStorage.getItem("sessionId")
-          const res = await fetch(`${baseURL}web/cart/transfer`, {
+          const sessionId = getSessionId()
+          await fetch(`${baseURL}web/cart/transfer`, {
             method: "POST",
             headers: {
               "Authorization": `Bearer ${token}`,
@@ -48,28 +50,32 @@ const SigninPage = () => {
           });
           reset();
           dispatch(fetchCartList());
-          router.push("/my-account/orders");
+          if (shouldLoadQuote || quoteToken) {
+            window.location.href = `/cart?action=loadSavedQuote&quoteToken=${quoteToken}`
+          } else {
+            router.push("/my-account/orders");
+          }
         };
         fetchCartListInner()
       } else {
-        const errorMessage =
+        const message =
           typeof result?.payload === "string"
             ? result.payload
             : "Login failed. Please try again.";
-        toast.error(errorMessage);
-      
+        errorMessage(message);
+
       }
     } catch (err: any) {
-      
+
     }
   };
-useEffect(() => {
-  const timer = setTimeout(() => {
-    dispatch(fetchCartList());
-  }, 1000);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      dispatch(fetchCartList());
+    }, 1000);
 
-  return () => clearTimeout(timer); // cleanup
-}, []);
+    return () => clearTimeout(timer); // cleanup
+  }, []);
   return (
     <div className=" ">
       {/* Header/Navigation - Dark gray bar at top */}

@@ -151,7 +151,7 @@ const GlobalSearchBar: React.FC = () => {
               >
                 <div className="flex">
                   {/* Product Image - Left Side */}
-                  <div className="w-[160px] min-h-[140px] flex-shrink-0 bg-white border-r border-gray-200 p-3 flex items-center justify-center">
+                  <div className="w-[160px] min-h-[140px] shrink-0 bg-white border-r border-gray-200 p-3 flex items-center justify-center">
                     <Image
                       src={item?.image?.[0]?.path || "/default-product-image.svg"}
                       alt={item?.name || "product"}

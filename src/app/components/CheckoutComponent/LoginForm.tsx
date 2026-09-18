@@ -7,11 +7,12 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { loginUser } from "@/redux/slices/authSlice";
 import { RootState } from "@/redux/store";
-import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import SignupForm from "./SignupForm";
 import { baseURL, storeId } from "@/lib/axiosInstance";
+import { errorMessage } from "@/utils/message";
+import { getSessionId } from "@/utils/storage";
 
 interface SigninFormValues {
   email: string;
@@ -45,7 +46,7 @@ const LoginForm = ({ onCancel }: LoginFormProps) => {
       if (loginUser.fulfilled.match(result)) {
         const token = result?.payload?.token
         const fetchCartListInner = async () => {
-          const sessionId = localStorage.getItem("sessionId")
+          const sessionId = getSessionId()
           const res = await fetch(`${baseURL}web/cart/transfer`, {
             method: "POST",
             headers: {
@@ -63,16 +64,16 @@ const LoginForm = ({ onCancel }: LoginFormProps) => {
           password: "",
         });
       } else {
-        const errorMessage =
+        const message =
           typeof result?.payload === "string"
             ? result.payload
             : "Login failed. Please try again.";
 
-        toast.error(errorMessage);
-       
+        errorMessage(message);
+
       }
     } catch (err) {
-     
+
     }
   };
 
@@ -175,7 +176,7 @@ const LoginForm = ({ onCancel }: LoginFormProps) => {
                 <button
                   type="button"
                   onClick={onSubmit}
-                  className="btn-primary w-full sm:w-auto !mb-[15px] sm:!mb-0"
+                  className="btn-primary w-full sm:w-auto mb-[15px]! sm:mb-0!"
                 >
                   {loginloading ? "Loading..." : "SiGN IN"}
                 </button>

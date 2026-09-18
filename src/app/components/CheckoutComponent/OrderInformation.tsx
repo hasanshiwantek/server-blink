@@ -1,15 +1,14 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { RootState } from "@/redux/store";
 import { applyCoupon, removeCoupon } from "@/redux/slices/couponSlice"; // ADD THIS
-import { toast } from "sonner";
-import { useParams } from "next/navigation";
-import { useRouter } from "next/navigation";
-import LoadTrustpilotScript from "./TrustpilotWidget";
-import OrderInformationSummary from "./OrderInformationSummary";
 import { orderDetailById } from "@/redux/slices/OrderMessage";
+import { RootState } from "@/redux/store";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
+import OrderInformationSummary from "./OrderInformationSummary";
+import LoadTrustpilotScript from "./TrustpilotWidget";
 
 // Inner component that uses Stripe hooks
 const CheckoutForm = () => {
@@ -23,11 +22,14 @@ const CheckoutForm = () => {
   const orderCustomer = customerOrderDetail?.customer
     ? customerOrderDetail
     : null;
+  const discountTotal =
+    Number(orderCustomer?.discountAmount) +
+    Number(orderCustomer?.manualDiscount);
   const cart: any = customerOrderDetail?.products
     ? customerOrderDetail.products.map((product: any) => ({
-      ...product,
-      quantity: product.quantity || 1,
-    }))
+        ...product,
+        quantity: product.quantity || 1,
+      }))
     : [];
 
   // ADD COUPON STATE FROM REDUX
@@ -65,8 +67,7 @@ const CheckoutForm = () => {
 
   // Final total after discount
   const finalTotal = useMemo(
-    () =>
-      Math.max(totalBeforeDiscount - Number(orderCustomer?.discountAmount), 0),
+    () => Math.max(totalBeforeDiscount - discountTotal, 0),
     [totalBeforeDiscount, orderCustomer?.discountAmount],
   );
 
@@ -139,7 +140,7 @@ const CheckoutForm = () => {
               <button
                 type="button"
                 onClick={() => router.push("/")}
-                className="btn-primary !px-6 !py-3 h-[44px] !text-lg"
+                className="btn-primary px-6! py-3! h-[44px] text-lg!"
               >
                 Continue Shopping
               </button>
@@ -157,6 +158,8 @@ const CheckoutForm = () => {
               finalTotal={finalTotal}
               discountAmount={Number(orderCustomer?.discountAmount)}
               appliedCoupon={orderCustomer?.couponCode}
+              manualDiscount={Number(orderCustomer?.manualDiscount)}
+              discountTotal={discountTotal}
               promoCode={promoCode}
               setPromoCode={setPromoCode}
               onApplyCoupon={handleApplyCoupon}
