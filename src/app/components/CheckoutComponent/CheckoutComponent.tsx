@@ -16,7 +16,6 @@ import {
 } from "@/redux/slices/cartSlice";
 import { applyCoupon, removeCoupon } from "@/redux/slices/couponSlice"; // ADD THIS
 import axiosInstance, { baseURL, stripePublishableKey } from "@/lib/axiosInstance";
-import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -66,6 +65,7 @@ import {
 } from "@/redux/slices/myaccountSlice";
 import { fetchCartList, removeProducts } from "@/redux/slices/cartsSlice";
 import { subscribeNewsletter } from "@/redux/slices/contactSlice";
+import { errorMessage, infoMessage, successMessage } from "@/utils/message";
 
 export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
 function splitName(fullName: string) {
@@ -196,7 +196,7 @@ const CheckoutForm = () => {
 
         if (!emptyCartWarningShownRef.current) {
           emptyCartWarningShownRef.current = true;
-          // toast.error("Please add something");
+          // errorMessage("Please add something");
 
           // if (redirectToCart === "true") {
           router.push("/cart");
@@ -402,7 +402,7 @@ const CheckoutForm = () => {
   // ADD COUPON HANDLERS
   const handleApplyCoupon = async () => {
     if (!promoCode.trim()) {
-      toast.error("Please enter a promo code");
+      errorMessage("Please enter a promo code");
       return;
     }
 
@@ -410,17 +410,17 @@ const CheckoutForm = () => {
       await dispatch(
         applyCoupon({ couponCode: promoCode, total: totalBeforeDiscount }),
       ).unwrap();
-      toast.success("Promo code applied successfully!");
+      successMessage("Promo code applied successfully!");
       setPromoCode("");
     } catch (err: any) {
-      toast.error(err || "Failed to apply coupon");
+      errorMessage(err || "Failed to apply coupon");
     }
   };
 
   const handleRemoveCoupon = () => {
     dispatch(removeCoupon());
     setPromoCode("");
-    toast.info("Coupon removed");
+    infoMessage("Coupon removed");
   };
 
   // Memoized handlers
@@ -771,7 +771,7 @@ const CheckoutForm = () => {
     const handlePaymentMethod = async (event: any) => {
       if (!pendingWalletForm) {
         event.complete("fail");
-        toast.error("Unable to process wallet payment. Please try again.");
+        errorMessage("Unable to process wallet payment. Please try again.");
         setIsProcessing(false);
         return;
       }
@@ -783,7 +783,7 @@ const CheckoutForm = () => {
 
         if (!paymentIntentId) {
           event.complete("fail");
-          toast.error("Failed to generate payment intent.");
+          errorMessage("Failed to generate payment intent.");
           setIsProcessing(false);
           return;
         }
@@ -817,10 +817,10 @@ const CheckoutForm = () => {
         router.push(`/checkout/order-information/${orderNumber}`);
       } catch (err: any) {
         event.complete("fail");
-        const errorMessage =
+        const message =
           err?.response?.data?.message || err?.message || "Payment failed.";
 
-        toast.error(errorMessage);
+        errorMessage(message);
         setIsProcessing(false);
       } finally {
         setPendingWalletForm(null);
@@ -971,7 +971,7 @@ const CheckoutForm = () => {
 
     if (!paymentRequest) {
       const methodName = method === "apple_pay" ? "Apple Pay" : "Google Pay";
-      toast.error(
+      errorMessage(
         `${methodName} is not available. Please use a supported device/browser or try credit card payment.`,
       );
       return;
@@ -985,7 +985,7 @@ const CheckoutForm = () => {
       paymentRequest.show();
     } catch (err: any) {
       const methodName = method === "apple_pay" ? "Apple Pay" : "Google Pay";
-      toast.error(
+      errorMessage(
         `Could not open ${methodName}. Please ensure you have a card set up in your wallet or try credit card payment.`,
       );
       setIsProcessing(false);
@@ -1010,12 +1010,12 @@ const CheckoutForm = () => {
         const message =
           "Please complete your card details before placing the order.";
         setCardError(message);
-        toast.error(message);
+        errorMessage(message);
         return;
       }
 
       if (cardError) {
-        toast.error(cardError);
+        errorMessage(cardError);
         return;
       }
     }
@@ -1027,7 +1027,7 @@ const CheckoutForm = () => {
           : walletSupport.googlePay;
 
       if (!paymentRequest || !walletAvailable) {
-        toast.error("This wallet is not available on your device.");
+        errorMessage("This wallet is not available on your device.");
         return;
       }
 
@@ -1037,7 +1037,7 @@ const CheckoutForm = () => {
       try {
         paymentRequest.show();
       } catch (err: any) {
-        toast.error("Could not open the wallet sheet. Please try again.");
+        errorMessage("Could not open the wallet sheet. Please try again.");
         setIsProcessing(false);
         setPendingWalletForm(null);
       }
@@ -1052,7 +1052,7 @@ const CheckoutForm = () => {
 
       if (requiresStripeCard) {
         if (!stripe || !elements) {
-          toast.error("Payment service is not ready yet. Please try again.");
+          errorMessage("Payment service is not ready yet. Please try again.");
           setIsProcessing(false);
           return;
         }
@@ -1060,7 +1060,7 @@ const CheckoutForm = () => {
         const cardNumberElement = elements.getElement(CardNumberElement);
 
         if (!cardNumberElement) {
-          toast.error(
+          errorMessage(
             "Payment form is not ready. Please refresh and try again.",
           );
           setIsProcessing(false);
@@ -1087,7 +1087,7 @@ const CheckoutForm = () => {
           });
 
         if (pmError) {
-          toast.error(pmError.message || "Unable to create payment method.");
+          errorMessage(pmError.message || "Unable to create payment method.");
           setIsProcessing(false);
           return;
         }
@@ -1096,7 +1096,7 @@ const CheckoutForm = () => {
           paymentIntentId = await handleStripeCharge(paymentMethod.id);
 
           if (!paymentIntentId) {
-            toast.error("Failed to generate payment intent.");
+            errorMessage("Failed to generate payment intent.");
             setIsProcessing(false);
             return;
           }
@@ -1172,12 +1172,12 @@ const CheckoutForm = () => {
       dispatch(fetchCartList());
       window.location.href = `/checkout/order-information/${orderNumber}`
     } catch (err: any) {
-      const errorMessage =
+      const message =
         err.response?.data?.message ||
         err.message ||
         "An error occurred while processing your order.";
 
-      toast.error(errorMessage);
+      errorMessage(message);
       setIsProcessing(false);
     }
   };

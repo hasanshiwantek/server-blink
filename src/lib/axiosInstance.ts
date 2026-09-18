@@ -1,6 +1,7 @@
 // lib/axiosInstance.ts
 import axios from "axios";
-import { toast } from "react-toastify";
+import { getFromStorage, getPersistedAuth, getSessionId } from "@/utils/storage";
+import { errorMessage } from "@/utils/message";
 export const baseURL = process.env.NEXT_PUBLIC_API_URL || 'https://backend.sparemicro.com/api/'
 export const siteURL = process.env.NEXT_PUBLIC_SITE_URL || 'https://staging.sparemicro.com'
 export const storeId = process.env.NEXT_PUBLIC_STORE_ID || "10";
@@ -14,10 +15,9 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use((config) => {
   if (typeof window !== "undefined") {
-    const data = localStorage.getItem("persist:auth");
-    const sessionId = localStorage.getItem("sessionId");
-    const user = data ? JSON.parse(data) : null
-    const token = user?.token ? JSON.parse(user.token) : null;
+    const auth = getPersistedAuth();
+    const sessionId = getSessionId();
+    const token = auth?.token ?? getFromStorage("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -33,23 +33,11 @@ axiosInstance.interceptors.request.use((config) => {
 axiosInstance.interceptors.response.use(
   (response) => {
     if (response.data?.message) {
-      // toast.success(response.data.message, {
-      //   style: {
-      //     fontSize: "12px",
-      //     fontWeight: "bold",
-      //   },
-      // });
     }
     return response;
   },
   (error) => {
     if (error.response?.data?.message) {
-      // toast.error(error.response.data.message, {
-      //   style: {
-      //     fontSize: "12px",
-      //     fontWeight: "bold",
-      //   },
-      // });
     }
 
     const errors = error.response?.data.errors;
@@ -57,12 +45,7 @@ axiosInstance.interceptors.response.use(
       Object.values(errors)?.forEach((fieldErrors) => {
         if (Array.isArray(fieldErrors)) {
           fieldErrors?.forEach((err) =>
-            toast.error(err, {
-              style: {
-                fontSize: "12px",
-                fontWeight: "bold",
-              },
-            })
+            errorMessage(err)
           );
         }
       });

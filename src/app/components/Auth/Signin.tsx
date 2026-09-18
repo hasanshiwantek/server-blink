@@ -7,10 +7,11 @@ import { loginUser } from "@/redux/slices/authSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { useRouter, useSearchParams } from "next/navigation";
 import { RootState } from "@/redux/store";
-import { toast } from "react-toastify";
 import { FiEye, FiEyeOff } from "react-icons/fi"; // add at top
-import { cartTransfer, fetchCartList } from "@/redux/slices/cartsSlice";
+import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { baseURL, storeId } from "@/lib/axiosInstance";
+import { errorMessage } from "@/utils/message";
+import { getFromStorage } from "@/utils/storage";
 interface SigninFormValues {
   email: string;
   password: string;
@@ -37,7 +38,7 @@ const SigninPage = () => {
       if (loginUser.fulfilled.match(result)) {
         const token = result?.payload?.token
         const fetchCartListInner = async () => {
-          const sessionId = localStorage.getItem("sessionId")
+          const sessionId = getFromStorage("sessionId")
           await fetch(`${baseURL}web/cart/transfer`, {
             method: "POST",
             headers: {
@@ -57,11 +58,11 @@ const SigninPage = () => {
         };
         fetchCartListInner()
       } else {
-        const errorMessage =
+        const message =
           typeof result?.payload === "string"
             ? result.payload
             : "Login failed. Please try again.";
-        toast.error(errorMessage);
+        errorMessage(message);
 
       }
     } catch (err: any) {

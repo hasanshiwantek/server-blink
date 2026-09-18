@@ -7,11 +7,11 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { loginUser } from "@/redux/slices/authSlice";
 import { RootState } from "@/redux/store";
-import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import SignupForm from "./SignupForm";
 import { baseURL, storeId } from "@/lib/axiosInstance";
+import { errorMessage } from "@/utils/message";
 
 interface SigninFormValues {
   email: string;
@@ -63,16 +63,16 @@ const LoginForm = ({ onCancel }: LoginFormProps) => {
           password: "",
         });
       } else {
-        const errorMessage =
+        const message =
           typeof result?.payload === "string"
             ? result.payload
             : "Login failed. Please try again.";
 
-        toast.error(errorMessage);
-       
+        errorMessage(message);
+
       }
     } catch (err) {
-     
+
     }
   };
 

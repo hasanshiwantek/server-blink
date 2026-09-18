@@ -7,10 +7,10 @@ import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { addToCart } from "@/redux/slices/cartSlice";
 import { RootState } from "@/redux/store";
-import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import BulkInquiryModal from "../modal/BulkInquiryModal";
 import ProductPrice from "../productprice/ProductPrice";
+import { successMessage } from "@/utils/message";
 
 type RelatedProductItem = Omit<Product, "image"> & {
   name?: string;
@@ -126,7 +126,7 @@ const RelatedProduct = ({ products }: { products: RelatedProductItem[] }) => {
                     name="cart"
                     onClick={() => {
                       dispatch(addToCart(product));
-                      toast.success(`${product?.name} added to cart!`);
+                      successMessage(`${product?.name} added to cart!`);
                     }}
                     className="btn-primary xl:!text-2xl 2xl:!text-[22px] 2xl:!font-medium 
                                w-full sm:w-[48%] md:w-[45%] lg:w-[50%] xl:w-[45%]
