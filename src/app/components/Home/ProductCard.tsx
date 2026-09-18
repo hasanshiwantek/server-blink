@@ -1,13 +1,13 @@
 "use client";
 
-import React from "react";
-import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { toast } from "sonner";
+import { addCart, fetchCartList } from "@/redux/slices/cartsSlice";
+import { RootState } from "@/redux/store";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { RootState } from "@/redux/store";
-import { addCart, fetchCartList } from "@/redux/slices/cartsSlice";
+import React from "react";
+import { toast } from "sonner";
 interface Brand {
   id: number;
   name: string;
@@ -177,7 +177,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               </>
             ) : (
               <span className="text-[16px] font-bold">
-                ${Number(product.price)}
+                ${Number(product.price).toFixed(2)}
               </span>
             )}
           </div>

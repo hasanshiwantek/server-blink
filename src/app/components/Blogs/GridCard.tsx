@@ -51,7 +51,7 @@ const GridCard = () => {
               w-full sm:w-[30%] md:w-[25%] lg:w-[35%]
               xl:w-[36.5%] xl:h-[100.3%] 
               2xl:w-[40.6%] 2xl:h-[100%]
-              relative overflow-hidden  flex-shrink-0
+              relative overflow-hidden  shrink-0
             "
           >
             <Image

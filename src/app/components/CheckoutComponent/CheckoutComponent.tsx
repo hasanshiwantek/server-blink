@@ -1,51 +1,34 @@
 "use client";
-import React, {
-  useState,
-  useCallback,
-  useMemo,
-  useEffect,
-  useRef,
-} from "react";
-import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { RootState } from "@/redux/store";
-import {
-  decreaseQty,
-  increaseQty,
-  removeFromCart,
-  clearCart,
-  restoreCart,
-} from "@/redux/slices/cartSlice";
-import { applyCoupon, removeCoupon } from "@/redux/slices/couponSlice"; // ADD THIS
-import axiosInstance, { baseURL, stripePublishableKey } from "@/lib/axiosInstance";
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import countries from "world-countries";
-import { Country, State, City } from "country-state-city";
-import { useForm } from "react-hook-form";
-import { loadStripe } from "@stripe/stripe-js";
-import type { PaymentRequest as StripePaymentRequest } from "@stripe/stripe-js";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
+import axiosInstance, {
+  baseURL,
+  stripePublishableKey,
+} from "@/lib/axiosInstance";
 import {
-  Elements,
-  CardNumberElement,
-  PaymentRequestButtonElement,
-  useStripe,
-  useElements,
-} from "@stripe/react-stripe-js";
-import { useRouter } from "next/navigation";
-import { setLastOrder } from "@/redux/slices/orderslice";
+  clearCart,
+  decreaseQty,
+  increaseQty,
+  removeFromCart,
+} from "@/redux/slices/cartSlice";
+import {
+  applyCoupon,
+  fetchMyCouponUsage,
+  removeCoupon,
+} from "@/redux/slices/couponSlice";
 import {
   resetMultiAddress,
-  restoreMultiAddress,
   setIsMultiAddress,
 } from "@/redux/slices/multiAddressSlice";
+import { setLastOrder } from "@/redux/slices/orderslice";
 import {
   checkoutFormSave,
   fetchShippingRate,
@@ -54,19 +37,33 @@ import {
   removeShippingRate,
   resetShippingRates,
 } from "@/redux/slices/shippingSlice";
+import { RootState } from "@/redux/store";
+import {
+  CardNumberElement,
+  Elements,
+  PaymentRequestButtonElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
+import type { PaymentRequest as StripePaymentRequest } from "@stripe/stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { City, Country, State } from "country-state-city";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 // Import step components
-import CustomerStep from "./CustomerStep";
-import ShippingStep from "./Shippingstep";
-import BillingStep from "./Billingstep";
-import PaymentStep from "./Paymentstep";
-import CheckoutOrderSummary from "./CheckoutOrderSummary";
-import CheckoutMultipleOrderSummary from "./CheckoutMultipleOrderSummary";
-import { calculatePackage } from "./Shippingstep";
+import { fetchCartList, removeProducts } from "@/redux/slices/cartsSlice";
 import {
   addCustomerAddress,
   fetchCustomerAddress,
 } from "@/redux/slices/myaccountSlice";
-import { fetchCartList, removeProducts } from "@/redux/slices/cartsSlice";
+import BillingStep from "./Billingstep";
+import CheckoutMultipleOrderSummary from "./CheckoutMultipleOrderSummary";
+import CheckoutOrderSummary from "./CheckoutOrderSummary";
+import CustomerStep from "./CustomerStep";
+import PaymentStep from "./Paymentstep";
+import ShippingStep, { calculatePackage } from "./Shippingstep";
 
 export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
 function splitName(fullName: string) {
@@ -78,9 +75,7 @@ function splitName(fullName: string) {
   };
 }
 // Stripe publishable key
-const stripePromise = loadStripe(
-  stripePublishableKey,
-);
+const stripePromise = loadStripe(stripePublishableKey);
 
 // Pre-compute country list at module level
 // const countryList = countries
@@ -136,14 +131,15 @@ interface CheckoutFormValues {
 const CheckoutForm = () => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state?.carts?.items);
-  const { loading, redirectToCart, cartLoading } = useAppSelector((state: RootState) => state?.carts);
+  const { loading, redirectToCart, cartLoading } = useAppSelector(
+    (state: RootState) => state?.carts,
+  );
   const auth = useAppSelector((state: RootState) => state?.auth);
 
   // ADD COUPON STATE FROM REDUX
-  const { appliedCoupon, discountAmount, manualDiscount, orderId } = useAppSelector(
-    (state: RootState) => state.coupon,
-  );
-  const discountTotal = Number(discountAmount) + Number(manualDiscount)
+  const { appliedCoupon, discountAmount, manualDiscount, orderId } =
+    useAppSelector((state: RootState) => state.coupon);
+  const discountTotal = Number(discountAmount) + Number(manualDiscount);
 
   const hasRestoredRef = useRef(false);
   const isRestoringRef = useRef(true);
@@ -410,8 +406,13 @@ const CheckoutForm = () => {
 
     try {
       await dispatch(
-        applyCoupon({ couponCode: promoCode, total: totalBeforeDiscount }),
+        applyCoupon({
+          couponCode: promoCode,
+          total: totalBeforeDiscount,
+          productIds: cart.map((item) => item.id),
+        }),
       ).unwrap();
+      await dispatch(fetchMyCouponUsage());
       toast.success("Promo code applied successfully!");
       setPromoCode("");
     } catch (err: any) {
@@ -705,7 +706,6 @@ const CheckoutForm = () => {
 
       // ✅ Single address — existing logic
       return {
-
         userType: token ? null : "guest",
         deviceType: getDeviceType(),
         ipAddress: ipAddress,
@@ -991,7 +991,7 @@ const CheckoutForm = () => {
 
     setTimeout(() => {
       setValue("billingSame", false);
-    }, 100)
+    }, 100);
   };
 
   const handleEditPayment = () => {
@@ -1438,29 +1438,29 @@ const CheckoutForm = () => {
       // billingSame false → actual billing values use karo (sirf agar filled hain)
       const billingFormData = watchedValues.billingSame
         ? {
-          billingFirstName: watchedValues.firstName || "",
-          billingLastName: watchedValues.lastName || "",
-          billingCompany: watchedValues.company || "",
-          billingPhone: watchedValues.phone || "",
-          billingAddress1: watchedValues.address1 || "",
-          billingAddress2: watchedValues.address2 || "",
-          billingCity: watchedValues.city || "",
-          billingCountry: watchedValues.country || "",
-          billingState: watchedValues.state || "",
-          billingZip: watchedValues.zip || "",
-        }
+            billingFirstName: watchedValues.firstName || "",
+            billingLastName: watchedValues.lastName || "",
+            billingCompany: watchedValues.company || "",
+            billingPhone: watchedValues.phone || "",
+            billingAddress1: watchedValues.address1 || "",
+            billingAddress2: watchedValues.address2 || "",
+            billingCity: watchedValues.city || "",
+            billingCountry: watchedValues.country || "",
+            billingState: watchedValues.state || "",
+            billingZip: watchedValues.zip || "",
+          }
         : {
-          billingFirstName: watchedValues.billingFirstName || "",
-          billingLastName: watchedValues.billingLastName || "",
-          billingCompany: watchedValues.billingCompany || "",
-          billingPhone: watchedValues.billingPhone || "",
-          billingAddress1: watchedValues.billingAddress1 || "",
-          billingAddress2: watchedValues.billingAddress2 || "",
-          billingCity: watchedValues.billingCity || "",
-          billingCountry: watchedValues.billingCountry || "",
-          billingState: watchedValues.billingState || "",
-          billingZip: watchedValues.billingZip || "",
-        };
+            billingFirstName: watchedValues.billingFirstName || "",
+            billingLastName: watchedValues.billingLastName || "",
+            billingCompany: watchedValues.billingCompany || "",
+            billingPhone: watchedValues.billingPhone || "",
+            billingAddress1: watchedValues.billingAddress1 || "",
+            billingAddress2: watchedValues.billingAddress2 || "",
+            billingCity: watchedValues.billingCity || "",
+            billingCountry: watchedValues.billingCountry || "",
+            billingState: watchedValues.billingState || "",
+            billingZip: watchedValues.billingZip || "",
+          };
 
       dispatch(
         checkoutFormSave({ data: { shippingFormData, billingFormData } }),
@@ -1571,6 +1571,10 @@ const CheckoutForm = () => {
       .then((res) => res.json())
       .then((data) => setIpAddress(data.ip));
   }, []);
+
+  useEffect(() => {
+    dispatch(fetchMyCouponUsage());
+  }, [dispatch]);
 
   useEffect(() => {
     if (auth?.isAuthenticated) {

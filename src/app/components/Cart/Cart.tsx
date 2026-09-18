@@ -8,8 +8,9 @@ import OrderSummary from "./OrderSummary";
 import { fetchLoadSavedQuote } from "@/redux/slices/couponSlice";
 import { checkoutFormSave } from "@/redux/slices/shippingSlice";
 import { logout } from "@/redux/slices/authSlice";
+import Link from "next/link";
 const Cart = () => {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const action = searchParams.get("action");
   const quoteToken = searchParams.get("quoteToken");
@@ -27,48 +28,51 @@ const Cart = () => {
     ) ?? 0;
   useEffect(() => {
     if (!shouldLoadQuote || !quoteToken) return;
-    dispatch(fetchLoadSavedQuote(quoteToken)).unwrap().then((res) => {
-      const response = res?.data
-      if (auth?.user?.id != response?.customer?.id) return
-      const shippingformation = response?.billingInformation
-      const billingAddress = response?.billingAddress
-      const shippingFormData = {
-        email: response?.customer?.email,
-        firstName: shippingformation?.firstName,
-        lastName: shippingformation?.lastName,
-        company: shippingformation?.companyName,
-        phone: shippingformation?.phone,
-        address1: shippingformation?.addressLine1,
-        address2: shippingformation?.addressLine2,
-        city: shippingformation?.city,
-        country: shippingformation?.country,
-        state: shippingformation?.state,
-        zip: shippingformation?.zip,
-        shippingMethod: shippingformation?.shippingMethod,
-        orderComment: response?.comments,
-      };
-      const billingFormData = {
-        billingFirstName: billingAddress.firstName || "",
-        billingLastName: billingAddress.lastName || "",
-        billingCompany: billingAddress.companyName || "",
-        billingPhone: billingAddress.phone || "",
-        billingAddress1: billingAddress.addressLine1 || "",
-        billingAddress2: billingAddress.addressLine2 || "",
-        billingCity: billingAddress.city || "",
-        billingCountry: billingAddress.country || "",
-        billingState: billingAddress.state || "",
-        billingZip: billingAddress.zip || "",
-      };
-      dispatch(
-        checkoutFormSave({ data: { shippingFormData, billingFormData } }),
-      );
-    }).catch((error) => {
-      if (error) {
-        localStorage.removeItem("persist:coupon");
-        dispatch(logout());
-        window.location.href = `/auth/login?action=loadSavedQuote&quoteToken=${quoteToken}`;
-      }
-    });;
+    dispatch(fetchLoadSavedQuote(quoteToken))
+      .unwrap()
+      .then((res) => {
+        const response = res?.data;
+        if (auth?.user?.id != response?.customer?.id) return;
+        const shippingformation = response?.billingInformation;
+        const billingAddress = response?.billingAddress;
+        const shippingFormData = {
+          email: response?.customer?.email,
+          firstName: shippingformation?.firstName,
+          lastName: shippingformation?.lastName,
+          company: shippingformation?.companyName,
+          phone: shippingformation?.phone,
+          address1: shippingformation?.addressLine1,
+          address2: shippingformation?.addressLine2,
+          city: shippingformation?.city,
+          country: shippingformation?.country,
+          state: shippingformation?.state,
+          zip: shippingformation?.zip,
+          shippingMethod: shippingformation?.shippingMethod,
+          orderComment: response?.comments,
+        };
+        const billingFormData = {
+          billingFirstName: billingAddress.firstName || "",
+          billingLastName: billingAddress.lastName || "",
+          billingCompany: billingAddress.companyName || "",
+          billingPhone: billingAddress.phone || "",
+          billingAddress1: billingAddress.addressLine1 || "",
+          billingAddress2: billingAddress.addressLine2 || "",
+          billingCity: billingAddress.city || "",
+          billingCountry: billingAddress.country || "",
+          billingState: billingAddress.state || "",
+          billingZip: billingAddress.zip || "",
+        };
+        dispatch(
+          checkoutFormSave({ data: { shippingFormData, billingFormData } }),
+        );
+      })
+      .catch((error) => {
+        if (error) {
+          localStorage.removeItem("persist:coupon");
+          dispatch(logout());
+          window.location.href = `/auth/login?action=loadSavedQuote&quoteToken=${quoteToken}`;
+        }
+      });
   }, [shouldLoadQuote, quoteToken]);
   return (
     <main className="flex flex-col gap-8 w-full py-1">
@@ -77,9 +81,12 @@ const Cart = () => {
         {/* Heading */}
         <div className="w-full">
           <h2 className="">
-            <span className="text-[11px] sans-font" itemProp="name">
+            <Link
+              href="/"
+              className="text-gray-600 hover:text-gray-900 text-[11px]"
+            >
               Home
-            </span>{" "}
+            </Link>
             <span
               className="mt-2 mx-3 text-gray-400 text-[11px]"
               aria-hidden="true"

@@ -15,7 +15,7 @@ const Brands = ({ brands }: any) => {
         // SKELETON UI (when loading is true)
         <div className="w-full flex gap-4 overflow-x-auto py-4">
           {/* Single flexible skeleton item (can scroll horizontally if needed) */}
-          <div className="flex-shrink-0 w-full h-48 bg-gray-200 rounded-lg animate-pulse flex items-center justify-center">
+          <div className="shrink-0 w-full h-48 bg-gray-200 rounded-lg animate-pulse flex items-center justify-center">
             <div className="w-full h-24 bg-gray-300 rounded-full"></div>
           </div>
         </div>

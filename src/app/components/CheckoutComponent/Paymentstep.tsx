@@ -63,12 +63,10 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
     // Show completed state with payment method and edit button
     return (
       <div className="flex items-center justify-between">
-        <span className="text-sm text-gray-600">{paymentMethodLabel || "Credit Card"}</span>
-        <button
-          type="button"
-          onClick={onEdit}
-          className="btn-primary"
-        >
+        <span className="text-sm text-gray-600">
+          {paymentMethodLabel || "Credit Card"}
+        </span>
+        <button type="button" onClick={onEdit} className="btn-primary">
           EDIT
         </button>
       </div>
@@ -80,7 +78,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
   return (
     <div className="space-y-4">
       {/* Stripe Credit Card */}
-      <label className="flex flex-col bg-white border rounded-lg p-4 cursor-pointer has-[:checked]:border-red-600">
+      <label className="flex flex-col bg-white border rounded-lg p-4 cursor-pointer has-checked:border-red-600">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <input
@@ -202,9 +200,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
               </div>
             </div>
 
-            {cardError && (
-              <p className="text-sm text-red-500">{cardError}</p>
-            )}
+            {cardError && <p className="text-sm text-red-500">{cardError}</p>}
           </div>
         )}
       </label>
@@ -232,7 +228,8 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
         <Image
           src="/checkouticon/card.png"
           alt="Cards"
-          width={100}fetchPriority="high"
+          width={100}
+          fetchPriority="high"
           height={30}
         />
       </label>
@@ -254,13 +251,15 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
             src="/checkouticon/googlepay.png"
             alt="Google Pay"
             width={60}
-            height={30}fetchPriority="high"
+            height={30}
+            fetchPriority="high"
           />
         </div>
         <Image
           src="/checkouticon/card.png"
           alt="Cards"
-          width={100}fetchPriority="high"
+          width={100}
+          fetchPriority="high"
           height={30}
         />
       </label>

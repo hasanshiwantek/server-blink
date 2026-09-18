@@ -332,7 +332,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
           <button
             type="button"
             onClick={onEdit}
-            className="btn-primary flex-shrink-0"
+            className="btn-primary shrink-0"
           >
             EDIT
           </button>
@@ -912,7 +912,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     className="flex items-start gap-3 border rounded p-4"
                   >
                     {/* Radio circle */}
-                    <div className="w-4 h-4 mt-1 rounded-full border-2 border-gray-200 flex-shrink-0 animate-pulse" />
+                    <div className="w-4 h-4 mt-1 rounded-full border-2 border-gray-200 shrink-0 animate-pulse" />
 
                     <div className="min-w-0 flex-1 flex items-center justify-between gap-3">
                       {/* Left: service name */}
@@ -922,7 +922,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                       </div>
 
                       {/* Right: price */}
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-14 flex-shrink-0" />
+                      <div className="h-4 bg-gray-200 rounded animate-pulse w-14 shrink-0" />
                     </div>
                   </div>
                 ))
@@ -998,7 +998,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                               : rate.display_name}
                           </span>
                         </div>
-                        <div className="text-[14px]  font-bold flex-shrink-0">
+                        <div className="text-[14px]  font-bold shrink-0">
                           {rate.total_charge === 0
                             ? "Free"
                             : `$${Number(rate.total_charge).toFixed(2)}`}

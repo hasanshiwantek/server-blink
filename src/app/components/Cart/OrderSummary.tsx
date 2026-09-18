@@ -1,10 +1,5 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import React, { useMemo, useCallback, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { RootState } from "@/redux/store";
 import {
   Select,
   SelectContent,
@@ -12,19 +7,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import countries from "world-countries";
-import { applyCoupon, removeCoupon } from "@/redux/slices/couponSlice";
-import { Country, State, City } from "country-state-city";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import {
+  applyCoupon,
+  fetchMyCouponUsage,
+  removeCoupon,
+} from "@/redux/slices/couponSlice";
+import {
+  addShippingCost,
   checkoutFormSave,
   fetchShippingRate,
   fetchShippingRates,
   getCheckoutForm,
   resetShippingRates,
 } from "@/redux/slices/shippingSlice";
+import { RootState } from "@/redux/store";
+import { Country, State } from "country-state-city";
+import { useRouter } from "next/navigation";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { calculatePackage } from "../CheckoutComponent/Shippingstep";
-import Image from "next/image";
-import { addShippingCost } from "@/redux/slices/shippingSlice";
 
 const OrderSummary = () => {
   const dispatch = useAppDispatch();
@@ -35,7 +37,7 @@ const OrderSummary = () => {
     manualDiscount,
     loading: couponLoading,
   } = useAppSelector((state: RootState) => state.coupon);
-  const discountTotal = Number(discountAmount) + Number(manualDiscount)
+  const discountTotal = Number(discountAmount) + Number(manualDiscount);
 
   const router = useRouter();
 
@@ -106,7 +108,7 @@ const OrderSummary = () => {
   const { shippingRates, ratesLoader } = useAppSelector(
     (state) => state.shippingZone,
   );
-  const handleShippingSubmit = (e: React.FormEvent) => {
+  const handleShippingSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     const pkg = calculatePackage(cart);
@@ -133,7 +135,7 @@ const OrderSummary = () => {
       });
   };
 
-  const handleCouponSubmit = async (e: React.FormEvent) => {
+  const handleCouponSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!couponCode.trim()) {
@@ -143,8 +145,13 @@ const OrderSummary = () => {
 
     try {
       await dispatch(
-        applyCoupon({ couponCode, total: totalBeforeDiscount }),
+        applyCoupon({
+          couponCode,
+          total: totalBeforeDiscount,
+          productIds: cart.map((item) => item.id),
+        }),
       ).unwrap();
+      await dispatch(fetchMyCouponUsage());
       toast.success("Coupon applied successfully!");
       setCouponCode("");
       setShowCoupon(false); // Close coupon form after success
@@ -212,7 +219,8 @@ const OrderSummary = () => {
 
   useEffect(() => {
     dispatch(getCheckoutForm());
-  }, []);
+    dispatch(fetchMyCouponUsage());
+  }, [dispatch]);
 
   return (
     <div className="border rounded-lg 2xl:w-full">
@@ -295,7 +303,6 @@ const OrderSummary = () => {
                     side="bottom"
                     align="start"
                     sideOffset={4}
-
                     className="w-[var(--radix-select-trigger-width)] border-none outline-none p-0"
                   >
                     {countryList.map((country) => (
@@ -393,53 +400,53 @@ const OrderSummary = () => {
                 <div>
                   {ratesLoader
                     ? Array.from({ length: 2 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="flex items-start gap-3 border rounded p-4 animate-pulse"
-                      >
-                        <div className="w-4 h-4 mt-1 bg-gray-200 rounded-full flex-shrink-0" />
-                        <div className="flex-1 space-y-2">
-                          <div className="h-4 bg-gray-200 rounded w-3/4" />
-                          <div className="h-5 bg-gray-200 rounded w-16" />
-                        </div>
-                      </div>
-                    ))
-                    : shippingRates?.map((rate, i) => {
-                      return (
-                        <label
-                          key={`${rate.method_id}-${rate.service_type}`}
-                          className={`flex items-start gap-3  p-4 transition-colors cursor-pointer ${selectedShippingMethod === rate.service_type ? "" : ""}`}
+                        <div
+                          key={i}
+                          className="flex items-start gap-3 border rounded p-4 animate-pulse"
                         >
-                          <input
-                            type="radio"
-                            name="shippingMethod"
-                            value={rate.service_type}
-                            checked={
-                              selectedShippingMethod === rate.service_type
-                            }
-                            onChange={(e) =>
-                              setSelectedShippingMethod(e.target.value)
-                            }
-                            className="mt-1"
-                          />
-                          <div className="min-w-0 flex-1 flex items-center justify-between gap-3 text-[#545454] text-[14px] ">
-                            <div className="flex items-center gap-2 font-normal">
-                              {rate.is_fedex && <span>FedEx</span>}
-                              <span className="">
-                                {rate.is_fedex
-                                  ? `(${rate.service_name})`
-                                  : rate.display_name}
-                              </span>
-                            </div>
-                            <div className=" font-bold flex-shrink-0">
-                              {rate.total_charge === 0
-                                ? "Free"
-                                : `$${Number(rate.total_charge).toFixed(2)}`}
-                            </div>
+                          <div className="w-4 h-4 mt-1 bg-gray-200 rounded-full shrink-0" />
+                          <div className="flex-1 space-y-2">
+                            <div className="h-4 bg-gray-200 rounded w-3/4" />
+                            <div className="h-5 bg-gray-200 rounded w-16" />
                           </div>
-                        </label>
-                      );
-                    })}
+                        </div>
+                      ))
+                    : shippingRates?.map((rate, i) => {
+                        return (
+                          <label
+                            key={`${rate.method_id}-${rate.service_type}`}
+                            className={`flex items-start gap-3  p-4 transition-colors cursor-pointer ${selectedShippingMethod === rate.service_type ? "" : ""}`}
+                          >
+                            <input
+                              type="radio"
+                              name="shippingMethod"
+                              value={rate.service_type}
+                              checked={
+                                selectedShippingMethod === rate.service_type
+                              }
+                              onChange={(e) =>
+                                setSelectedShippingMethod(e.target.value)
+                              }
+                              className="mt-1"
+                            />
+                            <div className="min-w-0 flex-1 flex items-center justify-between gap-3 text-[#545454] text-[14px] ">
+                              <div className="flex items-center gap-2 font-normal">
+                                {rate.is_fedex && <span>FedEx</span>}
+                                <span className="">
+                                  {rate.is_fedex
+                                    ? `(${rate.service_name})`
+                                    : rate.display_name}
+                                </span>
+                              </div>
+                              <div className=" font-bold shrink-0">
+                                {rate.total_charge === 0
+                                  ? "Free"
+                                  : `$${Number(rate.total_charge).toFixed(2)}`}
+                              </div>
+                            </div>
+                          </label>
+                        );
+                      })}
                   <div className="flex justify-end mt-1.5 mb-1.5">
                     <button
                       type="button"
@@ -504,7 +511,7 @@ const OrderSummary = () => {
                       }}
                       disabled={shippingCostLoading}
                       className="w-full md:w-[55%] text-[18px] btn-primary"
-                    // className="w-full md:w-[65%] p-2 border-b border-black  bg-[#D42020] text-white text-[14px] font-bold"
+                      // className="w-full md:w-[65%] p-2 border-b border-black  bg-[#D42020] text-white text-[14px] font-bold"
                     >
                       {shippingCostLoading
                         ? "Loading..."
@@ -577,21 +584,22 @@ const OrderSummary = () => {
             </form>
           )}
 
+          {manualDiscount > 0 && (
+            <>
+              {/* Manual Discount */}
+              <div className="w-full h-[1px] bg-gray-300 my-3"></div>
 
-          {manualDiscount > 0 && <>
-            {/* Manual Discount */}
-            <div className="w-full h-[1px] bg-gray-300 my-3"></div>
-
-            {/* Coupon Section */}
-            <div className="flex justify-between py-2">
-              <span className="text-[14px] font-bold text-[#393939]">
-                Manual Discount:
-              </span>
-              <span className="text-[14px] font-medium">
-                -${manualDiscount?.toFixed(2)}
-              </span>
-            </div>
-          </>}
+              {/* Coupon Section */}
+              <div className="flex justify-between py-2">
+                <span className="text-[14px] font-bold text-[#393939]">
+                  Manual Discount:
+                </span>
+                <span className="text-[14px] font-medium">
+                  -${manualDiscount?.toFixed(2)}
+                </span>
+              </div>
+            </>
+          )}
 
           {/* Show discount breakdown if applied */}
         </div>
