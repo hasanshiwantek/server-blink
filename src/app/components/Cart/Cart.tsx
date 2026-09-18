@@ -6,7 +6,7 @@ import { RootState } from "@/redux/store";
 import CartList from "./CartList";
 import OrderSummary from "./OrderSummary";
 import { fetchLoadSavedQuote, removeCoupon } from "@/redux/slices/couponSlice";
-import { addShippingCost, checkoutFormSave } from "@/redux/slices/shippingSlice";
+import { addShippingCost, checkoutFormSave, fetchShippingRate } from "@/redux/slices/shippingSlice";
 import { logout } from "@/redux/slices/authSlice";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
 const Cart = () => {
@@ -64,7 +64,7 @@ const Cart = () => {
       dispatch(
         checkoutFormSave({ data: { shippingFormData, billingFormData } }),
       );
-      await dispatch(fetchCartList()).unwrap().then((res) => {
+      await dispatch(fetchCartList()).unwrap().then(async (res) => {
         const carts = res?.data
         if (carts?.length > 0) {
           const shippingMethod = response?.shippingMethod
@@ -80,7 +80,8 @@ const Cart = () => {
               total_charge: shippingMethod?.cost,
             },
           };
-          dispatch(addShippingCost(shippingPayload))
+          await dispatch(addShippingCost(shippingPayload))
+          dispatch(fetchShippingRate({}))
         }
       });
 
