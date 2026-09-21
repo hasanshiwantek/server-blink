@@ -44,7 +44,7 @@ const OrderProduct = () => {
             className="border rounded-lg p-4 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 xl:gap-6 w-full animate-pulse"
           >
             <div className="flex flex-col xl:flex-row items-start xl:items-center gap-4 xl:w-[65%] w-full">
-              <div className="w-full max-w-[128px] h-32 bg-gray-300 rounded-md flex-shrink-0"></div>
+              <div className="w-full max-w-[128px] h-32 bg-gray-300 rounded-md shrink-0"></div>
               <div className="flex flex-col justify-center w-full gap-2">
                 <div className="h-4 bg-gray-300 rounded w-1/3"></div>
                 <div className="h-4 bg-gray-300 rounded w-2/3"></div>
@@ -84,7 +84,7 @@ const OrderProduct = () => {
             {/* Left Side: Product Info */}
             <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:w-[65%] w-full">
               {/* Product Image */}
-              <div className="w-full max-w-[128px] h-32 relative flex-shrink-0">
+              <div className="w-full max-w-[128px] h-32 relative shrink-0">
                 <Image
                   src={
                     item?.products?.[0]?.image?.[0]?.path || item?.products?.[1]?.image?.[0]?.path ||

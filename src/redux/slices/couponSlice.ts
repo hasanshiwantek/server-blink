@@ -177,6 +177,7 @@ export const fetchLoadSavedQuote = createAsyncThunk(
     }
   },
 );
+
 export const fetchCustomerDiscounts = createAsyncThunk(
   "coupon/fetchCustomerDiscounts",
   async (_, thunkAPI) => {
@@ -290,6 +291,7 @@ const couponSlice = createSlice({
       })
 
 
+
       // Fetch Customer Discounts
       .addCase(fetchCustomerDiscounts.pending, (state) => {
         state.loading = true;
@@ -299,8 +301,6 @@ const couponSlice = createSlice({
         state.loading = false;
         if (action?.payload?.data?.orderId) {
           state.orderId = action?.payload?.data?.orderId
-        }
-        if (action?.payload?.data?.manualDiscount) {
           state.manualDiscount = Number(action?.payload?.data?.manualDiscount);
         }
         state.error = null;

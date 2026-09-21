@@ -1,16 +1,22 @@
 "use client";
-import React, { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { RootState } from "@/redux/store";
-import CartList from "./CartList";
-import OrderSummary from "./OrderSummary";
-import { fetchLoadSavedQuote, removeCoupon } from "@/redux/slices/couponSlice";
-import { addShippingCost, checkoutFormSave, fetchShippingRate } from "@/redux/slices/shippingSlice";
 import { logout } from "@/redux/slices/authSlice";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
+import { fetchLoadSavedQuote, removeCoupon } from "@/redux/slices/couponSlice";
+import {
+  addShippingCost,
+  checkoutFormSave,
+  fetchShippingRate,
+} from "@/redux/slices/shippingSlice";
+import { RootState } from "@/redux/store";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import CartList from "./CartList";
+import OrderSummary from "./OrderSummary";
+
 const Cart = () => {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const action = searchParams.get("action");
   const quoteToken = searchParams.get("quoteToken");
@@ -31,72 +37,66 @@ const Cart = () => {
     ) ?? 0;
   useEffect(() => {
     if (!shouldLoadQuote || !quoteToken) return;
-    dispatch(fetchLoadSavedQuote(quoteToken)).unwrap().then(async (res) => {
-      const response = res?.data
+    dispatch(fetchLoadSavedQuote(quoteToken))
+      .unwrap()
+      .then(async (res) => {
+        const response = res?.data;
 
-      if (auth?.user?.id != response?.customer?.id) return
-      const shippingformation = response?.billingInformation
-      const billingAddress = response?.billingAddress
-      const shippingFormData = {
-        email: response?.customer?.email,
-        firstName: shippingformation?.firstName,
-        lastName: shippingformation?.lastName,
-        company: shippingformation?.companyName,
-        phone: shippingformation?.phone,
-        address1: shippingformation?.addressLine1,
-        address2: shippingformation?.addressLine2,
-        city: shippingformation?.city,
-        country: shippingformation?.country,
-        state: shippingformation?.state,
-        zip: shippingformation?.zip,
-        shippingMethod: shippingformation?.shippingMethod,
-        orderComment: response?.comments,
-      };
-      const billingFormData = {
-        billingFirstName: billingAddress.firstName,
-        billingLastName: billingAddress.lastName,
-        billingCompany: billingAddress.companyName,
-        billingPhone: billingAddress.phone,
-        billingAddress1: billingAddress.addressLine1,
-        billingAddress2: billingAddress.addressLine2,
-        billingCity: billingAddress.city,
-        billingCountry: billingAddress.country,
-        billingState: billingAddress.state,
-        billingZip: billingAddress.zip,
-      };
-      dispatch(
-        checkoutFormSave({ data: { shippingFormData, billingFormData } }),
-      );
-      await dispatch(fetchCartList()).unwrap().then(async (res) => {
-        const carts = res?.data
-        // if (carts?.length > 0) {
-        //   const shippingMethod = response?.shippingMethod
-        //   const shippingPayload: any = {
-        //     city: shippingformation?.city,
-        //     country: shippingformation?.country,
-        //     state: shippingformation?.state,
-        //     zip: shippingformation?.zip,
-        //     cartId: carts.map((item: any) => item.id),
-        //     rate: {
-        //       service_type: shippingMethod?.service_type,
-        //       method_type: shippingMethod?.method_type,
-        //       total_charge: shippingMethod?.cost,
-        //     },
-        //   };
-        //   await dispatch(addShippingCost(shippingPayload))
-        //   dispatch(fetchShippingRate({ cartIds: carts.map((item: any) => item.cartItemId) }))
-        // }
+        if (auth?.user?.id != response?.customer?.id) return
+        const shippingformation = response?.billingInformation
+        const billingAddress = response?.billingAddress
+        const shippingFormData = {
+          email: response?.customer?.email,
+          firstName: shippingformation?.firstName,
+          lastName: shippingformation?.lastName,
+          company: shippingformation?.companyName,
+          phone: shippingformation?.phone,
+          address1: shippingformation?.addressLine1,
+          address2: shippingformation?.addressLine2,
+          city: shippingformation?.city,
+          country: shippingformation?.country,
+          state: shippingformation?.state,
+          zip: shippingformation?.zip,
+          shippingMethod: shippingformation?.shippingMethod,
+          orderComment: response?.comments,
+        };
+        const billingFormData = {
+          billingFirstName: billingAddress.firstName,
+          billingLastName: billingAddress.lastName,
+          billingCompany: billingAddress.companyName,
+          billingPhone: billingAddress.phone,
+          billingAddress1: billingAddress.addressLine1,
+          billingAddress2: billingAddress.addressLine2,
+          billingCity: billingAddress.city,
+          billingCountry: billingAddress.country,
+          billingState: billingAddress.state,
+          billingZip: billingAddress.zip,
+        };
+        dispatch(
+          checkoutFormSave({ data: { shippingFormData, billingFormData } }),
+        );
+        await dispatch(fetchCartList()).unwrap().then(async (res) => {
+          const carts = res?.data
+          // if (carts?.length > 0) {
+          //   const shippingMethod = response?.shippingMethod
+          //   const shippingPayload: any = {
+          //     city: shippingformation?.city,
+          //     country: shippingformation?.country,
+          //     state: shippingformation?.state,
+          //     zip: shippingformation?.zip,
+          //     cartId: carts.map((item: any) => item.id),
+          //     rate: {
+          //       service_type: shippingMethod?.service_type,
+          //       method_type: shippingMethod?.method_type,
+          //       total_charge: shippingMethod?.cost,
+          //     },
+          //   };
+          //   await dispatch(addShippingCost(shippingPayload))
+          //   dispatch(fetchShippingRate({ cartIds: carts.map((item: any) => item.cartItemId) }))
+          // }
+        });
       });
-
-    }).catch((error) => {
-      if (error) {
-        dispatch(removeCoupon())
-        dispatch(logout());
-        window.location.href = `/auth/login?action=loadSavedQuote&quoteToken=${quoteToken}`;
-      }
-    });
   }, [shouldLoadQuote, quoteToken]);
-
 
   return (
     <main className="flex flex-col gap-8 w-full py-1">
@@ -105,9 +105,12 @@ const Cart = () => {
         {/* Heading */}
         <div className="w-full">
           <h2 className="">
-            <span className="text-[11px] sans-font" itemProp="name">
+            <Link
+              href="/"
+              className="text-gray-600 hover:text-gray-900 text-[11px]"
+            >
               Home
-            </span>{" "}
+            </Link>
             <span
               className="mt-2 mx-3 text-gray-400 text-[11px]"
               aria-hidden="true"

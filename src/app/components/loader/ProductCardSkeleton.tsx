@@ -50,7 +50,7 @@ const ProductCardSkeleton = () => {
                 {Array.from({ length: 4 }).map((_, index) => (
                   <Skeleton
                     key={index}
-                    className="flex-shrink-0 w-20 h-20 rounded-md"
+                    className="shrink-0 w-20 h-20 rounded-md"
                   />
                 ))}
               </div>

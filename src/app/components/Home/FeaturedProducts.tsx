@@ -261,7 +261,7 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
                   key={i}
                   className={
                     isSlider
-                      ? "flex-shrink-0 w-full sm:w-1/2 md:w-1/3 lg:w-1/4"
+                      ? "shrink-0 w-full sm:w-1/2 md:w-1/3 lg:w-1/4"
                       : ""
                   }
                 >
@@ -286,7 +286,7 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
               {productsData?.slice(0, 8)?.map((product: any) => (
                 <div
                   key={product.id}
-                  className="flex-shrink-0 w-[calc((100%-16px)/2)] md:w-[calc((100%-32px)/3)] lg:w-[calc((100%-48px)/4)]"
+                  className="shrink-0 w-[calc((100%-16px)/2)] md:w-[calc((100%-32px)/3)] lg:w-[calc((100%-48px)/4)]"
                 >
                   <ProductCard product={product} />
                 </div>

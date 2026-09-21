@@ -1,12 +1,11 @@
-import OrderInformation from '@/app/components/CheckoutComponent/OrderInformation'
-import React from 'react'
+import OrderInformation from "@/app/components/CheckoutComponent/OrderInformation";
 
 const page = () => {
   return (
     <div>
-        <OrderInformation />
+      <OrderInformation />
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default page;
