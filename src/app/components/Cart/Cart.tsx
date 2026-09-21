@@ -95,6 +95,12 @@ const Cart = () => {
           //   dispatch(fetchShippingRate({ cartIds: carts.map((item: any) => item.cartItemId) }))
           // }
         });
+      }).catch((error) => {
+        if (error) {
+          dispatch(removeCoupon())
+          dispatch(logout());
+          window.location.href = `/auth/login?action=loadSavedQuote&quoteToken=${quoteToken}`;
+        }
       });
   }, [shouldLoadQuote, quoteToken]);
 

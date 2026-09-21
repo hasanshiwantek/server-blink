@@ -119,7 +119,7 @@ export const checkAuthToken = createAsyncThunk(
   },
 );
 const clearAuthStorage = () => {
-  removeFromStorage("persist:coupon");
+  removeFromStorage("quoteToken");
 };
 // Slice
 const authSlice = createSlice({
