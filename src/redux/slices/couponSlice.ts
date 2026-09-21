@@ -274,16 +274,6 @@ const couponSlice = createSlice({
             quoteToken = null;
           }
         }
-        // if (
-        //   coupon?.couponCode &&
-        //   Number(action?.payload?.data?.discountAmount)
-        // ) {
-        //   state.appliedCoupon = coupon;
-        //   state.discountAmount = Number(action?.payload?.data?.discountAmount);
-        // }
-        // if (Number(action?.payload?.data?.manualDiscount)) {
-        //   state.manualDiscount = Number(action?.payload?.data?.manualDiscount);
-        // }
         setInStorage("quoteToken", quoteToken)
         state.quoteToken = quoteToken;
         state.error = null;
