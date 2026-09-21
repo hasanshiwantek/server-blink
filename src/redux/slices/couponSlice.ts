@@ -266,14 +266,14 @@ const couponSlice = createSlice({
         let quoteToken: string | null = null;
         const isDraftUrl = action?.payload?.data?.isDraftUrl;
         const orderId = action?.payload?.data?.id;
-        // if (isDraftUrl) {
-        //   try {
-        //     quoteToken = new URL(isDraftUrl).searchParams.get("quoteToken");
-        //     state.orderId = orderId;
-        //   } catch {
-        //     quoteToken = null;
-        //   }
-        // }
+        if (isDraftUrl) {
+          try {
+            quoteToken = new URL(isDraftUrl).searchParams.get("quoteToken");
+            state.orderId = orderId;
+          } catch {
+            quoteToken = null;
+          }
+        }
         // if (
         //   coupon?.couponCode &&
         //   Number(action?.payload?.data?.discountAmount)
