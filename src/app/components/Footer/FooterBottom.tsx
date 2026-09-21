@@ -16,7 +16,7 @@ import { checkAuthToken, customerProfile, logout } from "@/redux/slices/authSlic
 import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { useSearchParams } from "next/navigation";
 import { successMessage } from "@/utils/message";
-import { getPersistedAuth, getSessionId, setInStorage } from "@/utils/storage";
+import { getFromStorage, getPersistedAuth, getSessionId, setInStorage } from "@/utils/storage";
 import { fetchCustomerDiscounts } from "@/redux/slices/couponSlice";
 
 const FooterBottom = () => {
@@ -124,7 +124,8 @@ const FooterBottom = () => {
   }, [paramsToken, dispatch, router]);
 
   useEffect(() => {
-    if (auth?.isAuthenticated) {
+    const quoteToken = getFromStorage("quoteToken")
+    if (auth?.isAuthenticated && quoteToken) {
       dispatch(fetchCustomerDiscounts())
     }
   }, [auth?.isAuthenticated])
