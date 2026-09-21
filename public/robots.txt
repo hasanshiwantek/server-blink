@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://staging.sparemicro.com
+
+# Sitemaps
+Sitemap: https://staging.sparemicro.com/sitemap.xml
