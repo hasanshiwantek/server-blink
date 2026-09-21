@@ -303,6 +303,7 @@ const couponSlice = createSlice({
           state.orderId = action?.payload?.data?.orderId
           state.manualDiscount = Number(action?.payload?.data?.manualDiscount);
         }
+        
         state.error = null;
       })
       .addCase(fetchCustomerDiscounts.rejected, (state, action) => {
