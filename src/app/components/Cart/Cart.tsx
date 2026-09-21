@@ -76,8 +76,8 @@ const Cart = () => {
           checkoutFormSave({ data: { shippingFormData, billingFormData } }),
         );
         await dispatch(fetchCartList()).unwrap().then(async (res) => {
+          dispatch(fetchCustomerDiscounts())
         });
-        dispatch(fetchCustomerDiscounts())
       }).catch((error) => {
         if (error) {
           dispatch(removeCoupon())
