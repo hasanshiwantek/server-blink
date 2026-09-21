@@ -17,6 +17,7 @@ import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { useSearchParams } from "next/navigation";
 import { successMessage } from "@/utils/message";
 import { getPersistedAuth, getSessionId, setInStorage } from "@/utils/storage";
+import { fetchCustomerDiscounts } from "@/redux/slices/couponSlice";
 
 const FooterBottom = () => {
   const searchParams = useSearchParams();
@@ -122,6 +123,11 @@ const FooterBottom = () => {
     login();
   }, [paramsToken, dispatch, router]);
 
+  useEffect(() => {
+    if (auth?.isAuthenticated) {
+      dispatch(fetchCustomerDiscounts())
+    }
+  }, [auth?.isAuthenticated])
   return (
     <footer className="bg-[#333333] text-[#ffffff] w-full mx-auto roboto-font">
       {/* 🔹 Newsletter Section */}

@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
             const backendRes = await fetch(
                 `${BACKEND_BASE}sitemap/xmlsitemap`,
                 {
-                    next: { revalidate: 10 },
+                    next: { revalidate: 10 },// ← 10 seconds revalidation
                     headers: {
                         'storeid': storeId
                     }
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
                 },
             });
         } catch (error) {
-           
+
             return new Response('Error loading sitemap index', { status: 500 });
         }
     }
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
             },
         });
     } catch (error) {
-        
+
         return new Response(`Failed to load ${type} sitemap`, { status: 500 });
     }
 }
