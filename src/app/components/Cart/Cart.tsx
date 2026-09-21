@@ -27,6 +27,9 @@ const Cart = () => {
   const auth = useAppSelector((state: RootState) => state?.auth);
   const cartLoad = cartLoading || loading;
   const cartItems = useAppSelector((state: RootState) => state?.carts?.items);
+
+  // console.log("cartItems", cartItems);
+
   const cartItemCount =
     cartItems?.reduce(
       (sum: number, item: any) => sum + (item?.quantity ?? 1),
@@ -39,9 +42,9 @@ const Cart = () => {
       .then(async (res) => {
         const response = res?.data;
 
-        if (auth?.user?.id != response?.customer?.id) return;
-        const shippingformation = response?.billingInformation;
-        const billingAddress = response?.billingAddress;
+        if (auth?.user?.id != response?.customer?.id) return
+        const shippingformation = response?.billingInformation
+        const billingAddress = response?.billingAddress
         const shippingFormData = {
           email: response?.customer?.email,
           firstName: shippingformation?.firstName,
@@ -58,49 +61,40 @@ const Cart = () => {
           orderComment: response?.comments,
         };
         const billingFormData = {
-          billingFirstName: billingAddress.firstName || "",
-          billingLastName: billingAddress.lastName || "",
-          billingCompany: billingAddress.companyName || "",
-          billingPhone: billingAddress.phone || "",
-          billingAddress1: billingAddress.addressLine1 || "",
-          billingAddress2: billingAddress.addressLine2 || "",
-          billingCity: billingAddress.city || "",
-          billingCountry: billingAddress.country || "",
-          billingState: billingAddress.state || "",
-          billingZip: billingAddress.zip || "",
+          billingFirstName: billingAddress.firstName,
+          billingLastName: billingAddress.lastName,
+          billingCompany: billingAddress.companyName,
+          billingPhone: billingAddress.phone,
+          billingAddress1: billingAddress.addressLine1,
+          billingAddress2: billingAddress.addressLine2,
+          billingCity: billingAddress.city,
+          billingCountry: billingAddress.country,
+          billingState: billingAddress.state,
+          billingZip: billingAddress.zip,
         };
         dispatch(
           checkoutFormSave({ data: { shippingFormData, billingFormData } }),
         );
-        await dispatch(fetchCartList())
-          .unwrap()
-          .then(async (res) => {
-            const carts = res?.data;
-            if (carts?.length > 0) {
-              const shippingMethod = response?.shippingMethod;
-              const shippingPayload: any = {
-                city: shippingformation?.city,
-                country: shippingformation?.country,
-                state: shippingformation?.state,
-                zip: shippingformation?.zip,
-                cartId: carts.map((item: any) => item.id),
-                rate: {
-                  service_type: shippingMethod?.service_type,
-                  method_type: shippingMethod?.method_type,
-                  total_charge: shippingMethod?.cost,
-                },
-              };
-              await dispatch(addShippingCost(shippingPayload));
-              dispatch(fetchShippingRate({}));
-            }
-          });
-      })
-      .catch((error) => {
-        if (error) {
-          dispatch(removeCoupon());
-          dispatch(logout());
-          window.location.href = `/auth/login?action=loadSavedQuote&quoteToken=${quoteToken}`;
-        }
+        await dispatch(fetchCartList()).unwrap().then(async (res) => {
+          const carts = res?.data
+          // if (carts?.length > 0) {
+          //   const shippingMethod = response?.shippingMethod
+          //   const shippingPayload: any = {
+          //     city: shippingformation?.city,
+          //     country: shippingformation?.country,
+          //     state: shippingformation?.state,
+          //     zip: shippingformation?.zip,
+          //     cartId: carts.map((item: any) => item.id),
+          //     rate: {
+          //       service_type: shippingMethod?.service_type,
+          //       method_type: shippingMethod?.method_type,
+          //       total_charge: shippingMethod?.cost,
+          //     },
+          //   };
+          //   await dispatch(addShippingCost(shippingPayload))
+          //   dispatch(fetchShippingRate({ cartIds: carts.map((item: any) => item.cartItemId) }))
+          // }
+        });
       });
   }, [shouldLoadQuote, quoteToken]);
 

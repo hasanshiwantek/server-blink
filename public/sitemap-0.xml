@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+<url><loc>https://staging.sparemicro.com/auth/login</loc><lastmod>2026-09-21T20:01:05.495Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/cart</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/advanced-search</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/about-us</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/auth/forgot-password</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/auth/signup</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/action</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/blogs</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/auth/reset-password</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/checkout</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/contact-us</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/forgot-password</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/payment-options</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/order-success</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/shipping-policy</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/result</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/return-Policy</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/subscribe</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/my-account/addresses</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/my-account/orders</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/my-account/addresses/new-address</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/my-account/returns</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/my-account/recently-viewed</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/my-account/account-settings</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/my-account/messages</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://staging.sparemicro.com/my-account</loc><lastmod>2026-09-21T20:01:05.496Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+</urlset>

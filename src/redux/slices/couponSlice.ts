@@ -2,6 +2,7 @@
 import axiosInstance from "@/lib/axiosInstance";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+import { getFromStorage, setInStorage } from "@/utils/storage";
 
 interface Coupon {
   id?: number;
@@ -167,9 +168,7 @@ export const fetchLoadSavedQuote = createAsyncThunk(
       const state = thunkAPI.getState() as RootState;
       const currentUserId = state.auth?.user?.id;
       const userId = res?.data?.data?.customer?.id;
-      if (currentUserId == userId) {
-        return res?.data;
-      }
+      return res?.data;
     } catch (err: any) {
       return thunkAPI.rejectWithValue(
         err.response?.data?.message || "Failed to load saved quote",
@@ -178,6 +177,22 @@ export const fetchLoadSavedQuote = createAsyncThunk(
   },
 );
 
+export const fetchCustomerDiscounts = createAsyncThunk(
+  "coupon/fetchCustomerDiscounts",
+  async (_, thunkAPI) => {
+    try {
+      const quoteToken = getFromStorage("quoteToken")
+      const res = await axiosInstance.get(`dashboard/customer-discounts`, {
+        params: quoteToken ? { quoteToken } : {},
+      });
+      return res?.data;
+    } catch (err: any) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to load saved quote"
+      );
+    }
+  }
+);
 const couponSlice = createSlice({
   name: "coupon",
   initialState,
@@ -251,28 +266,50 @@ const couponSlice = createSlice({
         let quoteToken: string | null = null;
         const isDraftUrl = action?.payload?.data?.isDraftUrl;
         const orderId = action?.payload?.data?.id;
-        if (isDraftUrl) {
-          try {
-            quoteToken = new URL(isDraftUrl).searchParams.get("quoteToken");
-            state.orderId = orderId;
-          } catch {
-            quoteToken = null;
-          }
-        }
-        if (
-          coupon?.couponCode &&
-          Number(action?.payload?.data?.discountAmount)
-        ) {
-          state.appliedCoupon = coupon;
-          state.discountAmount = Number(action?.payload?.data?.discountAmount);
-        }
-        if (Number(action?.payload?.data?.manualDiscount)) {
-          state.manualDiscount = Number(action?.payload?.data?.manualDiscount);
-        }
+        // if (isDraftUrl) {
+        //   try {
+        //     quoteToken = new URL(isDraftUrl).searchParams.get("quoteToken");
+        //     state.orderId = orderId;
+        //   } catch {
+        //     quoteToken = null;
+        //   }
+        // }
+        // if (
+        //   coupon?.couponCode &&
+        //   Number(action?.payload?.data?.discountAmount)
+        // ) {
+        //   state.appliedCoupon = coupon;
+        //   state.discountAmount = Number(action?.payload?.data?.discountAmount);
+        // }
+        // if (Number(action?.payload?.data?.manualDiscount)) {
+        //   state.manualDiscount = Number(action?.payload?.data?.manualDiscount);
+        // }
+        setInStorage("quoteToken", quoteToken)
         state.quoteToken = quoteToken;
         state.error = null;
       })
       .addCase(fetchLoadSavedQuote.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+
+
+      // Fetch Customer Discounts
+      .addCase(fetchCustomerDiscounts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchCustomerDiscounts.fulfilled, (state, action) => {
+        state.loading = false;
+        if (action?.payload?.data?.orderId) {
+          state.orderId = action?.payload?.data?.orderId
+          state.manualDiscount = Number(action?.payload?.data?.manualDiscount);
+        }
+
+        state.error = null;
+      })
+      .addCase(fetchCustomerDiscounts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

@@ -36,7 +36,7 @@ export const fetchShippingRate = createAsyncThunk(
     "cart/fetchShippingDetails",
     async (data: any, thunkAPI) => {
         try {
-            const res = await axiosInstance.get(`web/cart/get/shipping-by-rate`);
+            const res = await axiosInstance.get(`web/cart/get/shipping-by-rate?cartIds=${data?.cartIds.map((item: any) => item)}`);
             return res.data;
         } catch (err: any) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any

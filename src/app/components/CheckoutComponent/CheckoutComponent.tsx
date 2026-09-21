@@ -315,7 +315,7 @@ const CheckoutForm = () => {
     };
     const getShippingRates = async () => {
       try {
-        await dispatch(fetchShippingRate({})).unwrap();
+        await dispatch(fetchShippingRate({ cartIds: cart?.map((item: any) => item.cartItemId) })).unwrap();
       } catch (err) {
         detectCountry();
       }
@@ -746,7 +746,7 @@ const CheckoutForm = () => {
         orderPayload,
       );
       const orderData = orderResponse.data?.data || orderResponse.data;
-      dispatch(fetchShippingRate({}));
+      dispatch(fetchShippingRate({ cartIds: cart?.map((item: any) => item.cartItemId) }));
       return orderData || null;
     },
     [buildOrderPayload],
@@ -815,7 +815,7 @@ const CheckoutForm = () => {
         );
 
         dispatch(removeShippingRate());
-        dispatch(fetchShippingRate({}));
+        dispatch(fetchShippingRate({ cartIds: cart?.map((item: any) => item.cartItemId) }));
         dispatch(setLastOrder(orderData));
         dispatch(clearCart());
         dispatch(removeCoupon());
@@ -1171,7 +1171,7 @@ const CheckoutForm = () => {
         }),
       );
       dispatch(removeShippingRate());
-      dispatch(fetchShippingRate({}));
+      dispatch(fetchShippingRate({ cartIds: cart?.map((item: any) => item.cartItemId) }));
       dispatch(setLastOrder(orderData));
       dispatch(clearCart());
       dispatch(removeCoupon());
