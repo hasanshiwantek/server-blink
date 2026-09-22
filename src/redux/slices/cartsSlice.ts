@@ -3,7 +3,7 @@ import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "@/lib/axiosInstance";
 import { CHECKOUT_STORAGE_KEY } from "@/app/components/CheckoutComponent/CheckoutComponent";
 import { RootState } from "../store";
-import { getFromStorage } from "@/utils/storage";
+import { getFromSessionStorage, getFromStorage } from "@/utils/storage";
 export interface CartItem {
   productId: any;
   quantity: number;
@@ -61,7 +61,7 @@ export const fetchCartList = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
 
-      const quoteToken = getFromStorage("quoteToken")
+      const quoteToken = getFromSessionStorage("quoteToken")
       const res = await axiosInstance.get("web/cart/list", {
         params: quoteToken ? { quoteToken } : {},
       });
