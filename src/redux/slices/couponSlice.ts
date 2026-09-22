@@ -243,9 +243,6 @@ const couponSlice = createSlice({
         state.appliedCoupon = null;
         state.couponUsageId = null;
         state.discountAmount = 0;
-        state.manualDiscount = 0;
-        state.quoteToken = null;
-        state.orderId = null;
         state.error = null;
       })
       .addCase(removeCoupon.rejected, (state, action) => {
@@ -274,7 +271,7 @@ const couponSlice = createSlice({
             quoteToken = null;
           }
         }
-        
+
         setInSessionStorage("quoteToken", quoteToken)
         state.quoteToken = quoteToken;
         state.error = null;

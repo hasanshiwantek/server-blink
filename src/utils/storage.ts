@@ -43,7 +43,14 @@ export function setInSessionStorage(key: string, obj: any) {
         console.error(err);
     }
 }
-
+export function removeFromSessionStorage(key: string) {
+    if (!key || typeof window === "undefined") return;
+    try {
+        sessionStorage.removeItem(key);
+    } catch (err) {
+        console.error(err);
+    }
+}
 export function getFromSessionStorage(key: string) {
     if (!key || typeof window === "undefined") return null;
 
