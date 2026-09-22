@@ -79,7 +79,10 @@ export const fetchMyCouponUsage = createAsyncThunk(
   "coupon/fetchMyCouponUsage",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/web/coupons/my-coupon-usage");
+      const draft_token = getFromSessionStorage("quoteToken")
+      const response = await axiosInstance.get("/web/coupons/my-coupon-usage", {
+        params: draft_token ? { draft_token } : {},
+      });
       const usageData = response?.data?.data;
       const activeUsage = Array.isArray(usageData)
         ? usageData[0]
@@ -200,6 +203,10 @@ const couponSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    removeManualDiscount: (state) => {
+      state.orderId = null;
+      state.manualDiscount = 0
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -304,5 +311,5 @@ const couponSlice = createSlice({
   },
 });
 
-export const { clearError } = couponSlice.actions;
+export const { clearError, removeManualDiscount } = couponSlice.actions;
 export default couponSlice.reducer;

@@ -2,7 +2,7 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { logout } from "@/redux/slices/authSlice";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
-import { fetchCustomerDiscounts, fetchLoadSavedQuote, removeCoupon } from "@/redux/slices/couponSlice";
+import { fetchCustomerDiscounts, fetchLoadSavedQuote, removeCoupon, removeManualDiscount } from "@/redux/slices/couponSlice";
 import {
   addShippingCost,
   checkoutFormSave,
@@ -81,6 +81,7 @@ const Cart = () => {
       }).catch((error) => {
         if (error) {
           dispatch(removeCoupon())
+          dispatch(removeManualDiscount())
           dispatch(logout());
           window.location.href = `/auth/login?action=loadSavedQuote&quoteToken=${quoteToken}`;
         }
