@@ -243,7 +243,6 @@ const couponSlice = createSlice({
         state.appliedCoupon = null;
         state.couponUsageId = null;
         state.discountAmount = 0;
-        state.orderId = null;
         state.error = null;
       })
       .addCase(removeCoupon.rejected, (state, action) => {
