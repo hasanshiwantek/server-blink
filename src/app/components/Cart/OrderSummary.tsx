@@ -25,8 +25,8 @@ import { RootState } from "@/redux/store";
 import { Country, State } from "country-state-city";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
 import { calculatePackage } from "../CheckoutComponent/Shippingstep";
+import { errorMessage, infoMessage, successMessage } from "@/utils/message";
 
 const OrderSummary = () => {
   const dispatch = useAppDispatch();
@@ -139,7 +139,7 @@ const OrderSummary = () => {
     e.preventDefault();
 
     if (!couponCode.trim()) {
-      toast.error("Please enter a coupon code");
+      errorMessage("Please enter a coupon code");
       return;
     }
 
@@ -152,23 +152,23 @@ const OrderSummary = () => {
         }),
       ).unwrap();
       await dispatch(fetchMyCouponUsage());
-      toast.success("Coupon applied successfully!");
+      successMessage("Coupon applied successfully!");
       setCouponCode("");
       setShowCoupon(false); // Close coupon form after success
     } catch (err: any) {
-      toast.error(err || "Failed to apply coupon");
+      errorMessage(err || "Failed to apply coupon");
     }
   };
 
   const handleRemoveCoupon = () => {
     dispatch(removeCoupon());
     setCouponCode("");
-    toast.info("Coupon removed");
+    infoMessage("Coupon removed");
   };
 
   const handleProceedToCheckout = useCallback(() => {
     if (!cart.length) {
-      toast.error("Please add something");
+      errorMessage("Please add something");
       return;
     }
     router.push("/checkout");
@@ -400,59 +400,59 @@ const OrderSummary = () => {
                 <div>
                   {ratesLoader
                     ? Array.from({ length: 2 }).map((_, i) => (
-                        <div
-                          key={i}
-                          className="flex items-start gap-3 border rounded p-4 animate-pulse"
-                        >
-                          <div className="w-4 h-4 mt-1 bg-gray-200 rounded-full shrink-0" />
-                          <div className="flex-1 space-y-2">
-                            <div className="h-4 bg-gray-200 rounded w-3/4" />
-                            <div className="h-5 bg-gray-200 rounded w-16" />
-                          </div>
+                      <div
+                        key={i}
+                        className="flex items-start gap-3 border rounded p-4 animate-pulse"
+                      >
+                        <div className="w-4 h-4 mt-1 bg-gray-200 rounded-full shrink-0" />
+                        <div className="flex-1 space-y-2">
+                          <div className="h-4 bg-gray-200 rounded w-3/4" />
+                          <div className="h-5 bg-gray-200 rounded w-16" />
                         </div>
-                      ))
+                      </div>
+                    ))
                     : shippingRates?.map((rate, i) => {
-                        return (
-                          <label
-                            key={`${rate.method_id}-${rate.service_type}`}
-                            className={`flex items-start gap-3  p-4 transition-colors cursor-pointer ${selectedShippingMethod === rate.service_type ? "" : ""}`}
-                          >
-                            <input
-                              type="radio"
-                              name="shippingMethod"
-                              value={rate.service_type}
-                              checked={
-                                selectedShippingMethod === rate.service_type
-                              }
-                              onChange={(e) =>
-                                setSelectedShippingMethod(e.target.value)
-                              }
-                              className="mt-1"
-                            />
-                            <div className="min-w-0 flex-1 flex items-center justify-between gap-3 text-[#545454] text-[14px] ">
-                              <div className="flex items-center gap-2 font-normal">
-                                {rate.is_fedex && <span>FedEx</span>}
-                                <span className="">
-                                  {rate.is_fedex
-                                    ? `(${rate.service_name})`
-                                    : rate.display_name}
-                                </span>
-                              </div>
-                              <div className=" font-bold shrink-0">
-                                {rate.total_charge === 0
-                                  ? "Free"
-                                  : `$${Number(rate.total_charge).toFixed(2)}`}
-                              </div>
+                      return (
+                        <label
+                          key={`${rate.method_id}-${rate.service_type}`}
+                          className={`flex items-start gap-3  p-4 transition-colors cursor-pointer ${selectedShippingMethod === rate.service_type ? "" : ""}`}
+                        >
+                          <input
+                            type="radio"
+                            name="shippingMethod"
+                            value={rate.service_type}
+                            checked={
+                              selectedShippingMethod === rate.service_type
+                            }
+                            onChange={(e) =>
+                              setSelectedShippingMethod(e.target.value)
+                            }
+                            className="mt-1"
+                          />
+                          <div className="min-w-0 flex-1 flex items-center justify-between gap-3 text-[#545454] text-[14px] ">
+                            <div className="flex items-center gap-2 font-normal">
+                              {rate.is_fedex && <span>FedEx</span>}
+                              <span className="">
+                                {rate.is_fedex
+                                  ? `(${rate.service_name})`
+                                  : rate.display_name}
+                              </span>
                             </div>
-                          </label>
-                        );
-                      })}
+                            <div className=" font-bold shrink-0">
+                              {rate.total_charge === 0
+                                ? "Free"
+                                : `$${Number(rate.total_charge).toFixed(2)}`}
+                            </div>
+                          </div>
+                        </label>
+                      );
+                    })}
                   <div className="flex justify-end mt-1.5 mb-1.5">
                     <button
                       type="button"
                       onClick={async () => {
                         if (!selectedShippingMethod) {
-                          toast.error("Please select a shipping method");
+                          errorMessage("Please select a shipping method");
                           return;
                         }
                         const selectedRate = shippingRates?.find(
@@ -506,7 +506,7 @@ const OrderSummary = () => {
                       }}
                       disabled={shippingCostLoading}
                       className="w-full md:w-[55%] text-[18px] btn-primary"
-                      // className="w-full md:w-[65%] p-2 border-b border-black  bg-[#D42020] text-white text-[14px] font-bold"
+                    // className="w-full md:w-[65%] p-2 border-b border-black  bg-[#D42020] text-white text-[14px] font-bold"
                     >
                       {shippingCostLoading
                         ? "Loading..."
