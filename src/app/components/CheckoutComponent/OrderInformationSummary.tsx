@@ -94,7 +94,7 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
         </div>
 
         {/* Discounts */}
-        {appliedCoupon && discountTotal > 0 || manualDiscount > 0 && (
+        {Number(discountTotal) > 0 && (
           <div className="mt-2">
             {/* Discounts header with arrow */}
             <div
@@ -120,7 +120,7 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
               </div>
             )}
             {/* Expanded details */}
-            {appliedCoupon && discountTotal > 0 && <div className="flex justify-between text-gray-600 text-[13px] mt-1">
+            {appliedCoupon && Number(discountAmount) > 0 && <div className="flex justify-between text-gray-600 text-[13px] mt-1">
               <span>
                 ${Number(discountAmount).toFixed(2)} off the
                 order total ({appliedCoupon?.toUpperCase()})
@@ -150,7 +150,7 @@ const OrderInformationSummary: React.FC<OrderSummaryProps> = ({
         </div>
 
         {/* Savings message */}
-        {appliedCoupon || discountTotal > 0 && (
+        {discountTotal > 0 && (
           <div className="text-[#333] font-medium text-[13px]  mt-1 self-end">
             You saved{" "}
             <span className="text-[#2aab3f]!">
