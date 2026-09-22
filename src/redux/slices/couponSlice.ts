@@ -274,6 +274,7 @@ const couponSlice = createSlice({
             quoteToken = null;
           }
         }
+        
         setInSessionStorage("quoteToken", quoteToken)
         state.quoteToken = quoteToken;
         state.error = null;
