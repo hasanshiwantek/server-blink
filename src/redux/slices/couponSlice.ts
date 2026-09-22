@@ -2,7 +2,7 @@
 import axiosInstance from "@/lib/axiosInstance";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
-import { getFromStorage, setInStorage } from "@/utils/storage";
+import { getFromSessionStorage, getFromStorage, setInSessionStorage, setInStorage } from "@/utils/storage";
 
 interface Coupon {
   id?: number;
@@ -181,7 +181,7 @@ export const fetchCustomerDiscounts = createAsyncThunk(
   "coupon/fetchCustomerDiscounts",
   async (_, thunkAPI) => {
     try {
-      const quoteToken = getFromStorage("quoteToken")
+      const quoteToken = getFromSessionStorage("quoteToken")
       const res = await axiosInstance.get(`dashboard/customer-discounts`, {
         params: quoteToken ? { quoteToken } : {},
       });
@@ -274,7 +274,8 @@ const couponSlice = createSlice({
             quoteToken = null;
           }
         }
-        setInStorage("quoteToken", quoteToken)
+        
+        setInSessionStorage("quoteToken", quoteToken)
         state.quoteToken = quoteToken;
         state.error = null;
       })
