@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance, { baseURL, storeId } from "@/lib/axiosInstance";
-import { removeFromStorage } from "@/utils/storage";
+import { removeFromSessionStorage, removeFromStorage } from "@/utils/storage";
 
 export interface RegisterPayload {
   firstName: string;
@@ -120,6 +120,7 @@ export const checkAuthToken = createAsyncThunk(
 );
 const clearAuthStorage = () => {
   removeFromStorage("quoteToken");
+  removeFromSessionStorage("quoteToken")
 };
 // Slice
 const authSlice = createSlice({
