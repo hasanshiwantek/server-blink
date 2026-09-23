@@ -1,12 +1,10 @@
 "use client";
-import React, { useState } from "react";
-import Link from "next/link";
-import { decode } from "html-entities";
-import { RootState } from "@/redux/store";
-import { useAppSelector } from "@/hooks/useReduxHooks";
 import { formatReviewDate } from "@/const/review";
-
-
+import { useAppSelector } from "@/hooks/useReduxHooks";
+import { RootState } from "@/redux/store";
+import { decode } from "html-entities";
+import Link from "next/link";
+import { useState } from "react";
 
 const Stars = ({ rating }: { rating: number }) => {
   const value = Math.max(0, Math.min(5, Number(rating) || 0));
@@ -17,21 +15,25 @@ const Stars = ({ rating }: { rating: number }) => {
     </span>
   );
 };
+
 const tabBase =
   "text-[13px] p-2 sm:w-48 w-full text-center font-bold cursor-pointer transition-colors";
 const tabActive = "bg-[#F2F2F2] text-[#545454]";
 const tabInactive = "bg-transparent text-[#545454] hover:bg-[#F2F2F2]/70";
+
 const ProductOverview = ({ product }: { product: any }) => {
-  const [activeTab, setActiveTab] = useState<"overview" | "reviews">("overview");
+  const [activeTab, setActiveTab] = useState<
+    "overview" | "reviews" | "warranty"
+  >("overview");
   const [showReviews, setShowReviews] = useState<boolean>(false);
   const { reviews } = useAppSelector((state: RootState) => state?.storeFront);
   const reviewCount = reviews?.length;
   const customFields = product?.customFields?.filter(
-    (item: { name: string; value: string }) => item?.name && item?.value
+    (item: { name: string; value: string }) => item?.name && item?.value,
   );
-
+  const warranty = product?.warranty ?? "";
   const decodedHtml = decode(
-    product?.description?.replace(/<pre[^>]*>/gi, "")?.replace(/<\/pre>/gi, "")
+    product?.description?.replace(/<pre[^>]*>/gi, "")?.replace(/<\/pre>/gi, ""),
   );
 
   return (
@@ -54,15 +56,28 @@ const ProductOverview = ({ product }: { product: any }) => {
           >
             Overview
           </button>
-          {reviewCount > 0 && <button
-            type="button"
-            onClick={() => setActiveTab("reviews")}
-            className={`${tabBase} ${activeTab === "reviews" ? tabActive : tabInactive}`}
-            aria-selected={activeTab === "reviews"}
-            role="tab"
-          >
-            Reviews ({reviewCount})
-          </button>}
+          {Boolean(warranty) && (
+            <button
+              type="button"
+              onClick={() => setActiveTab("warranty")}
+              className={`${tabBase} ${activeTab === "warranty" ? tabActive : tabInactive}`}
+              aria-selected={activeTab === "warranty"}
+              role="tab"
+            >
+              Warranty Information
+            </button>
+          )}
+          {reviewCount > 0 && (
+            <button
+              type="button"
+              onClick={() => setActiveTab("reviews")}
+              className={`${tabBase} ${activeTab === "reviews" ? tabActive : tabInactive}`}
+              aria-selected={activeTab === "reviews"}
+              role="tab"
+            >
+              Reviews ({reviewCount})
+            </button>
+          )}
         </div>
 
         {activeTab === "overview" && (
@@ -72,7 +87,10 @@ const ProductOverview = ({ product }: { product: any }) => {
             </h3>
             <div className="w-[97%] mx-auto h-[1px] bg-[#545454]"></div>
 
-            <section className="border" aria-labelledby="product-details-heading">
+            <section
+              className="border"
+              aria-labelledby="product-details-heading"
+            >
               <div
                 className="
                   p-4
@@ -81,16 +99,17 @@ const ProductOverview = ({ product }: { product: any }) => {
                   text-[#545454]
                   prose
                   max-w-none
-                  break-words
+                  wrap-break-word
                   [&_*]:max-w-full
                   [&_img]:max-w-full
                   [&_img]:h-auto
                   [&_table]:w-full
                   [&_pre]:whitespace-pre-wrap
-                  [&_pre]:break-words
+                  [&_pre]:wrap-break-word
                 "
                 dangerouslySetInnerHTML={{
-                  __html: decodedHtml || "No description available for this product.",
+                  __html:
+                    decodedHtml || "No description available for this product.",
                 }}
               />
 
@@ -111,10 +130,10 @@ const ProductOverview = ({ product }: { product: any }) => {
                         <div
                           key={key}
                           className={`
-                            !grid 
-                            grid-cols-1 sm:!grid-cols-[200px_1fr]
-                            !items-start sm:!items-center
-                            !px-2 !py-1
+                            grid! 
+                            grid-cols-1 sm:grid-cols-[200px_1fr]!
+                            items-start! sm:items-center!
+                            px-2! py-1!
                             ${index % 2 === 1 ? "" : "bg-gray-50"}
                           `}
                         >
@@ -139,6 +158,28 @@ const ProductOverview = ({ product }: { product: any }) => {
           </>
         )}
 
+        {activeTab === "warranty" && (
+          <div
+            className="
+                  p-4
+                  bg-[#F2F2F2]
+                  text-[14px]
+                  text-[#545454]
+                  prose
+                  max-w-none
+                  wrap-break-word
+                  [&_*]:max-w-full
+                  [&_img]:max-w-full
+                  [&_img]:h-auto
+                  [&_table]:w-full
+                  [&_pre]:whitespace-pre-wrap
+                  [&_pre]:wrap-break-word
+                "
+          >
+            {warranty}
+          </div>
+        )}
+
         {activeTab === "reviews" && (
           <>
             <section className="border bg-[#F2F2F2] p-4 text-[#545454]">
@@ -161,7 +202,7 @@ const ProductOverview = ({ product }: { product: any }) => {
                     </button>
                   </div>
                   {showReviews && (
-                    <div >
+                    <div>
                       <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-8">
                         {reviews?.map((review: any, index: number) => (
                           <li key={review?.id || index} className="min-w-0">
@@ -180,7 +221,7 @@ const ProductOverview = ({ product }: { product: any }) => {
                               on {formatReviewDate(review?.created_at)}
                             </p>
 
-                            <p className="mt-2 text-[14px] leading-6 text-[#444] break-words">
+                            <p className="mt-2 text-[14px] leading-6 text-[#444] wrap-break-word">
                               {review?.comment || ""}
                             </p>
                           </li>
