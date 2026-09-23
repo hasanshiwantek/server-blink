@@ -76,7 +76,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const availableForSale =
     product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
-    console.log(product,"card product")
+   
 
   return (
     <div className="bg-[#F2F2F2] rounded transition flex flex-col h-full">
