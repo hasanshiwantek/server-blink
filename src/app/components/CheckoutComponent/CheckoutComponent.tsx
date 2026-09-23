@@ -23,6 +23,7 @@ import {
   applyCoupon,
   fetchMyCouponUsage,
   removeCoupon,
+  removeManualDiscount,
 } from "@/redux/slices/couponSlice"; // ADD THIS
 import {
   resetMultiAddress,
@@ -65,6 +66,7 @@ import CheckoutOrderSummary from "./CheckoutOrderSummary";
 import CustomerStep from "./CustomerStep";
 import PaymentStep from "./Paymentstep";
 import ShippingStep, { calculatePackage } from "./Shippingstep";
+import { removeFromSessionStorage } from "@/utils/storage";
 
 export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
 function splitName(fullName: string) {
@@ -818,12 +820,14 @@ const CheckoutForm = () => {
         dispatch(fetchShippingRate({ cartIds: cart?.map((item: any) => item.cartItemId) }));
         dispatch(setLastOrder(orderData));
         dispatch(clearCart());
+        removeFromSessionStorage("quoteToken")
+        dispatch(removeManualDiscount())
         dispatch(removeCoupon());
         dispatch(resetMultiAddress()); // ✅ ADD
         dispatch(resetShippingRates()); // ✅ ADD
         dispatch(setIsMultiAddress(false));
         dispatch(fetchCartList());
-        router.push(`/checkout/order-information/${orderNumber}`);
+        window.location.href = `/checkout/order-information/${orderNumber}`
       } catch (err: any) {
         event.complete("fail");
         const message =
@@ -1174,12 +1178,15 @@ const CheckoutForm = () => {
       dispatch(fetchShippingRate({ cartIds: cart?.map((item: any) => item.cartItemId) }));
       dispatch(setLastOrder(orderData));
       dispatch(clearCart());
+      removeFromSessionStorage("quoteToken")
+      dispatch(removeManualDiscount())
       dispatch(removeCoupon());
       dispatch(resetMultiAddress());
       dispatch(resetShippingRates());
       dispatch(setIsMultiAddress(false));
       dispatch(fetchCartList());
       window.location.href = `/checkout/order-information/${orderNumber}`;
+
     } catch (err: any) {
       const message =
         err.response?.data?.message ||
@@ -1416,29 +1423,29 @@ const CheckoutForm = () => {
       // billingSame false → actual billing values use karo (sirf agar filled hain)
       const billingFormData = watchedValues.billingSame
         ? {
-            billingFirstName: watchedValues.firstName || "",
-            billingLastName: watchedValues.lastName || "",
-            billingCompany: watchedValues.company || "",
-            billingPhone: watchedValues.phone || "",
-            billingAddress1: watchedValues.address1 || "",
-            billingAddress2: watchedValues.address2 || "",
-            billingCity: watchedValues.city || "",
-            billingCountry: watchedValues.country || "",
-            billingState: watchedValues.state || "",
-            billingZip: watchedValues.zip || "",
-          }
+          billingFirstName: watchedValues.firstName || "",
+          billingLastName: watchedValues.lastName || "",
+          billingCompany: watchedValues.company || "",
+          billingPhone: watchedValues.phone || "",
+          billingAddress1: watchedValues.address1 || "",
+          billingAddress2: watchedValues.address2 || "",
+          billingCity: watchedValues.city || "",
+          billingCountry: watchedValues.country || "",
+          billingState: watchedValues.state || "",
+          billingZip: watchedValues.zip || "",
+        }
         : {
-            billingFirstName: watchedValues.billingFirstName || "",
-            billingLastName: watchedValues.billingLastName || "",
-            billingCompany: watchedValues.billingCompany || "",
-            billingPhone: watchedValues.billingPhone || "",
-            billingAddress1: watchedValues.billingAddress1 || "",
-            billingAddress2: watchedValues.billingAddress2 || "",
-            billingCity: watchedValues.billingCity || "",
-            billingCountry: watchedValues.billingCountry || "",
-            billingState: watchedValues.billingState || "",
-            billingZip: watchedValues.billingZip || "",
-          };
+          billingFirstName: watchedValues.billingFirstName || "",
+          billingLastName: watchedValues.billingLastName || "",
+          billingCompany: watchedValues.billingCompany || "",
+          billingPhone: watchedValues.billingPhone || "",
+          billingAddress1: watchedValues.billingAddress1 || "",
+          billingAddress2: watchedValues.billingAddress2 || "",
+          billingCity: watchedValues.billingCity || "",
+          billingCountry: watchedValues.billingCountry || "",
+          billingState: watchedValues.billingState || "",
+          billingZip: watchedValues.billingZip || "",
+        };
 
       dispatch(
         checkoutFormSave({ data: { shippingFormData, billingFormData } }),
