@@ -28,6 +28,8 @@ interface Product {
   maxPurchaseQuantity?: number; // optional max quantity
   minPurchaseQuantity?: number; // optional min quantity
   callPricing?: boolean; // optional max quantity
+   callForPricingLabel?: string;
+  callForPricingPhone?: string;
   purchasabilityStatus?: string; //
   quantity?: number; //
   currentStock?: number; //s
@@ -74,6 +76,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const availableForSale =
     product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
+    console.log(product,"card product")
 
   return (
     <div className="bg-[#F2F2F2] rounded transition flex flex-col h-full">
@@ -139,20 +142,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               </span>
 
               {/* New Price */}
-              <span className="text-[1rem] font-bold  " style={robotoStyle}>
-                Call for pricing:
-                {/* <Link
-              href="tel:+15022063033"
-              className="text-[#d40511] underline">
-              (502) 206-3033
-            </Link> */}
-                <Link
-                  href="tel:+15020000000"
-                  className="text-[#d40511] underline"
-                >
-                  (502) 000-0000
-                </Link>
-              </span>
+               <span
+      className="text-[1rem] font-bold"
+      style={robotoStyle}
+    >
+      {product?.callForPricingLabel?.trim() || "Call for pricing"}:{" "}
+
+      <Link
+        href={`tel:${
+          product?.callForPricingPhone?.trim() || "+15020000000"
+        }`}
+        className="text-[#d40511] underline"
+      >
+        {product?.callForPricingPhone?.trim() || "(502) 000-0000"}
+      </Link>
+    </span>
             </>
           </div>
         ) : (

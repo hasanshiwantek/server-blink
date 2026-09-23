@@ -65,6 +65,7 @@ const ProductMiddle = ({
     : undefined;
 
   const productPrice = Number(product?.price) || 0;
+  console.log(product,"this is sever side")
 
   return (
     <>
@@ -98,23 +99,19 @@ const ProductMiddle = ({
         {!availableForSale ? (
           <div>
             <div className="flex flex-col">
-              <h2
-                className="text-[#545454] flex items-center font-bold text-[22px]!"
-                style={{ color: "#545454" }}
-              >
-                Call for pricing:
-                {/* <Link
-                href="tel:+15022063033"
-                className="text-[#d40511] underline">
-                (502) 206-3033
-              </Link> */}
-                <Link
-                  href="tel:+15020000000"
-                  className="text-[#d40511] underline"
-                >
-                  (502) 000-0000
-                </Link>
-              </h2>
+            <h2
+        className="text-[#545454] flex items-center font-bold text-[22px]! mr-2"
+        style={{ color: "#545454" }}
+      >
+         {product?.callForPricingLabel?.trim() || "Call for pricing"}:{" "}
+
+        <Link
+          href={`tel:${product?.callForPricingPhone || "+15020000000"}`}
+          className="text-[#d40511] underline"
+        >
+            {product?.callForPricingPhone?.trim() || "(502) 000-0000"}
+        </Link>
+      </h2>
             </div>
           </div>
         ) : (
