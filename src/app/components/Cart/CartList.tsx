@@ -1,29 +1,28 @@
 "use client";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
-import Link from "next/link";
-import {
-  decreaseQty,
-  increaseQty,
-  removeFromCart,
-  updateQty,
-} from "@/redux/slices/cartSlice";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
   deleteCart,
+  deleteDraftOrderCart,
   fetchCartList,
   updateCart,
 } from "@/redux/slices/cartsSlice";
 import { removeShippingRate, resetShippingRates } from "@/redux/slices/shippingSlice";
+import { removeManualDiscount } from "@/redux/slices/couponSlice";
+import { removeFromSessionStorage } from "@/utils/storage";
 const CartList = () => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state.carts?.items);
   const { cartLoading, loading } = useAppSelector(
     (state: RootState) => state.carts,
   );
+  const { orderId } =
+    useAppSelector((state: RootState) => state.coupon);
   const disable = cartLoading || loading;
 
   const [quantities, setQuantities] = useState<{
@@ -45,7 +44,6 @@ const CartList = () => {
 
       if (maxPurchaseQuantity && parsed > maxPurchaseQuantity) {
         setQuantities((prev) => ({ ...prev, [id]: maxPurchaseQuantity }));
-        // dispatch(updateQty({ id, quantity: maxPurchaseQuantity }));
         dispatch(
           updateCart({
             id: id,
@@ -65,16 +63,20 @@ const CartList = () => {
     }
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (itemToDelete) {
-      // dispatch(removeFromCart(itemToDelete.id));
-      dispatch(deleteCart({ id: itemToDelete?.cartItemId }))
+      await dispatch(deleteCart({ id: itemToDelete?.cartItemId }))
         .unwrap()
-        .then(() => {
+        .then(async () => {
           dispatch(fetchCartList());
           removeLocalShipping();
           setItemToDelete(null);
           setIsDialogOpen(false);
+          if (orderId) {
+            await dispatch(deleteDraftOrderCart({ id: orderId }))
+            removeFromSessionStorage("quoteToken")
+            dispatch(removeManualDiscount())
+          }
         });
     }
   };
@@ -192,13 +194,6 @@ const CartList = () => {
                         type="button"
                         onClick={() => {
                           if (item.quantity > minQty) {
-                            // dispatch(decreaseQty(item.id))
-                            // dispatch(updateCart({
-                            //   id: item?.cartItemId, data: quantities[item.id] === undefined
-                            //     ? item.quantity
-                            //     : quantities[item.id]
-                            // }))
-
                             dispatch(
                               updateCart({
                                 id: item?.cartItemId,
@@ -214,11 +209,6 @@ const CartList = () => {
                               });
                           }
                         }}
-                        //                 className="
-                        //   flex items-center justify-center w-8 h-full
-                        //   hover:bg-gray-100
-                        //   text-black
-                        // "
                         className="w-8 h-8  flex items-center justify-center hover:bg-[#f5f5f5] transition text-[#4a4a4a] bg-[#cac9c9]  border-b-3 border-[#8b8b8b]"
                         disabled={item.quantity <= minQty || disable}
                       >
@@ -268,9 +258,7 @@ const CartList = () => {
                         }}
                         min={minQty}
                         max={maxQty || undefined}
-                        // onKeyDown={(e) =>
-                        //   handleManualQtyUpdate(e, item?.cartItemId, maxQty)
-                        // }
+
                         className="
       w-10 bg-white text-center py-0 outline-none
       border-x border-gray-300
@@ -285,7 +273,6 @@ const CartList = () => {
                         type="button"
                         onClick={() => {
                           if (!maxQty || item.quantity < maxQty) {
-                            // dispatch(increaseQty(item.id));
                             dispatch(
                               updateCart({
                                 id: item?.cartItemId,
@@ -301,11 +288,7 @@ const CartList = () => {
                               });
                           }
                         }}
-                        //                 className="
-                        //   flex items-center justify-center w-8 h-full
-                        //   hover:bg-gray-100
-                        //   text-black
-                        // "
+
                         disabled={
                           (!!maxQty && item.quantity >= maxQty) || disable
                         }
