@@ -130,11 +130,11 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logout: (state) => {
-      clearAuthStorage()
       state.user = null;
       state.token = null;
       state.expireAt = null;
       state.isAuthenticated = false;
+      clearAuthStorage()
     },
   },
   extraReducers: (builder) => {
