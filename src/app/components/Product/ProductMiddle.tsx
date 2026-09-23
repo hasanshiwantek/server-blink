@@ -65,7 +65,7 @@ const ProductMiddle = ({
     : undefined;
 
   const productPrice = Number(product?.price) || 0;
-  console.log(product,"this is sever side")
+ 
 
   return (
     <>
@@ -100,8 +100,8 @@ const ProductMiddle = ({
           <div>
             <div className="flex flex-col">
             <h2
-        className="text-[#545454] flex items-center font-bold text-[22px]! mr-2"
-        style={{ color: "#545454" }}
+        className="text-text-primary flex items-center font-bold text-[22px]! mr-2"
+    
       >
          {product?.callForPricingLabel?.trim() || "Call for pricing"}:{" "}
 
@@ -136,7 +136,7 @@ const ProductMiddle = ({
                       price={productPrice}
                       inline={true}
                       textColor="#545454"
-                      className="text-[#545454] font-bold text-[22px]!"
+                      className="text-text-primary font-bold text-[22px]!"
                     />
                   </span>
                 </>
@@ -147,7 +147,7 @@ const ProductMiddle = ({
                       price={productPrice}
                       inline={true}
                       textColor="#545454"
-                      className="text-[#545454] font-bold text-[22px]!"
+                      className="text-text-primary font-bold text-[22px]!"
                     />
                   </span>
                 )
