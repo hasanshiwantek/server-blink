@@ -2,6 +2,7 @@
 import axiosInstance from "@/lib/axiosInstance";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+import { getFromSessionStorage, getFromStorage, setInSessionStorage, setInStorage } from "@/utils/storage";
 
 interface Coupon {
   id?: number;
@@ -78,7 +79,10 @@ export const fetchMyCouponUsage = createAsyncThunk(
   "coupon/fetchMyCouponUsage",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/web/coupons/my-coupon-usage");
+      const draft_token = getFromSessionStorage("quoteToken")
+      const response = await axiosInstance.get("/web/coupons/my-coupon-usage", {
+        params: draft_token ? { draft_token } : {},
+      });
       const usageData = response?.data?.data;
       const activeUsage = Array.isArray(usageData)
         ? usageData[0]
@@ -167,9 +171,7 @@ export const fetchLoadSavedQuote = createAsyncThunk(
       const state = thunkAPI.getState() as RootState;
       const currentUserId = state.auth?.user?.id;
       const userId = res?.data?.data?.customer?.id;
-      if (currentUserId == userId) {
-        return res?.data;
-      }
+      return res?.data;
     } catch (err: any) {
       return thunkAPI.rejectWithValue(
         err.response?.data?.message || "Failed to load saved quote",
@@ -178,6 +180,22 @@ export const fetchLoadSavedQuote = createAsyncThunk(
   },
 );
 
+export const fetchCustomerDiscounts = createAsyncThunk(
+  "coupon/fetchCustomerDiscounts",
+  async (_, thunkAPI) => {
+    try {
+      const quoteToken = getFromSessionStorage("quoteToken")
+      const res = await axiosInstance.get(`dashboard/customer-discounts`, {
+        params: quoteToken ? { quoteToken } : {},
+      });
+      return res?.data;
+    } catch (err: any) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to load saved quote"
+      );
+    }
+  }
+);
 const couponSlice = createSlice({
   name: "coupon",
   initialState,
@@ -185,6 +203,10 @@ const couponSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    removeManualDiscount: (state) => {
+      state.orderId = null;
+      state.manualDiscount = 0
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -228,9 +250,6 @@ const couponSlice = createSlice({
         state.appliedCoupon = null;
         state.couponUsageId = null;
         state.discountAmount = 0;
-        state.manualDiscount = 0;
-        state.quoteToken = null;
-        state.orderId = null;
         state.error = null;
       })
       .addCase(removeCoupon.rejected, (state, action) => {
@@ -259,25 +278,38 @@ const couponSlice = createSlice({
             quoteToken = null;
           }
         }
-        if (
-          coupon?.couponCode &&
-          Number(action?.payload?.data?.discountAmount)
-        ) {
-          state.appliedCoupon = coupon;
-          state.discountAmount = Number(action?.payload?.data?.discountAmount);
-        }
-        if (Number(action?.payload?.data?.manualDiscount)) {
-          state.manualDiscount = Number(action?.payload?.data?.manualDiscount);
-        }
+
+        setInSessionStorage("quoteToken", quoteToken)
         state.quoteToken = quoteToken;
         state.error = null;
       })
       .addCase(fetchLoadSavedQuote.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+
+
+
+      // Fetch Customer Discounts
+      .addCase(fetchCustomerDiscounts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchCustomerDiscounts.fulfilled, (state, action) => {
+        state.loading = false;
+        if (action?.payload?.data?.orderId) {
+          state.orderId = action?.payload?.data?.orderId
+          state.manualDiscount = Number(action?.payload?.data?.manualDiscount);
+        }
+
+        state.error = null;
+      })
+      .addCase(fetchCustomerDiscounts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
 
-export const { clearError } = couponSlice.actions;
+export const { clearError, removeManualDiscount } = couponSlice.actions;
 export default couponSlice.reducer;

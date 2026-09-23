@@ -1002,7 +1002,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                           await dispatch(addShippingCost(shippingData))
                             .unwrap()
                             .then(() => {
-                              dispatch(fetchShippingRate({}));
+                              dispatch(fetchShippingRate({ cartIds: cart?.map((item: any) => item.cartItemId) }));
                             });
                         }}
                         className="mt-1"

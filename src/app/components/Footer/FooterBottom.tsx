@@ -16,7 +16,8 @@ import { checkAuthToken, customerProfile, logout } from "@/redux/slices/authSlic
 import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { useSearchParams } from "next/navigation";
 import { successMessage } from "@/utils/message";
-import { getPersistedAuth, getSessionId, setInStorage } from "@/utils/storage";
+import { getFromSessionStorage, getFromStorage, getPersistedAuth, getSessionId, setInStorage } from "@/utils/storage";
+import { fetchCustomerDiscounts } from "@/redux/slices/couponSlice";
 
 const FooterBottom = () => {
   const searchParams = useSearchParams();
@@ -122,6 +123,12 @@ const FooterBottom = () => {
     login();
   }, [paramsToken, dispatch, router]);
 
+  useEffect(() => {
+    const quoteToken = getFromSessionStorage("quoteToken")
+    if (auth?.isAuthenticated && quoteToken) {
+      dispatch(fetchCustomerDiscounts())
+    }
+  }, [auth?.isAuthenticated])
   return (
     <footer className="bg-[#333333] text-[#ffffff] w-full mx-auto roboto-font">
       {/* 🔹 Newsletter Section */}

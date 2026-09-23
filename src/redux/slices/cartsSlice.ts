@@ -3,6 +3,7 @@ import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "@/lib/axiosInstance";
 import { CHECKOUT_STORAGE_KEY } from "@/app/components/CheckoutComponent/CheckoutComponent";
 import { RootState } from "../store";
+import { getFromSessionStorage, getFromStorage } from "@/utils/storage";
 export interface CartItem {
   productId: any;
   quantity: number;
@@ -60,10 +61,10 @@ export const fetchCartList = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
 
-      const state = thunkAPI.getState() as RootState;
-      const quoteToken = state?.coupon?.quoteToken
-
-      const res = await axiosInstance.get(`web/cart/list?quoteToken=${quoteToken}`);
+      const quoteToken = getFromSessionStorage("quoteToken")
+      const res = await axiosInstance.get("web/cart/list", {
+        params: quoteToken ? { quoteToken } : {},
+      });
       return res.data;
     } catch (err: any) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -106,10 +107,21 @@ export const fetchOrderDetails = createAsyncThunk(
 );
 
 export const deleteCart = createAsyncThunk(
-  "account/updatecustomer",
+  "cart/deleteCart",
   async ({ id }: { id: string | number }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.delete(`web/cart/delete/${id}`);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  },
+);
+export const deleteDraftOrderCart = createAsyncThunk(
+  "cart/deleteOrder",
+  async ({ id }: { id: string | number }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.delete(`web/orders/draft-orders/${id}`);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || error.message);

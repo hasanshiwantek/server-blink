@@ -6,9 +6,9 @@ import { orderDetailById } from "@/redux/slices/OrderMessage";
 import { RootState } from "@/redux/store";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
 import OrderInformationSummary from "./OrderInformationSummary";
 import LoadTrustpilotScript from "./TrustpilotWidget";
+import { errorMessage, infoMessage, successMessage } from "@/utils/message";
 
 // Inner component that uses Stripe hooks
 const CheckoutForm = () => {
@@ -27,9 +27,9 @@ const CheckoutForm = () => {
     Number(orderCustomer?.manualDiscount);
   const cart: any = customerOrderDetail?.products
     ? customerOrderDetail.products.map((product: any) => ({
-        ...product,
-        quantity: product.quantity || 1,
-      }))
+      ...product,
+      quantity: product.quantity || 1,
+    }))
     : [];
 
   // ADD COUPON STATE FROM REDUX
@@ -74,7 +74,7 @@ const CheckoutForm = () => {
   // ADD COUPON HANDLERS
   const handleApplyCoupon = async () => {
     if (!promoCode.trim()) {
-      toast.error("Please enter a promo code");
+      errorMessage("Please enter a promo code");
       return;
     }
 
@@ -82,17 +82,17 @@ const CheckoutForm = () => {
       await dispatch(
         applyCoupon({ couponCode: promoCode, total: totalBeforeDiscount }),
       ).unwrap();
-      toast.success("Promo code applied successfully!");
+      successMessage("Promo code applied successfully!");
       setPromoCode("");
     } catch (err: any) {
-      toast.error(err || "Failed to apply coupon");
+      errorMessage(err || "Failed to apply coupon");
     }
   };
 
   const handleRemoveCoupon = () => {
     dispatch(removeCoupon());
     setPromoCode("");
-    toast.info("Coupon removed");
+    infoMessage("Coupon removed");
   };
 
   useEffect(() => {

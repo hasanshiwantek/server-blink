@@ -34,6 +34,42 @@ export function removeFromStorage(key: string) {
     }
 }
 
+export function setInSessionStorage(key: string, obj: any) {
+    if (!key || typeof window === "undefined") return;
+
+    try {
+        sessionStorage.setItem(key, JSON.stringify(obj));
+    } catch (err) {
+        console.error(err);
+    }
+}
+export function removeFromSessionStorage(key: string) {
+    if (!key || typeof window === "undefined") return;
+    try {
+        sessionStorage.removeItem(key);
+    } catch (err) {
+        console.error(err);
+    }
+}
+export function getFromSessionStorage(key: string) {
+    if (!key || typeof window === "undefined") return null;
+
+    try {
+        const valueStr = sessionStorage.getItem(key);
+
+        if (!valueStr) return null;
+
+        try {
+            return JSON.parse(valueStr);
+        } catch {
+            return valueStr;
+        }
+    } catch {
+        return null;
+    }
+}
+
+
 // get bearer token for authorization example
 export function getPersistedAuth() {
     const raw = getFromStorage("persist:auth");
