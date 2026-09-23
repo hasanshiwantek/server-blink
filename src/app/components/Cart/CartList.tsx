@@ -74,8 +74,8 @@ const CartList = () => {
           setIsDialogOpen(false);
           if (orderId) {
             await dispatch(deleteDraftOrderCart({ id: orderId }))
-            dispatch(removeManualDiscount())
             removeFromSessionStorage("quoteToken")
+            dispatch(removeManualDiscount())
           }
         });
     }
