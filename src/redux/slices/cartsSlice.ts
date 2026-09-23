@@ -107,10 +107,21 @@ export const fetchOrderDetails = createAsyncThunk(
 );
 
 export const deleteCart = createAsyncThunk(
-  "account/updatecustomer",
+  "cart/deleteCart",
   async ({ id }: { id: string | number }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.delete(`web/cart/delete/${id}`);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  },
+);
+export const deleteDraftOrderCart = createAsyncThunk(
+  "cart/deleteOrder",
+  async ({ id }: { id: string | number }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.delete(`web/orders/draft-orders/${id}`);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || error.message);

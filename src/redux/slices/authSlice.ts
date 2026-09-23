@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance, { baseURL, storeId } from "@/lib/axiosInstance";
 import { removeFromSessionStorage, removeFromStorage } from "@/utils/storage";
+import { removeManualDiscount } from "./couponSlice";
 
 export interface RegisterPayload {
   firstName: string;
@@ -119,7 +120,7 @@ export const checkAuthToken = createAsyncThunk(
   },
 );
 const clearAuthStorage = () => {
-  removeFromStorage("quoteToken");
+  removeManualDiscount()
   removeFromSessionStorage("quoteToken")
 };
 // Slice
