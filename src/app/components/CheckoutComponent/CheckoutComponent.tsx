@@ -155,6 +155,7 @@ const CheckoutForm = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [ipAddress, setIpAddress] = useState("");
+  const [orderPlaceCountry, setOrderPlaceCountry] = useState("");
   const [cardCompletion, setCardCompletion] = useState({
     number: false,
     expiry: false,
@@ -686,7 +687,8 @@ const CheckoutForm = () => {
       return {
         userType: token ? null : "guest",
         deviceType: getDeviceType(),
-        ipAddress: ipAddress,
+        ipAddress,
+        orderPlaceCountry,
         isSaveAddressForShipping: data?.isSaveAddressForShipping,
         isSaveAddressForBilling: data?.isSaveAddressForBilling,
         billingSame: data?.billingSame,
@@ -1548,14 +1550,16 @@ const CheckoutForm = () => {
       watchedValues.phone,
     ],
   );
-  //  const auth = useAppSelector((state: RootState) => state?.auth);
-  // Pass karo
 
   useEffect(() => {
     fetch("/api/get-ip")
       .then((res) => res.json())
       .then((data) => setIpAddress(data.ip));
+    fetch("/api/detect-country")
+      .then((res) => res.json())
+      .then((data) => setOrderPlaceCountry(data?.country_code));
   }, []);
+
 
   useEffect(() => {
     dispatch(fetchMyCouponUsage());
