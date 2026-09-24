@@ -1,10 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "@/lib/axiosInstance";
 import { errorMessage } from "@/utils/message";
-// import { AddReviewPayload } from "@/types/types";
-
-
-
 
 export const globalSearch = createAsyncThunk(
   "home/globalSearch",
