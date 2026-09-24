@@ -16,3 +16,14 @@ export type ProductFilterPayload = {
   maxPrice?: number;
   sortBy?: string; // "priceLowToHigh" etc.
 };
+
+
+
+export interface AddReviewPayload {
+  productId: number;
+  name: string;
+  email: string;
+  subject: string;
+  comment: string;
+  rating: number;
+}

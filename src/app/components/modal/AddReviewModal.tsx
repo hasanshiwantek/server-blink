@@ -60,16 +60,15 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!product?.id) return
         // ✅ Captcha check
         if (!captchaToken) {
             errorMessage("Please verify the captcha.");
             return;
         }
-
         setLoading(true);
-
-        const payload = {
-            productId: product?.id ?? "",
+        const payload: AddReviewPayload = {
+            productId: product?.id,
             ...formData,
         };
 
@@ -79,8 +78,6 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
             if (addReview.fulfilled.match(result)) {
                 onClose();
                 successMessage("Review submitted successfully!");
-            } else {
-
             }
         } catch (err) {
 
