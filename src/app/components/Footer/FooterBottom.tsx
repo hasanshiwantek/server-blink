@@ -107,10 +107,10 @@ const FooterBottom = () => {
 
     const login = async () => {
       const auth = {
-        token: JSON.stringify(paramsToken),
+        token: paramsToken,
       };
 
-      setInStorage("persist:auth", JSON.stringify(auth));
+      setInStorage("persist:auth", auth);
 
       const result = await dispatch(customerProfile());
 
