@@ -16,7 +16,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
-
+import ConfirmationModal from "../modal/ConfirmationModal";
 interface Category {
   id: number;
   name: string;
@@ -35,6 +35,8 @@ const TopHeader = () => {
   const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -45,16 +47,9 @@ const TopHeader = () => {
   const { searchQuery, showSearchDropdown, searchData, loading } =
     useAppSelector((state: any) => state.home);
 
-  const handleLogout = () => {
-    const confirm = window.confirm("Confirm Logout?");
-    if (!confirm) {
-      return;
-    } else {
-      dispatch(logout());
-      successMessage("Logged out successfully!");
-      router.replace("/auth/login");
-    }
-  };
+const handleLogout = () => {
+  setShowLogoutModal(true);
+};
 
   useEffect(() => {
     let ticking = false;
@@ -631,6 +626,19 @@ const TopHeader = () => {
           </div>
         </>
       )}
+      <ConfirmationModal
+  open={showLogoutModal}
+  onOpenChange={setShowLogoutModal}
+  variant="warning"
+  title="Confirm Logout?"
+  description="Are you sure you want to logout?"
+  onConfirm={() => {
+    dispatch(logout());
+    successMessage("Logged out successfully!");
+    setShowLogoutModal(false);
+    router.replace("/auth/login");
+  }}
+/>
     </>
   );
 };

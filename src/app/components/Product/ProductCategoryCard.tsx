@@ -24,6 +24,8 @@ interface Product {
   description?: string;
   customFields?: Record<string, string>;
   purchasabilityStatus?: string;
+  callForPricingLabel?: string;
+  callForPricingPhone?: string;
 }
 
 export default function ProductCategoryCard({ product }: { product: Product }) {
@@ -105,18 +107,18 @@ export default function ProductCategoryCard({ product }: { product: Product }) {
             />
           )}
         </div> : <div className="flex flex-wrap items-center gap-2 mt-2">
-          <span className="text-[1rem] font-bold  " style={{ fontFamily: '"Roboto"' }}>Call for pricing:
-            {/* <Link
-             href="tel:+15022063033"
-            className="text-[#d40511] underline">
-            (502) 206-3033
-          </Link> */}
-            <Link
-              href="tel:+15020000000"
-              className="text-[#d40511] underline">
-              (502) 000-0000
-            </Link>
-          </span>
+          <span className="text-[1rem] font-bold  " style={{ fontFamily: '"Roboto"' }}>
+            {product?.callForPricingLabel?.trim() || "Call for pricing"}:{" "}
+
+      <Link
+        href={`tel:${
+          product?.callForPricingPhone?.trim() || "+15020000000"
+        }`}
+        className="text-[#d40511] underline"
+      >
+        {product?.callForPricingPhone?.trim() || "(502) 000-0000"}
+      </Link>
+    </span>
         </div>}
       </div>
     </div>

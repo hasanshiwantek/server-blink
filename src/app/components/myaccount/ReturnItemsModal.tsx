@@ -3,6 +3,7 @@ import { useAppDispatch } from "@/hooks/useReduxHooks";
 import axiosInstance from "@/lib/axiosInstance";
 import { fetchOrderDetails } from "@/redux/slices/cartSlice";
 import React, { useEffect, useState } from "react";
+import { useAlert } from "@/hooks/useAlert";
 
 interface ReturnItemsModalProps {
   isOpen: boolean;
@@ -82,6 +83,7 @@ const ReturnItemsModal: React.FC<ReturnItemsModalProps> = ({
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+    const { showAlert, Alert } = useAlert();
   
   useEffect(() => {
     const loadOrderDetails = async () => {
@@ -154,7 +156,10 @@ const ReturnItemsModal: React.FC<ReturnItemsModalProps> = ({
     e.preventDefault();
 
     if (!returnReason) {
-      alert("Please select a return reason");
+    showAlert({
+  title: "Return Reason Required",
+  message: "Please select a return reason.",
+});
       return;
     }
     setSubmitting(true);
@@ -177,7 +182,10 @@ const ReturnItemsModal: React.FC<ReturnItemsModalProps> = ({
       onClose();
     } catch (err) {
    
-      alert("Failed to submit return request. Please try again.");
+      showAlert({
+  title: "Return Request Failed",
+  message: "Failed to submit return request. Please try again.",
+});
     } finally {
       setSubmitting(false);
     }
@@ -259,6 +267,7 @@ const ReturnItemsModal: React.FC<ReturnItemsModalProps> = ({
               </button>
             </div>
           )}
+          
 
           {/* Content */}
           {!loading && !error && !isSubmit && order && (
@@ -420,6 +429,7 @@ const ReturnItemsModal: React.FC<ReturnItemsModalProps> = ({
           )}
         </div>
       </div>
+          <Alert />
     </div>
   );
 };
