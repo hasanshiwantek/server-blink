@@ -23,6 +23,7 @@ import { baseURL, sitekey, storeId } from "@/lib/axiosInstance";
 import { addCustomerAddress } from "@/redux/slices/myaccountSlice";
 import { countriesWithoutPostalCode } from "@/const/country-level";
 import { getSessionId } from "@/utils/storage";
+import { useAlert } from "@/hooks/useAlert";
 
 interface SignupFormValues {
   firstName: string;
@@ -72,6 +73,7 @@ const SignupPage = () => {
   const password = watch("password");
   const watchedCountry = watch("country");
   const watchedState = watch("state");
+  const { showAlert, Alert } = useAlert();
   const stateList = useMemo(() => {
     if (!watchedCountry) return [];
     return State.getStatesOfCountry(watchedCountry).map((s) => ({
@@ -90,7 +92,10 @@ const SignupPage = () => {
   const hasPostalCode = !countriesWithoutPostalCode.includes(watchedCountry);
   const onSubmit = async (data: SignupFormValues) => {
     if (!captchaToken) {
-      alert("Please verify the captcha.");
+        showAlert({
+    title: "Captcha Required",
+    message: "Please verify the captcha.",
+  });
       return;
     }
     try {
@@ -566,6 +571,7 @@ const SignupPage = () => {
           </div>
         </form>
       </div>
+      <Alert />
     </div>
   );
 };
