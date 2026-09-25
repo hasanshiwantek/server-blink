@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "@/lib/axiosInstance";
+import { errorMessage } from "@/utils/message";
 
 export const globalSearch = createAsyncThunk(
   "home/globalSearch",
@@ -116,19 +117,16 @@ export const bulkInquiry = createAsyncThunk(
 
       return null;
     } catch (err: any) {
-    
+
       return null;
     }
   }
 );
 export const addReview = createAsyncThunk(
   "home/addReview",
-  async (payload: any, thunkAPI) => {
+  async (payload: AddReviewPayload, thunkAPI) => {
     try {
-      const res = await axiosInstance.post(
-        `web/reviews/add`,
-        payload
-      );
+      const res = await axiosInstance.post("web/reviews/add", payload);
 
       if (res?.data?.status && res?.data?.data) {
         return res.data;
@@ -136,8 +134,7 @@ export const addReview = createAsyncThunk(
 
       return thunkAPI.rejectWithValue(res?.data);
     } catch (err: any) {
-     
-
+      errorMessage(err?.response?.data?.message)
       return thunkAPI.rejectWithValue(
         err?.response?.data || "Something went wrong"
       );
@@ -155,13 +152,13 @@ export const contactUs = createAsyncThunk(
       );
 
       if (res?.data?.status && res?.data?.data) {
-      
+
         return res.data;
       }
 
       return null;
     } catch (err: any) {
-     
+
       return null;
     }
   }

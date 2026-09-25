@@ -18,6 +18,7 @@ import { useSearchParams } from "next/navigation";
 import { successMessage } from "@/utils/message";
 import { getFromSessionStorage, getFromStorage, getPersistedAuth, getSessionId, setInStorage } from "@/utils/storage";
 import { fetchCustomerDiscounts } from "@/redux/slices/couponSlice";
+import ConfirmationModal from "../modal/ConfirmationModal";
 
 const FooterBottom = () => {
   const searchParams = useSearchParams();
@@ -26,6 +27,7 @@ const FooterBottom = () => {
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
   const [token, setToken] = useState<string | null>(null);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const { newsletterLoading } = useSelector((state: any) => state.contact);
   const { blogs, webPages, error, loading } = useAppSelector(
@@ -42,16 +44,9 @@ const FooterBottom = () => {
   const handleSelect = (url: string) => {
     router.push(url);
   };
-  const handleLogout = () => {
-    const confirm = window.confirm("Confirm Logout?");
-    if (!confirm) {
-      return;
-    } else {
-      dispatch(logout());
-      successMessage("Logged out successfully!");
-      router.replace("/auth/login");
-    }
-  };
+const handleLogout = () => {
+  setShowLogoutModal(true);
+};
   useEffect(() => {
     const auth = getPersistedAuth();
     const t = auth?.token || null;
@@ -107,10 +102,10 @@ const FooterBottom = () => {
 
     const login = async () => {
       const auth = {
-        token: JSON.stringify(paramsToken),
+        token: paramsToken,
       };
 
-      setInStorage("persist:auth", JSON.stringify(auth));
+      setInStorage("persist:auth", auth);
 
       const result = await dispatch(customerProfile());
 
@@ -426,6 +421,19 @@ const FooterBottom = () => {
           </p>
         </div>
       </div>
+      <ConfirmationModal
+  open={showLogoutModal}
+  onOpenChange={setShowLogoutModal}
+  variant="warning"
+  title="Confirm Logout?"
+  description="Are you sure you want to logout?"
+  onConfirm={() => {
+    dispatch(logout());
+    successMessage("Logged out successfully!");
+    setShowLogoutModal(false);
+    router.replace("/auth/login");
+  }}
+/>
     </footer>
   );
 };
