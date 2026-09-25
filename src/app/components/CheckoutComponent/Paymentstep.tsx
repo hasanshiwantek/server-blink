@@ -1,13 +1,12 @@
 "use client";
-import React from "react";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import {
-  CardNumberElement,
-  CardExpiryElement,
   CardCvcElement,
+  CardExpiryElement,
+  CardNumberElement,
 } from "@stripe/react-stripe-js";
-import { UseFormRegister, FieldErrors } from "react-hook-form";
+import Image from "next/image";
+import React from "react";
+import { FieldErrors, UseFormRegister } from "react-hook-form";
 
 interface PaymentStepProps {
   register: UseFormRegister<any>;

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { getProductShippingRate } from "./Shippingstep";
 
 interface OrderSummaryProps {
   cart: any[];
@@ -225,7 +226,11 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
 
         <div className="flex justify-between text-[13px] text-[#545454] roboto-font">
           <span>Shipping</span>
-          <span className="font-medium">${shipping?.toFixed(2)}</span>
+          <span className="font-medium">
+            {getProductShippingRate(cart)?.service_type === "free_shipping"
+              ? "Free"
+              : `$${shipping?.toFixed(2)}`}
+          </span>
         </div>
         <div className="flex justify-between pb-[10px] text-[13px] text-[#545454] roboto-font">
           <span>Tax</span>

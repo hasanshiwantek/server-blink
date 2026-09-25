@@ -1,18 +1,12 @@
-import React from 'react'
-import { Metadata } from 'next';
-import CheckoutComponent from '../components/CheckoutComponent/CheckoutComponent'
+import { Metadata } from "next";
+import CheckoutComponent from "../components/CheckoutComponent/CheckoutComponent";
 export const metadata: Metadata = {
   title: {
-    absolute: "Checkout - Server Blink LLC"  // template ignore karega
+    absolute: "Checkout - Server Blink LLC", // template ignore karega
   },
   description:
     "View and manage your items in the shopping cart at Server Blink. Add, remove, or update quantities before checkout.",
-  keywords: [
-    "shopping cart",
-    "manage cart",
-    "checkout",
-    "Server Blink cart",
-  ],
+  keywords: ["shopping cart", "manage cart", "checkout", "Server Blink cart"],
   alternates: {
     canonical: "https://staging.sparemicro.com/cart",
   },
@@ -55,12 +49,7 @@ export const metadata: Metadata = {
 };
 
 const page = () => {
-  return (
-    <div>
-      <CheckoutComponent />
-    </div>
+  return <CheckoutComponent />;
+};
 
-  )
-}
-
-export default page
+export default page;

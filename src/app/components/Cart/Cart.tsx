@@ -2,12 +2,13 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { logout } from "@/redux/slices/authSlice";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
-import { fetchCustomerDiscounts, fetchLoadSavedQuote, removeCoupon, removeManualDiscount } from "@/redux/slices/couponSlice";
 import {
-  addShippingCost,
-  checkoutFormSave,
-  fetchShippingRate,
-} from "@/redux/slices/shippingSlice";
+  fetchCustomerDiscounts,
+  fetchLoadSavedQuote,
+  removeCoupon,
+  removeManualDiscount,
+} from "@/redux/slices/couponSlice";
+import { checkoutFormSave } from "@/redux/slices/shippingSlice";
 import { RootState } from "@/redux/store";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -28,8 +29,6 @@ const Cart = () => {
   const cartLoad = cartLoading || loading;
   const cartItems = useAppSelector((state: RootState) => state?.carts?.items);
 
-  // console.log("cartItems", cartItems);
-
   const cartItemCount =
     cartItems?.reduce(
       (sum: number, item: any) => sum + (item?.quantity ?? 1),
@@ -42,9 +41,9 @@ const Cart = () => {
       .then(async (res) => {
         const response = res?.data;
 
-        if (auth?.user?.id != response?.customer?.id) return
-        const shippingformation = response?.billingInformation
-        const billingAddress = response?.billingAddress
+        if (auth?.user?.id != response?.customer?.id) return;
+        const shippingformation = response?.billingInformation;
+        const billingAddress = response?.billingAddress;
         const shippingFormData = {
           email: response?.customer?.email,
           firstName: shippingformation?.firstName,
@@ -75,13 +74,16 @@ const Cart = () => {
         dispatch(
           checkoutFormSave({ data: { shippingFormData, billingFormData } }),
         );
-        await dispatch(fetchCartList()).unwrap().then(async (res) => {
-          dispatch(fetchCustomerDiscounts())
-        });
-      }).catch((error) => {
+        await dispatch(fetchCartList())
+          .unwrap()
+          .then(async (res) => {
+            dispatch(fetchCustomerDiscounts());
+          });
+      })
+      .catch((error) => {
         if (error) {
-          dispatch(removeCoupon())
-          dispatch(removeManualDiscount())
+          dispatch(removeCoupon());
+          dispatch(removeManualDiscount());
           dispatch(logout());
           window.location.href = `/auth/login?action=loadSavedQuote&quoteToken=${quoteToken}`;
         }
@@ -108,7 +110,7 @@ const Cart = () => {
               /
             </span>{" "}
             <span
-              className="!text-[#D42020] text-[11px] sans-font"
+              className="text-[#D42020]! text-[11px] sans-font"
               itemProp="name"
             >
               Your Cart

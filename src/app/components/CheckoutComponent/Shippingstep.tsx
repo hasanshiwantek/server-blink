@@ -1,43 +1,38 @@
 "use client";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
 import {
   Select,
+  SelectContent,
+  SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectItem,
-  SelectContent,
 } from "@/components/ui/select";
-import {
-  UseFormRegister,
-  FieldErrors,
-  Control,
-  Controller,
-  useWatch,
-  UseFormSetValue,
-  UseFormClearErrors,
-} from "react-hook-form";
+import { countriesWithoutPostalCode } from "@/const/country-level";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
+import { cn } from "@/lib/utils";
+import {
+  setCompletedDestinations,
+  setIsMultiAddress,
+} from "@/redux/slices/multiAddressSlice";
 import {
   addShippingCost,
-  checkoutFormSave,
   fetchShippingRate,
   fetchShippingRates,
-  removeShippingRate,
   resetShippingRates,
+  setShippingRates,
 } from "@/redux/slices/shippingSlice";
 import { RootState } from "@/redux/store";
-import MultiAddressShipping from "./MultiAddressShipping";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
-  setIsMultiAddress,
-  setCompletedDestinations,
-} from "@/redux/slices/multiAddressSlice";
+  Controller,
+  FieldErrors,
+  UseFormClearErrors,
+  UseFormRegister,
+  UseFormSetValue,
+  useWatch,
+} from "react-hook-form";
+import MultiAddressShipping from "./MultiAddressShipping";
 import ShipToSingleAddressModal from "./ShipToSingleAddressModal";
-import { CHECKOUT_STORAGE_KEY } from "./CheckoutComponent";
-import { fetchAccountAddress } from "@/redux/slices/myaccountSlice";
-import { countriesWithoutPostalCode } from "@/const/country-level";
 
 interface ShippingStepProps {
   register: UseFormRegister<any>;
@@ -126,6 +121,60 @@ export function calculatePackage(products: any[]) {
   };
 }
 
+export const PRODUCT_SHIPPING_TYPES = ["fixed_shipping", "free_shipping"];
+
+export function getSavedShippingCost(
+  shippingDetail: any,
+  productShippingRate: { service_type: string } | null,
+) {
+  const rate = shippingDetail?.rate;
+  if (!rate) return 0;
+  if (
+    PRODUCT_SHIPPING_TYPES.includes(rate.service_type) &&
+    rate.service_type !== productShippingRate?.service_type
+  )
+    return 0;
+  return Number(rate.total_charge) || 0;
+}
+
+const hasFixedShipping =(p: any) => Number(p?.fixedShippingCost) > 0.00;
+const hasFreeShipping = (p: any) => Boolean(p?.freeShipping);
+
+// Agar har product pe fixedShippingCost ya freeShipping hai toh API rates ki
+// jagah yeh rate use hoga (fixedShippingCost ki priority). Warna null.
+export function getProductShippingRate(products: any[]) {
+  if (!products?.length) return null;
+  if (!products.every((p) => hasFixedShipping(p) || hasFreeShipping(p)))
+    return null;
+
+  if (products.some(hasFixedShipping)) {
+    const total = products.reduce(
+      (sum, p) =>
+        hasFixedShipping(p)
+          ? sum + Number(p.fixedShippingCost) * (p.quantity || 1)
+          : sum,
+      0,
+    );
+    return {
+      method_id: "fixed_shipping",
+      service_type: "fixed_shipping",
+      method_type: "fixed_shipping",
+      display_name: "Fixed Shipping",
+      total_charge: Number(total.toFixed(2)),
+      is_fedex: false,
+    };
+  }
+
+  return {
+    method_id: "free_shipping",
+    service_type: "free_shipping",
+    method_type: "free_shipping",
+    display_name: "Free Shipping",
+    total_charge: 0,
+    is_fedex: false,
+  };
+}
+
 const ShippingStep: React.FC<ShippingStepProps> = ({
   register,
   errors,
@@ -172,27 +221,25 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   );
   const { saveDetail } = useAppSelector((state) => state.shippingZone);
 
-
-
   const userAddresses = Array.isArray(customerAddresses)
     ? customerAddresses?.map((item: any) => ({
-      id: item.id,
-      storeId: item.store_id,
-      customerId: item.customer_id,
-      firstName: item.first_name,
-      lastName: item.last_name,
-      companyName: item.company_name,
-      phone: item.phone_number,
-      addressLine1: item.address_line_1,
-      addressLine2: item.address_line_2,
-      city: item.city,
-      state: item.state,
-      zip: item.zip,
-      country: item.country,
-      isDefault: item.is_default,
-      createdAt: item.created_at,
-      updatedAt: item.updated_at,
-    }))
+        id: item.id,
+        storeId: item.store_id,
+        customerId: item.customer_id,
+        firstName: item.first_name,
+        lastName: item.last_name,
+        companyName: item.company_name,
+        phone: item.phone_number,
+        addressLine1: item.address_line_1,
+        addressLine2: item.address_line_2,
+        city: item.city,
+        state: item.state,
+        zip: item.zip,
+        country: item.country,
+        isDefault: item.is_default,
+        createdAt: item.created_at,
+        updatedAt: item.updated_at,
+      }))
     : [];
   // Watch form values to check if shipping address is complete
   const firstName = useWatch({ control, name: "firstName" });
@@ -225,7 +272,35 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
     );
   }, [firstName, lastName, address1, city, country, zip]);
 
+  const productShippingRate = useMemo(
+    () => getProductShippingRate(cart),
+    [cart],
+  );
+
+  // Fixed/free shipping mode mein rate seedha redux mein set karo (API call nahi)
   useEffect(() => {
+    if (productShippingRate) {
+      dispatch(setShippingRates([productShippingRate]));
+    } else if (
+      shippingRates?.some((r: any) =>
+        PRODUCT_SHIPPING_TYPES.includes(r?.service_type),
+      )
+    ) {
+      dispatch(resetShippingRates());
+    }
+  }, [productShippingRate?.service_type, productShippingRate?.total_charge]);
+
+  useEffect(() => {
+    if (
+      PRODUCT_SHIPPING_TYPES.includes(watchedShippingMethod || "") &&
+      watchedShippingMethod !== productShippingRate?.service_type
+    ) {
+      setValue("shippingMethod", "");
+    }
+  }, [watchedShippingMethod, productShippingRate?.service_type]);
+
+  useEffect(() => {
+    if (productShippingRate) return;
     if (!city?.trim() && !country?.trim() && !zip?.trim() && !state?.trim())
       return;
     if (
@@ -273,6 +348,51 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
       setAddressMode("new");
     }
   }, [auth?.isAuthenticated, userAddresses, saveDetail]);
+
+  const saveShippingMethod = async (serviceType: string, rate?: any) => {
+    const selectedRate =
+      rate || shippingRates?.find((r: any) => r.service_type === serviceType);
+    const cost = selectedRate
+      ? Number(selectedRate.total_charge).toFixed(2)
+      : "0";
+    const shippingData: any = {
+      country: country?.trim(),
+      city: city?.trim(),
+      state: state?.trim(),
+      zip: zip?.trim(),
+      cartId: cart?.map((item) => item.cartItemId),
+      rate: {
+        service_type: selectedRate?.service_type,
+        method_type: selectedRate?.method_type,
+        total_charge: cost,
+      },
+    };
+    await dispatch(addShippingCost(shippingData))
+      .unwrap()
+      .then(() => {
+        dispatch(
+          fetchShippingRate({
+            cartIds: cart?.map((item: any) => item.cartItemId),
+          }),
+        );
+      });
+  };
+
+  // Fixed/free shipping ka sirf ek option hai, address complete hote hi auto select
+  useEffect(() => {
+    if (!productShippingRate || !isShippingComplete || !isActive) return;
+    setValue("shippingMethod", productShippingRate.service_type);
+    clearErrors("shippingMethod");
+    saveShippingMethod(
+      productShippingRate.service_type,
+      productShippingRate,
+    ).catch(() => {});
+  }, [
+    productShippingRate?.service_type,
+    productShippingRate?.total_charge,
+    isShippingComplete,
+    isActive,
+  ]);
 
   if (isCompleted && !isActive) {
     // ✅ Check karo agar multi address tha
@@ -441,7 +561,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                 type="button"
                 className="w-full  border border-[#cac9c9] px-3 py-3 text-left text-sm text-[#545454] bg-white flex justify-between items-center"
                 onClick={() => {
-                  dispatch(resetShippingRates());
+                  if (!productShippingRate) dispatch(resetShippingRates());
                   setIsOpen(!isOpen);
                 }}
               >
@@ -508,6 +628,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                         onAddressSelect?.(item);
                         // ✅ form fields update karo
 
+                        if (productShippingRate) return;
                         if (
                           !item?.city?.trim() &&
                           !item?.country?.trim() &&
@@ -589,8 +710,9 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     <Input
                       id="firstName"
                       type="text"
-                      className={`w-full !max-w-full h-[40px] ${errors.firstName ? "border-red-500" : ""
-                        }`}
+                      className={`w-full !max-w-full h-[40px] ${
+                        errors.firstName ? "border-red-500" : ""
+                      }`}
                       {...register("firstName", {
                         required: "First name is required",
                       })}
@@ -615,8 +737,9 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     <Input
                       id="lastName"
                       type="text"
-                      className={`w-full !max-w-full h-[40px] ${errors.lastName ? "border-red-500" : ""
-                        }`}
+                      className={`w-full !max-w-full h-[40px] ${
+                        errors.lastName ? "border-red-500" : ""
+                      }`}
                       {...register("lastName", {
                         required: "Last name is required",
                       })}
@@ -674,8 +797,9 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                   <Input
                     id="address1"
                     type="text"
-                    className={`w-full !max-w-full h-[40px] h-[44px] border border-[#cac9c9] rounded-none ${errors.address1 ? "border-red-500" : ""
-                      }`}
+                    className={`w-full !max-w-full h-[40px] h-[44px] border border-[#cac9c9] rounded-none ${
+                      errors.address1 ? "border-red-500" : ""
+                    }`}
                     {...register("address1", {
                       required: "Address is required",
                     })}
@@ -750,8 +874,9 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                         value={field.value}
                       >
                         <SelectTrigger
-                          className={`w-full !max-w-full  !h-[44px] border border-[#cac9c9] rounded-none ${errors.country ? "border-red-500" : ""
-                            }`}
+                          className={`w-full !max-w-full  !h-[44px] border border-[#cac9c9] rounded-none ${
+                            errors.country ? "border-red-500" : ""
+                          }`}
                         >
                           <SelectValue placeholder="Select country" />
                         </SelectTrigger>
@@ -804,8 +929,9 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                             value={field.value}
                           >
                             <SelectTrigger
-                              className={`w-full !max-w-full !h-[44px] border border-[#cac9c9] rounded-none ${errors.state ? "border-red-500" : ""
-                                }`}
+                              className={`w-full !max-w-full !h-[44px] border border-[#cac9c9] rounded-none ${
+                                errors.state ? "border-red-500" : ""
+                              }`}
                             >
                               <SelectValue placeholder="Select state/province" />
                             </SelectTrigger>
@@ -823,8 +949,9 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                       <Input
                         id="state"
                         type="text"
-                        className={`w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none ${errors.state ? "border-red-500" : ""
-                          }`}
+                        className={`w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none ${
+                          errors.state ? "border-red-500" : ""
+                        }`}
                         {...register("state")}
                       />
                     )}
@@ -851,8 +978,9 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     <Input
                       id="zip"
                       type="text"
-                      className={`w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none ${errors.zip ? "border-red-500" : ""
-                        }`}
+                      className={`w-full !max-w-full h-[44px] border border-[#cac9c9] rounded-none ${
+                        errors.zip ? "border-red-500" : ""
+                      }`}
                       {...register("zip", {
                         validate: (value) => {
                           if (hasPostalCode && !value) {
@@ -928,8 +1056,47 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             )}
 
             <div className=" border ">
-              {ratesLoader
-                ? // Skeleton
+              {productShippingRate ? (
+                <label
+                  className={`flex items-start gap-3 border rounded p-4 transition-colors ${
+                    isShippingComplete
+                      ? "cursor-pointer"
+                      : "cursor-not-allowed opacity-50"
+                  } ${
+                    watchedShippingMethod == productShippingRate.service_type
+                      ? "border-black  !bg-[#ffffff]"
+                      : ""
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    value={productShippingRate.service_type}
+                    {...register("shippingMethod", {
+                      required: "Please select a shipping method",
+                    })}
+                    onChange={async (e) => {
+                      register("shippingMethod").onChange(e); // keep react-hook-form in sync
+                      await saveShippingMethod(
+                        e.target.value,
+                        productShippingRate,
+                      );
+                    }}
+                    className="mt-1"
+                    disabled={!isShippingComplete}
+                  />
+                  <div className="min-w-0 flex-1 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 text-[#545454] text-[14px] font-normal">
+                      <span>{productShippingRate.display_name}</span>
+                    </div>
+                    <div className="text-[14px]  font-bold shrink-0">
+                      {productShippingRate.total_charge === 0
+                        ? "Free"
+                        : `$${Number(productShippingRate.total_charge).toFixed(2)}`}
+                    </div>
+                  </div>
+                </label>
+              ) : ratesLoader ? (
+                // Skeleton
                 Array.from({ length: 3 }).map((_, i) => (
                   <div
                     key={i}
@@ -950,17 +1117,20 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                     </div>
                   </div>
                 ))
-                : shippingRates?.map((rate, i) => {
+              ) : (
+                shippingRates?.map((rate, i) => {
                   return (
                     <label
                       key={`${rate.method_id}-${rate.service_type}`}
-                      className={`flex items-start gap-3 border rounded p-4 transition-colors ${isShippingComplete
-                        ? "cursor-pointer"
-                        : "cursor-not-allowed opacity-50"
-                        } ${watchedShippingMethod == rate.service_type
+                      className={`flex items-start gap-3 border rounded p-4 transition-colors ${
+                        isShippingComplete
+                          ? "cursor-pointer"
+                          : "cursor-not-allowed opacity-50"
+                      } ${
+                        watchedShippingMethod == rate.service_type
                           ? "border-black  !bg-[#ffffff]"
                           : ""
-                        }`}
+                      }`}
                     >
                       <input
                         type="radio"
@@ -969,10 +1139,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                         {...register("shippingMethod", {
                           required: "Please select a shipping method",
                           validate: () => {
-                            if (
-                              !shippingRates ||
-                              shippingRates.length === 0
-                            ) {
+                            if (!shippingRates || shippingRates.length === 0) {
                               return "No shipping method is available";
                             }
 
@@ -981,29 +1148,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                         })}
                         onChange={async (e) => {
                           register("shippingMethod").onChange(e); // keep react-hook-form in sync
-                          const selectedRate = shippingRates?.find(
-                            (r: any) => r.service_type === e.target.value,
-                          );
-                          const cost = selectedRate
-                            ? Number(selectedRate.total_charge).toFixed(2)
-                            : "0";
-                          const shippingData: any = {
-                            country: country?.trim(),
-                            city: city?.trim(),
-                            state: state?.trim(),
-                            zip: zip?.trim(),
-                            cartId: cart?.map((item) => item.cartItemId),
-                            rate: {
-                              service_type: selectedRate?.service_type,
-                              method_type: selectedRate?.method_type,
-                              total_charge: cost,
-                            },
-                          };
-                          await dispatch(addShippingCost(shippingData))
-                            .unwrap()
-                            .then(() => {
-                              dispatch(fetchShippingRate({ cartIds: cart?.map((item: any) => item.cartItemId) }));
-                            });
+                          await saveShippingMethod(e.target.value);
                         }}
                         className="mt-1"
                         disabled={!isShippingComplete}
@@ -1025,7 +1170,8 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
                       </div>
                     </label>
                   );
-                })}
+                })
+              )}
             </div>
 
             {errors.shippingMethod && (

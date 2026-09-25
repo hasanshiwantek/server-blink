@@ -72,6 +72,13 @@ const multiAddressSlice = createSlice({
         setDestShippingRatesAction: (state, action: PayloadAction<Record<string, any[]>>) => {
             state.destShippingRates = action.payload;
         },
+
+        setDestShippingRate: (state, action: PayloadAction<{ destId: string; rates: any[] }>) => {
+            state.destShippingRates = {
+                ...state.destShippingRates,
+                [action.payload.destId]: action.payload.rates,
+            };
+        },
         restoreMultiAddress: (state, action: PayloadAction<{
             isMultiAddress: boolean;
             destinations: Destination[];
@@ -101,7 +108,7 @@ const multiAddressSlice = createSlice({
 export const {
     setIsMultiAddress, setDestinations, addDestination, removeDestination,
     updateDestinationAddress, updateDestinationShippingMethod, toggleShowItems,
-    setCompletedDestinations, setOrderComment, resetMultiAddress, setDestShippingRatesAction,
+    setCompletedDestinations, setOrderComment, resetMultiAddress, setDestShippingRatesAction, setDestShippingRate,
     clearMultiAddressProgress, restoreMultiAddress,
 
 } = multiAddressSlice.actions;
