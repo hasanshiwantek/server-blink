@@ -60,13 +60,17 @@ import {
   fetchCustomerAddress,
 } from "@/redux/slices/myaccountSlice";
 import { errorMessage, infoMessage, successMessage } from "@/utils/message";
+import { removeFromSessionStorage } from "@/utils/storage";
 import BillingStep from "./Billingstep";
 import CheckoutMultipleOrderSummary from "./CheckoutMultipleOrderSummary";
 import CheckoutOrderSummary from "./CheckoutOrderSummary";
 import CustomerStep from "./CustomerStep";
 import PaymentStep from "./Paymentstep";
-import ShippingStep, { calculatePackage } from "./Shippingstep";
-import { removeFromSessionStorage } from "@/utils/storage";
+import ShippingStep, {
+  calculatePackage,
+  getProductShippingRate,
+  getSavedShippingCost,
+} from "./Shippingstep";
 
 export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
 function splitName(fullName: string) {
@@ -134,7 +138,7 @@ interface CheckoutFormValues {
 const CheckoutForm = () => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state?.carts?.items);
-  const { loading, redirectToCart, cartLoading } = useAppSelector(
+  const { loading, redirectToCart } = useAppSelector(
     (state: RootState) => state?.carts,
   );
   const auth = useAppSelector((state: RootState) => state?.auth);
@@ -184,7 +188,7 @@ const CheckoutForm = () => {
   const user: any = localStorage.getItem("persist:auth");
   const parsedAuth = auth ? JSON.parse(user) : null;
   const token = parsedAuth?.token ? JSON.parse(parsedAuth.token) : null;
-  const { shippingDetail, saveDetail } = useAppSelector(
+  const { shippingDetail } = useAppSelector(
     (state: any) => state?.shippingZone,
   );
 
@@ -318,7 +322,11 @@ const CheckoutForm = () => {
     };
     const getShippingRates = async () => {
       try {
-        await dispatch(fetchShippingRate({ cartIds: cart?.map((item: any) => item.cartItemId) })).unwrap();
+        await dispatch(
+          fetchShippingRate({
+            cartIds: cart?.map((item: any) => item.cartItemId),
+          }),
+        ).unwrap();
       } catch (err) {
         detectCountry();
       }
@@ -359,6 +367,10 @@ const CheckoutForm = () => {
       }, 0);
     }
 
+    // Fixed/free shipping products — cart se hi rate nikalo
+    const productShippingRate = getProductShippingRate(cart);
+    if (productShippingRate) return productShippingRate.total_charge;
+
     // Single address — existing logic
     if (watchedShippingMethod) {
       if (!shippingRates?.length) return 0;
@@ -367,18 +379,9 @@ const CheckoutForm = () => {
       );
       return selected
         ? Number(selected.total_charge)
-        : shippingDetail?.rate?.total_charge || 0;
+        : getSavedShippingCost(shippingDetail, productShippingRate);
     }
-    if (typeof window !== "undefined") {
-      const savedCost = Number(shippingDetail?.rate?.total_charge);
-      if (savedCost) return Number(savedCost);
-    }
-
-    if (cart?.length === 0) return 0;
-    return cart.reduce(
-      (sum, item) => sum + Number(item.fixedShippingCost || 0),
-      0,
-    );
+    return getSavedShippingCost(shippingDetail, productShippingRate);
   }, [
     isMultiAddress,
     destinations,
@@ -750,7 +753,11 @@ const CheckoutForm = () => {
         orderPayload,
       );
       const orderData = orderResponse.data?.data || orderResponse.data;
-      dispatch(fetchShippingRate({ cartIds: cart?.map((item: any) => item.cartItemId) }));
+      dispatch(
+        fetchShippingRate({
+          cartIds: cart?.map((item: any) => item.cartItemId),
+        }),
+      );
       return orderData || null;
     },
     [buildOrderPayload],
@@ -819,17 +826,21 @@ const CheckoutForm = () => {
         );
 
         dispatch(removeShippingRate());
-        dispatch(fetchShippingRate({ cartIds: cart?.map((item: any) => item.cartItemId) }));
+        dispatch(
+          fetchShippingRate({
+            cartIds: cart?.map((item: any) => item.cartItemId),
+          }),
+        );
         dispatch(setLastOrder(orderData));
         dispatch(clearCart());
-        removeFromSessionStorage("quoteToken")
-        dispatch(removeManualDiscount())
+        removeFromSessionStorage("quoteToken");
+        dispatch(removeManualDiscount());
         dispatch(removeCoupon());
         dispatch(resetMultiAddress()); // ✅ ADD
         dispatch(resetShippingRates()); // ✅ ADD
         dispatch(setIsMultiAddress(false));
         dispatch(fetchCartList());
-        window.location.href = `/checkout/order-information/${orderNumber}`
+        window.location.href = `/checkout/order-information/${orderNumber}`;
       } catch (err: any) {
         event.complete("fail");
         const message =
@@ -1177,18 +1188,21 @@ const CheckoutForm = () => {
         }),
       );
       dispatch(removeShippingRate());
-      dispatch(fetchShippingRate({ cartIds: cart?.map((item: any) => item.cartItemId) }));
+      dispatch(
+        fetchShippingRate({
+          cartIds: cart?.map((item: any) => item.cartItemId),
+        }),
+      );
       dispatch(setLastOrder(orderData));
       dispatch(clearCart());
-      removeFromSessionStorage("quoteToken")
-      dispatch(removeManualDiscount())
+      removeFromSessionStorage("quoteToken");
+      dispatch(removeManualDiscount());
       dispatch(removeCoupon());
       dispatch(resetMultiAddress());
       dispatch(resetShippingRates());
       dispatch(setIsMultiAddress(false));
       dispatch(fetchCartList());
       window.location.href = `/checkout/order-information/${orderNumber}`;
-
     } catch (err: any) {
       const message =
         err.response?.data?.message ||
@@ -1243,7 +1257,6 @@ const CheckoutForm = () => {
     watchedCity,
   ]);
 
-  const isInitialLoad = useRef(true);
   const isRestored = useRef(false); // ✅ NEW
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -1425,29 +1438,29 @@ const CheckoutForm = () => {
       // billingSame false → actual billing values use karo (sirf agar filled hain)
       const billingFormData = watchedValues.billingSame
         ? {
-          billingFirstName: watchedValues.firstName || "",
-          billingLastName: watchedValues.lastName || "",
-          billingCompany: watchedValues.company || "",
-          billingPhone: watchedValues.phone || "",
-          billingAddress1: watchedValues.address1 || "",
-          billingAddress2: watchedValues.address2 || "",
-          billingCity: watchedValues.city || "",
-          billingCountry: watchedValues.country || "",
-          billingState: watchedValues.state || "",
-          billingZip: watchedValues.zip || "",
-        }
+            billingFirstName: watchedValues.firstName || "",
+            billingLastName: watchedValues.lastName || "",
+            billingCompany: watchedValues.company || "",
+            billingPhone: watchedValues.phone || "",
+            billingAddress1: watchedValues.address1 || "",
+            billingAddress2: watchedValues.address2 || "",
+            billingCity: watchedValues.city || "",
+            billingCountry: watchedValues.country || "",
+            billingState: watchedValues.state || "",
+            billingZip: watchedValues.zip || "",
+          }
         : {
-          billingFirstName: watchedValues.billingFirstName || "",
-          billingLastName: watchedValues.billingLastName || "",
-          billingCompany: watchedValues.billingCompany || "",
-          billingPhone: watchedValues.billingPhone || "",
-          billingAddress1: watchedValues.billingAddress1 || "",
-          billingAddress2: watchedValues.billingAddress2 || "",
-          billingCity: watchedValues.billingCity || "",
-          billingCountry: watchedValues.billingCountry || "",
-          billingState: watchedValues.billingState || "",
-          billingZip: watchedValues.billingZip || "",
-        };
+            billingFirstName: watchedValues.billingFirstName || "",
+            billingLastName: watchedValues.billingLastName || "",
+            billingCompany: watchedValues.billingCompany || "",
+            billingPhone: watchedValues.billingPhone || "",
+            billingAddress1: watchedValues.billingAddress1 || "",
+            billingAddress2: watchedValues.billingAddress2 || "",
+            billingCity: watchedValues.billingCity || "",
+            billingCountry: watchedValues.billingCountry || "",
+            billingState: watchedValues.billingState || "",
+            billingZip: watchedValues.billingZip || "",
+          };
 
       dispatch(
         checkoutFormSave({ data: { shippingFormData, billingFormData } }),
@@ -1559,7 +1572,6 @@ const CheckoutForm = () => {
       .then((res) => res.json())
       .then((data) => setOrderPlaceCountry(data?.country_code));
   }, []);
-
 
   useEffect(() => {
     dispatch(fetchMyCouponUsage());

@@ -108,6 +108,11 @@ const shippingZoneSlice = createSlice({
             state.ratesLoader = false;
             state.error = null;
         },
+        setShippingRates: (state, action) => {
+            state.shippingRates = action.payload;
+            state.ratesLoader = false;
+            state.error = null;
+        },
     },
 
     extraReducers: (builder) => {
@@ -168,6 +173,6 @@ const shippingZoneSlice = createSlice({
             })
     },
 });
-export const { resetShippingRates } = shippingZoneSlice.actions;
+export const { resetShippingRates, setShippingRates } = shippingZoneSlice.actions;
 
 export default shippingZoneSlice.reducer;

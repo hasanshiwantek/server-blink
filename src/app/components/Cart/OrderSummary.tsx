@@ -20,13 +20,18 @@ import {
   fetchShippingRates,
   getCheckoutForm,
   resetShippingRates,
+  setShippingRates,
 } from "@/redux/slices/shippingSlice";
 import { RootState } from "@/redux/store";
+import { errorMessage, infoMessage, successMessage } from "@/utils/message";
 import { Country, State } from "country-state-city";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { calculatePackage } from "../CheckoutComponent/Shippingstep";
-import { errorMessage, infoMessage, successMessage } from "@/utils/message";
+import {
+  calculatePackage,
+  getProductShippingRate,
+  getSavedShippingCost,
+} from "../CheckoutComponent/Shippingstep";
 
 const OrderSummary = () => {
   const dispatch = useAppDispatch();
@@ -44,7 +49,6 @@ const OrderSummary = () => {
   const [showCoupon, setShowCoupon] = useState(false);
   const [showShipping, setShowShipping] = useState(false);
   const [couponCode, setCouponCode] = useState("");
-  const [discountOpen, setDiscountOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingDetectCountry, setLoadingDetectCountry] = useState(false);
   const [fedexShow, setFedexShow] = useState(false);
@@ -82,19 +86,16 @@ const OrderSummary = () => {
     return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   }, [cart]);
 
+  // Har product pe fixed/free shipping ho toh API rates ki zaroorat nahi
+  const productShippingRate = useMemo(
+    () => getProductShippingRate(cart),
+    [cart],
+  );
+  console.log({ productShippingRate, cart });
   const shipping = useMemo(() => {
-    if (typeof window !== "undefined") {
-      const savedCost = Number(shippingDetail?.rate?.total_charge);
-      if (savedCost) return Number(savedCost);
-    }
-
-    if (cart.length === 0) return 0;
-
-    return cart.reduce((sum, item) => {
-      const cost = Number(item.fixedShippingCost || 0);
-      return sum + cost;
-    }, 0);
-  }, [cart, shippingDetail]);
+    if (productShippingRate) return productShippingRate.total_charge;
+    return getSavedShippingCost(shippingDetail, productShippingRate);
+  }, [cart, shippingDetail, productShippingRate]);
 
   const packageInfo = useMemo(() => calculatePackage(cart), [cart]);
 
@@ -102,7 +103,10 @@ const OrderSummary = () => {
 
   // Total before discount
   const totalBeforeDiscount = subtotal + shipping;
-  const shippingCost = Number(shippingDetail?.rate?.total_charge);
+  const shippingCost = getSavedShippingCost(
+    shippingDetail,
+    productShippingRate,
+  );
   // Final total after discount
   const finalTotal = Math.max(totalBeforeDiscount - discountTotal, 0);
   const { shippingRates, ratesLoader } = useAppSelector(
@@ -110,6 +114,12 @@ const OrderSummary = () => {
   );
   const handleShippingSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (productShippingRate) {
+      dispatch(setShippingRates([productShippingRate]));
+      setSelectedShippingMethod(productShippingRate.service_type);
+      setFedexShow(true);
+      return;
+    }
     setLoading(true);
     const pkg = calculatePackage(cart);
     const { city, zip, country, ...restShippingData } = shippingData;
@@ -198,7 +208,11 @@ const OrderSummary = () => {
     };
     const getShippingRates = async () => {
       try {
-        await dispatch(fetchShippingRate({ cartIds: cartItems?.map((item: any) => item.cartItemId) })).unwrap();
+        await dispatch(
+          fetchShippingRate({
+            cartIds: cartItems?.map((item: any) => item.cartItemId),
+          }),
+        ).unwrap();
       } catch (err) {
         detectCountry();
       }
@@ -242,6 +256,14 @@ const OrderSummary = () => {
           <div className="flex justify-between py-2">
             <span className="text-[14px] font-bold text-[#393939]">
               Shipping:
+              {productShippingRate && showShipping && (
+                <span
+                  className="ml-2 font-normal text-[#393939] border-b border-gray-500 hover:border-red-500 hover:text-red-500 cursor-pointer italic"
+                  onClick={() => setShowShipping(false)}
+                >
+                  Cancel
+                </span>
+              )}
             </span>
 
             {shippingCostLoading || loadingDetectCountry ? (
@@ -253,6 +275,19 @@ const OrderSummary = () => {
                 }
               >
                 <div className="h-6 w-6 rounded-full border-[3px] border-gray-300 border-t-red-500 animate-spin" />
+              </span>
+            ) : productShippingRate ? (
+              <span
+                className={
+                  showShipping
+                    ? "text-[14px] font-bold text-[#393939]"
+                    : "text-[14px] text-red-500 border-b border-red-500 inline-block cursor-pointer"
+                }
+                onClick={() => !showShipping && setShowShipping(true)}
+              >
+                {productShippingRate.total_charge === 0
+                  ? "Free"
+                  : `$${productShippingRate.total_charge.toFixed(2)}`}
               </span>
             ) : shippingCost ? (
               <span
@@ -400,53 +435,53 @@ const OrderSummary = () => {
                 <div>
                   {ratesLoader
                     ? Array.from({ length: 2 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="flex items-start gap-3 border rounded p-4 animate-pulse"
-                      >
-                        <div className="w-4 h-4 mt-1 bg-gray-200 rounded-full shrink-0" />
-                        <div className="flex-1 space-y-2">
-                          <div className="h-4 bg-gray-200 rounded w-3/4" />
-                          <div className="h-5 bg-gray-200 rounded w-16" />
-                        </div>
-                      </div>
-                    ))
-                    : shippingRates?.map((rate, i) => {
-                      return (
-                        <label
-                          key={`${rate.method_id}-${rate.service_type}`}
-                          className={`flex items-start gap-3  p-4 transition-colors cursor-pointer ${selectedShippingMethod === rate.service_type ? "" : ""}`}
+                        <div
+                          key={i}
+                          className="flex items-start gap-3 border rounded p-4 animate-pulse"
                         >
-                          <input
-                            type="radio"
-                            name="shippingMethod"
-                            value={rate.service_type}
-                            checked={
-                              selectedShippingMethod === rate.service_type
-                            }
-                            onChange={(e) =>
-                              setSelectedShippingMethod(e.target.value)
-                            }
-                            className="mt-1"
-                          />
-                          <div className="min-w-0 flex-1 flex items-center justify-between gap-3 text-[#545454] text-[14px] ">
-                            <div className="flex items-center gap-2 font-normal">
-                              {rate.is_fedex && <span>FedEx</span>}
-                              <span className="">
-                                {rate.is_fedex
-                                  ? `(${rate.service_name})`
-                                  : rate.display_name}
-                              </span>
-                            </div>
-                            <div className=" font-bold shrink-0">
-                              {rate.total_charge === 0
-                                ? "Free"
-                                : `$${Number(rate.total_charge).toFixed(2)}`}
-                            </div>
+                          <div className="w-4 h-4 mt-1 bg-gray-200 rounded-full shrink-0" />
+                          <div className="flex-1 space-y-2">
+                            <div className="h-4 bg-gray-200 rounded w-3/4" />
+                            <div className="h-5 bg-gray-200 rounded w-16" />
                           </div>
-                        </label>
-                      );
-                    })}
+                        </div>
+                      ))
+                    : shippingRates?.map((rate, i) => {
+                        return (
+                          <label
+                            key={`${rate.method_id}-${rate.service_type}`}
+                            className={`flex items-start gap-3  p-4 transition-colors cursor-pointer ${selectedShippingMethod === rate.service_type ? "" : ""}`}
+                          >
+                            <input
+                              type="radio"
+                              name="shippingMethod"
+                              value={rate.service_type}
+                              checked={
+                                selectedShippingMethod === rate.service_type
+                              }
+                              onChange={(e) =>
+                                setSelectedShippingMethod(e.target.value)
+                              }
+                              className="mt-1"
+                            />
+                            <div className="min-w-0 flex-1 flex items-center justify-between gap-3 text-[#545454] text-[14px] ">
+                              <div className="flex items-center gap-2 font-normal">
+                                {rate.is_fedex && <span>FedEx</span>}
+                                <span className="">
+                                  {rate.is_fedex
+                                    ? `(${rate.service_name})`
+                                    : rate.display_name}
+                                </span>
+                              </div>
+                              <div className=" font-bold shrink-0">
+                                {rate.total_charge === 0
+                                  ? "Free"
+                                  : `$${Number(rate.total_charge).toFixed(2)}`}
+                              </div>
+                            </div>
+                          </label>
+                        );
+                      })}
                   <div className="flex justify-end mt-1.5 mb-1.5">
                     <button
                       type="button"
@@ -506,7 +541,7 @@ const OrderSummary = () => {
                       }}
                       disabled={shippingCostLoading}
                       className="w-full md:w-[55%] text-[18px] btn-primary"
-                    // className="w-full md:w-[65%] p-2 border-b border-black  bg-[#D42020] text-white text-[14px] font-bold"
+                      // className="w-full md:w-[65%] p-2 border-b border-black  bg-[#D42020] text-white text-[14px] font-bold"
                     >
                       {shippingCostLoading
                         ? "Loading..."
