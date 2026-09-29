@@ -36,7 +36,7 @@ const TopHeader = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  
+  const abortRef = useRef<AbortController | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -47,9 +47,9 @@ const TopHeader = () => {
   const { searchQuery, showSearchDropdown, searchData, loading } =
     useAppSelector((state: any) => state.home);
 
-const handleLogout = () => {
-  setShowLogoutModal(true);
-};
+  const handleLogout = () => {
+    setShowLogoutModal(true);
+  };
 
   useEffect(() => {
     let ticking = false;
@@ -105,13 +105,20 @@ const handleLogout = () => {
 
   const handleOnChange = (value: string) => {
     dispatch(setSearchQuery(value));
+
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (value.trim()) {
-      debounceRef.current = setTimeout(() => {
-        dispatch(globalSearch({ query: value.trim() }));
-        dispatch(setShowSearchDropdown(true));
-      }, 100);
+    abortRef.current?.abort();
+
+    const query = value.trim();
+    if (!query) {
+      dispatch(setShowSearchDropdown(false));
+      return;
     }
+
+    debounceRef.current = setTimeout(() => {
+      abortRef.current = new AbortController();
+      dispatch(globalSearch({ query, signal: abortRef.current.signal }));
+    }, 1000);
   };
 
   useEffect(() => {
@@ -627,18 +634,18 @@ const handleLogout = () => {
         </>
       )}
       <ConfirmationModal
-  open={showLogoutModal}
-  onOpenChange={setShowLogoutModal}
-  variant="warning"
-  title="Confirm Logout?"
-  description="Are you sure you want to logout?"
-  onConfirm={() => {
-    dispatch(logout());
-    successMessage("Logged out successfully!");
-    setShowLogoutModal(false);
-    router.replace("/auth/login");
-  }}
-/>
+        open={showLogoutModal}
+        onOpenChange={setShowLogoutModal}
+        variant="warning"
+        title="Confirm Logout?"
+        description="Are you sure you want to logout?"
+        onConfirm={() => {
+          dispatch(logout());
+          successMessage("Logged out successfully!");
+          setShowLogoutModal(false);
+          router.replace("/auth/login");
+        }}
+      />
     </>
   );
 };
