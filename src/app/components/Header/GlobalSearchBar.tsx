@@ -3,24 +3,33 @@ import React, { useState, useEffect, useRef } from "react";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { clearSearch, globalSearch, setSearchQuery, setShowSearchDropdown } from "@/redux/slices/homeSlice";
+import {
+  clearSearch,
+  globalSearch,
+  setSearchQuery,
+  setShowSearchDropdown,
+} from "@/redux/slices/homeSlice";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 const GlobalSearchBar: React.FC = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
   const pathname = usePathname();
-  const { searchQuery, showSearchDropdown, searchData, loading } = useAppSelector((state: any) => state.home);
+  const { searchQuery, showSearchDropdown, searchData, loading } =
+    useAppSelector((state: any) => state.home);
   const [isScrolled, setIsScrolled] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-
   // Hide dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         dispatch(setShowSearchDropdown(false));
       }
     };
@@ -28,17 +37,22 @@ const GlobalSearchBar: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-
   const handleOnChange = (value: string) => {
     dispatch(setSearchQuery(value));
+
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (value.trim()) {
-      debounceRef.current = setTimeout(() => {
-        dispatch(globalSearch({ query: value.trim() }));
-      }, 100);
-    } else {
+    abortRef.current?.abort();
+
+    const query = value.trim();
+    if (!query) {
       dispatch(setShowSearchDropdown(false));
+      return;
     }
+
+    debounceRef.current = setTimeout(() => {
+      abortRef.current = new AbortController();
+      dispatch(globalSearch({ query, signal: abortRef.current.signal }));
+    }, 1000);
   };
   const handleSelect = (url: string) => {
     dispatch(clearSearch());
@@ -50,7 +64,6 @@ const GlobalSearchBar: React.FC = () => {
       dispatch(clearSearch());
     }
   }, [pathname]);
-
 
   useEffect(() => {
     let ticking = false;
@@ -67,7 +80,7 @@ const GlobalSearchBar: React.FC = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className={isScrolled ? "hidden" : ' relative '}>
+    <div ref={containerRef} className={isScrolled ? "hidden" : " relative "}>
       {/* Input Box */}
       <div className="relative w-full xl:max-w-[394px] 2xl:max-w-[394px] 2xl:ml-30 xl:ml-10 ml-0">
         <input
@@ -82,14 +95,16 @@ const GlobalSearchBar: React.FC = () => {
               const q = searchQuery.trim();
               dispatch(clearSearch());
 
-              localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
+              localStorage.setItem(
+                "advancedSearchFilters",
+                JSON.stringify({ q }),
+              );
               window.dispatchEvent(new Event("searchFiltersUpdated"));
               if (pathname === "/advanced-search") {
-                window.location.reload()
+                window.location.reload();
               } else {
                 router.push(`/advanced-search`);
               }
-
             }
           }}
           className="
@@ -101,7 +116,6 @@ const GlobalSearchBar: React.FC = () => {
             text-sm sm:text-base
             h6-medium-color border-1 border-[#cac9c9]
             "
-
         />
         <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center  border-gray-300 px-3">
           <button
@@ -112,14 +126,16 @@ const GlobalSearchBar: React.FC = () => {
               const q = searchQuery.trim();
               dispatch(clearSearch());
 
-              localStorage.setItem("advancedSearchFilters", JSON.stringify({ q }));
+              localStorage.setItem(
+                "advancedSearchFilters",
+                JSON.stringify({ q }),
+              );
               window.dispatchEvent(new Event("searchFiltersUpdated"));
               if (pathname === "/advanced-search") {
-                window.location.reload()
+                window.location.reload();
               } else {
                 router.push(`/advanced-search`);
               }
-
             }}
             className="flex items-center justify-center"
           >
@@ -132,11 +148,14 @@ const GlobalSearchBar: React.FC = () => {
 
       {showSearchDropdown && searchQuery.trim().length > 1 && (
         <div className="absolute top-full left-1/2 -translate-x-1/2 w-[585px] mt-1 bg-[#f2f2f2] shadow-xl overflow-hidden z-[9999] max-h-[520px] overflow-y-auto border border-gray-300">
-
-          {loading && <div className="p-6 text-gray-500 text-center">Searching...</div>}
+          {loading && (
+            <div className="p-6 text-gray-500 text-center">Searching...</div>
+          )}
 
           {!loading && searchData?.data?.length === 0 && (
-            <div className="p-6 text-gray-500 text-center">No Products found.</div>
+            <div className="p-6 text-gray-500 text-center">
+              No Products found.
+            </div>
           )}
 
           {!loading &&
@@ -153,7 +172,9 @@ const GlobalSearchBar: React.FC = () => {
                   {/* Product Image - Left Side */}
                   <div className="w-[160px] min-h-[140px] shrink-0 bg-white border-r border-gray-200 p-3 flex items-center justify-center">
                     <Image
-                      src={item?.image?.[0]?.path || "/default-product-image.svg"}
+                      src={
+                        item?.image?.[0]?.path || "/default-product-image.svg"
+                      }
                       alt={item?.name || "product"}
                       width={145}
                       height={125}
@@ -169,47 +190,61 @@ const GlobalSearchBar: React.FC = () => {
                   {/* Product Details - Right Side */}
                   <div className="flex-1 p-4 flex flex-col">
                     {/* Brand */}
-                    {item?.brand?.slug ? <p onMouseDown={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      const url = item?.brand?.slug;
-                      handleSelect(`/brand/${url}`);
-                    }} className="text-[1rem] text-[#545454] uppercase hover:text-[#d42020]">
-                      {item?.brand?.name || "Brand"}
-                    </p> : <p className="text-[1rem] text-[#545454] uppercase ">
-                      {"UNKNOWN BRAND"}
-                    </p>}
+                    {item?.brand?.slug ? (
+                      <p
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          const url = item?.brand?.slug;
+                          handleSelect(`/brand/${url}`);
+                        }}
+                        className="text-[1rem] text-[#545454] uppercase hover:text-[#d42020]"
+                      >
+                        {item?.brand?.name || "Brand"}
+                      </p>
+                    ) : (
+                      <p className="text-[1rem] text-[#545454] uppercase ">
+                        {"UNKNOWN BRAND"}
+                      </p>
+                    )}
 
                     {/* SKU */}
-                    <p onMouseDown={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      const url = item?.productUrl || `/${item?.sku}`;
-                      handleSelect(url);
-                    }} className="text-[1rem] text-[#545454] mt-0.5 hover:text-[#d42020]">
+                    <p
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const url = item?.productUrl || `/${item?.sku}`;
+                        handleSelect(url);
+                      }}
+                      className="text-[1rem] text-[#545454] mt-0.5 hover:text-[#d42020]"
+                    >
                       Sku: {item?.sku || "N/A"}
                     </p>
 
                     {/* Product Name */}
-                    <p onMouseDown={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      const url = item?.productUrl || `/${item?.sku}`;
-                      handleSelect(url);
-                    }} className="text-[14px] font-bold text-[#54545F] leading-tight mt-2 line-clamp-2 min-h-[42px] hover:text-[#d42020]">
+                    <p
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const url = item?.productUrl || `/${item?.sku}`;
+                        handleSelect(url);
+                      }}
+                      className="text-[14px] font-bold text-[#54545F] leading-tight mt-2 line-clamp-2 min-h-[42px] hover:text-[#d42020]"
+                    >
                       {item?.name}
                     </p>
 
                     {/* Pricing */}
                     <div className="mt-auto pt-3">
-                      {item?.costPrice && Number(item?.costPrice) > Number(item?.price) && (
-                        <p className="text-[13px] text-gray-500">
-                          Price{" "}
-                          <span className="line-through">
-                            ${Number(item?.costPrice).toFixed(2)}
-                          </span>
-                        </p>
-                      )}
+                      {item?.costPrice &&
+                        Number(item?.costPrice) > Number(item?.price) && (
+                          <p className="text-[13px] text-gray-500">
+                            Price{" "}
+                            <span className="line-through">
+                              ${Number(item?.costPrice).toFixed(2)}
+                            </span>
+                          </p>
+                        )}
 
                       <p className="text-[16px] font-bold text-[#545454]  mt-1">
                         ${Number(item?.price || 0).toFixed(2)}
