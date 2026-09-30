@@ -68,7 +68,6 @@ const normalizeCoupon = (
     (coupon as Partial<Coupon>)?.discountAmount ??
     (coupon as Partial<CouponUsageItem>)?.discount_amount ??
     0;
-  const manualDiscountValue = (coupon as Partial<Coupon>)?.manualDiscount ?? 0;
 
   return {
     ...coupon,
@@ -77,7 +76,6 @@ const normalizeCoupon = (
     couponCode: code,
     coupon_code: code,
     discountAmount: Number(discountValue),
-    manualDiscount: Number(manualDiscountValue),
     discount_amount: Number(discountValue),
     usageId: couponId ?? null,
   } as Coupon;
@@ -94,7 +92,7 @@ export const fetchMyCouponUsage = createAsyncThunk(
       const activeUsage = Array.isArray(usageData)
         ? usageData[0]
         : usageData || null;
-      const normalizedUsage = normalizeCoupon({ manualDiscount, activeUsage });
+      const normalizedUsage = normalizeCoupon(activeUsage);
 
       return {
         activeUsage: normalizedUsage,
@@ -234,8 +232,6 @@ const couponSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchMyCouponUsage.fulfilled, (state, action) => {
-        console.log("action?.payload", action?.payload);
-
         state.loading = false;
         state.appliedCoupon = action.payload.activeUsage ?? null;
         state.couponUsageId = action.payload.couponUsageId ?? null;
