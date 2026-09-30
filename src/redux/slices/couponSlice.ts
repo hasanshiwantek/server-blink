@@ -19,6 +19,7 @@ interface Coupon {
   discount_amount?: string | number;
   enabled?: string;
   usageId?: number | null;
+  manualDiscount?: string | number;
   // add other fields as needed
 }
 
@@ -67,6 +68,7 @@ const normalizeCoupon = (
     (coupon as Partial<Coupon>)?.discountAmount ??
     (coupon as Partial<CouponUsageItem>)?.discount_amount ??
     0;
+  const manualDiscountValue = (coupon as Partial<Coupon>)?.manualDiscount ?? 0;
 
   return {
     ...coupon,
@@ -75,6 +77,7 @@ const normalizeCoupon = (
     couponCode: code,
     coupon_code: code,
     discountAmount: Number(discountValue),
+    manualDiscount: Number(manualDiscountValue),
     discount_amount: Number(discountValue),
     usageId: couponId ?? null,
   } as Coupon;
@@ -85,16 +88,19 @@ export const fetchMyCouponUsage = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get("/web/coupons/my-coupon-usage");
+      const manualDiscount = response?.data?.manualDiscount;
+
       const usageData = response?.data?.data;
       const activeUsage = Array.isArray(usageData)
         ? usageData[0]
         : usageData || null;
-      const normalizedUsage = normalizeCoupon(activeUsage);
+      const normalizedUsage = normalizeCoupon({ manualDiscount, activeUsage });
 
       return {
         activeUsage: normalizedUsage,
         couponUsageId: activeUsage?.id ?? null,
         discountAmount: Number(normalizedUsage?.discountAmount ?? 0),
+        manualDiscount: Number(manualDiscount ?? 0),
       };
     } catch (error: any) {
       return rejectWithValue(
@@ -203,7 +209,6 @@ const couponSlice = createSlice({
       state.error = null;
     },
     removeManualDiscount: (state) => {
-      state.orderId = null;
       state.manualDiscount = 0;
     },
   },
@@ -229,10 +234,13 @@ const couponSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchMyCouponUsage.fulfilled, (state, action) => {
+        console.log("action?.payload", action?.payload);
+
         state.loading = false;
         state.appliedCoupon = action.payload.activeUsage ?? null;
         state.couponUsageId = action.payload.couponUsageId ?? null;
         state.discountAmount = Number(action.payload.discountAmount ?? 0);
+        state.manualDiscount = Number(action?.payload?.manualDiscount ?? 0);
         state.error = null;
       })
       .addCase(fetchMyCouponUsage.rejected, (state, action) => {
@@ -278,30 +286,10 @@ const couponSlice = createSlice({
           }
         }
 
-        // setInSessionStorage("quoteToken", quoteToken);
-        state.quoteToken = quoteToken;
+        // state.quoteToken = quoteToken;
         state.error = null;
       })
       .addCase(fetchLoadSavedQuote.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
-
-      // Fetch Customer Discounts
-      .addCase(fetchCustomerDiscounts.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchCustomerDiscounts.fulfilled, (state, action) => {
-        state.loading = false;
-        if (action?.payload?.data?.orderId) {
-          state.orderId = action?.payload?.data?.orderId;
-          state.manualDiscount = Number(action?.payload?.data?.manualDiscount);
-        }
-
-        state.error = null;
-      })
-      .addCase(fetchCustomerDiscounts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
