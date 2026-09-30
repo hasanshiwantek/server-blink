@@ -72,11 +72,11 @@ const CartList = () => {
           removeLocalShipping();
           setItemToDelete(null);
           setIsDialogOpen(false);
-          if (orderId) {
-            await dispatch(deleteDraftOrderCart({ id: orderId }))
-            removeFromSessionStorage("quoteToken")
-            dispatch(removeManualDiscount())
-          }
+          // if (orderId) {
+          //   await dispatch(deleteDraftOrderCart({ id: orderId }))
+          //   removeFromSessionStorage("quoteToken")
+          //   dispatch(removeManualDiscount())
+          // }
         });
     }
   };

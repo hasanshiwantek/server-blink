@@ -12,11 +12,21 @@ import {
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { checkAuthToken, customerProfile, logout } from "@/redux/slices/authSlice";
+import {
+  checkAuthToken,
+  customerProfile,
+  logout,
+} from "@/redux/slices/authSlice";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { useSearchParams } from "next/navigation";
 import { successMessage } from "@/utils/message";
-import { getFromSessionStorage, getFromStorage, getPersistedAuth, getSessionId, setInStorage } from "@/utils/storage";
+import {
+  getFromSessionStorage,
+  getFromStorage,
+  getPersistedAuth,
+  getSessionId,
+  setInStorage,
+} from "@/utils/storage";
 import { fetchCustomerDiscounts } from "@/redux/slices/couponSlice";
 import ConfirmationModal from "../modal/ConfirmationModal";
 
@@ -44,13 +54,13 @@ const FooterBottom = () => {
   const handleSelect = (url: string) => {
     router.push(url);
   };
-const handleLogout = () => {
-  setShowLogoutModal(true);
-};
+  const handleLogout = () => {
+    setShowLogoutModal(true);
+  };
   useEffect(() => {
     const auth = getPersistedAuth();
     const t = auth?.token || null;
-    setToken(t)
+    setToken(t);
     if (!t) return;
     dispatch(checkAuthToken())
       .unwrap()
@@ -60,7 +70,7 @@ const handleLogout = () => {
       });
   }, []);
   useEffect(() => {
-    const existingSession = getSessionId()
+    const existingSession = getSessionId();
     if (existingSession) {
       dispatch(visitorSession({ sessionId: existingSession }));
     } else {
@@ -119,11 +129,10 @@ const handleLogout = () => {
   }, [paramsToken, dispatch, router]);
 
   useEffect(() => {
-    const quoteToken = getFromSessionStorage("quoteToken")
-    if (auth?.isAuthenticated && quoteToken) {
-      dispatch(fetchCustomerDiscounts())
+    if (auth?.isAuthenticated) {
+      dispatch(fetchCustomerDiscounts());
     }
-  }, [auth?.isAuthenticated])
+  }, [auth?.isAuthenticated]);
   return (
     <footer className="bg-[#333333] text-[#ffffff] w-full mx-auto roboto-font">
       {/* 🔹 Newsletter Section */}
@@ -197,9 +206,7 @@ const handleLogout = () => {
                   className="text-gray-300">
                   +1502-206-3033
                 </Link> */}
-                <Link
-                  href="tel:+15020000000"
-                  className="text-gray-300">
+                <Link href="tel:+15020000000" className="text-gray-300">
                   +1502-000-0000
                 </Link>
               </p>
@@ -422,18 +429,18 @@ const handleLogout = () => {
         </div>
       </div>
       <ConfirmationModal
-  open={showLogoutModal}
-  onOpenChange={setShowLogoutModal}
-  variant="warning"
-  title="Confirm Logout?"
-  description="Are you sure you want to logout?"
-  onConfirm={() => {
-    dispatch(logout());
-    successMessage("Logged out successfully!");
-    setShowLogoutModal(false);
-    router.replace("/auth/login");
-  }}
-/>
+        open={showLogoutModal}
+        onOpenChange={setShowLogoutModal}
+        variant="warning"
+        title="Confirm Logout?"
+        description="Are you sure you want to logout?"
+        onConfirm={() => {
+          dispatch(logout());
+          successMessage("Logged out successfully!");
+          setShowLogoutModal(false);
+          router.replace("/auth/login");
+        }}
+      />
     </footer>
   );
 };

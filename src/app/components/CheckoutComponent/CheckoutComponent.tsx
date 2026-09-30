@@ -322,11 +322,7 @@ const CheckoutForm = () => {
     };
     const getShippingRates = async () => {
       try {
-        await dispatch(
-          fetchShippingRate({
-            cartIds: cart?.map((item: any) => item.cartItemId),
-          }),
-        ).unwrap();
+        await dispatch(fetchShippingRate({})).unwrap();
       } catch (err) {
         detectCountry();
       }
@@ -753,11 +749,7 @@ const CheckoutForm = () => {
         orderPayload,
       );
       const orderData = orderResponse.data?.data || orderResponse.data;
-      dispatch(
-        fetchShippingRate({
-          cartIds: cart?.map((item: any) => item.cartItemId),
-        }),
-      );
+      dispatch(fetchShippingRate({}));
       return orderData || null;
     },
     [buildOrderPayload],
@@ -826,11 +818,7 @@ const CheckoutForm = () => {
         );
 
         dispatch(removeShippingRate());
-        dispatch(
-          fetchShippingRate({
-            cartIds: cart?.map((item: any) => item.cartItemId),
-          }),
-        );
+        dispatch(fetchShippingRate({}));
         dispatch(setLastOrder(orderData));
         dispatch(clearCart());
         removeFromSessionStorage("quoteToken");
@@ -1188,11 +1176,7 @@ const CheckoutForm = () => {
         }),
       );
       dispatch(removeShippingRate());
-      dispatch(
-        fetchShippingRate({
-          cartIds: cart?.map((item: any) => item.cartItemId),
-        }),
-      );
+      dispatch(fetchShippingRate({}));
       dispatch(setLastOrder(orderData));
       dispatch(clearCart());
       removeFromSessionStorage("quoteToken");
