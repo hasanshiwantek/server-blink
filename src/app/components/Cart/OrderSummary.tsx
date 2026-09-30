@@ -91,7 +91,6 @@ const OrderSummary = () => {
     () => getProductShippingRate(cart),
     [cart],
   );
-  console.log({ productShippingRate, cart });
   const shipping = useMemo(() => {
     if (productShippingRate) return productShippingRate.total_charge;
     return getSavedShippingCost(shippingDetail, productShippingRate);
