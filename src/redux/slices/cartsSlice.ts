@@ -61,10 +61,7 @@ export const fetchCartList = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
 
-      const quoteToken = getFromSessionStorage("quoteToken")
-      const res = await axiosInstance.get("web/cart/list", {
-        params: quoteToken ? { quoteToken } : {},
-      });
+      const res = await axiosInstance.get("web/cart/list");
       return res.data;
     } catch (err: any) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

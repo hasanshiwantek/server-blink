@@ -208,11 +208,7 @@ const OrderSummary = () => {
     };
     const getShippingRates = async () => {
       try {
-        await dispatch(
-          fetchShippingRate({
-            cartIds: cartItems?.map((item: any) => item.cartItemId),
-          }),
-        ).unwrap();
+        await dispatch(fetchShippingRate({})).unwrap();
       } catch (err) {
         detectCountry();
       }
