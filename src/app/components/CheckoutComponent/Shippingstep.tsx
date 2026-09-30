@@ -137,7 +137,7 @@ export function getSavedShippingCost(
   return Number(rate.total_charge) || 0;
 }
 
-const hasFixedShipping =(p: any) => Number(p?.fixedShippingCost) > 0.00;
+const hasFixedShipping = (p: any) => Number(p?.fixedShippingCost) > 0.0;
 const hasFreeShipping = (p: any) => Boolean(p?.freeShipping);
 
 // Agar har product pe fixedShippingCost ya freeShipping hai toh API rates ki
@@ -370,11 +370,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
     await dispatch(addShippingCost(shippingData))
       .unwrap()
       .then(() => {
-        dispatch(
-          fetchShippingRate({
-            cartIds: cart?.map((item: any) => item.cartItemId),
-          }),
-        );
+        dispatch(fetchShippingRate({}));
       });
   };
 

@@ -2,7 +2,12 @@
 import axiosInstance from "@/lib/axiosInstance";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
-import { getFromSessionStorage, getFromStorage, setInSessionStorage, setInStorage } from "@/utils/storage";
+import {
+  getFromSessionStorage,
+  getFromStorage,
+  setInSessionStorage,
+  setInStorage,
+} from "@/utils/storage";
 
 interface Coupon {
   id?: number;
@@ -79,10 +84,7 @@ export const fetchMyCouponUsage = createAsyncThunk(
   "coupon/fetchMyCouponUsage",
   async (_, { rejectWithValue }) => {
     try {
-      const draft_token = getFromSessionStorage("quoteToken")
-      const response = await axiosInstance.get("/web/coupons/my-coupon-usage", {
-        params: draft_token ? { draft_token } : {},
-      });
+      const response = await axiosInstance.get("/web/coupons/my-coupon-usage");
       const usageData = response?.data?.data;
       const activeUsage = Array.isArray(usageData)
         ? usageData[0]
@@ -184,17 +186,14 @@ export const fetchCustomerDiscounts = createAsyncThunk(
   "coupon/fetchCustomerDiscounts",
   async (_, thunkAPI) => {
     try {
-      const quoteToken = getFromSessionStorage("quoteToken")
-      const res = await axiosInstance.get(`dashboard/customer-discounts`, {
-        params: quoteToken ? { quoteToken } : {},
-      });
+      const res = await axiosInstance.get(`dashboard/customer-discounts`);
       return res?.data;
     } catch (err: any) {
       return thunkAPI.rejectWithValue(
-        err.response?.data?.message || "Failed to load saved quote"
+        err.response?.data?.message || "Failed to load saved quote",
       );
     }
-  }
+  },
 );
 const couponSlice = createSlice({
   name: "coupon",
@@ -205,8 +204,8 @@ const couponSlice = createSlice({
     },
     removeManualDiscount: (state) => {
       state.orderId = null;
-      state.manualDiscount = 0
-    }
+      state.manualDiscount = 0;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -279,7 +278,7 @@ const couponSlice = createSlice({
           }
         }
 
-        setInSessionStorage("quoteToken", quoteToken)
+        // setInSessionStorage("quoteToken", quoteToken);
         state.quoteToken = quoteToken;
         state.error = null;
       })
@@ -287,8 +286,6 @@ const couponSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-
-
 
       // Fetch Customer Discounts
       .addCase(fetchCustomerDiscounts.pending, (state) => {
@@ -298,7 +295,7 @@ const couponSlice = createSlice({
       .addCase(fetchCustomerDiscounts.fulfilled, (state, action) => {
         state.loading = false;
         if (action?.payload?.data?.orderId) {
-          state.orderId = action?.payload?.data?.orderId
+          state.orderId = action?.payload?.data?.orderId;
           state.manualDiscount = Number(action?.payload?.data?.manualDiscount);
         }
 
