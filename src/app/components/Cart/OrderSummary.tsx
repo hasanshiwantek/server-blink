@@ -43,7 +43,6 @@ const OrderSummary = () => {
     loading: couponLoading,
   } = useAppSelector((state: RootState) => state.coupon);
   const discountTotal = Number(discountAmount) + Number(manualDiscount);
-  console.log("appliedCoupon", appliedCoupon);
 
   const router = useRouter();
 
