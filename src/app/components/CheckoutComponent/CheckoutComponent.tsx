@@ -725,8 +725,7 @@ const CheckoutForm = () => {
           product_id: item.id,
           quantity: item.quantity || 1,
         })),
-        ...(orderId ? { orderId } : {}),
-        ...(orderId ? { manualDiscount } : {}),
+        ...(manualDiscount ? { manualDiscount } : {}),
       };
     },
     [
@@ -810,12 +809,6 @@ const CheckoutForm = () => {
         skipEmptyCartCheckRef.current = true;
         const orderNumber = orderData?.[0]?.orderNumber;
         const productIds = cart.map((item) => item.id);
-
-        dispatch(
-          removeProducts({
-            product_ids: productIds,
-          }),
-        );
 
         dispatch(removeShippingRate());
         dispatch(fetchShippingRate({}));
@@ -1123,58 +1116,55 @@ const CheckoutForm = () => {
       skipEmptyCartCheckRef.current = true;
       const productIds = cart.map((item) => item.id);
 
-      if (auth?.user?.id) {
-        if (orderDetail?.isSaveAddressForBilling) {
-          const splitNameRes = splitName(orderDetail?.billingAddress?.name);
-          const billingAddress = {
-            ...splitNameRes,
-            companyName: orderDetail?.billingAddress?.companyName,
-            phoneNumber: orderDetail?.billingAddress?.phone,
-            addressLine1: orderDetail?.billingAddress?.addressLine1,
-            addressLine2: orderDetail?.billingAddress?.addressLine2,
-            city: orderDetail?.billingAddress?.city,
-            state: orderDetail?.billingAddress?.state,
-            zip: orderDetail?.billingAddress?.zip,
-            country: orderDetail?.billingAddress?.country,
-          };
-          dispatch(
-            addCustomerAddress({
-              id: auth?.user?.id,
-              data: billingAddress,
-            }),
-          );
-        }
+      // Temporary comment
+      // if (auth?.user?.id) {
+      //   if (orderDetail?.isSaveAddressForBilling) {
+      //     const splitNameRes = splitName(orderDetail?.billingAddress?.name);
+      //     const billingAddress = {
+      //       ...splitNameRes,
+      //       companyName: orderDetail?.billingAddress?.companyName,
+      //       phoneNumber: orderDetail?.billingAddress?.phone,
+      //       addressLine1: orderDetail?.billingAddress?.addressLine1,
+      //       addressLine2: orderDetail?.billingAddress?.addressLine2,
+      //       city: orderDetail?.billingAddress?.city,
+      //       state: orderDetail?.billingAddress?.state,
+      //       zip: orderDetail?.billingAddress?.zip,
+      //       country: orderDetail?.billingAddress?.country,
+      //     };
+      //     dispatch(
+      //       addCustomerAddress({
+      //         id: auth?.user?.id,
+      //         data: billingAddress,
+      //       }),
+      //     );
+      //   }
 
-        if (orderDetail?.isSaveAddressForShipping) {
-          const shippingAddress = {
-            firstName: orderDetail?.billingInformation?.firstName,
-            lastName: orderDetail?.billingInformation?.firstName,
-            companyName: orderDetail?.billingInformation?.companyName,
-            phoneNumber: orderDetail?.billingInformation?.phone,
-            addressLine1: orderDetail?.billingInformation?.addressLine1,
-            addressLine2: orderDetail?.billingInformation?.addressLine2,
-            city: orderDetail?.billingInformation?.city,
-            state: orderDetail?.billingInformation?.state,
-            zip: orderDetail?.billingInformation?.zip,
-            country: orderDetail?.billingInformation?.country,
-          };
-          dispatch(
-            addCustomerAddress({
-              id: auth?.user?.id,
-              data: shippingAddress,
-            }),
-          );
-        }
-      }
+      //   if (orderDetail?.isSaveAddressForShipping) {
+      //     const shippingAddress = {
+      //       firstName: orderDetail?.billingInformation?.firstName,
+      //       lastName: orderDetail?.billingInformation?.firstName,
+      //       companyName: orderDetail?.billingInformation?.companyName,
+      //       phoneNumber: orderDetail?.billingInformation?.phone,
+      //       addressLine1: orderDetail?.billingInformation?.addressLine1,
+      //       addressLine2: orderDetail?.billingInformation?.addressLine2,
+      //       city: orderDetail?.billingInformation?.city,
+      //       state: orderDetail?.billingInformation?.state,
+      //       zip: orderDetail?.billingInformation?.zip,
+      //       country: orderDetail?.billingInformation?.country,
+      //     };
+      //     dispatch(
+      //       addCustomerAddress({
+      //         id: auth?.user?.id,
+      //         data: shippingAddress,
+      //       }),
+      //     );
+      //   }
+      // }
       if (data?.newsletter) {
         const email = data?.email;
         dispatch(subscribeNewsletter({ email: email.trim() }));
       }
-      dispatch(
-        removeProducts({
-          product_ids: productIds,
-        }),
-      );
+
       dispatch(removeShippingRate());
       dispatch(fetchShippingRate({}));
       dispatch(setLastOrder(orderData));
