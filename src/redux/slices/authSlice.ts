@@ -120,9 +120,7 @@ export const checkAuthToken = createAsyncThunk(
   },
 );
 const clearAuthStorage = () => {
-  removeFromSessionStorage("quoteToken")
   removeManualDiscount()
-  window.location.reload()
 };
 // Slice
 const authSlice = createSlice({

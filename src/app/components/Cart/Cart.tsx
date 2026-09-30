@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { logout } from "@/redux/slices/authSlice";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
 import {
-  fetchCustomerDiscounts,
+  // fetchCustomerDiscounts,
   fetchLoadSavedQuote,
   removeCoupon,
   removeManualDiscount,
@@ -71,13 +71,10 @@ const Cart = () => {
           billingState: billingAddress.state,
           billingZip: billingAddress.zip,
         };
-        dispatch(
-          checkoutFormSave({ data: { shippingFormData, billingFormData } }),
-        );
+     
         await dispatch(fetchCartList())
           .unwrap()
           .then(async (res) => {
-            dispatch(fetchCustomerDiscounts());
           });
       })
       .catch((error) => {
