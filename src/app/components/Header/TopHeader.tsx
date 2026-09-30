@@ -25,8 +25,12 @@ interface Category {
 }
 // const isMobile = window.innerWidth < 768;
 
+/** How far past the header's start the page scrolls before it sticks. */
+const STICKY_SCROLL_OFFSET = 100;
+
 const TopHeader = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const stickyAnchorRef = useRef<HTMLDivElement>(null);
   const cart = useAppSelector((state: RootState) => state?.carts?.items);
   const auth = useAppSelector((state: RootState) => state?.auth);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -53,14 +57,22 @@ const TopHeader = () => {
 
   useEffect(() => {
     let ticking = false;
+    const update = () => {
+      // Where the header starts in the page: 0 normally, or below the top banner when there is one. Read live, since banner images change its height as they load.
+      const headerStart = stickyAnchorRef.current
+        ? stickyAnchorRef.current.getBoundingClientRect().top + window.scrollY
+        : 0;
+      setIsScrolled(window.scrollY > headerStart + STICKY_SCROLL_OFFSET);
+    };
     const handleScroll = () => {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        setIsScrolled(window.scrollY > 100);
+        update();
         ticking = false;
       });
     };
+    update(); // e.g. a reload that restores a scrolled position
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -144,6 +156,7 @@ const TopHeader = () => {
 
   return (
     <>
+      <div ref={stickyAnchorRef} aria-hidden="true" />
       <header
         className={`bg-[#393939] text-white transition-all duration-300 ${
           isScrolled ? "fixed top-0 left-0 right-0 z-50 shadow-lg" : "relative"
@@ -237,7 +250,7 @@ const TopHeader = () => {
                   </button>
                 </form>
                 {showSearchDropdown && searchQuery.trim().length > 1 && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-[585px] mt-1 bg-[#f2f2f2] shadow-xl overflow-hidden z-[9999] max-h-[520px] overflow-y-auto border border-gray-300">
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-[585px] mt-1 bg-[#f2f2f2] shadow-xl overflow-hidden z-9999 max-h-[520px] overflow-y-auto border border-gray-300">
                     {loading && (
                       <div className="p-6 text-gray-500 text-center">
                         Searching...
@@ -431,7 +444,7 @@ const TopHeader = () => {
               <div className="relative sm:flex hidden" ref={dropdownRef}>
                 <div className="relative w-[40px]">
                   <div
-                    className="absolute z-[9999] -top-6 -bottom-7 right-0 left-0 bg-[#d42020] hover:bg-[#860d09] border-0 border-b-[3px] border-b-[#860109] transition cursor-pointer flex items-center justify-center"
+                    className="absolute z-9999 -top-6 -bottom-7 right-0 left-0 bg-[#d42020] hover:bg-[#860d09] border-0 border-b-[3px] border-b-[#860109] transition cursor-pointer flex items-center justify-center"
                     onClick={() => setIsOpen((prev) => !prev)}
                   >
                     <FaShoppingCart className="w-7 h-7 text-white" />
@@ -444,7 +457,7 @@ const TopHeader = () => {
 
                   {isOpen && (
                     <div
-                      className={`absolute right-0 top-7 w-96 shadow-2xl border border-gray-200 z-[9999] ${cart.length === 0 ? "bg-[#ffffff]" : "bg-[#eaeaea]"}`}
+                      className={`absolute right-0 top-7 w-96 shadow-2xl border border-gray-200 z-9999 ${cart.length === 0 ? "bg-[#ffffff]" : "bg-[#eaeaea]"}`}
                     >
                       {cart.length === 0 ? (
                         <div className="p-12 text-center">
@@ -533,7 +546,7 @@ const TopHeader = () => {
                   )}
                 </div>
               </div>
-              <div className="relative top-[3px] z-[999] sm:hidden flex">
+              <div className="relative top-[3px] z-999 sm:hidden flex">
                 <Link href="/cart" className="transition block">
                   <div className="bg-[#d42020] p-2 rounded hover:bg-red-700 transition">
                     <FaShoppingCart className="w-7 h-7 text-white" />
