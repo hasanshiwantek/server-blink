@@ -5,7 +5,6 @@
 import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import DOMPurify from "isomorphic-dompurify";
 import postcss, { type AtRule, type Root } from "postcss";
 import { compile } from "tailwindcss";
 
@@ -41,7 +40,11 @@ function attrsToInlineSize(node: Element) {
   }
 }
 
-function sanitize(html: string): HTMLElement {
+async function sanitize(html: string): Promise<HTMLElement> {
+  // Loaded lazily (jsdom is heavy) so a load failure only drops the banner
+  // (prepareBanner rejects, BannerHtml renders nothing) instead of failing
+  // every page that has a banner slot.
+  const { default: DOMPurify } = await import("isomorphic-dompurify");
   DOMPurify.addHook("afterSanitizeAttributes", attrsToInlineSize);
   try {
     return DOMPurify.sanitize(html, {
@@ -184,7 +187,7 @@ function scopeCss(css: string, opts: ScopeOptions) {
 async function build(html: string): Promise<PreparedBanner> {
   const scopeId = createHash("sha1").update(html).digest("hex").slice(0, 10);
   const scope = `[data-banner="${scopeId}"]`;
-  const body = sanitize(html);
+  const body = await sanitize(html);
 
   const inlineStyles = Array.from(body.querySelectorAll("style"), (el) => {
     el.remove();
