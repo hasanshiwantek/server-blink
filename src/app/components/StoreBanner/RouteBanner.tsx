@@ -18,13 +18,8 @@ export default async function RouteBanner({
     const request = await resolveBannerRequest(segments);
     if (!request) return null;
 
-    const banner = await fetchBanner(request);
-    if (
-      banner?.placement !== placement ||
-      !banner.pageContent ||
-      !banner?.visible
-    )
-      return null;
+    const banner = await fetchBanner(request, placement);
+    if (!banner?.pageContent) return null;
 
     return <BannerHtml html={banner.pageContent} placement={placement} />;
   } catch {

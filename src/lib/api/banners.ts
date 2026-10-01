@@ -53,20 +53,33 @@ export const resolveBannerRequest = async (
   return null;
 };
 
-export const fetchBanner = async ({
+export const fetchBanners = async ({
   locationType,
   locationId,
-}: BannerRequest): Promise<StoreBanner | null> => {
+}: BannerRequest): Promise<StoreBanner[]> => {
   const params = new URLSearchParams({ islocation: locationType });
   if (locationId != null) params.set("locationId", String(locationId));
 
   const res = await fetch(`${baseURL}web/banners/by-location?${params}`, {
     headers: { "Content-Type": "application/json", storeId },
-    // Admin changes show up within a minute.
-    next: { revalidate: 60 },
+    // Admin changes show up within a 10 second window.
+    next: { revalidate: 10 },
   });
-  if (!res.ok) return null;
+  if (!res.ok) return [];
 
   const data = await res.json();
-  return (Array.isArray(data?.data) ? data.data[0] : data?.data) ?? null;
+  return data?.data;
+};
+
+// A location can have one banner per placement (top and bottom).
+export const fetchBanner = async (
+  request: BannerRequest,
+  placement: BannerPlacement,
+): Promise<StoreBanner | null> => {
+  const banners = await fetchBanners(request);
+  return (
+    banners.find(
+      (b) => b.placement === placement && b.visible && b.pageContent,
+    ) ?? null
+  );
 };
