@@ -9,15 +9,35 @@ interface BannerHtmlProps {
   placement: BannerPlacement;
 }
 
+const SIZED_TAGS = new Set(["IMG", "VIDEO", "IFRAME"]);
+
+// The editor stores dimensions as width/height attributes, but Tailwind
+// preflight's `height: auto` overrides attributes. Inline styles win, so move
+// them there.
+function attrsToInlineSize(node: Element) {
+  if (!SIZED_TAGS.has(node.nodeName) || !(node instanceof HTMLElement)) return;
+  for (const prop of ["width", "height"] as const) {
+    const value = node.getAttribute(prop)?.trim();
+    if (!value || node.style[prop]) continue;
+    node.style[prop] = /^\d+(\.\d+)?$/.test(value) ? `${value}px` : value;
+  }
+}
+
+function sanitizeBanner(html: string) {
+  DOMPurify.addHook("afterSanitizeAttributes", attrsToInlineSize);
+  try {
+    return DOMPurify.sanitize(html, {
+      ADD_TAGS: ["iframe"], // videos embedded from the editor's media dialog
+      ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "target"],
+    });
+  } finally {
+    DOMPurify.removeHook("afterSanitizeAttributes");
+  }
+}
+
 export default function BannerHtml({ html, placement }: BannerHtmlProps) {
   const clean = useMemo(
-    () =>
-      typeof window === "undefined"
-        ? ""
-        : DOMPurify.sanitize(html, {
-            ADD_TAGS: ["iframe"], // videos embedded from the editor's media dialog
-            ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "target"],
-          }),
+    () => (typeof window === "undefined" ? "" : sanitizeBanner(html)),
     [html],
   );
 
@@ -26,7 +46,7 @@ export default function BannerHtml({ html, placement }: BannerHtmlProps) {
   return (
     <section
       aria-label={`${placement} banner`}
-      className="w-full overflow-hidden [&_img]:max-w-full [&_img]:h-auto [&_video]:max-w-full [&_iframe]:max-w-full [&_table]:max-w-full"
+      className="banner-html w-full overflow-hidden"
       dangerouslySetInnerHTML={{ __html: clean }}
     />
   );

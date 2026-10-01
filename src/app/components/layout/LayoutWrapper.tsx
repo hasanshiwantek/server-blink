@@ -21,8 +21,8 @@ const LayoutWrapper: React.FC<LayoutWrapperProps> = ({
         {topBanner}
         <Header />
         <PageTransition>{children}</PageTransition>
-        <Footer />
         {bottomBanner}
+        <Footer />
       </Providers>
     </div>
   );
