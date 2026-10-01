@@ -92,5 +92,10 @@
     "last 2 Firefox versions",
     "last 2 Safari versions",
     "Edge >= 18"
-  ]
+  ],
+  "overrides": {
+    "isomorphic-dompurify": {
+      "jsdom": "26.1.0"
+    }
+  }
 }
