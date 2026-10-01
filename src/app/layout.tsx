@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
-import LayoutWrapper from "./components/layout/LayoutWrapper";
-import { Roboto, Roboto_Condensed } from "next/font/google";
-import ScriptInjector from "@/components/ScriptInjector";
 import DynamicFavicon from "@/components/DynamicFavicon";
-import "./globals.css";
+import ScriptInjector from "@/components/ScriptInjector";
+import type { Metadata } from "next";
+import { Roboto, Roboto_Condensed } from "next/font/google";
 import "../styles/blog/api-content.css";
+import LayoutWrapper from "./components/layout/LayoutWrapper";
+import "./globals.css";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -13,7 +13,6 @@ const roboto = Roboto({
   preload: true,
   variable: "--font-roboto",
   adjustFontFallback: false,
-
 });
 
 const robotoCondensed = Roboto_Condensed({
@@ -81,7 +80,10 @@ export default function RootLayout({
   bottomBanner: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${roboto.variable} ${robotoCondensed.variable}`}>
+    <html
+      lang="en"
+      className={`${roboto.variable} ${robotoCondensed.variable}`}
+    >
       <body
         className="antialiased"
         style={{ fontFamily: "var(--font-roboto), sans-serif" }}
