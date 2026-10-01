@@ -59,6 +59,11 @@ const nextConfig: NextConfig = {
 
   productionBrowserSourceMaps: false,
 
+  // Read at runtime by src/lib/bannerStyles.ts to compile banner Tailwind classes.
+  outputFileTracingIncludes: {
+    "/**": ["./node_modules/tailwindcss/theme.css"],
+  },
+
   compiler: {
     reactRemoveProperties: true,
   },
