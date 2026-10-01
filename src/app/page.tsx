@@ -48,8 +48,8 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [ogImage],
     },
     robots: {
-      index: true,
-      follow: true,
+      index: false,
+      follow: false,
       nocache: false,
       googleBot: {
         index: true,
