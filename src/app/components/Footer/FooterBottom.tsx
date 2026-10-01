@@ -1,32 +1,28 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { subscribeNewsletter } from "@/redux/slices/contactSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import {
-  getBlogs,
-  getWebPages,
-  visitorSession,
-} from "@/redux/slices/storeFrontSlice";
-import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
 import {
   checkAuthToken,
   customerProfile,
   logout,
 } from "@/redux/slices/authSlice";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
-import { useSearchParams } from "next/navigation";
-import { successMessage } from "@/utils/message";
 import {
-  getFromSessionStorage,
-  getFromStorage,
-  getPersistedAuth,
-  getSessionId,
-  setInStorage,
-} from "@/utils/storage";
+  getEmailMarketing,
+  subscribeNewsletter,
+} from "@/redux/slices/contactSlice";
+import {
+  getBlogs,
+  getWebPages,
+  visitorSession,
+} from "@/redux/slices/storeFrontSlice";
+import { RootState } from "@/redux/store";
+import { successMessage } from "@/utils/message";
+import { getPersistedAuth, getSessionId, setInStorage } from "@/utils/storage";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 // import { fetchCustomerDiscounts } from "@/redux/slices/couponSlice";
 import ConfirmationModal from "../modal/ConfirmationModal";
 
@@ -39,7 +35,13 @@ const FooterBottom = () => {
   const [token, setToken] = useState<string | null>(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  const { newsletterLoading } = useSelector((state: any) => state.contact);
+  const { newsletterLoading, emailMarketing } = useSelector(
+    (state: any) => state.contact,
+  );
+  const allowNewsletter = !!emailMarketing?.allowNewsletterSubscriptions;
+  const newsletterSummary = emailMarketing?.showNewsletterSummary
+    ? emailMarketing?.newsletterSummaryText
+    : "";
   const { blogs, webPages, error, loading } = useAppSelector(
     (state: any) => state.storeFront,
   );
@@ -89,6 +91,7 @@ const FooterBottom = () => {
       dispatch(getBlogs({ page: 1, perPage: 5 }));
       dispatch(getWebPages({ page: 1, perPage: 100 }));
       dispatch(fetchCartList());
+      dispatch(getEmailMarketing());
     };
 
     let id: ReturnType<typeof setTimeout> | number;
@@ -152,37 +155,46 @@ const FooterBottom = () => {
             </h3>
           </div>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (email.trim()) {
-                dispatch(subscribeNewsletter({ email: email.trim() }))
-                  .unwrap()
-                  .then(() => {
-                    handleSelect("/result");
-                    setEmail("");
-                  });
-              }
-            }}
-            className="w-[80%] md:w-[30%] mb-[7px] 2xl:max-w-[30%] flex items-center gap-2 mt-4 md:mt-0 lg:ml-24"
-          >
-            <input
-              type="email"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              required
-              className="w-full h-[32px] px-4 py-3 border border-white text-[#545454] bg-white focus:outline-none rounded-xs text-sm md:text-base"
-            />
-            <button
-              type="submit"
-              disabled={newsletterLoading}
-              className="btn-primary h-[32px] !px-4 !py-1 !rounded-sm w-[120px]"
-            >
-              {newsletterLoading ? "LOADING.." : "JOIN"}
-            </button>
-          </form>
+          {allowNewsletter && (
+            <div className="w-[80%] md:w-[30%] mb-[7px] 2xl:max-w-[30%] mt-4 md:mt-0 lg:ml-24 min-w-0">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (email.trim()) {
+                    dispatch(subscribeNewsletter({ email: email.trim() }))
+                      .unwrap()
+                      .then(() => {
+                        handleSelect("/result");
+                        setEmail("");
+                      });
+                  }
+                }}
+                className="w-full flex items-center gap-2"
+              >
+                <input
+                  type="email"
+                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
+                  required
+                  className="w-full h-[32px] px-4 py-3 border border-white text-[#545454] bg-white focus:outline-none rounded-xs text-sm md:text-base"
+                />
+                <button
+                  type="submit"
+                  disabled={newsletterLoading}
+                  className="btn-primary h-[32px] px-4! py-1! rounded-sm! w-[120px]"
+                >
+                  {newsletterLoading ? "LOADING.." : "JOIN"}
+                </button>
+              </form>
+              {newsletterSummary && (
+                <p className="mt-1 text-[12px] text-[#545454] whitespace-pre-line wrap-break-word ">
+                  {newsletterSummary}
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </section>
 
