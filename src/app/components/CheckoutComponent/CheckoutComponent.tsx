@@ -322,7 +322,7 @@ const CheckoutForm = () => {
     };
     const getShippingRates = async () => {
       try {
-        await dispatch(fetchShippingRate({})).unwrap();
+        await dispatch(fetchShippingRate()).unwrap();
       } catch (err) {
         detectCountry();
       }
@@ -748,7 +748,7 @@ const CheckoutForm = () => {
         orderPayload,
       );
       const orderData = orderResponse.data?.data || orderResponse.data;
-      dispatch(fetchShippingRate({}));
+      dispatch(fetchShippingRate());
       return orderData || null;
     },
     [buildOrderPayload],
@@ -808,10 +808,9 @@ const CheckoutForm = () => {
 
         skipEmptyCartCheckRef.current = true;
         const orderNumber = orderData?.[0]?.orderNumber;
-        const productIds = cart.map((item) => item.id);
 
         dispatch(removeShippingRate());
-        dispatch(fetchShippingRate({}));
+        dispatch(fetchShippingRate());
         dispatch(setLastOrder(orderData));
         dispatch(clearCart());
         removeFromSessionStorage("quoteToken");
@@ -1114,9 +1113,7 @@ const CheckoutForm = () => {
       const orderNumber = orderData?.[0]?.orderNumber;
       const orderDetail = orderData?.[0];
       skipEmptyCartCheckRef.current = true;
-      const productIds = cart.map((item) => item.id);
 
-      // Temporary comment
       // if (auth?.user?.id) {
       //   if (orderDetail?.isSaveAddressForBilling) {
       //     const splitNameRes = splitName(orderDetail?.billingAddress?.name);
@@ -1166,7 +1163,7 @@ const CheckoutForm = () => {
       }
 
       dispatch(removeShippingRate());
-      dispatch(fetchShippingRate({}));
+      dispatch(fetchShippingRate());
       dispatch(setLastOrder(orderData));
       dispatch(clearCart());
       removeFromSessionStorage("quoteToken");

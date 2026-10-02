@@ -17,9 +17,7 @@ const ProductExtras = dynamic(
 const ProductOverview = dynamic(
   () => import("../components/Product/ProductOverview"),
 );
-// const ProductCard = dynamic(
-//   () => import("../components/Product/ProductCard")
-// );
+
 const DynamicWebPage = dynamic(
   () => import("../components/Product/DynamicWebPage"),
 );

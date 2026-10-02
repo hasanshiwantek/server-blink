@@ -205,14 +205,16 @@ const OrderSummary = () => {
         setLoadingDetectCountry(false);
       }
     };
-    const getShippingRates = async () => {
-      try {
-        await dispatch(fetchShippingRate({})).unwrap();
-      } catch (err) {
-        detectCountry();
-      }
-    };
-    getShippingRates();
+    if (cart?.length > 0) {
+      const getShippingRates = async () => {
+        try {
+          await dispatch(fetchShippingRate()).unwrap();
+        } catch (err) {
+          detectCountry();
+        }
+      };
+      getShippingRates();
+    }
   }, [cart]);
 
   useEffect(() => {

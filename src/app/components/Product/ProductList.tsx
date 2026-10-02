@@ -12,17 +12,18 @@ import dynamic from "next/dynamic";
 import ProductCard from "../../components/Home/ProductCard";
 import { decode } from "html-entities";
 import Link from "next/link";
-
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
+import { setProductView } from "@/redux/slices/uiSlice";
 
 // Dynamically import motion.div and AnimatePresence (client only)
 const MotionDiv = dynamic(
   () => import("framer-motion").then((mod) => mod.motion.div),
-  { ssr: false }
+  { ssr: false },
 );
 
 const AnimatePresence = dynamic(
   () => import("framer-motion").then((mod) => mod.AnimatePresence),
-  { ssr: false }
+  { ssr: false },
 );
 
 interface BreadcrumbItem {
@@ -41,7 +42,7 @@ interface ProductListProps {
   initialCategorydescription?: any;
   categories?: any;
   initialCategoryId?: any;
-  isBrandPage: boolean
+  isBrandPage: boolean;
 }
 
 export default function ProductList({
@@ -56,14 +57,19 @@ export default function ProductList({
   initialCategorydescription,
   categories,
   initialCategoryId,
-  isBrandPage
+  isBrandPage,
 }: ProductListProps) {
-  const [view, setView] = useState<"list" | "grid">("grid");
+  const dispatch = useAppDispatch();
+  const view = useAppSelector((state) => state.ui.productView);
   const [page, setPage] = useState(1);
   const decodedHtml = decode(
-    initialCategorydescription?.replace(/<pre[^>]*>/gi, "")?.replace(/<\/pre>/gi, "")
+    initialCategorydescription
+      ?.replace(/<pre[^>]*>/gi, "")
+      ?.replace(/<\/pre>/gi, ""),
   );
-
+  const setView = (next: "list" | "grid") => {
+    dispatch(setProductView(next));
+  };
   const findCategoryById = (cats: any[], id: number): any => {
     for (const cat of cats) {
       if (cat.id === id) return cat;
@@ -75,7 +81,7 @@ export default function ProductList({
     return null;
   };
 
-  const cleanSubcategories = categories?.subcategories
+  const cleanSubcategories = categories?.subcategories;
 
   const { contentHtml, faqHtml } = useMemo(() => {
     if (!decodedHtml) {
@@ -129,7 +135,10 @@ export default function ProductList({
       {/* Headings */}
       <div className="flex items-center justify-between bg-[#393939] border-b border-gray-400">
         {items?.slice(-1).map((item, index) => (
-          <h2 key={index} className="font-bold text-xl text-white py-2 px-4 flex-1">
+          <h2
+            key={index}
+            className="font-bold text-xl text-white py-2 px-4 flex-1"
+          >
             {item.name}
           </h2>
         ))}
@@ -226,27 +235,27 @@ export default function ProductList({
           </div>
         </>
       )}
-      {!isBrandPage && <div>
-        <div className="my-6 ">
-          <div className="grid grid-cols-2 md:grid-cols-4">
-            {/* <Link
-              href={`/category/${categories?.slug}`}
-              className="py-3 px-4 text-center text-[14px] text-[#545454] font-bold  hover:text-[#d42020] transition-colors"
-            >
-              {categories?.name}
-            </Link> */}
-            {cleanSubcategories?.length > 0 ? cleanSubcategories?.map((sub: any, i: number) => (
-              <Link
-                key={sub?.id}
-                href={`/category/${sub?.slug}`}
-                className="py-3 px-4 text-center text-[14px] text-[#545454] font-bold  hover:text-[#d42020] transition-colors"
-              >
-                {sub?.name}
-              </Link>
-            )) : <></>}
+      {!isBrandPage && (
+        <div>
+          <div className="my-6 ">
+            <div className="grid grid-cols-2 md:grid-cols-4">
+              {cleanSubcategories?.length > 0 ? (
+                cleanSubcategories?.map((sub: any, i: number) => (
+                  <Link
+                    key={sub?.id}
+                    href={`/category/${sub?.slug}`}
+                    className="py-3 px-4 text-center text-[14px] text-[#545454] font-bold  hover:text-[#d42020] transition-colors"
+                  >
+                    {sub?.name}
+                  </Link>
+                ))
+              ) : (
+                <></>
+              )}
+            </div>
           </div>
         </div>
-      </div>}
+      )}
 
       {/* Sort Bar */}
       <SortingBar
@@ -281,10 +290,11 @@ export default function ProductList({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className={`mt-4 ${view === "grid"
-            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-            : "space-y-4"
-            }`}
+          className={`mt-4 ${
+            view === "grid"
+              ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+              : "space-y-4"
+          }`}
         >
           {Array.from({ length: 6 }).map((_, idx) => (
             <ProductSkeleton key={idx} view={view} />
@@ -301,10 +311,11 @@ export default function ProductList({
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
-          className={`mt-4 ${view === "grid"
-            ? "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-            : "space-y-4"
-            }`}
+          className={`mt-4 ${
+            view === "grid"
+              ? "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+              : "space-y-4"
+          }`}
         >
           <AnimatePresence mode="wait">
             {products.map((product, idx) =>
@@ -330,7 +341,7 @@ export default function ProductList({
                 >
                   <ProductCard key={product.id} product={product} />
                 </MotionDiv>
-              )
+              ),
             )}
           </AnimatePresence>
         </MotionDiv>
@@ -356,7 +367,10 @@ export default function ProductList({
         <div
           className="faqs-section mt-8"
           dangerouslySetInnerHTML={{
-            __html: faqHtml.replace(/type="checkbox"/g, 'type="radio" name="faq-accordion"')
+            __html: faqHtml.replace(
+              /type="checkbox"/g,
+              'type="radio" name="faq-accordion"',
+            ),
           }}
         />
       )}
