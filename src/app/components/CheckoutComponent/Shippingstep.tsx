@@ -370,7 +370,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
     await dispatch(addShippingCost(shippingData))
       .unwrap()
       .then(() => {
-        dispatch(fetchShippingRate({}));
+        dispatch(fetchShippingRate());
       });
   };
 
