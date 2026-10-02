@@ -37,7 +37,7 @@ export const addShippingCost = createAsyncThunk(
 );
 export const fetchShippingRate = createAsyncThunk(
   "cart/fetchShippingDetails",
-  async (data: any, thunkAPI) => {
+  async (_, thunkAPI) => {
     try {
       const res = await axiosInstance.get(`web/cart/get/shipping-by-rate`);
       return res.data;

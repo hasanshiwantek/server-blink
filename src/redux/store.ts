@@ -11,14 +11,15 @@ import storeFrontReducer from "./slices/storeFrontSlice";
 import myaccountReducer from "./slices/myaccountSlice";
 import recentReducer from "./slices/recentSlice";
 import orderReducer from "./slices/orderslice";
-import couponReducer from "./slices/couponSlice"
-import shippingZoneReducer from "./slices/shippingSlice"
+import couponReducer from "./slices/couponSlice";
+import shippingZoneReducer from "./slices/shippingSlice";
 import multiAddressReducer from "./slices/multiAddressSlice";
 import contactReducer from "./slices/contactSlice";
 import advanceSearchReducer from "./slices/advanceSearchSlice";
 import scriptReducer from "./slices/scriptSlice";
 import cartSliceReducer from "./slices/cartSlice";
-import orderMessageReducer from "./slices/OrderMessage"
+import orderMessageReducer from "./slices/OrderMessage";
+import uiReducer from "./slices/uiSlice";
 // ✅ only cart persist hoga
 const cartPersistConfig = {
   key: "cart",
@@ -31,7 +32,6 @@ const authPersistConfig = {
   storage,
 };
 
-
 // ✅ only recent persist hoga
 const recentPersistConfig = {
   key: "recent",
@@ -43,7 +43,6 @@ const orderPersistConfig = {
   key: "order",
   storage,
 };
-
 
 // ✅ only order persist hoga
 const couponPersistConfig = {
@@ -69,7 +68,7 @@ const rootReducer = combineReducers({
   scripts: scriptReducer,
   carts: cartsSliceReducer,
   customerMessage: orderMessageReducer,
-
+  ui: uiReducer,
 });
 
 export const store = configureStore({
