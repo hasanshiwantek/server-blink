@@ -60,7 +60,7 @@ import {
   fetchCustomerAddress,
 } from "@/redux/slices/myaccountSlice";
 import { errorMessage, infoMessage, successMessage } from "@/utils/message";
-import { removeFromSessionStorage } from "@/utils/storage";
+import { removeFromSessionStorage, removeFromStorage } from "@/utils/storage";
 import BillingStep from "./Billingstep";
 import CheckoutMultipleOrderSummary from "./CheckoutMultipleOrderSummary";
 import CheckoutOrderSummary from "./CheckoutOrderSummary";
@@ -820,6 +820,7 @@ const CheckoutForm = () => {
         dispatch(resetShippingRates()); // ✅ ADD
         dispatch(setIsMultiAddress(false));
         dispatch(fetchCartList());
+        removeFromStorage("sessionId");
         window.location.href = `/checkout/order-information/${orderNumber}`;
       } catch (err: any) {
         event.complete("fail");
@@ -1173,6 +1174,7 @@ const CheckoutForm = () => {
       dispatch(resetShippingRates());
       dispatch(setIsMultiAddress(false));
       dispatch(fetchCartList());
+      removeFromStorage("sessionId");
       window.location.href = `/checkout/order-information/${orderNumber}`;
     } catch (err: any) {
       const message =
