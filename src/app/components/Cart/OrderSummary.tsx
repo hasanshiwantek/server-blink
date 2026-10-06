@@ -507,17 +507,15 @@ const OrderSummary = () => {
                             total_charge: cost,
                           },
                         };
-
                         await dispatch(addShippingCost(shippingPayload))
                           .unwrap()
                           .then(() => {
-                            if (shippingData && saveDetail) {
                               const updatedShippingFormData = {
-                                ...saveDetail.shipping_form_data, // ← existing preserve
-                                country: shippingData.country,
-                                city: shippingData.city,
-                                state: shippingData.state || null,
-                                zip: shippingData.zip,
+                                 ...(saveDetail?.shipping_form_data || {}),
+                                country: shippingData?.country,
+                                city: shippingData?.city,
+                                state: shippingData?.state || null,
+                                zip: shippingData?.zip,
                                 shippingMethod: selectedShippingMethod,
                               };
 
@@ -526,15 +524,12 @@ const OrderSummary = () => {
                                   data: {
                                     shippingFormData: updatedShippingFormData,
                                     billingFormData:
-                                      saveDetail.billing_form_data || {},
+                                      saveDetail?.billing_form_data || {},
                                   },
                                 }),
                               );
-                            }
                             window.location.reload();
                           });
-
-                        /// Refresh to update totals with new shipping cost
                       }}
                       disabled={shippingCostLoading}
                       className="w-full md:w-[55%] text-[18px] btn-primary"
