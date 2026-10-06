@@ -195,9 +195,6 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
   const { shippingRates, ratesLoader } = useAppSelector(
     (state) => state.shippingZone,
   );
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const isInitialLoad = useRef(true);
-
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state?.carts?.items);
   const auth = useAppSelector((state: RootState) => state?.auth);
