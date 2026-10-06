@@ -509,25 +509,25 @@ const OrderSummary = () => {
                         };
                         await dispatch(addShippingCost(shippingPayload))
                           .unwrap()
-                          .then(() => {
-                              const updatedShippingFormData = {
-                                 ...(saveDetail?.shipping_form_data || {}),
-                                country: shippingData?.country,
-                                city: shippingData?.city,
-                                state: shippingData?.state || null,
-                                zip: shippingData?.zip,
-                                shippingMethod: selectedShippingMethod,
-                              };
+                          .then(async () => {
+                            const updatedShippingFormData = {
+                              ...(saveDetail?.shipping_form_data || {}),
+                              country: shippingData?.country,
+                              city: shippingData?.city,
+                              state: shippingData?.state || null,
+                              zip: shippingData?.zip,
+                              shippingMethod: selectedShippingMethod,
+                            };
 
-                              dispatch(
-                                checkoutFormSave({
-                                  data: {
-                                    shippingFormData: updatedShippingFormData,
-                                    billingFormData:
-                                      saveDetail?.billing_form_data || {},
-                                  },
-                                }),
-                              );
+                            await dispatch(
+                              checkoutFormSave({
+                                data: {
+                                  shippingFormData: updatedShippingFormData,
+                                  billingFormData:
+                                    saveDetail?.billing_form_data || {},
+                                },
+                              }),
+                            );
                             window.location.reload();
                           });
                       }}
