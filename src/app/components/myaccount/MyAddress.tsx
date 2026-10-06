@@ -69,7 +69,7 @@ const MyAddress = () => {
       try {
         await dispatch(deletecustomeraddress({ id })).unwrap();
         dispatch(fetchCustomerAddress());
-      } catch (err) { }
+      } catch (err) {}
     }
   };
 
@@ -131,7 +131,7 @@ const MyAddress = () => {
 
       setShowModal(false);
       dispatch(fetchCustomerAddress());
-    } catch (err) { }
+    } catch (err) {}
   };
 
   useEffect(() => {
@@ -341,9 +341,7 @@ const MyAddress = () => {
                 {hasPostalCode ? (
                   <span className="text-[11px]">*</span>
                 ) : (
-                  <span className="text-[11px] text-gray-400">
-
-                  </span>
+                  <span className="text-[11px] text-gray-400"></span>
                 )}
               </Label>
               <Input
@@ -373,7 +371,9 @@ const MyAddress = () => {
                     ...editData,
                     country: value,
                     state: "",
-                    ...(countriesWithoutPostalCode.includes(value) && { zip: "" }),
+                    ...(countriesWithoutPostalCode.includes(value) && {
+                      zip: "",
+                    }),
                   });
 
                   if (countriesWithoutPostalCode.includes(value)) {
@@ -447,13 +447,18 @@ const MyAddress = () => {
               {/* Address List */}
               {customerAddresses?.map((item: any) => (
                 <div
-                  key={item.addressId}
+                  key={item?.id}
                   className="bg-[#CAC9C9] rounded-none p-6 flex flex-col justify-between h-full"
                 >
                   <div className="flex flex-col gap-1 mb-4">
                     <p className="text-[15px] mb-6 text-[#545454]">
-                      {item.first_name || "N/A"} {item.last_name}
+                      {item.first_name} {item.last_name}
                     </p>
+                    {item.company_name && (
+                      <p className="text-[15px] text-[#545454]">
+                        {item.company_name}
+                      </p>
+                    )}
                     <p className="text-[15px] text-[#545454]">
                       {item.address_line_1}
                     </p>
@@ -463,13 +468,17 @@ const MyAddress = () => {
                       </p>
                     )}
                     <p className="text-[15px] text-[#545454]">
-                      {item.city} {item.zip}
+                      {item.city} {item.state} {item.zip}
                     </p>
                     <p className="text-[15px] text-[#545454]">{item.country}</p>
+                    {item?.phone_number && (
+                      <p className="text-[15px] text-[#545454]">
+                        Phone: {item.phone_number}
+                      </p>
+                    )}
                   </div>
 
                   <div className="flex gap-2 mt-auto">
-                    {/* Edit Button */}
                     {/* Edit Button */}
                     <button
                       onClick={() => openEditModal(item)}
@@ -490,7 +499,7 @@ const MyAddress = () => {
               ))}
 
               {/* New Address Button */}
-              <div className="border border-gray-400 rounded-none p-6 flex flex-col items-center justify-center h-[235px] hover:bg-gray-50 cursor-pointer">
+              <div className="border border-gray-400 rounded-none p-6 flex flex-col items-center justify-center h-full hover:bg-gray-50 cursor-pointer">
                 <Link
                   href="/my-account/addresses/new-address"
                   className="flex flex-col items-center justify-center gap-2"
