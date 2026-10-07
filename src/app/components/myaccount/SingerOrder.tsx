@@ -8,6 +8,8 @@ import { fetchOrderDetails } from "@/redux/slices/cartSlice";
 import { useAppDispatch } from "@/hooks/useReduxHooks";
 import { useReactToPrint } from "react-to-print";
 import { Invoice } from "./helpers/OrderDetail";
+import axiosInstance from "@/lib/axiosInstance";
+import { errorMessage } from "@/utils/message";
 interface OrderData {
   id: number;
   orderNumber: string;
@@ -71,22 +73,30 @@ const SingleOrder = () => {
   // ref pointing to the Invoice DOM node
   const invoiceRef = useRef<HTMLDivElement>(null);
 
-  const handlePrint = useReactToPrint({
-    contentRef: invoiceRef, // v3 API: pass the ref here
-    documentTitle: `Server Blink LLC -`,
-    pageStyle: `
-            @page {
-                size: A4;
-                margin: 16mm;
-            }
-            @media print {
-                body {
-                    -webkit-print-color-adjust: exact;
-                    print-color-adjust: exact;
-                }
-            }
-        `,
-  });
+  const handlePrint = async (orderNumber: string) => {
+    try {
+      const response = await axiosInstance.get(
+        `web/orders/customer/invoices/${orderNumber}`,
+        {
+          responseType: "blob",
+        },
+      );
+      const blob = new Blob([response.data], {
+        type: "application/pdf",
+      });
+      const url = window.URL.createObjectURL(blob);
+      const printWindow = window.open(url, "_blank");
+      if (!printWindow) {
+        errorMessage("Please allow popups to print the invoice.");
+        return;
+      }
+      printWindow.onload = () => {
+        printWindow.print();
+      };
+    } catch (error) {
+      errorMessage("Unable to print invoice.");
+    }
+  };
   useEffect(() => {
     const loadOrderDetails = async () => {
       if (!orderNumber) {
@@ -233,7 +243,7 @@ const SingleOrder = () => {
             <p>Order date: {orderDate}</p>
             <p>Order total: ${total.toFixed(2)}</p>
             <button
-              onClick={() => handlePrint()}
+              onClick={() => handlePrint(orderNumber)}
               className="mt-3 text-2xl font-bold border-b-2 border-black px-4 py-2 bg-[#D42020] text-white rounded-md hover:bg-red-700 transition w-60"
             >
               PRINT INVOICE
