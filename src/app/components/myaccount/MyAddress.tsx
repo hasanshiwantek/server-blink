@@ -137,7 +137,6 @@ const MyAddress = () => {
   useEffect(() => {
     dispatch(fetchCustomerAddress());
   }, [dispatch]);
-
   return (
     <div className="max-w-full">
       {/* -------------------- EDIT MODAL -------------------- */}
@@ -443,34 +442,40 @@ const MyAddress = () => {
           )}
 
           {!loading && !error && (
-            <div className="grid grid-cols-1 m-2 md:grid-cols-2 gap-6 roboto-font">
+            <div className="grid grid-cols-1 m-2 md:grid-cols-2 gap-6 roboto-font items-stretch">
               {/* Address List */}
               {customerAddresses?.map((item: any) => (
                 <div
                   key={item?.id}
-                  className="bg-[#CAC9C9] rounded-none p-6 flex flex-col justify-between h-full"
+                  className="bg-[#CAC9C9] rounded-none p-6 flex flex-col min-h-[285px]"
                 >
                   <div className="flex flex-col gap-1 mb-4">
                     <p className="text-[15px] mb-6 text-[#545454]">
                       {item.first_name} {item.last_name}
                     </p>
+
                     {item.company_name && (
                       <p className="text-[15px] text-[#545454]">
                         {item.company_name}
                       </p>
                     )}
+
                     <p className="text-[15px] text-[#545454]">
                       {item.address_line_1}
                     </p>
+
                     {item.address_line_2 && (
                       <p className="text-[15px] text-[#545454]">
                         {item.address_line_2}
                       </p>
                     )}
+
                     <p className="text-[15px] text-[#545454]">
                       {item.city} {item.state} {item.zip}
                     </p>
+
                     <p className="text-[15px] text-[#545454]">{item.country}</p>
+
                     {item?.phone_number && (
                       <p className="text-[15px] text-[#545454]">
                         Phone: {item.phone_number}
@@ -478,19 +483,18 @@ const MyAddress = () => {
                     )}
                   </div>
 
+                  {/* Buttons always at bottom */}
                   <div className="flex gap-2 mt-auto">
-                    {/* Edit Button */}
                     <button
                       onClick={() => openEditModal(item)}
-                      className="w-50 px-4 py-3 rounded-none text-2xl font-bold bg-[#D42020] text-white border-b-2 border-black transition"
+                      className="w-50 px-4 py-3 rounded-none text-2xl font-bold bg-[#D42020] text-white border-b-2 border-black"
                     >
                       Edit
                     </button>
 
-                    {/* Delete Button */}
                     <button
                       onClick={() => handleDelete(item.id)}
-                      className="w-50 px-4 py-3 rounded-none text-2xl font-bold bg-[#D42020] text-white border-b-2 border-black transition"
+                      className="w-50 px-4 py-3 rounded-none text-2xl font-bold bg-[#D42020] text-white border-b-2 border-black"
                     >
                       Delete
                     </button>
@@ -498,14 +502,13 @@ const MyAddress = () => {
                 </div>
               ))}
 
-              {/* New Address Button */}
-              <div className="border border-gray-400 rounded-none p-6 flex flex-col items-center justify-center h-full hover:bg-gray-50 cursor-pointer">
+              {/* New Address */}
+              <div className="border border-gray-400 rounded-none p-6 min-h-[285px] flex flex-col items-center justify-center hover:bg-gray-50 cursor-pointer">
                 <Link
                   href="/my-account/addresses/new-address"
                   className="flex flex-col items-center justify-center gap-2"
                 >
                   <Plus size={44} className="text-[#D42020]" />
-
                   <span className="font-medium text-xl">New Address</span>
                 </Link>
               </div>
