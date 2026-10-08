@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ProductLeft from "./ProductLeft";
 import ProductMiddle from "./ProductMiddle";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
@@ -17,14 +17,18 @@ const ProductCard = ({ product }: { product: any }) => {
   const [quantity, setQuantity] = useState(minQty);
   const [selectedImage, setSelectedImage] = useState("");
 
-  const images =
-    product?.image?.length > 0
-      ? product?.image?.map((img: any) => img?.path)
-      : [];
-
+  // primary image first, then the rest in API order
+  const images: string[] = useMemo(() => {
+    const list: any[] = Array.isArray(product?.image) ? product.image : [];
+    const primary = list.find((img) => img?.isPrimary === 1);
+    const ordered = primary
+      ? [primary, ...list.filter((img) => img !== primary)]
+      : list;
+    return ordered.map((img) => img?.path).filter(Boolean);
+  }, [product?.image]);
 
   useEffect(() => {
-    if (images?.length > 0) {
+    if (images.length > 0) {
       setSelectedImage(images[0]);
     }
   }, [images]);
