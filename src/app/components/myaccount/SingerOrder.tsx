@@ -16,6 +16,9 @@ interface OrderData {
   status: string;
   totalAmount: string;
   shippingCost: string;
+  manualDiscount?: number;
+  discountAmount?: number;
+  couponCode?: string;
   billingInformation: {
     firstName: string;
     lastName: string;
@@ -155,6 +158,11 @@ const SingleOrder = () => {
     ) || 0;
 
   const shippingCost = parseFloat(order.shippingCost) || 0;
+  const manualDiscount = Number(order?.manualDiscount) || 0;
+  const coupon = {
+    couponCode: order?.couponCode,
+    discountAmount: Number(order?.discountAmount),
+  };
   const total = parseFloat(order.totalAmount);
 
   // Format date
@@ -230,6 +238,15 @@ const SingleOrder = () => {
           {/* Totals */}
           <div className="flex flex-col items-end mt-6 gap-1 text-xl">
             <p>Subtotal: ${subtotal.toFixed(2)}</p>
+            {manualDiscount > 0 && (
+              <p>Discount: -${manualDiscount?.toFixed(2)}</p>
+            )}
+            {coupon?.couponCode && (
+              <p>
+                Coupon Code:({coupon?.couponCode}) -$
+                {coupon?.discountAmount?.toFixed(2)}
+              </p>
+            )}
             {shippingCost > 0 && <p>Shipping: ${shippingCost.toFixed(2)}</p>}
             <p className="font-semibold">Grand total: ${total.toFixed(2)}</p>
           </div>
