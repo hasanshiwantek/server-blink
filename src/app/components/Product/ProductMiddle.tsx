@@ -4,6 +4,8 @@ import { addCart, fetchCartList } from "@/redux/slices/cartsSlice";
 import { fetchReviews, fetchStats } from "@/redux/slices/homeSlice";
 import { fetchProductReviews } from "@/redux/slices/storeFrontSlice";
 import { RootState } from "@/redux/store";
+import { errorMessage } from "@/utils/message";
+import { getProductInfo } from "@/utils/product";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,7 +13,6 @@ import { useEffect, useState } from "react";
 import AddReviewModal from "../modal/AddReviewModal";
 import BulkInquiryModal from "../modal/BulkInquiryModal";
 import ProductPrice from "../productprice/ProductPrice";
-import { errorMessage } from "@/utils/message";
 
 const ProductMiddle = ({
   product,
@@ -25,47 +26,59 @@ const ProductMiddle = ({
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const minQty = product?.minPurchaseQuantity || 1;
-  const maxQty = product?.maxPurchaseQuantity;
+  const {
+    id,
+    productName,
+    sku,
+    brandName,
+    brandUrl,
+    imageSrc,
+    price,
+    msrp,
+    hasMsrp,
+    retailPrice,
+    callForPricingLabel,
+    callForPricingPhone,
+    callForPricingTel,
+    availabilityText,
+    availableForSale,
+    isOutOfStock,
+    isPurchaseBlocked,
+    disabledAddToCart,
+    minQty,
+    maxQty,
+    condition,
+    weight,
+    shippingText,
+  } = getProductInfo(product);
 
   const cart = useAppSelector((state: RootState) => state.carts?.items);
-  const availableForSale =
-    product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
 
   useEffect(() => {
     dispatch(fetchReviews());
     dispatch(fetchStats());
   }, []);
   useEffect(() => {
-    if (!product?.id) return;
-    dispatch(fetchProductReviews(product?.id));
-  }, [product?.id]);
+    if (!id) return;
+    dispatch(fetchProductReviews(id));
+  }, [id]);
 
   const bulkProduct = product
     ? {
-        name: product.name,
-        image:
-          product.image?.[1]?.path ||
-          product.image?.[0]?.path ||
-          "/default-product-image.svg",
-        sku: product.sku ?? "",
+        name: productName,
+        image: imageSrc,
+        sku,
       }
     : undefined;
-  const currentStockEqualent = Number(product?.currentStock) === 0;
-  const allowPurchase = !product?.allowPurchase;
-  const disabledAddToCart = currentStockEqualent || allowPurchase;
 
   const reviewProduct = product
     ? {
-        name: product.name ?? "",
-        image: product?.image?.[0]?.path || "/default-product-image.svg",
-        sku: product.sku ?? "",
-        id: product.id,
+        name: productName,
+        image: imageSrc,
+        sku,
+        id,
       }
     : undefined;
-
-  const productPrice = Number(product?.price) || 0;
- 
 
   return (
     <>
@@ -73,23 +86,23 @@ const ProductMiddle = ({
         {/* Title Section */}
         <div className="flex flex-col gap-2 mb-4">
           <h1 className="font-bold text-[18px] sm:text-[18px] md:text-[18px] lg:text-[20px] xl:text-[20px] 2xl:text-[20px] leading-tight text-[#545454] border-b-1 border-[#8b8b8b] pb-3 roboto-condensed-only-font">
-            {product?.name || "N/A"}
+            {productName}
           </h1>
 
           {/* Brand */}
-          {product?.brand?.name ? (
+          {brandUrl ? (
             <Link
-              href={`/brand/${product?.brand?.slug}`}
+              href={brandUrl}
               className="inline-block w-fit"
             >
               <h2 className="text-[14px] sm:text-[14px] md:text-[14px] text-[#545454] font-normal uppercase hover:text-[#d40511] transition">
-                {product?.brand?.name || "Unknown Brand"}
+                {brandName}
               </h2>
             </Link>
           ) : (
             <span className="inline-block w-fit">
               <h2 className="text-[14px] sm:text-[14px] md:text-[14px] text-[#545454] font-normal uppercase  transition">
-                {"Unknown Brand"}
+                {brandName}
               </h2>
             </span>
           )}
@@ -99,25 +112,21 @@ const ProductMiddle = ({
         {!availableForSale ? (
           <div>
             <div className="flex flex-col">
-            <h2
-        className="text-text-primary flex items-center font-bold text-[22px]! mr-2"
-    
-      >
-         {product?.callForPricingLabel?.trim() || "Call for pricing"}:{" "}
-
-        <Link
-          href={`tel:${product?.callForPricingPhone || "+15020000000"}`}
-          className="text-[#d40511] underline"
-        >
-            {product?.callForPricingPhone?.trim() || "(502) 000-0000"}
-        </Link>
-      </h2>
+              <h2 className="text-text-primary flex items-center font-bold text-[22px]! mr-2">
+                {callForPricingLabel}:{" "}
+                <Link
+                  href={callForPricingTel}
+                  className="text-[#d40511] underline"
+                >
+                  {callForPricingPhone}
+                </Link>
+              </h2>
             </div>
           </div>
         ) : (
           <div>
             <div className="flex flex-col">
-              {product?.msrp && Number(product?.msrp) > 0 ? (
+              {hasMsrp ? (
                 <>
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-[16px] text-[#7B7B7B] font-normal">
@@ -125,7 +134,7 @@ const ProductMiddle = ({
                     </span>
                     <span>
                       <ProductPrice
-                        price={Number(product?.msrp)}
+                        price={msrp}
                         inline={true}
                         className="text-[16px]! text-[#7B7B7B] font-normal line-through!"
                       />
@@ -133,7 +142,7 @@ const ProductMiddle = ({
                   </div>
                   <span className="">
                     <ProductPrice
-                      price={productPrice}
+                      price={price}
                       inline={true}
                       textColor="#545454"
                       className="text-text-primary font-bold text-[22px]!"
@@ -141,10 +150,10 @@ const ProductMiddle = ({
                   </span>
                 </>
               ) : (
-                productPrice && (
+                price > 0 && (
                   <span className="">
                     <ProductPrice
-                      price={productPrice}
+                      price={price}
                       inline={true}
                       textColor="#545454"
                       className="text-text-primary font-bold text-[22px]!"
@@ -153,11 +162,11 @@ const ProductMiddle = ({
                 )
               )}
 
-              {Number(product?.retailPrice || 0) > 0 && (
+              {retailPrice > 0 && (
                 <span className="text-[#545454] text-[13px] sm:text-[16px]">
                   (You save{" "}
                   <ProductPrice
-                    price={Number(product?.retailPrice)}
+                    price={retailPrice}
                     inline={true}
                     textColor="#545454"
                     className="text-[13px]! sm:text-[16px]!"
@@ -238,7 +247,7 @@ const ProductMiddle = ({
             </div>
           )}
 
-          {((currentStockEqualent && availableForSale) || allowPurchase) && (
+          {((isOutOfStock && availableForSale) || isPurchaseBlocked) && (
             <div className="flex items-center gap-1">
               <svg
                 className="text-[#d40511] fill-current"
@@ -250,7 +259,7 @@ const ProductMiddle = ({
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
               </svg>
               <p className="text-[#d40511] text-[14px]">
-                {allowPurchase
+                {isPurchaseBlocked
                   ? "The selected product combination is currently unavailable."
                   : "This product is currently out of stock."}
               </p>
@@ -259,19 +268,17 @@ const ProductMiddle = ({
           {/* Add to Cart Button */}
           {availableForSale && (
             <button
-              aria-label={`Add ${quantity} ${product?.name} to cart`}
+              aria-label={`Add ${quantity} ${productName} to cart`}
               onClick={() => {
                 const existingItem = cart.find(
-                  (item: any) => item.id === product.id,
+                  (item: any) => item.id === id,
                 );
                 const currentQty = existingItem ? existingItem.quantity : 0;
-                const remainingQty = product?.maxPurchaseQuantity
-                  ? product.maxPurchaseQuantity - currentQty
-                  : quantity;
+                const remainingQty = maxQty ? maxQty - currentQty : quantity;
 
                 if (remainingQty <= 0) {
                   errorMessage(
-                    `Cannot add more than ${product?.maxPurchaseQuantity} units of ${product.name} to cart.`,
+                    `Cannot add more than ${maxQty} units of ${productName} to cart.`,
                   );
                   return;
                 }
@@ -280,7 +287,7 @@ const ProductMiddle = ({
                 dispatch(
                   addCart({
                     data: {
-                      productId: product?.id,
+                      productId: id,
                       quantity: quantityToAdd,
                     },
                   }),
@@ -289,7 +296,7 @@ const ProductMiddle = ({
                   .then(() => {
                     dispatch(fetchCartList());
                     // toast.success(
-                    //   `${product.name} added to cart (${quantityToAdd})!`,
+                    //   `${productName} added to cart (${quantityToAdd})!`,
                     // );
                     router.push("/cart");
                   })
@@ -298,11 +305,7 @@ const ProductMiddle = ({
                   });
               }}
               disabled={disabledAddToCart}
-              className={
-                disabledAddToCart
-                  ? "w-full! sm:w-[51.7%]! py-3.5! bg-gray-300! text-gray-700! cursor-not-allowed!"
-                  : "btn-primary w-full! sm:w-[51.7%]! py-3.5!"
-              }
+              className="btn-primary w-full! sm:w-[51.7%]! py-3.5! disabled:bg-gray-300! disabled:text-gray-700! disabled:cursor-not-allowed!"
             >
               ADD TO CART
             </button>
@@ -338,16 +341,16 @@ const ProductMiddle = ({
                 SKU:
               </span>
               <span className="text-[12px] sm:text-[14px] text-[#545454]">
-                {product?.sku || "N/A"}
+                {sku || "N/A"}
               </span>
             </div>
-            {product?.showCondition && product?.condition && (
+            {condition && (
               <div className="flex gap-2">
                 <span className="text-[12px] sm:text-[14px] font-bold text-[#545454] ">
                   Condition:
                 </span>
                 <span className="text-[12px] sm:text-[14px] text-[#545454]">
-                  {product?.condition || ""}
+                  {condition}
                 </span>
               </div>
             )}
@@ -357,17 +360,17 @@ const ProductMiddle = ({
                 Availability:
               </span>
               <span className="text-[12px] sm:text-[14px] text-[#545454]">
-                {product?.availabilityText || "N/A"}
+                {availabilityText || "N/A"}
               </span>
             </div>
 
-            {product?.dimensions?.weight && (
+            {weight && (
               <div className="flex gap-2">
                 <span className="text-[12px] sm:text-[14px] font-bold text-[#545454] ">
                   Weight:
                 </span>
                 <span className="text-[12px] sm:text-[14px] text-[#545454]">
-                  {product?.dimensions?.weight + " LBS"}
+                  {weight + " LBS"}
                 </span>
               </div>
             )}
@@ -376,11 +379,7 @@ const ProductMiddle = ({
                 Shipping:
               </span>
               <span className="text-[12px] sm:text-[14px] text-[#545454]">
-                {product?.freeShipping
-                  ? "Free Shipping"
-                  : Number(product?.fixedShippingCost) > 0
-                    ? `$${product?.fixedShippingCost} (Fixed Shipping Cost)`
-                    : "Calculated at Checkout"}
+                {shippingText}
               </span>
             </div>
           </div>

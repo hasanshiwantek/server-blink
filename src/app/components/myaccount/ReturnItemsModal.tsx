@@ -10,6 +10,7 @@ interface ReturnItemsModalProps {
   onClose: () => void;
   orderId: any;
   isSubmit?: boolean;
+  onSuccess?: () => void;
 }
 
 interface OrderData {
@@ -70,6 +71,7 @@ const ReturnItemsModal: React.FC<ReturnItemsModalProps> = ({
   onClose,
   orderId,
   isSubmit,
+  onSuccess,
 }) => {
   const [returnReason, setReturnReason] = useState("");
   const [returnAction, setReturnAction] = useState("");
@@ -179,6 +181,7 @@ const ReturnItemsModal: React.FC<ReturnItemsModalProps> = ({
       );
 
 
+      onSuccess?.();
       onClose();
     } catch (err) {
    
