@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { addCart, fetchCartList } from "@/redux/slices/cartsSlice";
 import { RootState } from "@/redux/store";
 import { errorMessage } from "@/utils/message";
+import { getProductInfo } from "@/utils/product";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -17,9 +18,9 @@ interface Brand {
 
 interface Product {
   id: number;
-  brand: Brand | string; // brand object ya string dono aa sakta hai
+  brand: Brand;
   sku: string;
-  name: string | { name?: string }; // sometimes object, sometimes string
+  name: string;
   price: number | string;
   msrp?: number;
   image?: { path?: string; isPrimary?: number }[]; // image array from API
@@ -28,11 +29,12 @@ interface Product {
   maxPurchaseQuantity?: number; // optional max quantity
   minPurchaseQuantity?: number; // optional min quantity
   callPricing?: boolean; // optional max quantity
-   callForPricingLabel?: string;
+  callForPricingLabel?: string;
   callForPricingPhone?: string;
   purchasabilityStatus?: string; //
   quantity?: number; //
   currentStock?: number; //s
+  allowPurchase?: boolean;
 }
 
 interface ProductCardProps {
@@ -47,41 +49,30 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state: RootState) => state.carts?.items);
-  const { cartLoading, loading } = useAppSelector(
-    (state: RootState) => state.carts,
-  );
-  const cartLoad = cartLoading || loading;
-  const currentStockEqualent = Number(product?.currentStock) === 0;
-
-  // safe brand name
-  const brandName =
-    typeof product.brand === "string"
-      ? product.brand
-      : product.brand?.name || "Unknown Brand";
-  // safe product name
-  const productName =
-    typeof product.name === "string"
-      ? product.name
-      : product.name?.name || "Unnamed Product";
-
-  // safe image src
-  const imageSrc =
-    product.image?.find((img) => img?.isPrimary === 1)?.path ||
-    product.image?.[0]?.path ||
-    product.image?.[1]?.path ||
-    "/default-product-image.svg";
-
-  const brandSlug =
-    typeof product.brand === "object" ? product?.brand?.slug : undefined;
-
-  const availableForSale =
-    product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
-   
+  const {
+    id,
+    productName,
+    sku,
+    productUrl,
+    brandName,
+    brandUrl,
+    imageSrc,
+    price,
+    msrp,
+    hasMsrp,
+    callForPricingLabel,
+    callForPricingPhone,
+    callForPricingTel,
+    availableForSale,
+    disabledAddToCart,
+    minQty,
+    maxQty,
+  } = getProductInfo(product);
 
   return (
     <div className="bg-[#F2F2F2] rounded transition flex flex-col h-full">
       {/* Image */}
-      <Link href={product?.productUrl || "/"}>
+      <Link href={productUrl}>
         <div className="relative w-full h-72 mb-2 bg-white">
           <Image
             src={imageSrc}
@@ -99,8 +90,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         className="px-3 pb-3 flex flex-col flex-1"
         style={robotoCondensedStyle}
       >
-        {brandSlug ? (
-          <Link href={`/brand/${brandSlug}`}>
+        {brandUrl ? (
+          <Link href={brandUrl}>
             <span
               className="text-[12px] text-[#7B7B7B] hover:text-[#D42020]"
               style={robotoCondensedStyle}
@@ -116,16 +107,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             {brandName}
           </span>
         )}
-        <Link href={product?.productUrl || "/"} className="inline-block w-fit">
+        <Link href={productUrl} className="inline-block w-fit">
           <p
             className="text-[1rem] text-gray-400 mb-1 hover:text-[#D42020]"
             style={robotoCondensedStyle}
           >
-            Sku: {product.sku}
+            Sku: {sku}
           </p>
         </Link>
 
-        <Link href={product?.productUrl || "/"}>
+        <Link href={productUrl}>
           <span
             className="text-[14px] font-bold mb-1 text-[#545454] line-clamp-2 hover:text-[#D42020]"
             style={robotoCondensedStyle}
@@ -142,21 +133,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               </span>
 
               {/* New Price */}
-               <span
-      className="text-[1rem] font-bold"
-      style={robotoStyle}
-    >
-      {product?.callForPricingLabel?.trim() || "Call for pricing"}:{" "}
-
-      <Link
-        href={`tel:${
-          product?.callForPricingPhone?.trim() || "+15020000000"
-        }`}
-        className="text-[#d40511] underline"
-      >
-        {product?.callForPricingPhone?.trim() || "(502) 000-0000"}
-      </Link>
-    </span>
+              <span className="text-[1rem] font-bold" style={robotoStyle}>
+                {callForPricingLabel}:{" "}
+                <Link
+                  href={callForPricingTel}
+                  className="text-[#d40511] underline"
+                >
+                  {callForPricingPhone}
+                </Link>
+              </span>
             </>
           </div>
         ) : (
@@ -164,24 +149,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             className="flex flex-col items-start gap-2 mb-2 "
             style={robotoStyle}
           >
-            {product?.msrp && Number(product.msrp) > 0 ? (
+            {hasMsrp ? (
               <>
                 {/* Old Price */}
                 <span className="text-[#545454] text-[1rem]">
                   Price $
                   <span className="line-through font-normal!">
-                    {Number(product.msrp).toFixed(2)}
+                    {msrp.toFixed(2)}
                   </span>
                 </span>
 
                 {/* New Price */}
                 <span className="text-[16px] font-bold">
-                  ${Number(product.price).toFixed(2)}
+                  ${price.toFixed(2)}
                 </span>
               </>
             ) : (
               <span className="text-[16px] font-bold">
-                ${Number(product.price).toFixed(2)}
+                ${price.toFixed(2)}
               </span>
             )}
           </div>
@@ -193,10 +178,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             onClick={() => {
               if (availableForSale) {
                 const cartItem = cart.find(
-                  (item: any) => item.id === product.id,
+                  (item: any) => item.id === id,
                 );
-                const minQty = product.minPurchaseQuantity || 1;
-                const maxQty = product.maxPurchaseQuantity;
                 const currentQty = cartItem?.quantity || 0;
                 const remaining = maxQty ? maxQty - currentQty : Infinity;
                 if (remaining <= 0) {
@@ -212,14 +195,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 dispatch(
                   addCart({
                     data: {
-                      productId: product?.id,
+                      productId: id,
                       quantity: quantityToAdd,
                     },
                   }),
                 )
                   .unwrap()
                   .then(() => {
-                    // toast.success(`${product.name} added to cart!`);
+                    // toast.success(`${productName} added to cart!`);
                     dispatch(fetchCartList());
                     router.push("/cart");
                   })
@@ -228,20 +211,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                   });
               }
             }}
-            disabled={currentStockEqualent}
+            disabled={disabledAddToCart}
             // disabled={!availableForSale || cartLoad}
-            className={
-              currentStockEqualent
-                ? "w-full bg-[#CAC9C9] font-bold text-[#393939] border-b-2 border-[#393939] py-1 cursor-not-allowed! rounded text-[14px] mt-auto transition"
-                : "w-full bg-[#CAC9C9] hover:bg-[#D42020] font-bold text-[#393939] border-b-2 border-[#393939] py-1 hover:text-white rounded text-[14px] mt-auto transition"
-            }
+            className="w-full bg-[#CAC9C9] hover:bg-[#D42020] font-bold text-[#393939] border-b-2 border-[#393939] py-1 hover:text-white rounded text-[14px] mt-auto transition disabled:hover:bg-[#CAC9C9] disabled:hover:text-[#393939] disabled:cursor-not-allowed!"
           >
             {"ADD TO CART"}
           </button>
         ) : (
           <button
             onClick={() => {
-              router.push(product?.productUrl || "/");
+              router.push(productUrl);
             }}
             className="w-full bg-[#CAC9C9] hover:bg-[#D42020] font-bold text-[#393939] border-b-2 border-[#393939] py-1 hover:text-white rounded text-[14px] mt-auto transition"
           >

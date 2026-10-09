@@ -11,12 +11,13 @@ import {
 import { RootState } from "@/redux/store";
 import { successMessage } from "@/utils/message";
 import { ChevronDown, ChevronUp, Menu, Search, User, X } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 import ConfirmationModal from "../modal/ConfirmationModal";
+import CartDropdownItem from "./CartDropdownItem";
+import SearchResultItem from "./SearchResultItem";
 interface Category {
   id: number;
   name: string;
@@ -265,121 +266,11 @@ const TopHeader = () => {
 
                     {!loading &&
                       searchData?.data?.map((item: any) => (
-                        <div
+                        <SearchResultItem
                           key={item.id}
-                          className="border-b-4 border-gray-200 last:border-b-2 hover:bg-gray-50 transition-colors cursor-pointer group"
-                          onClick={() => {
-                            const url = item?.productUrl || `/${item.sku}`;
-                            handleSelect(url);
-                          }}
-                        >
-                          <div className="flex">
-                            {/* Product Image - Left Side */}
-                            <div className="w-[160px] min-h-[140px] shrink-0 bg-white border-r border-gray-200 p-3 flex items-center justify-center">
-                              <Image
-                                src={
-                                  item?.image?.[0]?.path ||
-                                  "/default-product-image.svg"
-                                }
-                                alt={item?.name || "product"}
-                                width={145}
-                                fetchPriority="high"
-                                height={125}
-                                onMouseDown={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  const url =
-                                    item?.productUrl || `/${item?.sku}`;
-                                  handleSelect(url);
-                                }}
-                                className="object-contain max-w-full max-h-full"
-                              />
-                            </div>
-                            {/* Product Details - Right Side */}
-                            <div className="flex-1 p-4 flex flex-col">
-                              {/* Brand */}
-                              {item?.brand?.slug ? (
-                                <p
-                                  onMouseDown={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    const url =
-                                      item?.brand?.slug || `/${item?.sku}`;
-                                    handleSelect(`/brand/${url}`);
-                                  }}
-                                  className="text-[1rem] text-[#545454] uppercase hover:text-[#d42020]"
-                                >
-                                  {item?.brand?.name || "UNKNOWN BRAND"}
-                                </p>
-                              ) : (
-                                <p className="text-[1rem] text-[#545454] uppercase ">
-                                  {"UNKNOWN BRAND"}
-                                </p>
-                              )}
-
-                              {/* SKU */}
-                              <p
-                                onMouseDown={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  const url =
-                                    item?.productUrl || `/${item?.sku}`;
-                                  handleSelect(url);
-                                }}
-                                className="text-[1rem] text-[#545454] mt-0.5 hover:text-[#d42020]"
-                              >
-                                Sku: {item?.sku || "N/A"}
-                              </p>
-
-                              {/* Product Name */}
-                              <p
-                                onMouseDown={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  const url =
-                                    item?.productUrl || `/${item?.sku}`;
-                                  handleSelect(url);
-                                }}
-                                className="text-[14px] font-bold text-[#54545F] leading-tight mt-2 line-clamp-2 min-h-[42px] hover:text-[#d42020]"
-                              >
-                                {item?.name}
-                              </p>
-
-                              {/* Pricing */}
-                              <div className="mt-auto pt-3">
-                                {item?.costPrice &&
-                                  Number(item?.costPrice) >
-                                    Number(item?.price) && (
-                                    <p className="text-[13px] text-gray-500">
-                                      Price{" "}
-                                      <span className="line-through">
-                                        ${Number(item?.costPrice).toFixed(2)}
-                                      </span>
-                                    </p>
-                                  )}
-
-                                <p className="text-[16px] font-bold text-[#545454]  mt-1">
-                                  ${Number(item?.price || 0).toFixed(2)}
-                                </p>
-                              </div>
-
-                              {/* View Details Button */}
-                              <button
-                                onMouseDown={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  const url =
-                                    item?.productUrl || `/${item?.sku}`;
-                                  handleSelect(url);
-                                }}
-                                // className="mt-4 w-full bg-[#cccccc] hover:bg-[#bbbbbb] text-[#333] font-bold text-[14px] uppercase py-3 tracking-widest transition-all active:bg-gray-400 btn-pri"
-                                className="font-bold text-[14px] font-roboto-condensed leading-4 uppercase font-robot border-b-[4px] border-b-[#393939] bg-[#cac9c9] text-[#393939] rounded-none hover:bg-[#b81818] hover:border-b-[#6b0107] hover:text-white px-[2.28571rem] py-[0.85714rem] my-0"
-                              >
-                                VIEW DETAILS
-                              </button>
-                            </div>
-                          </div>
-                        </div>
+                          item={item}
+                          onSelect={handleSelect}
+                        />
                       ))}
                   </div>
                 )}
@@ -484,43 +375,12 @@ const TopHeader = () => {
                                 },
                                 {},
                               ),
-                            ).map((item) => (
-                              <Link
+                            ).map((item: any) => (
+                              <CartDropdownItem
                                 key={item?.id}
-                                href={item?.productUrl || "#"}
+                                item={item}
                                 onClick={() => setIsOpen(false)}
-                                className=" px-2 flex gap-3 items-center cursor-pointer border-b border-gray-300 pb-1 last:border-b-0"
-                              >
-                                <div className="w-16 h-16 shrink-0 border border-gray-100 rounded-none">
-                                  <Image
-                                    src={
-                                      item?.image?.[0]?.path ||
-                                      "/default-product-image.svg"
-                                    }
-                                    alt={item?.name}
-                                    width={64}
-                                    fetchPriority="high"
-                                    height={64}
-                                    className="w-full h-full object-contain"
-                                  />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  {item?.brand?.name && (
-                                    <p className="text-[13px] text-[#393939] inline-block font-bold uppercase">
-                                      {item?.brand?.name}
-                                    </p>
-                                  )}
-                                  <p className="text-[13px] font-light text-[#d42020] leading-snug whitespace-pre-line break-words">
-                                    {item?.name}
-                                  </p>
-                                  <p className="text-[#393939] font-bold text-[13px] mt-1">
-                                    {item?.quantity >= 1 && (
-                                      <span>{item?.quantity} × </span>
-                                    )}
-                                    ${item?.price}
-                                  </p>
-                                </div>
-                              </Link>
+                              />
                             ))}
                           </div>
 
