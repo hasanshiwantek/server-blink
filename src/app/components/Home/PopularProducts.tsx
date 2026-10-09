@@ -1,26 +1,26 @@
 "use client";
-import React, { useState, useEffect, useMemo } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { fetchPopularProducts } from "@/redux/slices/homeSlice";
 import { addToCart } from "@/redux/slices/cartSlice";
-import PopularProductSkeleton from "../loader/PopularProductSkeleton";
-import dynamic from "next/dynamic";
-import BulkInquiryModal from "../modal/BulkInquiryModal";
-import ProductPrice from "../productprice/ProductPrice";
+import { fetchPopularProducts } from "@/redux/slices/homeSlice";
 import { successMessage } from "@/utils/message";
 import { getProductInfo, ProductInfoSource } from "@/utils/product";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import PopularProductSkeleton from "../loader/PopularProductSkeleton";
+import BulkInquiryModal from "../modal/BulkInquiryModal";
+import ProductPrice from "../productprice/ProductPrice";
 
 // Dynamically import motion.div and AnimatePresence (client only)
 const MotionDiv = dynamic(
   () => import("framer-motion").then((mod) => mod.motion.div),
-  { ssr: false }
+  { ssr: false },
 );
 
 const AnimatePresence = dynamic(
   () => import("framer-motion").then((mod) => mod.AnimatePresence),
-  { ssr: false }
+  { ssr: false },
 );
 
 const PopularProductCard = ({
@@ -38,7 +38,7 @@ const PopularProductCard = ({
     brandUrl,
     imageSrc,
     price,
-    availabilityText,
+    stockStatusText,
     disabledAddToCart,
   } = getProductInfo(product);
 
@@ -68,7 +68,10 @@ const PopularProductCard = ({
       </div>
 
       {/* Product Name */}
-      <Link href={skuUrl} className="relative inline-block cursor-pointer group">
+      <Link
+        href={skuUrl}
+        className="relative inline-block cursor-pointer group"
+      >
         <p className="h6-18-px-medium line-clamp-2 min-h-[3rem]">
           {productName}
         </p>
@@ -79,9 +82,7 @@ const PopularProductCard = ({
         <Link href={brandUrl || "#"}>
           <h3 className="h7-16-px-regular line-clamp-1">
             {brandName} |{" "}
-            <span className="!text-[#219653]">
-              {availabilityText || "In Stock"}
-            </span>
+            <span className="text-[#219653]!">{stockStatusText}</span>
           </h3>
         </Link>
         <p className="h6-18-px-medium group-hover:invisible">
@@ -128,7 +129,7 @@ const PopularProductCard = ({
 const PopularProducts = () => {
   const dispatch = useAppDispatch();
   const { popularProducts, popularProductsLoading, error } = useAppSelector(
-    (state: any) => state.home
+    (state: any) => state.home,
   );
   const products = popularProducts?.data || [];
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -143,7 +144,7 @@ const PopularProducts = () => {
   const brands = useMemo(() => {
     if (!products.length) return [];
     const uniqueBrands = Array.from(
-      new Set(products.map((p: any) => p.brand?.name).filter(Boolean))
+      new Set(products.map((p: any) => p.brand?.name).filter(Boolean)),
     );
     return ["All", ...uniqueBrands];
   }, [products]);

@@ -40,7 +40,7 @@ const ProductMiddle = ({
     callForPricingLabel,
     callForPricingPhone,
     callForPricingTel,
-    availabilityText,
+    stockStatusText,
     availableForSale,
     isOutOfStock,
     isPurchaseBlocked,
@@ -91,10 +91,7 @@ const ProductMiddle = ({
 
           {/* Brand */}
           {brandUrl ? (
-            <Link
-              href={brandUrl}
-              className="inline-block w-fit"
-            >
+            <Link href={brandUrl} className="inline-block w-fit">
               <h2 className="text-[14px] sm:text-[14px] md:text-[14px] text-[#545454] font-normal uppercase hover:text-[#d40511] transition">
                 {brandName}
               </h2>
@@ -270,9 +267,7 @@ const ProductMiddle = ({
             <button
               aria-label={`Add ${quantity} ${productName} to cart`}
               onClick={() => {
-                const existingItem = cart.find(
-                  (item: any) => item.id === id,
-                );
+                const existingItem = cart.find((item: any) => item.id === id);
                 const currentQty = existingItem ? existingItem.quantity : 0;
                 const remainingQty = maxQty ? maxQty - currentQty : quantity;
 
@@ -360,7 +355,7 @@ const ProductMiddle = ({
                 Availability:
               </span>
               <span className="text-[12px] sm:text-[14px] text-[#545454]">
-                {availabilityText || "N/A"}
+                {stockStatusText}
               </span>
             </div>
 

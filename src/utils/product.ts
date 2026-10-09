@@ -23,8 +23,12 @@ export type ProductInfoSource = {
   dimensions?: { weight?: number | string | null } | null;
   freeShipping?: boolean | number | null;
   fixedShippingCost?: number | string | null;
-  categories?: { id?: number | string; name?: string; slug?: string | null }[] | null;
-  categoryHierarchy?: { id?: number | string; name?: string; slug?: string }[] | null;
+  categories?:
+    | { id?: number | string; name?: string; slug?: string | null }[]
+    | null;
+  categoryHierarchy?:
+    | { id?: number | string; name?: string; slug?: string }[]
+    | null;
 };
 
 export function getProductInfo(product?: ProductInfoSource | null) {
@@ -77,6 +81,9 @@ export function getProductInfo(product?: ProductInfoSource | null) {
   const isOutOfStock = Number(product?.currentStock) === 0;
   const isPurchaseBlocked = !product?.allowPurchase;
   const disabledAddToCart = isOutOfStock || isPurchaseBlocked;
+  const stockStatusText = isOutOfStock
+    ? "Out of Stock"
+    : availabilityText || "In Stock";
 
   // purchase limits
   const minQty = product?.minPurchaseQuantity || 1;
@@ -84,7 +91,9 @@ export function getProductInfo(product?: ProductInfoSource | null) {
 
   // details
   const condition =
-    product?.showCondition && product?.condition ? product.condition : undefined;
+    product?.showCondition && product?.condition
+      ? product.condition
+      : undefined;
   const weight = product?.dimensions?.weight || undefined;
   const shippingText = product?.freeShipping
     ? "Free Shipping"
@@ -116,6 +125,7 @@ export function getProductInfo(product?: ProductInfoSource | null) {
     callForPricingPhone,
     callForPricingTel,
     availabilityText,
+    stockStatusText,
     availableForSale,
     isOutOfStock,
     isPurchaseBlocked,
