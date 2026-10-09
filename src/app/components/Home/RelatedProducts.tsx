@@ -27,7 +27,7 @@ const RelatedProductCard = ({
     brandName,
     imageSrc,
     price,
-    availabilityText,
+    stockStatusText,
     disabledAddToCart,
   } = getProductInfo(product);
 
@@ -61,7 +61,7 @@ const RelatedProductCard = ({
       {/* Brand + Availability + Price (reserve space) */}
       <div className="flex flex-col justify-between min-h-[4.5rem] mt-2">
         <h3 className="h7-16-px-regular line-clamp-1">
-          {brandName} | {availabilityText}
+          {brandName} | {stockStatusText}
         </h3>
         <p className="h6-18-px-medium group-hover:invisible">
           <ProductPrice price={price} inline className="h6-18-px-medium" />
