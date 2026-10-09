@@ -111,7 +111,7 @@ const hasPostalCode = !countriesWithoutPostalCode.includes(billingCountry);
      (!countriesWithoutPostalCode.includes(billingInfo.country)
     ? billingInfo?.zip
     : true)
-    && billingInfo?.state) {
+) {
     // Show completed state with billing info and edit button
     return (
       <div className="flex items-start justify-between w-full">
