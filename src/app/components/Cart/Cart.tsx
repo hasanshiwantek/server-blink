@@ -15,6 +15,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import CartList from "./CartList";
 import OrderSummary from "./OrderSummary";
+import CartListSkeleton from "./CartListSkeletion";
 
 const Cart = () => {
   const dispatch = useAppDispatch();
@@ -22,10 +23,11 @@ const Cart = () => {
   const action = searchParams.get("action");
   const quoteToken = searchParams.get("quoteToken");
   const shouldLoadQuote = action === "loadSavedQuote" && !!quoteToken;
-  const { cartLoading, loading } = useAppSelector(
+  const { cartLoading, loading,  } = useAppSelector(
     (state: RootState) => state.carts,
   );
   const auth = useAppSelector((state: RootState) => state?.auth);
+  const initialCartLoading = cartLoading;
   const cartLoad = cartLoading || loading;
   const cartItems = useAppSelector((state: RootState) => state?.carts?.items);
 
@@ -117,32 +119,32 @@ const Cart = () => {
           <h1 className="text-[28px] mt-5 text-[#545454] font-light roboto-font">
             Your Cart ({cartItemCount} items)
           </h1>
-          {cartItemCount === 0 && (
-            <h1 className="text-[22px] mt-8 text-[#545454] font-light">
-              Your cart is empty
-            </h1>
-          )}
+         
         </div>
 
-        {cartItemCount > 0 && (
-          <div className="relative">
-            {cartLoad && (
-              <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-[2px]">
-                <div className="h-10 w-10 rounded-full border-[3px] border-gray-300 border-t-red-500 animate-spin" />
-              </div>
-            )}
+       {initialCartLoading ? (
+  <CartListSkeleton />
+) : cartItemCount > 0 ? (
+  <div className="relative">
+    {cartLoad && (
+      <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-[2px]">
+        <div className="h-10 w-10 rounded-full border-[3px] border-gray-300 border-t-red-500 animate-spin" />
+      </div>
+    )}
 
-            {/* Cart */}
-            <div className="w-full">
-              <CartList />
-            </div>
+    <div className="w-full">
+      <CartList />
+    </div>
 
-            {/* Order Summary */}
-            <div className="w-full md:w-[45%] md:ml-auto mt-6">
-              <OrderSummary />
-            </div>
-          </div>
-        )}
+    <div className="w-full md:w-[45%] md:ml-auto mt-6">
+      <OrderSummary />
+    </div>
+  </div>
+) : (
+  <div className="text-[22px]  text-[#545454] font-light">
+    Your cart is empty
+  </div>
+)}
       </div>
     </main>
   );
