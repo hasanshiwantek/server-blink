@@ -1,19 +1,17 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { RootState } from "@/redux/store";
 import { fetchAccountOrders } from "@/redux/slices/myaccountSlice";
+import { RootState } from "@/redux/store";
+import Image from "next/image";
 import Link from "next/link";
+import React, { useEffect, useState } from "react";
 import ReturnItemsModal from "./ReturnItemsModal"; // Import modal
-import { cartTransfer } from "@/redux/slices/cartsSlice";
 
 const OrderProduct = () => {
   const dispatch = useAppDispatch();
   const { order, loading, error } = useAppSelector(
-    (state: RootState) => state.myaccount
+    (state: RootState) => state.myaccount,
   );
-  const auth = useAppSelector((state: RootState) => state?.auth);
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -59,16 +57,14 @@ const OrderProduct = () => {
   }
 
   if (error)
-    return (
-      <p className="text-red-500">Failed to fetch orders. {error}</p>
-    );
+    return <p className="text-red-500">Failed to fetch orders. {error}</p>;
 
   if (!order?.orders || order.orders.length === 0)
     return (
       <div className="w-full bg-white border border-black p-4">
         <p className="text-[#545454] text-[14px]">
-          You haven't placed any order with us. When you do, they will appear
-          on this page.
+          You haven't placed any order with us. When you do, they will appear on
+          this page.
         </p>
       </div>
     );
@@ -87,12 +83,18 @@ const OrderProduct = () => {
               <div className="w-full max-w-[128px] h-32 relative shrink-0">
                 <Image
                   src={
-                    item?.products?.[0]?.image?.[0]?.path || item?.products?.[1]?.image?.[0]?.path ||
+                    item?.products?.[0]?.image?.[0]?.path ||
+                    item?.products?.[1]?.image?.[0]?.path ||
                     "/default-product-image.svg"
                   }
-                  alt={item?.products?.[0]?.name || item?.products?.[1]?.name || "Product Image"}
+                  alt={
+                    item?.products?.[0]?.name ||
+                    item?.products?.[1]?.name ||
+                    "Product Image"
+                  }
                   fill
-                  className="object-contain border rounded-md"fetchPriority="high"
+                  className="object-contain border rounded-md"
+                  fetchPriority="high"
                 />
               </div>
 
@@ -159,6 +161,7 @@ const OrderProduct = () => {
           onClose={handleCloseModal}
           orderId={selectedOrder?.order_number || null}
           isSubmit={selectedOrder?.returnRequest?.isSubmit}
+          onSuccess={() => dispatch(fetchAccountOrders())}
         />
       )}
     </>

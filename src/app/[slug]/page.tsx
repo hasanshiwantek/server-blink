@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { fetchProductBySlugAndUrl, fetchWebPages } from "@/lib/api/products";
 import ProductCard from "../components/Product/ProductCard";
+import { getProductInfo } from "@/utils/product";
 const CategoriesSidebar = dynamic(
   () => import("../components/Home/CategoriesSidebar"),
 );
@@ -83,7 +84,7 @@ export async function generateMetadata({
       siteName: "",
       images: [
         {
-          url: product.image?.[0]?.path || "/default-product-image.svg",
+          url: getProductInfo(product).imageSrc,
           width: 1200,
           height: 630,
           alt: product.pageTitle || product.name,
@@ -95,7 +96,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: product.pageTitle || product.name,
       description: product.metaDescription,
-      images: [product.image?.[0]?.path || "/default-product-image.svg"],
+      images: [getProductInfo(product).imageSrc],
     },
     robots: {
       index: true,

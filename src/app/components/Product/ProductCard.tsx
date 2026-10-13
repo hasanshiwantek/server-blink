@@ -1,31 +1,21 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import { useAppDispatch } from "@/hooks/useReduxHooks";
+import { addRecentView } from "@/redux/slices/recentSlice";
+import { getProductInfo } from "@/utils/product";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 import ProductLeft from "./ProductLeft";
 import ProductMiddle from "./ProductMiddle";
-import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { addToCart } from "@/redux/slices/cartSlice";
-import { addRecentView } from "@/redux/slices/recentSlice";
-import Link from "next/link";
-import { RootState } from "@/redux/store";
 
 const ProductCard = ({ product }: { product: any }) => {
   const dispatch = useAppDispatch();
-  const minQty = product?.minPurchaseQuantity || 1;
-  const maxQty = product?.maxPurchaseQuantity;
-  const cart = useAppSelector((state: RootState) => state.carts?.items);
-  const availableForSale = product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
+  const { id, sku, productName, productUrl, categoryHierarchy, minQty, maxQty } =
+    getProductInfo(product);
   const [quantity, setQuantity] = useState(minQty);
   const [selectedImage, setSelectedImage] = useState("");
 
-  // primary image first, then the rest in API order
-  const images: string[] = useMemo(() => {
-    const list: any[] = Array.isArray(product?.image) ? product.image : [];
-    const primary = list.find((img) => img?.isPrimary === 1);
-    const ordered = primary
-      ? [primary, ...list.filter((img) => img !== primary)]
-      : list;
-    return ordered.map((img) => img?.path).filter(Boolean);
-  }, [product?.image]);
+  // memoized so ProductLeft gets a stable array between renders
+  const images = useMemo(() => getProductInfo(product).images, [product]);
 
   useEffect(() => {
     if (images.length > 0) {
@@ -34,28 +24,23 @@ const ProductCard = ({ product }: { product: any }) => {
   }, [images]);
 
   useEffect(() => {
-    if (!product) return;
+    if (!id) return;
 
     dispatch(
       addRecentView({
-        id: product.id,
-        sku: product.sku,
-      })
+        id: Number(id),
+        sku,
+      }),
     );
-  }, [product.id]);
+  }, [id, sku, dispatch]);
 
   const increment = () => {
-    if (
-      !maxQty ||
-      quantity < maxQty
-    ) {
+    if (!maxQty || quantity < maxQty) {
       setQuantity(quantity + 1);
     }
   };
 
-
   const decrement = () => quantity > minQty && setQuantity(quantity - 1);
-
 
   return (
     <div className="max-w-full mx-auto">
@@ -66,11 +51,15 @@ const ProductCard = ({ product }: { product: any }) => {
           className="hidden md:flex items-center justify-center lg:justify-normal space-x-2 text-[12px] text-[#393939] lg:mb-7 sm:mb-7 mb-7 flex-wrap"
         >
           <h2>
-            <Link href={"/"} className="text-[12px] hover:text-[#D42020]! roboto-sans-font" itemProp="name " >
+            <Link
+              href={"/"}
+              className="text-[12px] hover:text-[#D42020]! roboto-sans-font"
+              itemProp="name "
+            >
               Home
             </Link>
 
-            {product?.categoryHierarchy?.map((cat: any, index: number) => (
+            {categoryHierarchy.map((cat) => (
               <span key={cat.id}>
                 <span
                   className="mt-2 mx-3 text-gray-400 text-[11px]"
@@ -79,9 +68,9 @@ const ProductCard = ({ product }: { product: any }) => {
                   /
                 </span>
 
-                <Link href={`/category/${cat?.slug}`}
+                <Link
+                  href={`/category/${cat?.slug}`}
                   className={`text-[11px]   hover:text-[#D42020]! roboto-sans-font`}
-
                   itemProp="name"
                 >
                   {cat.name}
@@ -94,10 +83,13 @@ const ProductCard = ({ product }: { product: any }) => {
             >
               /
             </span>
-            <Link href={product?.productUrl} className="text-[12px] text-[#D42020]! roboto-sans-font" itemProp="name" >
-              {product?.name}
+            <Link
+              href={productUrl}
+              className="text-[12px] text-[#D42020]! roboto-sans-font"
+              itemProp="name"
+            >
+              {productName}
             </Link>
-
           </h2>
         </nav>
 

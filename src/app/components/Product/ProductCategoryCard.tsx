@@ -1,12 +1,7 @@
-import Link from "next/link";
+import { getProductInfo } from "@/utils/product";
 import Image from "next/image";
-import { ShoppingCart } from "lucide-react";
-import { addToCart } from "@/redux/slices/cartSlice";
-import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import BulkInquiryModal from "../modal/BulkInquiryModal";
-import { useEffect, useState } from "react";
+import Link from "next/link";
 import ProductPrice from "../productprice/ProductPrice";
-import { fetchStats } from "@/redux/slices/homeSlice";
 interface Product {
   id: number;
   name: string;
@@ -17,7 +12,7 @@ interface Product {
   msrp: any;
   rating: any;
   reviews: any;
-  brand?: { id: number; name: string; slug?: string; };
+  brand?: { id: number; name: string; slug?: string };
   categories?: { id: number; name: string }[];
   image?: { path?: string }[];
   availabilityText?: string;
@@ -29,13 +24,24 @@ interface Product {
 }
 
 export default function ProductCategoryCard({ product }: { product: Product }) {
-  const imageUrl = product.image?.[0]?.path || "/default-product-image.svg";
-  const availableForSale = product?.purchasabilityStatus == "available" && Number(product?.price) > 0;
-  const brandSlug =
-    typeof product.brand === "object" ? product?.brand?.slug : undefined;
+  const {
+    productName,
+    sku,
+    productUrl,
+    brandName,
+    brandUrl,
+    imageSrc,
+    price,
+    msrp,
+    hasMsrp,
+    callForPricingLabel,
+    callForPricingPhone,
+    callForPricingTel,
+    availableForSale,
+  } = getProductInfo(product);
   return (
     <div
-      style={{ height: "auto" }}  /* auto height for mobile, fixed on md+ */
+      style={{ height: "auto" }} /* auto height for mobile, fixed on md+ */
       className="
     border rounded-md bg-white
     grid items-start
@@ -47,15 +53,14 @@ export default function ProductCategoryCard({ product }: { product: Product }) {
   "
     >
       {/* ✅ Product Image */}
-      <Link
-        href={`${product?.productUrl}`}
-      >
+      <Link href={productUrl}>
         <div className="flex items-center justify-center md:w-[314px] md:h-[171px] w-full h-auto shrink-0 p-4 md:p-0">
           <Image
-            src={imageUrl}
-            alt={product?.name}
+            src={imageSrc}
+            alt={productName}
             width={171}
-            height={171} fetchPriority="high"
+            height={171}
+            fetchPriority="high"
             className="object-contain md:w-[171px] md:h-[171px] w-[150px] h-[150px]"
           />
         </div>
@@ -64,62 +69,68 @@ export default function ProductCategoryCard({ product }: { product: Product }) {
       {/* ✅ Product Info */}
       <div className="flex flex-col justify-between p-4 md:h-[171px] h-auto bg-[#F2F2F2]">
         <p className="text-[12px]">
-          <Link href={`/brand/${brandSlug || "/"}`}>
-            <span className="text-[12px] hover:text-[#D42020]">{product?.brand?.name}</span>{" "}
+          <Link href={brandUrl || "/"}>
+            <span className="text-[12px] hover:text-[#D42020]">
+              {brandName}
+            </span>{" "}
           </Link>
-          <Link href={product?.productUrl || "/"}>
-            <span className="text-[12px] hover:text-[#D42020]"> SKU:{product?.sku}</span>
+          <Link href={productUrl}>
+            <span className="text-[12px] hover:text-[#D42020]"> SKU:{sku}</span>
           </Link>
         </p>
 
         <Link
-          href={`${product?.productUrl}`}
+          href={productUrl}
           className="cursor-pointer relative inline-block group"
         >
           <h3 className="mb-1 text-[20px] font-normal md:line-clamp-2 line-clamp-3 hover:text-[#D42020]">
-            {product?.sku} | {product?.brand?.name} | {product?.name}
+            {sku} | {brandName} | {productName}
           </h3>
         </Link>
 
-        {availableForSale ? <div className="flex flex-wrap items-center gap-2 mt-2">
-          {/* Price */}
-          {product?.msrp && Number(product.msrp) > 0 ? (
-            <div>
-              <p className="mb-1 text-[15px]">
-                Price{" "}
+        {availableForSale ? (
+          <div className="flex flex-wrap items-center gap-2 mt-2">
+            {/* Price */}
+            {hasMsrp ? (
+              <div>
+                <p className="mb-1 text-[15px]">
+                  Price{" "}
+                  <ProductPrice
+                    price={msrp}
+                    inline={true}
+                    className="line-through !text-[15px] !font-normal"
+                  />
+                </p>
                 <ProductPrice
-                  price={Number(product.msrp)}
-                  inline={true}
-                  className="line-through !text-[15px] !font-normal"
+                  price={price}
+                  inline={false}
+                  className="font-bold !text-[#545454] !text-3xl"
                 />
-              </p>
+              </div>
+            ) : (
               <ProductPrice
-                price={Number(product.price)}
+                price={price}
                 inline={false}
                 className="font-bold !text-[#545454] !text-3xl"
               />
-            </div>
-          ) : (
-            <ProductPrice
-              price={Number(product.price)}
-              inline={false}
-              className="font-bold !text-[#545454] !text-3xl"
-            />
-          )}
-        </div> : <div className="flex flex-wrap items-center gap-2 mt-2">
-          <span className="text-[1rem] font-bold  " style={{ fontFamily: '"Roboto"' }}>
-            {product?.callForPricingLabel?.trim() || "Call for pricing"}:{" "}
-
-      <Link
-        href={`tel:${
-          product?.callForPricingPhone?.trim() || "+15020000000"
-        }`}
-        className="text-[#d40511] underline"
-      >
-        {product?.callForPricingPhone?.trim() || "(502) 000-0000"}
-      </Link>
-    </span>
-        </div>}
+            )}
+          </div>
+        ) : (
+          <div className="flex flex-wrap items-center gap-2 mt-2">
+            <span
+              className="text-[1rem] font-bold  "
+              style={{ fontFamily: '"Roboto"' }}
+            >
+              {callForPricingLabel}:{" "}
+              <Link
+                href={callForPricingTel}
+                className="text-[#d40511] underline"
+              >
+                {callForPricingPhone}
+              </Link>
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

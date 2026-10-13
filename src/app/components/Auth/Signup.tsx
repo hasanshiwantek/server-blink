@@ -24,6 +24,7 @@ import { addCustomerAddress } from "@/redux/slices/myaccountSlice";
 import { countriesWithoutPostalCode } from "@/const/country-level";
 import { getSessionId } from "@/utils/storage";
 import { useAlert } from "@/hooks/useAlert";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 interface SignupFormValues {
   firstName: string;
@@ -67,6 +68,8 @@ const SignupPage = () => {
     reValidateMode: "onChange",
   });
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const dispatch = useAppDispatch();
   const { registerLoading } = useAppSelector((state: RootState) => state?.auth);
   const router = useRouter();
@@ -228,12 +231,22 @@ const SignupPage = () => {
                 </label>
                 <span className="text-[#545454]">*</span>
               </div>
-              <Input
-                id="password"
-                type="password"
-                className="h-[42px] min-h-[42px] w-full max-w-full"
-                {...register("password", { required: "Password is required" })}
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  className="h-[42px] min-h-[42px] w-full max-w-full pr-10"
+                  {...register("password", { required: "Password is required" })}
+                />
+                <button
+                  type="button"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <FiEyeOff /> : <FiEye />}
+                </button>
+              </div>
               {errors.password && (
                 <p className="mt-1 text-[14px] text-red-500">
                   {errors.password.message}
@@ -253,16 +266,28 @@ const SignupPage = () => {
                 <span className="text-[#545454]">*</span>
               </div>
 
-              <Input
-                id="confirmPassword"
-                type="password"
-                className="h-[42px] min-h-[42px] w-full max-w-full"
-                {...register("password_confirmation", {
-                  required: "Please confirm your password",
-                  validate: (value) =>
-                    value === password || "Passwords do not match",
-                })}
-              />
+              <div className="relative">
+                <Input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  className="h-[42px] min-h-[42px] w-full max-w-full pr-10"
+                  {...register("password_confirmation", {
+                    required: "Please confirm your password",
+                    validate: (value) =>
+                      value === password || "Passwords do not match",
+                  })}
+                />
+                <button
+                  type="button"
+                  aria-label={
+                    showConfirmPassword ? "Hide password" : "Show password"
+                  }
+                  className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+                </button>
+              </div>
               {errors.password_confirmation && (
                 <p className="mt-1 text-[14px] text-red-500">
                   {errors.password_confirmation.message}
