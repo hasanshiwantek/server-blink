@@ -14,6 +14,7 @@ import { decode } from "html-entities";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { setProductView } from "@/redux/slices/uiSlice";
+import { useProductView } from "@/hooks/useProductView";
 
 // Dynamically import motion.div and AnimatePresence (client only)
 const MotionDiv = dynamic(
@@ -59,17 +60,14 @@ export default function ProductList({
   initialCategoryId,
   isBrandPage,
 }: ProductListProps) {
-  const dispatch = useAppDispatch();
-  const view = useAppSelector((state) => state.ui.productView);
+  const { view, setView } = useProductView();
   const [page, setPage] = useState(1);
   const decodedHtml = decode(
     initialCategorydescription
       ?.replace(/<pre[^>]*>/gi, "")
       ?.replace(/<\/pre>/gi, ""),
   );
-  const setView = (next: "list" | "grid") => {
-    dispatch(setProductView(next));
-  };
+
   const findCategoryById = (cats: any[], id: number): any => {
     for (const cat of cats) {
       if (cat.id === id) return cat;
