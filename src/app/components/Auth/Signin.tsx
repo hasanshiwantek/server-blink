@@ -12,6 +12,7 @@ import { fetchCartList } from "@/redux/slices/cartsSlice";
 import { baseURL, storeId } from "@/lib/axiosInstance";
 import { errorMessage } from "@/utils/message";
 import { getSessionId } from "@/utils/storage";
+import { StatusMessage } from "@/components/common/statusMessage";
 interface SigninFormValues {
   email: string;
   password: string;
@@ -36,14 +37,14 @@ const SigninPage = () => {
     try {
       const result = await dispatch(loginUser(data));
       if (loginUser.fulfilled.match(result)) {
-        const token = result?.payload?.token
+        const token = result?.payload?.token;
         const fetchCartListInner = async () => {
-          const sessionId = getSessionId()
+          const sessionId = getSessionId();
           await fetch(`${baseURL}web/cart/transfer`, {
             method: "POST",
             headers: {
-              "Authorization": `Bearer ${token}`,
-              "storeId": storeId,
+              Authorization: `Bearer ${token}`,
+              storeId: storeId,
               "X-Session-ID": sessionId || "",
               "Content-Type": "application/json",
             },
@@ -64,18 +65,15 @@ const SigninPage = () => {
               });
           }
         };
-        fetchCartListInner()
+        fetchCartListInner();
       } else {
         const message =
           typeof result?.payload === "string"
             ? result.payload
             : "Login failed. Please try again.";
         errorMessage(message);
-
       }
-    } catch (err: any) {
-
-    }
+    } catch (err: any) {}
   };
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -92,7 +90,10 @@ const SigninPage = () => {
       {/* Breadcrumb */}
       <div className="pt-0 pb-4 md:py-2 md:px-10 xl:px-0 w-full xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-8xl mx-auto">
         <div className="hidden md:flex items-center gap-2 text-sm">
-          <Link href="/" className="text-gray-600 hover:text-gray-900 text-[11px]">
+          <Link
+            href="/"
+            className="text-gray-600 hover:text-gray-900 text-[11px]"
+          >
             Home
           </Link>
           <span className="text-gray-400">/</span>
@@ -103,11 +104,18 @@ const SigninPage = () => {
       {/* Main Content */}
       <div className="pt-0 md:px-6 xl:px-0 w-full xl:max-w-[1170px] 2xl:max-w-[1170px] max-w-7xl mx-auto py-8 pb-16">
         <h1 className="h1-lg mb-10">Login</h1>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-12">
           {/* Left Column - Login Form */}
           <div className="max-w-3xl">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <div>
+                {shouldLoadQuote && (
+                  <StatusMessage
+                    message="To purchase items in the cart, you'll need to sign in to your account prior to proceeding."
+                    variant="error"
+                  />
+                )}
+              </div>
               {/* Email Address */}
               <div>
                 <label
