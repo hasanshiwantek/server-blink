@@ -11,6 +11,7 @@ import Pagination from "./Pagination";
 import SortingBar from "./SortingBar";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { setProductView } from "@/redux/slices/uiSlice";
+import { useProductView } from "@/hooks/useProductView";
 
 // Dynamically import motion.div and AnimatePresence (client only)
 const MotionDiv = dynamic(
@@ -44,14 +45,8 @@ export default function ProductList({
   filterMeta,
   initialCategorydescription,
 }: ProductListProps) {
-  const dispatch = useAppDispatch();
-  const view = useAppSelector((state) => state.ui.productView);
-  const [page, setPage] = useState(1);
+  const { view, setView } = useProductView();
   const total = pagination?.total || 0;
-
-  const setView = (next: "list" | "grid") => {
-    dispatch(setProductView(next));
-  };
 
   // ✅ Scroll to top when filters.page changes
   useEffect(() => {

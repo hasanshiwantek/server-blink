@@ -42,40 +42,7 @@ const Cart = () => {
         const response = res?.data;
 
         if (auth?.user?.id != response?.customer?.id) return;
-        const shippingformation = response?.billingInformation;
-        const billingAddress = response?.billingAddress;
-        const shippingFormData = {
-          email: response?.customer?.email,
-          firstName: shippingformation?.firstName,
-          lastName: shippingformation?.lastName,
-          company: shippingformation?.companyName,
-          phone: shippingformation?.phone,
-          address1: shippingformation?.addressLine1,
-          address2: shippingformation?.addressLine2,
-          city: shippingformation?.city,
-          country: shippingformation?.country,
-          state: shippingformation?.state,
-          zip: shippingformation?.zip,
-          shippingMethod: shippingformation?.shippingMethod,
-          orderComment: response?.comments,
-        };
-        const billingFormData = {
-          billingFirstName: billingAddress.firstName,
-          billingLastName: billingAddress.lastName,
-          billingCompany: billingAddress.companyName,
-          billingPhone: billingAddress.phone,
-          billingAddress1: billingAddress.addressLine1,
-          billingAddress2: billingAddress.addressLine2,
-          billingCity: billingAddress.city,
-          billingCountry: billingAddress.country,
-          billingState: billingAddress.state,
-          billingZip: billingAddress.zip,
-        };
-     
-        await dispatch(fetchCartList())
-          .unwrap()
-          .then(async (res) => {
-          });
+        await dispatch(fetchCartList()).unwrap();
       })
       .catch((error) => {
         if (error) {
