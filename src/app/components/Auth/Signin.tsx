@@ -52,9 +52,17 @@ const SigninPage = () => {
           reset();
           dispatch(fetchCartList());
           if (shouldLoadQuote || quoteToken) {
-            window.location.href = `/cart?action=loadSavedQuote&quoteToken=${quoteToken}`;
-          } else {
-            router.push("/my-account/orders");
+            window.location.href = `/cart?action=loadSavedQuote&quoteToken=${quoteToken}`
+          }  else {
+            await dispatch(fetchCartList())
+              .unwrap()
+              .then((res) => {
+                if (res?.data?.length > 0) {
+                  router.push("/cart");
+                } else {
+                  router.push("/my-account/orders");
+                }
+              });
           }
         };
         fetchCartListInner();
