@@ -194,6 +194,44 @@ const ReturnItemsModal: React.FC<ReturnItemsModalProps> = ({
     }
   };
 
+  if (isSubmit) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div className="relative bg-white w-full max-w-[520px] rounded-lg shadow-lg overflow-hidden">
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="absolute right-4 top-4 text-xl text-gray-500 hover:text-black"
+          >
+            ✕
+          </button>
+          <div className="px-6 py-12 sm:px-10 sm:py-14 text-center">
+            <div className="mx-auto mb-6 flex h-28 w-28 items-center justify-center rounded-full border-4 border-confirmation">
+              <span className="text-6xl font-extrabold leading-none text-confirmation">
+                !
+              </span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-medium text-confirmation-text">
+              Return Already Submitted
+            </h2>
+            <p className="mt-2 text-base sm:text-lg text-confirmation-text">
+              You have already submitted a return request for this order.
+            </p>
+            <div className="mt-6 flex items-center justify-center">
+              <button
+                type="button"
+                onClick={onClose}
+                className="min-w-[123px] bg-confirmation hover:bg-confirmation-hover px-10 py-3 text-xl font-bold text-white transition border-b border-black"
+              >
+                CLOSE
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div className="bg-white w-full max-w-5xl rounded-xl shadow-lg max-h-[90vh] overflow-y-auto">
@@ -219,39 +257,6 @@ const ReturnItemsModal: React.FC<ReturnItemsModalProps> = ({
             <div className="flex flex-col items-center justify-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mb-4"></div>
               <p className="text-gray-600">Loading order details...</p>
-            </div>
-          )}
-
-          {/* Already Returned State */}
-          {!loading && isSubmit && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-8 text-center">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-yellow-100">
-                <svg
-                  className="h-10 w-10 text-yellow-600"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  />
-                </svg>
-              </div>
-              <p className="text-yellow-800 text-xl font-semibold mb-2">
-                Return Already Submitted
-              </p>
-              <p className="text-gray-700 mb-6">
-                You have already submitted a return request for this order.
-              </p>
-              <button
-                onClick={onClose}
-                className="px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition font-semibold"
-              >
-                Close
-              </button>
             </div>
           )}
 
