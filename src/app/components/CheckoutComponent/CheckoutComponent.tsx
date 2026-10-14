@@ -18,7 +18,7 @@ import {
   decreaseQty,
   increaseQty,
   removeFromCart,
-} from "@/redux/slices/cartSlice";
+} from "@/redux/slices/cartsSlice";
 import {
   applyCoupon,
   fetchMyCouponUsage,

@@ -1,6 +1,6 @@
 // components/Product/ProductGridCard.tsx
 import { useAppDispatch } from "@/hooks/useReduxHooks";
-import { addToCart } from "@/redux/slices/cartSlice";
+import { addToCart } from "@/redux/slices/cartsSlice";
 import { successMessage } from "@/utils/message";
 import { getProductInfo } from "@/utils/product";
 import Image from "next/image";
