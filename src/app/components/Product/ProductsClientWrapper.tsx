@@ -44,7 +44,7 @@ const CategoryBreadcrumb = ({ categoryId, categories }: { categoryId: number; ca
             /
           </span>
 
-          {index === path.length - 1 ? (
+          {index === path.length - 1 ? (   
             <span className="text-[#D42020]">{cat.name}</span>
           ) : (<Link href={`/category/${cat?.slug}`}
             className={`text-[11px] text-[#666666]  hover:text-[#D42020]  transition-colors`}

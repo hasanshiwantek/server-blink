@@ -11,6 +11,7 @@ interface OrderSummaryProps {
   tax: number;
   total: number;
   finalTotal: number;
+  shippingUpdating?: boolean;
   discountAmount: number;
   appliedCoupon: any;
   promoCode: string;
@@ -26,6 +27,7 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
   tax,
   total,
   finalTotal,
+  shippingUpdating = false,
   discountAmount,
   appliedCoupon,
   promoCode,
@@ -35,6 +37,14 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
 }) => {
   const pathname = usePathname();
   const isOrderInfo = pathname === "/checkout/order-information";
+
+  const spinner = (
+    <span
+      role="status"
+      aria-label="Updating shipping"
+      className="inline-block h-4 w-4 align-middle rounded-full border-2 border-gray-300 border-t-[#d42020] animate-spin"
+    />
+  );
   const [showPromo, setShowPromo] = useState(false);
   const [discountOpen, setDiscountOpen] = useState(false);
   const [showAllItems, setShowAllItems] = useState(false);
@@ -408,7 +418,11 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
           <div className="flex justify-between text-[13px] text-[#545454] roboto-font">
             <span>Shipping</span>
             <span className="font-medium">
-              {shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}
+              {shippingUpdating
+                ? spinner
+                : shipping === 0
+                  ? "Free"
+                  : `$${shipping.toFixed(2)}`}
             </span>
           </div>
           <div className="flex justify-between text-[13px] text-[#545454] roboto-font">
@@ -423,7 +437,9 @@ const CheckoutMultipleOrderSummary: React.FC<OrderSummaryProps> = ({
             <span>
               Total <br /> (USD)
             </span>
-            <span>${finalTotal.toFixed(2)}</span>
+            <span>
+              {shippingUpdating ? spinner : `$${finalTotal.toFixed(2)}`}
+            </span>
           </div>
           {appliedCoupon && discountAmount > 0 && (
             <div className="text-[#333] font-medium text-[13px] mt-1 self-end">

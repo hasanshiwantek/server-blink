@@ -20,6 +20,7 @@ interface MultiAddressState {
     completedDestinations: Destination[];
     orderComment: string;
     destShippingRates: Record<string, any[]>;
+    destRatesLoading: Record<string, boolean>;
 }
 
 const initialState: MultiAddressState = {
@@ -30,6 +31,7 @@ const initialState: MultiAddressState = {
     completedDestinations: [],
     orderComment: "",
     destShippingRates: {},
+    destRatesLoading: {},
 };
 
 const multiAddressSlice = createSlice({
@@ -47,6 +49,7 @@ const multiAddressSlice = createSlice({
         },
         removeDestination: (state, action: PayloadAction<string>) => {
             state.destinations = state.destinations.filter((d) => d.id !== action.payload);
+            delete state.destRatesLoading[action.payload];
         },
         updateDestinationAddress: (state, action: PayloadAction<{ destId: string; address: AddressData }>) => {
             const dest = state.destinations.find((d) => d.id === action.payload.destId);
@@ -79,6 +82,11 @@ const multiAddressSlice = createSlice({
                 [action.payload.destId]: action.payload.rates,
             };
         },
+        setDestRatesLoading: (state, action: PayloadAction<{ destId: string; loading: boolean }>) => {
+            const { destId, loading } = action.payload;
+            if (loading) state.destRatesLoading[destId] = true;
+            else delete state.destRatesLoading[destId];
+        },
         restoreMultiAddress: (state, action: PayloadAction<{
             isMultiAddress: boolean;
             destinations: Destination[];
@@ -100,6 +108,7 @@ const multiAddressSlice = createSlice({
             state.completedDestinations = [];
             state.orderComment = "";
             state.destShippingRates = {};
+            state.destRatesLoading = {};
             // isMultiAddress preserve karo
         },
     },
@@ -109,7 +118,7 @@ export const {
     setIsMultiAddress, setDestinations, addDestination, removeDestination,
     updateDestinationAddress, updateDestinationShippingMethod, toggleShowItems,
     setCompletedDestinations, setOrderComment, resetMultiAddress, setDestShippingRatesAction, setDestShippingRate,
-    clearMultiAddressProgress, restoreMultiAddress,
+    setDestRatesLoading, clearMultiAddressProgress, restoreMultiAddress,
 
 } = multiAddressSlice.actions;
 

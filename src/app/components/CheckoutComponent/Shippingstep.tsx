@@ -19,6 +19,7 @@ import {
   fetchShippingRate,
   fetchShippingRates,
   resetShippingRates,
+  setRatesLoading,
   setShippingRates,
 } from "@/redux/slices/shippingSlice";
 import { RootState } from "@/redux/store";
@@ -307,7 +308,12 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
       (!hasPostalCode || zip?.trim())
     ) {
       const pkg = calculatePackage(cart);
+      // Loader on now, not after the debounce — otherwise nothing seems to
+      // happen until the new rates suddenly appear
+      dispatch(setRatesLoading(true));
+      let fired = false;
       const timer = setTimeout(() => {
+        fired = true;
         dispatch(resetShippingRates());
         dispatch(
           fetchShippingRates({
@@ -326,7 +332,12 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
         );
       }, 600);
 
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        // Debounce cancelled before the request went out (the next run turns
+        // the loader back on if it schedules another quote)
+        if (!fired) dispatch(setRatesLoading(false));
+      };
     }
   }, [city, country, zip, state]);
   // useEffect(() => {
@@ -463,9 +474,16 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
       );
     }
 
+    const selectedRate: any =
+      productShippingRate?.service_type === watchedShippingMethod
+        ? productShippingRate
+        : shippingRates?.find(
+            (r: any) => r.service_type === watchedShippingMethod,
+          );
+
     // Single address completed view
     return (
-      <div className="flex items-start justify-between w-full">
+      <div className="flex items-start justify-between gap-6 w-full">
         {/* <div className="text-base text-gray-600">
           <p className="font-medium text-[13px] text-[#545454]">
             {shippingInfo?.firstName} {shippingInfo?.lastName}
@@ -476,7 +494,7 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
           </p>
           <p>{shippingInfo?.country}</p>
         </div> */}
-        <div className="text-base text-gray-600">
+        <div className="text-base text-gray-600 min-w-0 flex-1">
           <p className="font-medium text-[13px] text-[#545454]">
             {shippingInfo?.firstName} {shippingInfo?.lastName}
           </p>
@@ -491,6 +509,26 @@ const ShippingStep: React.FC<ShippingStepProps> = ({
             {shippingInfo?.city}, {shippingInfo?.state} {shippingInfo?.zip}{" "}
             {shippingInfo?.country ? ` / ${shippingInfo.country}` : ""}{" "}
           </p>
+          {(ratesLoader || shippingCostLoading) && !productShippingRate ? (
+            // Collapsed step: shipping is being re-quoted
+            <p className="mt-3 pt-3 border-t border-[#e5e5e5] text-[13px] text-[#545454] flex items-center gap-2">
+              <span className="h-4 w-4 rounded-full border-2 border-gray-300 border-t-[#d42020] animate-spin" />
+              Updating shipping rates…
+            </p>
+          ) : (
+            selectedRate && (
+              <p className="mt-3 pt-3 border-t border-[#e5e5e5] text-[13px] text-[#545454]">
+                {selectedRate.is_fedex
+                  ? `FedEx (${selectedRate.service_name})`
+                  : selectedRate.display_name}
+                <span className="ml-3">
+                  {Number(selectedRate.total_charge) === 0
+                    ? "Free"
+                    : `$${Number(selectedRate.total_charge).toFixed(2)}`}
+                </span>
+              </p>
+            )
+          )}
         </div>
         <button
           type="button"

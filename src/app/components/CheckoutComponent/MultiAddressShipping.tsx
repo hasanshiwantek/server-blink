@@ -26,6 +26,7 @@ import {
   setCompletedDestinations,
   setOrderComment,
   setDestinations,
+  setDestRatesLoading,
 } from "@/redux/slices/multiAddressSlice";
 import {
   calculatePackage,
@@ -548,9 +549,11 @@ const MultiAddressShipping = ({
   const [destShippingRates, setDestShippingRates] = useState<
     Record<string, any[]>
   >({});
-  const [destRatesLoading, setDestRatesLoading] = useState<
-    Record<string, boolean>
-  >({});
+  // In redux (not local state) so checkout can show a loader while any
+  // destination is being re-quoted
+  const destRatesLoading = useAppSelector(
+    (state) => state.multiAddress.destRatesLoading,
+  );
 
   const unallocatedCount = useMemo(() => {
     const allocatedPerItem: Record<string, Set<string>> = {};
@@ -588,7 +591,7 @@ const MultiAddressShipping = ({
     // Poori cart fixed/free hai toh har destination bhi — API ki zaroorat nahi
     if (getProductShippingRate(cart)) return;
 
-    setDestRatesLoading((prev) => ({ ...prev, [destId]: true }));
+    dispatch(setDestRatesLoading({ destId, loading: true }));
 
     try {
       // ✅ Calculate package for this destination's allocated items only
@@ -627,7 +630,7 @@ const MultiAddressShipping = ({
     
       setDestShippingRates((prev) => ({ ...prev, [destId]: [] }));
     } finally {
-      setDestRatesLoading((prev) => ({ ...prev, [destId]: false }));
+      dispatch(setDestRatesLoading({ destId, loading: false }));
     }
   };
   const canContinue = useMemo(
