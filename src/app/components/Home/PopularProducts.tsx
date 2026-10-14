@@ -1,6 +1,6 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { addToCart } from "@/redux/slices/cartSlice";
+import { addToCart } from "@/redux/slices/cartsSlice";
 import { fetchPopularProducts } from "@/redux/slices/homeSlice";
 import { successMessage } from "@/utils/message";
 import { getProductInfo, ProductInfoSource } from "@/utils/product";

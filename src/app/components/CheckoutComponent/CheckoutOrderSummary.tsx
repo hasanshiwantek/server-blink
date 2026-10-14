@@ -12,6 +12,7 @@ interface OrderSummaryProps {
   tax: number;
   total: number;
   finalTotal: number;
+  shippingUpdating?: boolean;
   discountAmount: number;
   appliedCoupon: any;
   manualDiscount: number;
@@ -29,6 +30,7 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
   tax,
   total,
   finalTotal,
+  shippingUpdating = false,
   discountAmount,
   appliedCoupon,
   manualDiscount,
@@ -40,6 +42,14 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
 }) => {
   const pathname = usePathname();
   const isOrderInfo = pathname === "/checkout/order-information";
+
+  const spinner = (
+    <span
+      role="status"
+      aria-label="Updating shipping"
+      className="inline-block h-4 w-4 align-middle rounded-full border-2 border-gray-300 border-t-[#d42020] animate-spin"
+    />
+  );
   const [showPromo, setShowPromo] = useState(false);
   const [discountOpen, setDiscountOpen] = useState(false);
   const cartItemCount = cart.reduce(
@@ -227,9 +237,11 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
         <div className="flex justify-between text-[13px] text-[#545454] roboto-font">
           <span>Shipping</span>
           <span className="font-medium">
-            {getProductShippingRate(cart)?.service_type === "free_shipping"
-              ? "Free"
-              : `$${shipping?.toFixed(2)}`}
+            {shippingUpdating
+              ? spinner
+              : getProductShippingRate(cart)?.service_type === "free_shipping"
+                ? "Free"
+                : `$${shipping?.toFixed(2)}`}
           </span>
         </div>
         <div className="flex justify-between pb-[10px] text-[13px] text-[#545454] roboto-font">
@@ -245,7 +257,7 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
             Total <br /> (USD)
           </span>
           <span className="font-bold text-[16px]">
-            ${finalTotal?.toFixed(2)}
+            {shippingUpdating ? spinner : `$${finalTotal?.toFixed(2)}`}
           </span>
         </div>
 

@@ -18,7 +18,7 @@ import {
   decreaseQty,
   increaseQty,
   removeFromCart,
-} from "@/redux/slices/cartSlice";
+} from "@/redux/slices/cartsSlice";
 import {
   applyCoupon,
   fetchMyCouponUsage,
@@ -179,6 +179,7 @@ const CheckoutForm = () => {
     completedDestinations,
     destinations,
     destShippingRates,
+    destRatesLoading,
   } = useAppSelector((state) => state.multiAddress);
   const stripe = useStripe();
   const elements = useElements();
@@ -247,6 +248,12 @@ const CheckoutForm = () => {
   const stripeCardMethods = ["credit_card"];
   const walletMethods = ["google_pay", "apple_pay"];
   const { shippingRates } = useAppSelector((state) => state.shippingZone);
+  const { ratesLoader, loading: shippingDetailLoading } = useAppSelector(
+    (state: any) => state.shippingZone,
+  );
+  const shippingUpdating = isMultiAddress
+    ? destinations.some((d) => destRatesLoading?.[d.id])
+    : Boolean(ratesLoader || shippingDetailLoading);
   const stateList = useMemo(() => {
     if (!watchedCountry) return [];
     return State.getStatesOfCountry(watchedCountry).map((s) => ({
@@ -1692,6 +1699,7 @@ const CheckoutForm = () => {
               tax={tax}
               total={totalBeforeDiscount}
               finalTotal={finalTotal}
+              shippingUpdating={shippingUpdating}
               discountAmount={discountAmount}
               appliedCoupon={appliedCoupon}
               manualDiscount={manualDiscount}
@@ -1709,6 +1717,7 @@ const CheckoutForm = () => {
               tax={tax}
               total={totalBeforeDiscount}
               finalTotal={finalTotal}
+              shippingUpdating={shippingUpdating}
               discountAmount={discountAmount}
               appliedCoupon={appliedCoupon}
               promoCode={promoCode}
