@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import OrderInformationSummary from "./OrderInformationSummary";
 import LoadTrustpilotScript from "./TrustpilotWidget";
 import { errorMessage, infoMessage, successMessage } from "@/utils/message";
+import OrderConfirmationSkeleton from "./OrderConfirmationSkeleton";
 
 // Inner component that uses Stripe hooks
 const CheckoutForm = () => {
@@ -31,7 +32,9 @@ const CheckoutForm = () => {
       quantity: product.quantity || 1,
     }))
     : [];
-
+const loading = useAppSelector(
+  (state: RootState) => state.customerMessage.loading
+);
   // ADD COUPON STATE FROM REDUX
   const [promoCode, setPromoCode] = useState("");
 
@@ -102,6 +105,12 @@ const CheckoutForm = () => {
 
   return (
     <div className="min-h-screen py-10md:px-[6%]  xl:px-0 2xl:px-0   w-full max-w-[1170px] mx-auto px-4 lg:px-0 ">
+      {
+        loading?(
+          <OrderConfirmationSkeleton/>
+        ):(
+
+      
       <form>
         <div className="flex justify-center mb-8">
           <LoadTrustpilotScript />
@@ -168,6 +177,8 @@ const CheckoutForm = () => {
           </div>
         </div>
       </form>
+        )
+      }
     </div>
   );
 };
