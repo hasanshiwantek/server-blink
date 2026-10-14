@@ -17,7 +17,6 @@ import multiAddressReducer from "./slices/multiAddressSlice";
 import contactReducer from "./slices/contactSlice";
 import advanceSearchReducer from "./slices/advanceSearchSlice";
 import scriptReducer from "./slices/scriptSlice";
-import cartSliceReducer from "./slices/cartSlice";
 import orderMessageReducer from "./slices/OrderMessage";
 import uiReducer from "./slices/uiSlice";
 // ✅ only cart persist hoga
@@ -55,7 +54,6 @@ const rootReducer = combineReducers({
   currency: currencyReducer,
   auth: persistReducer(authPersistConfig, authReducer), // persisted
   config: configReducer,
-  cart: persistReducer(cartPersistConfig, cartSliceReducer), // persisted
   recent: persistReducer(recentPersistConfig, recentReducer),
   order: persistReducer(orderPersistConfig, orderReducer),
   coupon: couponReducer,

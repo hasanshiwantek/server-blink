@@ -70,21 +70,21 @@ const SignupForm = ({ onCancel }: SignupFormProps) => {
       const result = await dispatch(registerUser(payload));
 
       if (registerUser.fulfilled.match(result)) {
-        const token = result?.payload?.token
+        const token = result?.payload?.token;
         const fetchCartListInner = async () => {
-          const sessionId = getSessionId()
-          const res = await fetch(`${baseURL}web/cart/transfer`, {
+          const sessionId = getSessionId();
+          await fetch(`${baseURL}web/cart/transfer`, {
             method: "POST",
             headers: {
-              "Authorization": `Bearer ${token}`,
-              "storeId": storeId,
+              Authorization: `Bearer ${token}`,
+              storeId: storeId,
               "X-Session-ID": sessionId || "",
               "Content-Type": "application/json",
             },
           });
           window.location.reload();
         };
-        fetchCartListInner()
+        fetchCartListInner();
         setState({
           firstName: "",
           lastName: "",
@@ -94,12 +94,8 @@ const SignupForm = ({ onCancel }: SignupFormProps) => {
       } else {
         const errorMessage =
           result.payload || "Registration failed. Please try again.";
-
-     
       }
-    } catch (err) {
-    
-    }
+    } catch (err) {}
   };
   return (
     <div className="w-full space-y-5">

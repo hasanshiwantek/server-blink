@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 // import { fetchOrderDetails } from "@/lib/api/order";
-import { fetchOrderDetails } from "@/redux/slices/cartSlice";
+import { fetchOrderDetails } from "@/redux/slices/cartsSlice";
 import { useAppDispatch } from "@/hooks/useReduxHooks";
 import { useReactToPrint } from "react-to-print";
 import { Invoice } from "./helpers/OrderDetail";

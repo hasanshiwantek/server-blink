@@ -1,4 +1,5 @@
 "use client";
+import { useAppSelector } from "@/hooks/useReduxHooks";
 import {
   CardCvcElement,
   CardExpiryElement,
@@ -57,7 +58,10 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
   paymentMethodLabel,
 }) => {
   const stripeCardMethods = ["credit_card"];
-
+  const { loading, ratesLoader } = useAppSelector(
+    (state) => state.shippingZone,
+  );
+  const disabled = isProcessing || !stripe || loading || ratesLoader;
   if (isCompleted && !isActive) {
     // Show completed state with payment method and edit button
     return (
@@ -269,11 +273,7 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={isProcessing || !stripe}
-        className="btn-primary"
-      >
+      <button type="submit" disabled={disabled} className="btn-primary">
         {isProcessing ? "Processing..." : "PLACE ORDER"}
       </button>
     </div>
