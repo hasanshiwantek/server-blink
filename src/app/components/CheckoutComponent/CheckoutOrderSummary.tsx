@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { getProductShippingRate } from "./Shippingstep";
-import { useAppSelector } from "@/hooks/useReduxHooks";
 
 interface OrderSummaryProps {
   cart: any[];
@@ -47,9 +46,7 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
     (sum, item: any) => sum + (item?.quantity ?? 1),
     0,
   );
-  const { loading, ratesLoader } = useAppSelector(
-    (state) => state.shippingZone,
-  );
+
   useEffect(() => {
     if ((appliedCoupon && discountAmount > 0) || manualDiscount > 0) {
       setDiscountOpen(true);
@@ -229,17 +226,11 @@ const CheckoutOrderSummary: React.FC<OrderSummaryProps> = ({
 
         <div className="flex justify-between text-[13px] text-[#545454] roboto-font">
           <span>Shipping</span>
-          {loading || ratesLoader ? (
-            <span className="text-[14px] inline-block cursor-pointer italic ">
-              <div className="h-6 w-6 rounded-full border-[3px] border-gray-300 border-t-red-500 animate-spin" />
-            </span>
-          ) : (
-            <span className="font-medium">
-              {getProductShippingRate(cart)?.service_type === "free_shipping"
-                ? "Free"
-                : `$${shipping?.toFixed(2)}`}
-            </span>
-          )}
+          <span className="font-medium">
+            {getProductShippingRate(cart)?.service_type === "free_shipping"
+              ? "Free"
+              : `$${shipping?.toFixed(2)}`}
+          </span>
         </div>
         <div className="flex justify-between pb-[10px] text-[13px] text-[#545454] roboto-font">
           <span>Tax</span>
