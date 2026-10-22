@@ -526,7 +526,7 @@ const CheckoutForm = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
+          json: {
             destination: {
               state: event.shippingAddress.region,
               country_code: event.shippingAddress.country,
@@ -540,7 +540,7 @@ const CheckoutForm = () => {
               item_count: calculatePackage(cart).item_count,
               package_value: finalTotal,
             },
-          }),
+          },
         });
 
         const data = await response.json();
