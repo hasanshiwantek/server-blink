@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { logout } from "@/redux/slices/authSlice";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
 import {
-  // fetchCustomerDiscounts,
   fetchLoadSavedQuote,
   removeCoupon,
   removeManualDiscount,

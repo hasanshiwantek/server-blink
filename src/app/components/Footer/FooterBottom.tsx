@@ -23,7 +23,6 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-// import { fetchCustomerDiscounts } from "@/redux/slices/couponSlice";
 import ConfirmationModal from "../modal/ConfirmationModal";
 
 const FooterBottom = () => {
@@ -62,8 +61,8 @@ const FooterBottom = () => {
   useEffect(() => {
     const auth = getPersistedAuth();
     const t = auth?.token || null;
-    setToken(t);
     if (!t) return;
+    setToken(t);
     dispatch(checkAuthToken())
       .unwrap()
       .catch(() => {

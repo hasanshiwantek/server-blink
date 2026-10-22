@@ -23,7 +23,7 @@ export const postAccountDetails = createAsyncThunk(
   "account/postAccountDetails",
   async (data: any, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post("dashboard/customers/account-settings", data);
+      const response = await axiosInstance.post("web/customers/account-settings", data);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -35,7 +35,7 @@ export const fetchAccountOrders = createAsyncThunk(
   "account/fetchAccountOrders",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("dashboard/customers/my-orders?isDraft=false");
+      const response = await axiosInstance.get("web/customers/my-orders?isDraft=false");
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -47,7 +47,7 @@ export const fetchAccountAddress = createAsyncThunk(
   "account/fetchAccountAddress",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("dashboard/customers/my-addresses");
+      const response = await axiosInstance.get("web/customers/my-addresses");
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -58,7 +58,7 @@ export const fetchCustomerAddress = createAsyncThunk(
   "account/customer-address",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("dashboard/customer-address/list");
+      const response = await axiosInstance.get("web/customer-address/list");
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -72,7 +72,7 @@ export const updatecustomer = createAsyncThunk(
   async ({ id, data }: { id: string | number; data: any }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.put(
-        `dashboard/customers/update-customer/${id}`,
+        `web/customers/update-customer/${id}`,
         data
       );
       return response.data;
@@ -88,7 +88,7 @@ export const deletecustomeraddress = createAsyncThunk(
   async ({ id }: { id: string | number; }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.delete(
-        `dashboard/customer-address/delete/${id}`
+        `web/customer-address/delete/${id}`
 
       );
       return response.data;
@@ -103,7 +103,7 @@ export const addCustomerAddress = createAsyncThunk(
   async ({ id, data }: { id: string | number; data: any }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(
-        `dashboard/customer-address/store`,
+        `web/customer-address/store`,
         data
       );
       return response.data;
@@ -117,7 +117,7 @@ export const updateCustomerAddress = createAsyncThunk(
   async ({ id, data }: { id: string | number; data: any }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.put(
-        `dashboard/customer-address/update/${id}`,
+        `web/customer-address/update/${id}`,
         data
       );
       return response.data;
