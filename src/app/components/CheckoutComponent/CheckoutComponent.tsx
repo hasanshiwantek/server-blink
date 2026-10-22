@@ -9,10 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import axiosInstance, {
-  baseURL,
-  stripePublishableKey,
-} from "@/lib/axiosInstance";
+import { ENV_CONFIG } from "@/config/envConfig";
 import {
   clearCart,
   decreaseQty,
@@ -71,6 +68,8 @@ import ShippingStep, {
   getProductShippingRate,
   getSavedShippingCost,
 } from "./Shippingstep";
+import { apiFetch } from "@/lib/apiFetch";
+import axiosInstance from "@/lib/axiosInstance";
 
 export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
 function splitName(fullName: string) {
@@ -82,7 +81,7 @@ function splitName(fullName: string) {
   };
 }
 // Stripe publishable key
-const stripePromise = loadStripe(stripePublishableKey);
+const stripePromise = loadStripe(ENV_CONFIG.stripePublishableKey);
 
 // Pre-compute country list at module level
 // const countryList = countries
@@ -515,30 +514,27 @@ const CheckoutForm = () => {
     });
     pr.on("shippingaddresschange", async (event) => {
       try {
-        const response = await fetch(
-          `${baseURL}web/checkout/get-shipping-rates`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              destination: {
-                state: event.shippingAddress.region,
-                country_code: event.shippingAddress.country,
-                postal_code: event.shippingAddress.postalCode,
-              },
-
-              package: {
-                total_weight: calculatePackage(cart).total_weight,
-                weight_unit: "LB",
-                order_total: finalTotal,
-                item_count: calculatePackage(cart).item_count,
-                package_value: finalTotal,
-              },
-            }),
+        const response = await apiFetch(`web/checkout/get-shipping-rates`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        );
+          body: JSON.stringify({
+            destination: {
+              state: event.shippingAddress.region,
+              country_code: event.shippingAddress.country,
+              postal_code: event.shippingAddress.postalCode,
+            },
+
+            package: {
+              total_weight: calculatePackage(cart).total_weight,
+              weight_unit: "LB",
+              order_total: finalTotal,
+              item_count: calculatePackage(cart).item_count,
+              package_value: finalTotal,
+            },
+          }),
+        });
 
         const data = await response.json();
 

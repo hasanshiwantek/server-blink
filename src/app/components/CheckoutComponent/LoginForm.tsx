@@ -10,9 +10,9 @@ import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import SignupForm from "./SignupForm";
-import { baseURL, storeId } from "@/lib/axiosInstance";
 import { errorMessage } from "@/utils/message";
 import { getSessionId } from "@/utils/storage";
+import { transferCart } from "@/lib/api/transferCart";
 
 interface SigninFormValues {
   email: string;
@@ -44,21 +44,12 @@ const LoginForm = ({ onCancel }: LoginFormProps) => {
     try {
       const result = await dispatch(loginUser(state));
       if (loginUser.fulfilled.match(result)) {
-        const token = result?.payload?.token
+        const token = result?.payload?.token;
         const fetchCartListInner = async () => {
-          const sessionId = getSessionId()
-          const res = await fetch(`${baseURL}web/cart/transfer`, {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "storeId": storeId,
-              "X-Session-ID": sessionId || "",
-              "Content-Type": "application/json",
-            },
-          });
+          await transferCart({ token }).catch(() => {});
           window.location.reload();
         };
-        fetchCartListInner()
+        fetchCartListInner();
         setState({
           email: "",
           password: "",
@@ -70,11 +61,8 @@ const LoginForm = ({ onCancel }: LoginFormProps) => {
             : "Login failed. Please try again.";
 
         errorMessage(message);
-
       }
-    } catch (err) {
-
-    }
+    } catch (err) {}
   };
 
   return (

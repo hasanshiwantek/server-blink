@@ -19,12 +19,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { Country, State, City } from "country-state-city";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
-import { baseURL, sitekey, storeId } from "@/lib/axiosInstance";
 import { addCustomerAddress } from "@/redux/slices/myaccountSlice";
 import { countriesWithoutPostalCode } from "@/const/country-level";
 import { getSessionId } from "@/utils/storage";
 import { useAlert } from "@/hooks/useAlert";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import { transferCart } from "@/lib/api/transferCart";
+import { ENV_CONFIG } from "@/config/envConfig";
 
 interface SignupFormValues {
   firstName: string;
@@ -95,10 +96,10 @@ const SignupPage = () => {
   const hasPostalCode = !countriesWithoutPostalCode.includes(watchedCountry);
   const onSubmit = async (data: SignupFormValues) => {
     if (!captchaToken) {
-        showAlert({
-    title: "Captcha Required",
-    message: "Please verify the captcha.",
-  });
+      showAlert({
+        title: "Captcha Required",
+        message: "Please verify the captcha.",
+      });
       return;
     }
     try {
@@ -111,16 +112,7 @@ const SignupPage = () => {
       if (registerUser.fulfilled.match(result)) {
         const token = result?.payload?.token;
         const fetchCartListInner = async () => {
-          const sessionId = getSessionId()
-          const res = await fetch(`${baseURL}web/cart/transfer`, {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              storeId: storeId,
-              "X-Session-ID": sessionId || "",
-              "Content-Type": "application/json",
-            },
-          });
+          await transferCart({ token }).catch(() => {});
 
           const {
             email,
@@ -150,7 +142,7 @@ const SignupPage = () => {
         const errorMessage =
           result.payload || "Registration failed. Please try again.";
       }
-    } catch (err: any) { }
+    } catch (err: any) {}
   };
 
   useEffect(() => {
@@ -236,7 +228,9 @@ const SignupPage = () => {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   className="h-[42px] min-h-[42px] w-full max-w-full pr-10"
-                  {...register("password", { required: "Password is required" })}
+                  {...register("password", {
+                    required: "Password is required",
+                  })}
                 />
                 <button
                   type="button"
@@ -547,9 +541,7 @@ const SignupPage = () => {
               >
                 Zip/Postcode
               </label>
-              {hasPostalCode && (
-                <span className="text-[#545454]">*</span>
-              )}
+              {hasPostalCode && <span className="text-[#545454]">*</span>}
             </div>
 
             <Input
@@ -573,7 +565,7 @@ const SignupPage = () => {
           </div>
           <div className="mt-6">
             <ReCAPTCHA
-              sitekey={sitekey}
+              sitekey={ENV_CONFIG.sitekey}
               onChange={(token: any) => {
                 setCaptchaToken(token);
               }}
