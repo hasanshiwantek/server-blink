@@ -1,15 +1,10 @@
+import { apiFetch } from "../apiFetch";
+
 // lib/api/products.ts
-import { baseURL, storeId } from "../axiosInstance";
-import serverAxios from "../serverAxios";
-import { redirect } from "next/navigation";
-// const baseURL = process.env.NEXT_PUBLIC_API_URL;
 export const fetchProducts = async () => {
   try {
-    const res = await fetch(`${baseURL}web/products/products`, {
+    const res = await apiFetch(`web/products/products`, {
       next: { revalidate: 10 }, // ✅ revalidate every 10 seconds
-      headers: {
-        storeId: storeId,
-      },
     });
 
     if (!res.ok) throw new Error("Failed to fetch products");
@@ -22,11 +17,10 @@ export const fetchProducts = async () => {
 
 // Get single product by slug (always fresh)
 export const fetchProductBySlugAndUrl = async (slug?: string) => {
-  if (!slug) return
+  if (!slug) return;
   try {
-    const res = await fetch(`${baseURL}web/products/get-product-by-url${slug}`, {
+    const res = await apiFetch(`web/products/get-product-by-url${slug}`, {
       cache: "no-store",
-      headers: { storeId: storeId },
     });
 
     if (!res?.ok) {
@@ -41,19 +35,16 @@ export const fetchProductBySlugAndUrl = async (slug?: string) => {
 
     return data.data;
   } catch (err) {
- 
     return null; // always return null, not throw
   }
 };
 export const fetchProductBySlug = async (slug: string) => {
   try {
-    const res = await fetch(`${baseURL}web/products/get-product/${slug}`, {
+    const res = await apiFetch(`web/products/get-product/${slug}`, {
       cache: "no-store",
-      headers: { storeId: storeId },
     });
 
     if (!res.ok) {
-  
       return null;
     }
 
@@ -65,7 +56,6 @@ export const fetchProductBySlug = async (slug: string) => {
 
     return data.data;
   } catch (err) {
-   
     return null; // always return null, not throw
   }
 };
@@ -91,14 +81,9 @@ export async function fetchFilteredProducts(filters: {
   if (filters.maxPrice) params.append("maxPrice", filters.maxPrice.toString());
   if (filters.sortBy) params.append("sortBy", filters.sortBy);
 
-  const url = `${baseURL}web/categories/category-filter?${params.toString()}`;
+  const url = `web/categories/category-filter?${params.toString()}`;
 
-  const res = await fetch(url, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      storeId: storeId,
-    },
+  const res = await apiFetch(url, {
     cache: "no-store", // or "no-cache" for fresh data
   });
 
@@ -111,14 +96,10 @@ export async function fetchFilteredProducts(filters: {
   return data; // {status, message, data: []}
 }
 
-
 export const getBlogByIdServer = async (id: string) => {
   try {
-    const res = await fetch(`${baseURL}web/blogs/blog-posts/${id}`, {
+    const res = await apiFetch(`web/blogs/blog-posts/${id}`, {
       next: { revalidate: 1 }, // Example: revalidate every hour
-      headers: {
-        storeId: storeId,
-      },
     });
 
     if (!res.ok) {
@@ -131,32 +112,27 @@ export const getBlogByIdServer = async (id: string) => {
     throw new Error("Failed to load blog post");
   }
 };
+export const fetchAllWebPages = async (): Promise<any[]> => {
+  const res = await apiFetch("web/webpages/web-pages?page=1&perPage=100", {
+    cache: "no-store",
+  });
+
+  if (!res.ok) throw new Error("Failed to fetch web pages");
+
+  const data = await res.json();
+  return data?.data || [];
+};
 export const fetchWebPages = async (slug?: string) => {
-  if (!slug) return
+  if (!slug) return;
   try {
-    const normalizeSlug = (s: string) => s?.replace(/\/+$/, '');
+    const normalizeSlug = (s: string) => s?.replace(/\/+$/, "");
+    const pages = await fetchAllWebPages();
 
-    const res = await fetch(`${baseURL}web/webpages/web-pages?page=${1}&perPage=${100}`, {
-      cache: "no-store",
-      headers: { storeId: storeId },
-    });
-
-    if (!res?.ok) {
-      return null;
-    }
-
-    const data = await res.json();
-
-    // const filteredPages = data?.data?.find((page: any) => page?.slugWithUrl === slug);
-    const filteredPages = data?.data?.find(
-      (page: any) => normalizeSlug(page?.slugWithUrl) === normalizeSlug(slug)
+    return (
+      pages.find(
+        (page: any) => normalizeSlug(page?.slugWithUrl) === normalizeSlug(slug),
+      ) ?? null
     );
-
-    if (!data?.data) {
-      return null;
-    }
-
-    return filteredPages;
   } catch (err) {
     return null; // always return null, not throw
   }

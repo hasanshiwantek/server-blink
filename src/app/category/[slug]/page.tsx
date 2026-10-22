@@ -1,6 +1,6 @@
 // app/category/[slug]/page.tsx
 import ProductsPage from "@/app/products/page";
-import { fetchCategories, fetchCategoryById } from "@/lib/api/category";
+import { fetchCategories } from "@/lib/api/category";
 import { Metadata } from "next";
 import NotFound from "@/app/not-found";
 interface Props {
@@ -25,14 +25,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const category = findCategoryBySlug(categories, slug);
 
   const formattedCategory =
-    category?.seo?.page_title || slug.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+    category?.seo?.page_title ||
+    slug.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 
   const title = `${formattedCategory} `;
   const description = category?.seo?.meta_description;
 
   return {
     title: {
-      absolute: formattedCategory,  // ← changed
+      absolute: formattedCategory, // ← changed
     },
     description,
     alternates: {

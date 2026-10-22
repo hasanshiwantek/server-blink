@@ -9,10 +9,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { RootState } from "@/redux/store";
 import { FiEye, FiEyeOff } from "react-icons/fi"; // add at top
 import { fetchCartList } from "@/redux/slices/cartsSlice";
-import { baseURL, storeId } from "@/lib/axiosInstance";
 import { errorMessage } from "@/utils/message";
 import { getSessionId } from "@/utils/storage";
 import { StatusMessage } from "@/components/common/statusMessage";
+import { transferCart } from "@/lib/api/transferCart";
 interface SigninFormValues {
   email: string;
   password: string;
@@ -39,18 +39,8 @@ const SigninPage = () => {
       if (loginUser.fulfilled.match(result)) {
         const token = result?.payload?.token;
         const fetchCartListInner = async () => {
-          const sessionId = getSessionId();
-          await fetch(`${baseURL}web/cart/transfer`, {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              storeId: storeId,
-              "X-Session-ID": sessionId || "",
-              "Content-Type": "application/json",
-            },
-          });
+          await transferCart({ token }).catch(() => {});
           reset();
-          dispatch(fetchCartList());
           if (shouldLoadQuote || quoteToken) {
             window.location.href = `/cart?action=loadSavedQuote&quoteToken=${quoteToken}`
           }  else {

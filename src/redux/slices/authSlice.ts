@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axiosInstance, { baseURL, storeId } from "@/lib/axiosInstance";
-import { removeFromSessionStorage, removeFromStorage } from "@/utils/storage";
+import axiosInstance from "@/lib/axiosInstance";
 import { removeManualDiscount } from "./couponSlice";
 
 export interface RegisterPayload {
