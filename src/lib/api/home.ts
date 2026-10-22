@@ -1,18 +1,13 @@
 // // lib/api/categories.ts
-import { baseURL, storeId } from "../axiosInstance";
-// const baseURL = process.env.NEXT_PUBLIC_API_URL;
+import { apiFetch } from "@/lib/apiFetch";
+
 export const fetchCarousels = async () => {
-    const res = await fetch(`${baseURL}web/carousels/get-crousel`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            storeId: storeId,
-        },
-    });
+  const res = await apiFetch("web/carousels/get-crousel", {
+    method: "GET",
+  });
 
-    if (!res.ok) throw new Error("Failed to fetch categories");
+  if (!res.ok) throw new Error("Failed to fetch categories");
 
-    const data = await res.json();
-    return data || [];
+  const data = await res.json();
+  return data || [];
 };
-

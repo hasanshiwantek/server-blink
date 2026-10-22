@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { useAppDispatch } from "@/hooks/useReduxHooks";
-import { baseURL, storeId } from "@/lib/axiosInstance";
+import { transferCart } from "@/lib/api/transferCart";
 import { registerUser } from "@/redux/slices/authSlice";
 import { getSessionId } from "@/utils/storage";
 import { useState } from "react";
@@ -72,16 +72,7 @@ const SignupForm = ({ onCancel }: SignupFormProps) => {
       if (registerUser.fulfilled.match(result)) {
         const token = result?.payload?.token;
         const fetchCartListInner = async () => {
-          const sessionId = getSessionId();
-          await fetch(`${baseURL}web/cart/transfer`, {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              storeId: storeId,
-              "X-Session-ID": sessionId || "",
-              "Content-Type": "application/json",
-            },
-          });
+          await transferCart({ token }).catch(() => {});
           window.location.reload();
         };
         fetchCartListInner();

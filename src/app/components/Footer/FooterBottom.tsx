@@ -131,11 +131,6 @@ const FooterBottom = () => {
     login();
   }, [paramsToken, dispatch, router]);
 
-  // useEffect(() => {
-  //   if (auth?.isAuthenticated) {
-  //     dispatch(fetchCustomerDiscounts());
-  //   }
-  // }, [auth]);
   return (
     <footer className="bg-[#333333] text-[#ffffff] w-full mx-auto roboto-font">
       {/* 🔹 Newsletter Section */}

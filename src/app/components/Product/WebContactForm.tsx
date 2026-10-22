@@ -9,8 +9,8 @@ import Link from "next/link";
 import { X } from "lucide-react";
 import { contactRequests } from "@/redux/slices/contactSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { sitekey } from "@/lib/axiosInstance";
 import { errorMessage } from "@/utils/message";
+import { ENV_CONFIG } from "@/config/envConfig";
 
 type WebContactFormData = {
     full_name: string;
@@ -150,7 +150,7 @@ const WebContactForm = ({ showTheseFields }: { showTheseFields: string[] }) => {
                 {showField("spamProtection") && (
                     <div>
                         <ReCAPTCHA
-                            sitekey={sitekey}
+                            sitekey={ENV_CONFIG.sitekey}
                             onChange={(token: any) => {
                                 setCaptchaToken(token);
                             }}
