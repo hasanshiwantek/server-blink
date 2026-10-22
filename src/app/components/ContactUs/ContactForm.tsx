@@ -8,9 +8,9 @@ import Link from "next/link";
 import { X } from "lucide-react";
 import { contactRequests } from "@/redux/slices/contactSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { sitekey } from "@/lib/axiosInstance";
 import { RootState } from "@/redux/store";
 import { errorMessage } from "@/utils/message";
+import { ENV_CONFIG } from "@/config/envConfig";
 type ContactFormData = {
   full_name: string;
   phone_number: string;
@@ -271,7 +271,7 @@ const ContactForm = () => {
             </div>
             <div className="mt-6">
               <ReCAPTCHA
-                sitekey={sitekey}
+                sitekey={ENV_CONFIG.sitekey}
                 onChange={(token: any) => {
                   setCaptchaToken(token);
                 }}

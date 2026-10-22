@@ -13,8 +13,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/hooks/useReduxHooks";
 import { bulkInquiry } from "@/redux/slices/homeSlice";
-import { sitekey } from "@/lib/axiosInstance";
 import { errorMessage, successMessage } from "@/utils/message";
+import { ENV_CONFIG } from "@/config/envConfig";
 interface BulkInquiryModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -177,7 +177,7 @@ const BulkInquiryModal: React.FC<BulkInquiryModalProps> = ({
               <div className="relative z-[99999]">
                 <ReCAPTCHA
                   ref={recaptchaRef}
-                  sitekey={sitekey}
+                  sitekey={ENV_CONFIG.sitekey}
                   onChange={(token) => setCaptchaToken(token)}
                   onExpired={() => setCaptchaToken(null)}
                 />

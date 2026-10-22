@@ -14,9 +14,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { addReview, } from "@/redux/slices/homeSlice";
 import { Label } from "@/components/ui/label";
-import { sitekey } from "@/lib/axiosInstance";
 import { RootState } from "@/redux/store";
 import { errorMessage, successMessage } from "@/utils/message";
+import { ENV_CONFIG } from "@/config/envConfig";
 
 
 interface AddReviewModalProps {
@@ -249,7 +249,7 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
                             <div className="relative">
                                 <ReCAPTCHA
                                     ref={recaptchaRef}
-                                    sitekey={sitekey}
+                                    sitekey={ENV_CONFIG.sitekey}
                                     onChange={(token) => setCaptchaToken(token)}
                                     onExpired={() => setCaptchaToken(null)}
                                 />
