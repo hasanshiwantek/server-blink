@@ -70,6 +70,7 @@ import ShippingStep, {
 } from "./Shippingstep";
 import { apiFetch } from "@/lib/apiFetch";
 import axiosInstance from "@/lib/axiosInstance";
+import { cn } from "@/lib/utils";
 
 export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
 function splitName(fullName: string) {
@@ -1580,7 +1581,10 @@ const CheckoutForm = () => {
             {/* STEP 1: Customer */}
             {/* STEP 1: Customer */}
             <div
-              className={`p-6 border-b-[1px]  items-center border-b-[#8b8b8b] ${currentStep >= 2 ? "flex gap-16" : "block"}`}
+              className={cn(
+                "p-6 border-b-[1px]  items-center border-b-[#8b8b8b]",
+                currentStep >= 2 ? "flex gap-16" : "block",
+              )}
             >
               <h2
                 className={`hidden md:flex text-[25px] w-[100px] font-normal mb-4 text-[#545454] `}
@@ -1602,7 +1606,10 @@ const CheckoutForm = () => {
 
             {/* STEP 2: Shipping */}
             <div
-              className={`p-6 border-b-[1px]  items-center border-b-[#8b8b8b] ${currentStep >= 3 ? "flex gap-16" : "block"}`}
+              className={cn(
+                "p-6 border-b-[1px] items-center border-b-[#8b8b8b]",
+                currentStep >= 3 ? "flex gap-16" : "block",
+              )}
             >
               <h2 className="hidden md:flex text-[25px]  w-[100px]  font-normal mt-6 mb-6 text-[#545454]">
                 Shipping
@@ -1628,7 +1635,10 @@ const CheckoutForm = () => {
 
             {/* STEP 3: Billing */}
             <div
-              className={`p-6 border-b-[1px]  items-center border-b-[#8b8b8b] ${currentStep >= 4 ? "flex gap-16" : "block"}`}
+              className={cn(
+                "p-6 border-b-[1px] items-center border-b-[#8b8b8b]",
+                currentStep >= 4 ? "flex gap-16" : "block",
+              )}
             >
               <h2 className="hidden md:flex text-[25px]  w-[100px] font-normal mb-4 text-[#545454]">
                 Billing
