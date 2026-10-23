@@ -1,48 +1,58 @@
 "use client";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { useAppDispatch } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
-import { logout } from "@/redux/slices/authSlice";
-
+import { customerLogout, logout } from "@/redux/slices/authSlice";
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, expireAt } = useSelector((state: RootState) => state.auth);
-  const dispatch = useDispatch();
+  const { isAuthenticated, expireAt } = useSelector(
+    (state: RootState) => state.auth,
+  );
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const pathname = usePathname();
-  
 
-useEffect(() => {
-  if (!isAuthenticated) {
-    const loginUrl = `/auth/login?redirect=${encodeURIComponent(pathname || "/checkout")}`;
-    router.replace(loginUrl);
-    return;
-  }
-  
+  useEffect(() => {
+    if (!isAuthenticated) {
+      const loginUrl = `/auth/login?redirect=${encodeURIComponent(pathname || "/checkout")}`;
+      router.replace(loginUrl);
+      return;
+    }
 
-  if (!expireAt) return;
+    if (!expireAt) return;
 
-  const now = Date.now();
-  const expiryTime = new Date(expireAt).getTime();
-  const timeoutDuration = expiryTime - now; // ✅ const
+    const now = Date.now();
+    const expiryTime = new Date(expireAt).getTime();
+    const timeoutDuration = expiryTime - now;
 
-  if (timeoutDuration <= 0) {
-    dispatch(logout());
-    router.replace(`/auth/login?redirect=${encodeURIComponent(pathname || "/checkout")}`);
-    return;
-  }
+    if (timeoutDuration <= 0) {
+      dispatch(customerLogout())
+        .unwrap()
+        .then(() => {
+          dispatch(logout());
+          router.replace(
+            `/auth/login?redirect=${encodeURIComponent(pathname || "/checkout")}`,
+          );
+        })
+      return;
+    }
 
-  const timerId = setTimeout(() => {
-    dispatch(logout());
-    router.replace(`/auth/login?redirect=${encodeURIComponent(pathname || "/checkout")}`);
-  }, timeoutDuration);
+    const timerId = setTimeout(() => {
+      dispatch(customerLogout())
+        .unwrap()
+        .then(() => {
+          dispatch(logout());
+          router.replace(
+            `/auth/login?redirect=${encodeURIComponent(pathname || "/checkout")}`,
+          );
+        })
+    }, timeoutDuration);
 
-  return () => clearTimeout(timerId); // cleanup
-}, [isAuthenticated, expireAt, dispatch, router, pathname]);
+    return () => clearTimeout(timerId);
+  }, [isAuthenticated, expireAt, dispatch, router, pathname]);
 
-
-  // Loader while redirecting
   if (!isAuthenticated) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -51,7 +61,6 @@ useEffect(() => {
     );
   }
 
-  // Render children if authenticated
   return <>{children}</>;
 }
 

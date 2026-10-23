@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { ShieldCheck, ShieldOff, AlertTriangle } from "lucide-react";
@@ -69,10 +65,10 @@ export default function ConfirmationModal({
         <div className="bg-white px-6 py-12 sm:px-10 sm:py-14 text-center">
           {/* Icon */}
           <div className="mx-auto mb-6 flex h-28 w-28 items-center justify-center rounded-full border-4 border-confirmation">
-  <span className="text-6xl font-extrabold leading-none text-confirmation">
-    !
-  </span>
-</div>
+            <span className="text-6xl font-extrabold leading-none text-confirmation">
+              !
+            </span>
+          </div>
 
           {/* Title */}
           <DialogTitle className="text-xl sm:text-2xl font-medium  text-confirmation-text">
@@ -85,24 +81,24 @@ export default function ConfirmationModal({
           </DialogDescription>
 
           {/* Buttons */}
-         <div className="mt-6 flex items-center justify-center gap-4">
-  <Button
-    type="button"
-    onClick={onConfirm}
-    disabled={loading}
-    className="min-w-[85px] bg-confirmation hover:bg-confirmation-hover px-10 py-3 h-auto text-xl font-bold text-white transition border-b border-black rounded-none"
-  >
-    {loading ? "Please wait..." : c.confirmLabel}
-  </Button>
+          <div className="mt-6 flex items-center justify-center gap-4">
+            <Button
+              type="button"
+              onClick={onConfirm}
+              disabled={loading}
+              className="min-w-[85px] bg-confirmation hover:bg-confirmation-hover px-10 py-3 h-auto text-xl font-bold text-white transition border-b border-black rounded-none"
+            >
+              {loading ? "Please wait..." : c.confirmLabel}
+            </Button>
 
-  <Button
-    type="button"
-    onClick={() => onOpenChange(false)}
-    className="min-w-[123px] bg-confirmation hover:bg-confirmation-hover px-10 py-3 h-auto text-xl font-bold text-white transition border-b border-black rounded-none"
-  >
-    CANCEL
-  </Button>
-</div>
+            <Button
+              type="button"
+              onClick={() => onOpenChange(false)}
+              className="min-w-[123px] bg-confirmation hover:bg-confirmation-hover px-10 py-3 h-auto text-xl font-bold text-white transition border-b border-black rounded-none"
+            >
+              CANCEL
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
