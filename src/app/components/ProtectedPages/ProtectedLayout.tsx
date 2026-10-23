@@ -32,26 +32,20 @@ export default function ProtectedLayout({
     const timeoutDuration = expiryTime.diff(now);
 
     if (timeoutDuration <= 0) {
-      dispatch(customerLogout())
-        .unwrap()
-        .then(() => {
-          dispatch(logout());
-          router.replace(
-            `/auth/login?redirect=${encodeURIComponent(pathname || "/checkout")}`,
-          );
-        });
+      dispatch(customerLogout());
+      dispatch(logout());
+      router.replace(
+        `/auth/login?redirect=${encodeURIComponent(pathname || "/checkout")}`,
+      );
       return;
     }
 
     const timerId = setTimeout(() => {
-      dispatch(customerLogout())
-        .unwrap()
-        .then(() => {
-          dispatch(logout());
-          router.replace(
-            `/auth/login?redirect=${encodeURIComponent(pathname || "/checkout")}`,
-          );
-        });
+      dispatch(customerLogout());
+      dispatch(logout());
+      router.replace(
+        `/auth/login?redirect=${encodeURIComponent(pathname || "/checkout")}`,
+      );
     }, timeoutDuration);
 
     return () => clearTimeout(timerId);
