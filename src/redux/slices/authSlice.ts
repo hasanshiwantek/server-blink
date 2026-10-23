@@ -166,6 +166,7 @@ const authSlice = createSlice({
       state.error = null;
       state.loginloading = false;
       state.registerLoading = false;
+      state.loading = false;
       clearAuthStorage();
     },
   },
