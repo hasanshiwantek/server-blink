@@ -4,8 +4,13 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import { customerLogout, logout } from "@/redux/slices/authSlice";
+import dayjs from "dayjs";
 
-export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
+export default function ProtectedLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { isAuthenticated, expireAt } = useAppSelector(
     (state: RootState) => state?.auth,
   );
@@ -22,9 +27,9 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
 
     if (!expireAt) return;
 
-    const now = Date.now();
-    const expiryTime = new Date(expireAt).getTime();
-    const timeoutDuration = expiryTime - now;
+    const now = dayjs();
+    const expiryTime = dayjs(expireAt);
+    const timeoutDuration = expiryTime.diff(now);
 
     if (timeoutDuration <= 0) {
       dispatch(customerLogout())
@@ -34,7 +39,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
           router.replace(
             `/auth/login?redirect=${encodeURIComponent(pathname || "/checkout")}`,
           );
-        })
+        });
       return;
     }
 
@@ -46,7 +51,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
           router.replace(
             `/auth/login?redirect=${encodeURIComponent(pathname || "/checkout")}`,
           );
-        })
+        });
     }, timeoutDuration);
 
     return () => clearTimeout(timerId);
@@ -62,5 +67,3 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
 
   return <>{children}</>;
 }
-
-
