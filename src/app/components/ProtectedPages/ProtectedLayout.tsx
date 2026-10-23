@@ -1,14 +1,13 @@
 "use client";
-import { useSelector } from "react-redux";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
-import { useAppDispatch } from "@/hooks/useReduxHooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import { customerLogout, logout } from "@/redux/slices/authSlice";
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, expireAt } = useSelector(
-    (state: RootState) => state.auth,
+  const { isAuthenticated, expireAt } = useAppSelector(
+    (state: RootState) => state?.auth,
   );
   const dispatch = useAppDispatch();
   const router = useRouter();

@@ -518,7 +518,6 @@ const TopHeader = () => {
             .unwrap()
             .then(() => {
               dispatch(logout());
-              successMessage("Logged out successfully!");
               setShowLogoutModal(false);
               router.replace("/auth/login");
             });
