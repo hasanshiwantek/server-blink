@@ -19,12 +19,17 @@ const handleUnauthenticated = async () => {
   isLoggingOut = true;
 
   // Lazy imports: the store/auth slice import this file (circular otherwise)
-  const [{ store, persistor }, { logout }] = await Promise.all([
+  const [{ store, persistor }, { logout, customerLogout }] = await Promise.all([
     import("@/redux/store"),
     import("@/redux/slices/authSlice"),
   ]);
 
-  store.dispatch(logout());
+  await store.dispatch(customerLogout())
+    .unwrap()
+    .then(() => {
+      store.dispatch(logout());
+    })
+    .catch(() => undefined);
   // redux-persist writes lazily; flush before navigating, and drop the legacy
   // token keys, or the next page load picks the dead token back up and loops.
   await persistor.flush();

@@ -6,7 +6,7 @@ import { UseFormRegister, FieldErrors } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { RootState } from "@/redux/store";
 import LoginForm from "./LoginForm";
-import { logout } from "@/redux/slices/authSlice";
+import { customerLogout, logout } from "@/redux/slices/authSlice";
 
 interface CustomerStepProps {
   register: UseFormRegister<any>;
@@ -40,8 +40,12 @@ const CustomerStep: React.FC<CustomerStepProps> = ({
   const dispatch = useAppDispatch();
   const auth = useAppSelector((state: RootState) => state?.auth);
   const handleSignOut = () => {
-    dispatch(logout());
-    window.location.href = "/auth/login";
+    dispatch(customerLogout())
+      .unwrap()
+      .then(() => {
+        dispatch(logout());
+        window.location.href = "/auth/login";
+      })
   };
 
   useEffect(() => {

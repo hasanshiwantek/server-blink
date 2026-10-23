@@ -1,7 +1,7 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import { fetchCategories } from "@/lib/api/category";
-import { logout } from "@/redux/slices/authSlice";
+import { customerLogout, logout } from "@/redux/slices/authSlice";
 import {
   clearSearch,
   globalSearch,
@@ -510,13 +510,17 @@ const TopHeader = () => {
         open={showLogoutModal}
         onOpenChange={setShowLogoutModal}
         variant="warning"
+        loading={auth?.loading}
         title="Confirm Logout?"
         description="Are you sure you want to logout?"
         onConfirm={() => {
-          dispatch(logout());
-          successMessage("Logged out successfully!");
-          setShowLogoutModal(false);
-          router.replace("/auth/login");
+          dispatch(customerLogout())
+            .unwrap()
+            .then(() => {
+              dispatch(logout());
+              setShowLogoutModal(false);
+              router.replace("/auth/login");
+            });
         }}
       />
     </>

@@ -1,6 +1,6 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
-import { logout } from "@/redux/slices/authSlice";
+import { customerLogout, logout } from "@/redux/slices/authSlice";
 import { fetchCartList } from "@/redux/slices/cartsSlice";
 import {
   fetchLoadSavedQuote,
@@ -22,7 +22,7 @@ const Cart = () => {
   const action = searchParams.get("action");
   const quoteToken = searchParams.get("quoteToken");
   const shouldLoadQuote = action === "loadSavedQuote" && !!quoteToken;
-  const { cartLoading, loading,  } = useAppSelector(
+  const { cartLoading, loading } = useAppSelector(
     (state: RootState) => state.carts,
   );
   const auth = useAppSelector((state: RootState) => state?.auth);
@@ -49,6 +49,9 @@ const Cart = () => {
         if (error) {
           dispatch(removeCoupon());
           dispatch(removeManualDiscount());
+          if (auth?.isAuthenticated) {
+            dispatch(customerLogout()).unwrap();
+          }
           dispatch(logout());
           window.location.href = `/auth/login?action=loadSavedQuote&quoteToken=${quoteToken}`;
         }
@@ -85,32 +88,31 @@ const Cart = () => {
           <h1 className="text-[28px] mt-5 text-[#545454] font-light roboto-font">
             Your Cart ({cartItemCount} items)
           </h1>
-         
         </div>
 
-       {initialCartLoading ? (
-  <CartListSkeleton />
-) : cartItemCount > 0 ? (
-  <div className="relative">
-    {cartLoad && (
-      <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-[2px]">
-        <div className="h-10 w-10 rounded-full border-[3px] border-gray-300 border-t-red-500 animate-spin" />
-      </div>
-    )}
+        {initialCartLoading ? (
+          <CartListSkeleton />
+        ) : cartItemCount > 0 ? (
+          <div className="relative">
+            {cartLoad && (
+              <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-[2px]">
+                <div className="h-10 w-10 rounded-full border-[3px] border-gray-300 border-t-red-500 animate-spin" />
+              </div>
+            )}
 
-    <div className="w-full">
-      <CartList />
-    </div>
+            <div className="w-full">
+              <CartList />
+            </div>
 
-    <div className="w-full md:w-[45%] md:ml-auto mt-6">
-      <OrderSummary />
-    </div>
-  </div>
-) : (
-  <div className="text-[22px]  text-[#545454] font-light">
-    Your cart is empty
-  </div>
-)}
+            <div className="w-full md:w-[45%] md:ml-auto mt-6">
+              <OrderSummary />
+            </div>
+          </div>
+        ) : (
+          <div className="text-[22px]  text-[#545454] font-light">
+            Your cart is empty
+          </div>
+        )}
       </div>
     </main>
   );

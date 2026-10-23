@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "@/lib/axiosInstance";
 import { removeManualDiscount } from "./couponSlice";
+import { removeFromStorage, setInStorage } from "@/utils/storage";
 
 export interface RegisterPayload {
   firstName: string;
@@ -24,6 +25,7 @@ interface AuthState {
   token: string | null;
   expireAt?: string | null;
   loginloading: boolean;
+  loading: boolean;
   registerLoading: boolean;
   error: string | null;
   isAuthenticated: boolean;
@@ -35,6 +37,7 @@ const initialState: AuthState = {
   token: null,
   expireAt: null,
   loginloading: false,
+  loading: false,
   registerLoading: false,
   error: null,
   isAuthenticated: false,
@@ -50,13 +53,11 @@ export const loginUser = createAsyncThunk(
 
       return res.data;
     } catch (err: any) {
-
-      console.groupEnd();
       return thunkAPI.rejectWithValue(
-        err.response?.data?.message || "Login failed"
+        err.response?.data?.message || "Login failed",
       );
     }
-  }
+  },
 );
 // customer profile thunk
 export const customerProfile = createAsyncThunk(
@@ -67,10 +68,10 @@ export const customerProfile = createAsyncThunk(
       return res.data;
     } catch (err: any) {
       return thunkAPI.rejectWithValue(
-        err.response?.data?.message || "Failed to fetch profile"
+        err.response?.data?.message || "Failed to fetch profile",
       );
     }
-  }
+  },
 );
 
 // Register thunk
@@ -83,10 +84,10 @@ export const registerUser = createAsyncThunk(
     } catch (err: any) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return thunkAPI.rejectWithValue(
-        err.response?.data?.message || "Registration failed"
+        err.response?.data?.message || "Registration failed",
       );
     }
-  }
+  },
 );
 
 // Update Password thunk
@@ -99,10 +100,10 @@ export const updatePassword = createAsyncThunk(
     } catch (err: any) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return thunkAPI.rejectWithValue(
-        err.response?.data?.message || "Password Updation failed"
+        err.response?.data?.message || "Password Updation failed",
       );
     }
-  }
+  },
 );
 export const checkAuthToken = createAsyncThunk(
   "auth/checkToken",
@@ -118,8 +119,38 @@ export const checkAuthToken = createAsyncThunk(
     }
   },
 );
+
+export const customerLogout = createAsyncThunk(
+  "auth/customerLogout",
+  async (_, thunkAPI) => {
+    let lastError: any = null;
+
+      try {
+        const res = await axiosInstance.post("web/customer/logout");
+        return res.data;
+      } catch (err: any) {
+        lastError = err;
+        if (err.response?.status !== 404) {
+          return thunkAPI.rejectWithValue(
+            err.response?.data?.message || "Logout failed",
+          );
+        }
+      }
+    return thunkAPI.rejectWithValue(
+      lastError?.response?.data?.message || "Logout failed",
+    );
+  },
+);
+
 const clearAuthStorage = () => {
-  removeManualDiscount()
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  removeManualDiscount();
+  ["persist:auth", "token", "tokenExpiry", "user"].forEach((key) => {
+    removeFromStorage(key);
+  });
 };
 // Slice
 const authSlice = createSlice({
@@ -131,7 +162,12 @@ const authSlice = createSlice({
       state.token = null;
       state.expireAt = null;
       state.isAuthenticated = false;
-      clearAuthStorage()
+      state.stores = [];
+      state.error = null;
+      state.loginloading = false;
+      state.registerLoading = false;
+      state.loading = false;
+      clearAuthStorage();
     },
   },
   extraReducers: (builder) => {
@@ -152,7 +188,8 @@ const authSlice = createSlice({
 
       // Fulfilled - login
       .addCase(loginUser.fulfilled, (state, action) => {
-        const { user, customer, token, expireAt } = action.payload.data || action.payload;
+        const { user, customer, token, expireAt } =
+          action.payload.data || action.payload;
         state.loginloading = false;
         state.user = user || customer;
         state.token = token;
@@ -171,7 +208,8 @@ const authSlice = createSlice({
 
       // Fulfilled - register
       .addCase(registerUser.fulfilled, (state, action) => {
-        const { user, customer, token, expireAt } = action.payload.data || action.payload;
+        const { user, customer, token, expireAt } =
+          action.payload.data || action.payload;
         state.registerLoading = false;
         state.user = customer || user;
         state.token = token;
@@ -179,16 +217,18 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
       })
       .addCase(customerProfile.fulfilled, (state, action) => {
-
-        const { user, customer, token, expireAt } = action.payload
+        const { user, customer, token, expireAt } = action.payload ?? {};
         state.loginloading = false;
         state.user = user || customer;
         state.token = token;
         state.expireAt = expireAt;
         state.isAuthenticated = true;
-        localStorage.setItem("token", token);
-        localStorage.setItem("tokenExpiry", expireAt);
-        localStorage.setItem("user", JSON.stringify(customer));
+
+        if (typeof window !== "undefined") {
+          if (token) setInStorage("token", token);
+          if (expireAt) setInStorage("tokenExpiry", expireAt);
+          if (customer) setInStorage("user", customer);
+        }
       })
       // Rejected
       .addCase(loginUser.rejected, (state, action) => {
@@ -202,6 +242,25 @@ const authSlice = createSlice({
       .addCase(registerUser.rejected, (state, action) => {
         state.registerLoading = false;
         state.error = action.payload as string;
+      })
+      .addCase(customerLogout.pending, (state) => {
+        state.error = null;
+        state.loading = true;
+      })
+      .addCase(customerLogout.fulfilled, (state) => {
+        state.user = null;
+        state.token = null;
+        state.expireAt = null;
+        state.loading = false;
+        state.isAuthenticated = false;
+        state.stores = [];
+        state.loginloading = false;
+        state.registerLoading = false;
+        clearAuthStorage();
+      })
+      .addCase(customerLogout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = null;
       });
   },
 });
