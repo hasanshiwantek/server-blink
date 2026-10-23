@@ -1,13 +1,12 @@
 "use client";
+import { ENV_CONFIG } from "@/config/envConfig";
 import { errorMessage, successMessage } from "@/utils/message";
 import GooglePayButton from "@google-pay/button-react";
 import { loadStripe } from "@stripe/stripe-js";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const stripePromise = loadStripe(
-  "pk_test_51TTnoo8vkezGA3pyz8ekc5xIQNyhweCnxiumTB1si5Dejq5YWPGHDJIJPpBHMLw9hYRkbSkOGpdCzPrlW8g59HZ600cueNQymh"
-);
+const stripePromise = loadStripe(ENV_CONFIG.stripePublishableKey);
 
 interface Props {
   amount: number;

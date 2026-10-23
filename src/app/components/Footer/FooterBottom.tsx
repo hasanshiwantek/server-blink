@@ -2,6 +2,7 @@
 import { useAppDispatch, useAppSelector } from "@/hooks/useReduxHooks";
 import {
   checkAuthToken,
+  customerLogout,
   customerProfile,
   logout,
 } from "@/redux/slices/authSlice";
@@ -439,12 +440,16 @@ const FooterBottom = () => {
         onOpenChange={setShowLogoutModal}
         variant="warning"
         title="Confirm Logout?"
+        loading={auth?.loading}
         description="Are you sure you want to logout?"
         onConfirm={() => {
-          dispatch(logout());
-          successMessage("Logged out successfully!");
-          setShowLogoutModal(false);
-          router.replace("/auth/login");
+          dispatch(customerLogout())
+            .unwrap()
+            .then(() => {
+              dispatch(logout());
+              setShowLogoutModal(false);
+              router.replace("/auth/login");
+            });
         }}
       />
     </footer>
