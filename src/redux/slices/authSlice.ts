@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "@/lib/axiosInstance";
 import { removeManualDiscount } from "./couponSlice";
-import { setInStorage } from "@/utils/storage";
+import { removeFromStorage, setInStorage } from "@/utils/storage";
 
 export interface RegisterPayload {
   firstName: string;
@@ -123,25 +123,19 @@ export const checkAuthToken = createAsyncThunk(
 export const customerLogout = createAsyncThunk(
   "auth/customerLogout",
   async (_, thunkAPI) => {
-    const endpoints = ["web/customer/logout"];
-
     let lastError: any = null;
 
-    for (const endpoint of endpoints) {
       try {
-        const res = await axiosInstance.post(endpoint);
+        const res = await axiosInstance.post("web/customer/logout");
         return res.data;
       } catch (err: any) {
         lastError = err;
-
         if (err.response?.status !== 404) {
           return thunkAPI.rejectWithValue(
             err.response?.data?.message || "Logout failed",
           );
         }
       }
-    }
-
     return thunkAPI.rejectWithValue(
       lastError?.response?.data?.message || "Logout failed",
     );
@@ -155,7 +149,7 @@ const clearAuthStorage = () => {
 
   removeManualDiscount();
   ["persist:auth", "token", "tokenExpiry", "user"].forEach((key) => {
-    localStorage.removeItem(key);
+    removeFromStorage(key);
   });
 };
 // Slice
