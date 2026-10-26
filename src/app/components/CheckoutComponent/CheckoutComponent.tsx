@@ -70,6 +70,7 @@ import ShippingStep, {
 } from "./Shippingstep";
 import { apiFetch } from "@/lib/apiFetch";
 import axiosInstance from "@/lib/axiosInstance";
+import { cn } from "@/lib/utils";
 
 export const CHECKOUT_STORAGE_KEY = "checkoutFormData";
 function splitName(fullName: string) {
@@ -1580,10 +1581,13 @@ const CheckoutForm = () => {
             {/* STEP 1: Customer */}
             {/* STEP 1: Customer */}
             <div
-              className={`p-6 border-b-[1px]  items-center border-b-[#8b8b8b] ${currentStep >= 2 ? "flex gap-10" : "block"}`}
+             className={cn(
+  "p-6 border-b-[1px] items-center border-b-[#8b8b8b]",
+  currentStep >= 2 ? "flex gap-10" : "block"
+)}
             >
               <h2
-                className={`hidden md:flex text-[1.92308rem] font-normal mb-4 text-[#545454] `}
+                className={`hidden md:flex w-[80px] shrink-0 text-[25px] font-normal text-[#545454] `}
               >
                 Customer
               </h2>
@@ -1602,10 +1606,13 @@ const CheckoutForm = () => {
 
             {/* STEP 2: Shipping */}
             <div
-              className={`p-6 border-b-[1px]  items-center border-b-[#8b8b8b] ${currentStep >= 3 ? "flex gap-10" : "block"}`}
+              className={cn(
+                "p-6 border-b-[1px]  items-center border-b-[#8b8b8b]",
+                currentStep >= 3 ? "flex gap-10" : "block"
+              )}
             >
-              <h2 className="hidden md:flex text-[25px] font-normal mt-6 mb-6 text-[#545454]">
-                Shipping
+                <h2 className="hidden md:flex w-[80px] shrink-0 text-[25px] font-normal text-[#545454]">
+                  Shipping
               </h2>
               <ShippingStep
                 register={register}
@@ -1628,9 +1635,12 @@ const CheckoutForm = () => {
 
             {/* STEP 3: Billing */}
             <div
-              className={`p-6 border-b-[1px]  items-center border-b-[#8b8b8b] ${currentStep >= 4 ? "flex gap-16" : "block"}`}
+              className={cn(
+                "p-6 border-b-[1px]  items-center border-b-[#8b8b8b]",
+                currentStep >= 4 ? "flex gap-10" : "block"
+              )}
             >
-              <h2 className="hidden md:flex text-[25px] font-normal mb-4 text-[#545454]">
+              <h2 className="hidden md:flex w-[80px] shrink-0 text-[25px] font-normal text-[#545454]">
                 Billing
               </h2>
               <BillingStep
