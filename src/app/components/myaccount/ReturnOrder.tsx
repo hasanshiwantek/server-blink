@@ -16,7 +16,7 @@ const ReturnOrder = () => {
       try {
         setLoading(true);
         setError(null);
-        const res = await axiosInstance.get("dashboard/orders/customer-return-requests");
+        const res = await axiosInstance.get("web/orders/customer-return-requests");
         
         
         if (res?.data?.data && res.data.data.length > 0) {
