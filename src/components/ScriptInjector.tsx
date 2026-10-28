@@ -39,10 +39,10 @@ export default function ScriptInjector() {
 
     const executeScripts = (scriptList: any[], target: "head" | "body") => {
       scriptList?.forEach((script: any) => {
-        if (!script.script_content) return;
+        if (!script.scriptContent) return;
         if (document.getElementById(`injected-script-${script.id}`)) return;
 
-        const content = script.script_content
+        const content = script.scriptContent
           .replace(/<\/?script[^>]*>/gi, "")
           .trim();
         if (!content) return;
@@ -50,7 +50,7 @@ export default function ScriptInjector() {
         try {
           const scriptEl = document.createElement("script");
           scriptEl.id = `injected-script-${script.id}`;
-          const srcMatch = script.script_content.match(/src=["']([^"']+)["']/i);
+          const srcMatch = script.scriptContent.match(/src=["']([^"']+)["']/i);
           if (srcMatch) {
             scriptEl.src = srcMatch[1];
             scriptEl.async = true;
